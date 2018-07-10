@@ -1,0 +1,49 @@
+<div id="profile-profile-edit-custom" hidden>
+    <p>Здесь Вы можете изменить общие данные своего аккаунта. Управлять их просмотром можно во вкладке "Безопасность".</p>
+    <div class="profile-profile-edit-group">
+        <label class="profile-label" for="profile-edit-city">Ваш город</label>
+        <input class="profile-input" type="text" id="profile-edit-city" name="profile-edit-city" placeholder="Откуда Вы?" value="{PROFILE_PAGE:USER_FROM_TEXT}">
+    </div>
+    <div class="profile-profile-edit-group">
+        <label class="profile-label" for="profile-edit-realname">Реальное имя</label>
+        <input class="profile-input" type="text" id="profile-edit-realname" name="profile-edit-realname" placeholder="Как Вас зовут?" value="{PROFILE_PAGE:USER_REALNAME_TEXT}">
+    </div>
+    <div class="profile-profile-edit-group">
+        <label class="profile-label" for="profile-edit-birth">День Рождения</label>
+        <input class="profile-input" type="text" id="profile-edit-birth" name="profile-edit-birth" placeholder="Когда у Вас День Рождения?" value="{PROFILE_PAGE:USER_BIRTHDAY_TEXT}">
+    </div>
+    <div class="profile-profile-edit-group">
+        <label class="profile-label" for="profile-edit-sex">Какого Вы пола?</label>
+        <select class="profile-input" name="profile-edit-sex" id="profile-edit-sex">
+            {PROFILE_PAGE:USER_SEX_SELECTOR}
+        </select>
+    </div>
+    <div class="profile-profile-edit-group">
+        <label class="profile-label" for="profile-edit-vk">VK</label>
+        <input class="profile-input" type="text" id="profile-edit-vk" name="profile-edit-vk" placeholder="Оставьте ID своего профиля во ВКонтакте" value="{PROFILE_PAGE:USER_VK}">
+    </div>
+    <div class="profile-profile-edit-group">
+        <label class="profile-label" for="profile-edit-skype">Skype</label>
+        <input class="profile-input" type="text" id="profile-edit-skype" name="profile-edit-skype" placeholder="Какой у вас никнейм в Скайпе?" value="{PROFILE_PAGE:USER_SKYPE}">
+    </div>
+    <div class="profile-about-info-div">
+        <div class="profile-profile-edit-area-group">
+            <label class="profile-label" for="profile-edit-about">О себе:</label>
+            <textarea class="profile-about-input" placeholder="Расскажите о себе..." id="profile-edit-about" name="profile-edit-about" maxlength="300">{PROFILE_PAGE:USER_ABOUT_TEXT}</textarea>
+        </div>
+        <div class="profile-profile-edit-area-group">
+            <label for="profile-edit-hobbies">Хобби:</label>
+            <textarea class="profile-about-input" placeholder="Какие у Вас хобби?" id="profile-edit-hobbies" name="profile-edit-hobbies" maxlength="300">{PROFILE_PAGE:USER_HOBBIES_TEXT}</textarea>
+        </div>
+        {PROFILE_PAGE:USER_SIGNATURE_FORM}
+    </div>
+    <div class="profile-avatar-div">
+        <img class="profile-edit-avatar" src="{PROFILE_PAGE:USER_AVATAR}">
+        <label class="profile-label" for="profile-edit-avatar">Аватарка:</label>
+        <input type="file" name="profile-edit-avatar" id="profile-edit-avatar">
+        <hr>
+        <button class="btn btn-default" type="submit" id="profile-edit-avatar-btn" formaction="/site/scripts/profiler.php" formenctype="multipart/form-data"><span class="glyphicons glyphicons-drop"></span> Загрузить аватарку</button>
+        <hr>
+        <div class="alert alert-warning"><span class="glyphicons glyphicons-warning-sign"></span> Аватарка должна быть по размерам {PROFILE_PAGE:USER_AVATAR_SIZE} и не больше 6 МБ. </div>
+    </div>
+</div>

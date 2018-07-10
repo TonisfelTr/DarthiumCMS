@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{PROFILE_PAGE_TITLE}</title>
+    <meta name="description" content="{ENGINE_META:DESCRIPTION}">
+    <meta name="keywords" content="{ENGINE_META:KEYWORDS}">
+    <script src="../../../../libs/js/ie-emulator.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="../../../../libs/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../../../../libs/bootstrap/js/jquery-ui.min.js"></script>
+    <script>window.jQuery || document.write('&lt;script src="../../../libs/js/jquery-3.1.0.min.js"&gt;&lt;\/script&gt;')</script>
+    <link href="../../../../libs/bootstrap/css/ie10-viewport.css" rel="stylesheet">
+    <link href="../../../../libs/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="../../../../libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../libs/bootstrap/css/glyphicons-regular.css" rel="stylesheet">
+    <link href="/site/templates/Tonisfel/icon.ico" rel="icon">
+    <link href="/site/templates/Tonisfel/css/profile-style.css" rel="stylesheet">
+    {PROFILE_REPUTATIONER:STYLESHEET}
+    {PROFILE_UPLOADER:STYLESHEET}
+    <script src="/site/scripts/UserFinderParser.js"></script>
+    <script type="text/javascript">
+        {PROFILE_PAGE_GUI_CUSTOM_SCRIPT}
+    </script>
+</head>
+<body>
+<div class="profile-container">
+    {PROFILE_PAGE_HEADER}
+    <div class="profile-body">
+        {PROFILE_PAGE_SEE_ERRORS}
+        {PROFILE_MAIN_BODY}
+    </div>
+    {PROFILE_PAGE_FOOTER}
+</div>
+<script type="text/javascript">
+    showFirstPanel();
+    {PROFILE_JS:SHOW_PANEL}
+    {PROFILE_PAGE_GUI_SCRIPT}
+    {PROFILE_REPUTATIONER:JS}
+    {PROFILE_UPLOADER:JS}
+</script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{PROFILE_UPLOADER_BLOCK}
+{PROFILE_REPUTATIONER_BLOCK}
+<form method="post" id="profile-profile-form-form">
+    <div class="profile-profile-header">
+        <img class="profile-avatar" src="{PROFILE_PAGE:USER_AVATAR}">
+        <h3 class="profile-nickname">{PROFILE_PAGE:USER_NICKNAME}</h3>
+        <span style="color: {PROFILE_PAGE:USER_GROUP_COLOR}">{PROFILE_PAGE:USER_GROUP_NAME}</span><br>
+        Последний вход: {PROFILE_PAGE:USER_LASTONLINE}
+    </div>
+    <div class="profile-profile-body" id="profile-profile-body">
+        {PROFILE_ERRORS_INFO}
+        <div id="profile-profile-panels">
+            {PROFILE_PAGE_INFO}
+            {PROFILE_PAGE_EDIT}
+            {PROFILE_PAGE_PM}
+            {PROFILE_PAGE_NOTIFICS}
+            {PROFILE_PAGE_FRIENDS}
+        </div>
+    </div>
+</form>
+{PROFILE_FOOTER_BTNS}

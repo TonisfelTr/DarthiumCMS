@@ -1,0 +1,347 @@
+html,
+body{
+    height: 100%;
+}
+
+@font-face {
+    font-family: "My Passion";
+    src: url("../../libs/styles/font.otf");
+}
+
+#jumbotron{
+    font: 17px "My Passion";
+    color: white;
+    background: url(jumbo.jpg) no-repeat;
+}
+
+.h-helper{
+    font: 15px "Arial";
+    color: darkgrey;
+}
+
+.helper{
+    font: 14px "Arial";
+    color: grey;
+}
+
+.linkin{
+    font: 30px "My Passion";
+    color: #0f0f0f;
+}
+
+.linker{
+    position: static;
+    padding: 10px;
+    border: 1px solid #0f0f0f;
+    border-radius: 7px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.linkin:hover {
+    padding: 4px;
+    border-radius: 6px;
+    transition: 0.5s;
+    width: 300px;
+    background-color: rgba(62, 30, 44, 0.10);
+}
+
+.linkin:hover + p {
+    margin-top: 7px;
+    transition: 0.5s;
+}
+
+.wrapper{
+    min-height: 80%;
+    position: relative;
+}
+
+.custom-group{
+    position: relative;
+    padding: 35px;
+}
+
+.borders{
+    border: 1px solid #0f0f0f;
+    border-radius: 7px;
+}
+
+.answer{
+    position: relative;
+    padding: 35px;
+    padding-bottom: 0px;
+}
+
+.center{
+    -ms-text-align-last: center;
+    text-align: center;
+}
+
+.left{
+    -ms-text-align-last: left;
+    text-align: left;
+}
+
+div.footer {
+    position: relative;
+    background-color: #aaaaaa;
+    font: 17px "My Passion";
+    border-top: 1px solid #cccccc;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    margin-top: 20px;
+    text-align: center;
+    bottom: 0;
+    min-height: 20%;
+    width: 100%;
+}
+
+p.footer{
+    font: 12px Trebuchet MS;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.header-gum{
+    position: relative;
+    alignment: top;
+    padding-bottom: 15px;
+    margin-bottom: 35px;
+    border-bottom: 1px black solid;
+    -moz-border-radius-bottomleft: 3px;
+    -moz-border-radius-bottomright: 3px;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.header{
+    border: 1px black solid;
+}
+
+body {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.navbar {
+    margin-bottom: 20px;
+}
+
+.divider_header{
+    width: 100%;
+    height: 5px;
+    background: #999999;
+}
+
+.panel-body{
+    border: 1px solid grey;
+    border-radius: 10px;
+}
+
+.left-half, .right-half{
+    width: 30%;
+}
+
+.left-half{
+    alignment: left;
+}
+
+.right-half{
+    alignment: right;
+}
+
+.div-border{
+    border: 1px solid #444;
+    padding: 10px 30px 30px 30px;
+    border-radius: 7px;
+}
+
+.input-selector{
+    background: #a5a5a5;
+    padding: 3px;
+    border-radius: 2px;
+}
+
+.tr-bold{
+    font-weight: bold;
+}
+
+.adminpanel-reports-inc{
+    padding: 4px;
+    border-radius: 5px;
+    color: white;
+    background-color: #cc0000;
+}
+
+.report-header{
+    position: relative;
+    border: 1px solid black;
+    width: 100%;
+    min-height: 250px;
+}
+
+.report-header-head{
+    background: radial-gradient(at right, #500c05, #992030);
+    color: white;
+    border-bottom: 1px solid #2e040d;
+    width: 100%;
+    min-height: 35px;
+    padding: 7px;
+    font-size: 13px;
+    text-shadow: 1px 2px 3px #250909;
+}
+
+span.report-author-info{
+    color: white;
+}
+
+span.report-report-info{
+    float: right;
+    color: white;
+}
+
+.report-author-avatar{
+    width: 20px;
+    height: 20px;
+}
+
+.report-header-body{
+    margin: 5px;
+}
+
+.report-header-footer{
+    position: absolute;
+    bottom: 0;
+    background: #6c1e1b;
+    border-top: 2px solid #101010;
+    width: 100%;
+    color: white;
+    padding: 4px;
+}
+
+.report-answer{
+    border: 1px solid black;
+    position: relative;
+    min-height: 150px;
+}
+
+.report-answer-head{
+    padding: 5px;
+    background: radial-gradient(at right, #858585, #373737);
+    border-bottom: 1px solid #111111;
+    font-size: 13px;
+    text-shadow: 1px 1px 3px black;
+    width: 100%;
+    min-height: 35px;
+}
+
+.report-answer-body{
+    padding: 6px;
+    width: 100%;
+}
+
+span.report-answer-edit-info{
+    position: absolute;
+    bottom: 50px;
+    right: 5px;
+    color: #2d0d0f;
+    font-style: italic;
+    font-size: 11px;
+}
+
+.report-answer-footer{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    border-top: 2px solid #222222;
+    background: rgba(76,76,76,0.9);
+    color: white;
+    padding: 5px;
+}
+
+.report-solve-head{
+    color: white;
+    background: radial-gradient(at right, #27851e, #0b401c);
+    min-height: 35px;
+    border-bottom: 1px solid #20ff20;
+    padding: 6px;
+    font-size: 13px;
+}
+
+.report-solve-body{
+    padding: 10px;
+    width: 100%;
+}
+
+.report-solve-footer{
+    position: absolute;
+    bottom: 0;
+    padding: 4px;
+    border-top: 2px solid #052605;
+    background: rgb(26, 80, 35);
+    width: 100%;
+    color: white;
+    min-height: 35px;
+    margin-bottom: -1px;
+}
+
+.report-user-added-list{
+    padding-top: 15px;
+    position: relative;
+    display: inline-flex;
+}
+
+.report-user-added-btn{
+    background-color: #4b244b;
+    color: white;
+    padding: 8px;
+    margin: 6px;
+    border-radius: 8px;
+}
+
+.report-user-added-btn:hover{
+    background-color: #9f799f;
+}
+
+.report-user-added-btn a{
+    color: white;
+}
+
+.report-user-added-btn span{
+    padding-left: 6px;
+}
+
+.report-user-added-btn span:hover{
+    color: #2a2a2a;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.message-quote-block{
+    border: 1px solid #450000;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 1px 1px 3px #040404;
+    margin: 10px;
+}
+
+.message-quote-author-sign{
+    text-align: right;
+    font-style: italic;
+    font-weight: bold;
+}
+
+.message-quote-author-sign:before{
+    content: "— ";
+}
+
+.label{
+    width: 100%;
+    color: black;
+    font-size: 14px;
+}
+
+.staticc-table-header{
+    background: radial-gradient(at left, #0e5424, #3f7785);
+    color: white;
+}

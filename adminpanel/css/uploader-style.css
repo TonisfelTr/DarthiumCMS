@@ -1,0 +1,80 @@
+.uploader-form{
+    position: fixed;
+    background: rgba(0,0,0,0.8);
+    height: 100%;
+    width: 100%;
+    z-index: 1000;
+    padding: 0;
+    margin: 0;
+    margin-top: -20px;
+}
+
+.uploader-header{
+    color: white;
+    background: radial-gradient(at left, #0e1d1b, #4e4e4e);
+    padding: 10px;
+    font-size: 16px;
+    position: relative;
+}
+
+.uploader-close-btn{
+    border: none;
+    float: right;
+    width: 21px;
+    height: 21px;
+    color: white;
+    background: none;
+    text-align: center;
+}
+
+.uploader-close-btn:hover{
+    background: white;
+    color: black;
+    border: 1px solid #aaf;
+    transition: 0.5s;
+}
+
+.uploader-close-btn:active{
+    background: #eeeeee;
+    transition: 0.2s;
+}
+
+.uploader-body{
+    background: white;
+    padding: 10px;
+}
+
+
+.uploader-block{
+    width: 50%;
+    height: 70%;
+    position: absolute;
+    left:25%;
+    right: 25%;
+    top: 10%;
+}
+
+.uploader-block table{
+    width: 100%;
+}
+
+.uploader-block table td{
+    padding: 7px;
+    size: auto;
+    margin: -20px;
+}
+.uploader-block table thead{
+    padding: 10px;
+    background: radial-gradient(at center, black, darkgrey);
+    color: white;
+}
+
+.uploader-block table tbody {
+    border-bottom: 1px solid #aaa;
+}
+
+.uploader-block hr{
+    padding: 0;
+    margin: 10px;
+
+}

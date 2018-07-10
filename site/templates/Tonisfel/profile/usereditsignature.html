@@ -1,0 +1,45 @@
+<div class="profile-profile-edit-area-group">
+    <label for="profile-edit-signature">Подпись:</label><br>
+    <div class="profile-bb-btn-panel">
+        <button type="button" onclick="insertBBCode('b', false, 'profile-edit-signature');"><strong>B</strong></button>
+        <button type="button" onclick="insertBBCode('u', false, 'profile-edit-signature');"><span style="text-decoration: underline;">U</span></button>
+        <button type="button" onclick="insertBBCode('i', false, 'profile-edit-signature');"><em>I</em></button>
+        <button type="button" onclick="insertBBCode('s', false, 'profile-edit-signature');"><strike>S</strike></button>
+    </div>
+    <div class="profile-bb-btn-panel">
+        <button type="button" onclick="insertBBCode('align=left', 'align', 'profile-edit-signature');"><span class="glyphicons glyphicons-align-left"></span></button>
+        <button type="button" onclick="insertBBCode('align=center', 'align', 'profile-edit-signature');"><span class="glyphicons glyphicons-align-center"></span></button>
+        <button type="button" onclick="insertBBCode('align=right', 'align', 'profile-edit-signature');"><span class="glyphicons glyphicons-align-right"></span></button>
+    </div>
+    <div class="profile-bb-btn-panel">
+        <button type="button" onclick="insertBBCode('youtube=', true, 'profile-edit-signature');">►</button>
+        <button type="button" onclick="insertBBCode('link=', 'link', 'profile-edit-signature');"><span class="glyphicons glyphicons-link"></span></button>
+        <button type="button" onclick="insertBBCode('img=', true, 'profile-edit-signature');"><span class="glyphicons glyphicons-picture"></span></button>
+        <button type="button" onclick="insertBBCode('quote=', 'quote', 'profile-edit-signature');"><span class="glyphicons glyphicons-quote"></span></button>
+        <button type="button" onclick="$('#uploader-main').show();"><span class="glyphicons glyphicons-upload"></span></button>
+    </div>
+    <div class="profile-bb-btn-panel">
+        <select id="profile-sign-bb-color-select" onchange="insertBBCode('color='+$('#profile-sign-bb-color-select').val() , 'color', 'profile-edit-signature');">
+        <option>Цвет</option>
+        <option value="black" style="color: black;">Чёрный</option>
+        <option value="red" style="color: red;">Красный</option>
+        <option value="yellow" style="color: yellow;">Жёлтый</option>
+        <option value="green" style="color: green;">Зелёный</option>
+        <option value="blue" style="color: blue;">Синий</option>
+        <option value="darkviolet" style="color: darkviolet;">Фиолетовый</option>
+        <option value="brown" style="color: saddlebrown;">Коричневый</option>
+        </select>
+        <select id="profile-sign-bb-size-select" onchange="insertBBCode('size='+$('#profile-sign-bb-size-select').val() , 'size', 'profile-edit-signature');">
+        <option>Размер</option>
+        <option value="10" style="font-size: 10px;">10</option>
+        <option value="12" style="font-size: 12px;">12</option>
+        <option value="14" style="font-size: 14px;">14</option>
+        <option value="16" style="font-size: 16px;">16</option>
+        <option value="18" style="font-size: 18px;">18</option>
+        <option value="20" style="font-size: 20px;">20</option>
+        <option value="22" style="font-size: 22px;">22</option>
+        </select>
+    </div>
+    <textarea class="profile-about-input" placeholder="Подпись" id="profile-edit-signature" name="profile-edit-signature" maxlength="300">{PROFILE_PAGE:USER_SIGNATURE_TEXT}</textarea>
+    <p>В подписи Вы можете использовать BB-code.</p>
+</div>

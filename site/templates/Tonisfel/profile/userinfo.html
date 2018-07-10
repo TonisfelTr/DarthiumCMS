@@ -1,0 +1,41 @@
+<div data-div-title="info" hidden>
+    <div class="profile-time-info">
+        <span id="left">Зарегистрирован {PROFILE_PAGE:USER_REGDATETIME}</span>
+    </div>
+    <div class="profile-contact-info-div">
+        Откуда: {PROFILE_PAGE:USER_FROM}<br>
+        Реальное имя: {PROFILE_PAGE:USER_REALNAME}<br>
+        {PROFILE_PAGE:USER_BIRTHDAY_LINK}
+        Пол: {PROFILE_PAGE:USER_SEX}<br>
+        {PROFILE_PAGE:USER_REFERER}
+        <br>
+        Репутация: <a class="profile-profile-link" {PROFILE_PAGE:USER_REPUTATION_AONCLICK}>{PROFILE_PAGE:USER_REP_POINTS}</a><br>
+        <br>
+        {PROFILE_PAGE:USER_EMAIL}
+        {PROFILE_PAGE:USER_SKYPE_LINK}
+        {PROFILE_PAGE:USER_VK_LINK}
+        <div class="profile-about-info-div">
+            Хобби: {PROFILE_PAGE:USER_HOBBIES}<br>
+            О себе: {PROFILE_PAGE:USER_ABOUT}<br>
+            Подпись: <div class="profile-profile-text">{PROFILE_PAGE:USER_SIGNATURE}</div>
+        </div>
+    </div>
+    <div class="profile-forum-info-div">
+        <h3>Статистика:</h3>
+        Создано жалоб: {PROFILE_PAGE:USER_REPORT_CREATED_COUNT}<br>
+        Создано тем: {PROFILE_PAGE:USER_TOPICS_CREATED_COUNT}<br>
+        Оставленно комментариев: {PROFILE_PAGE:USER_COMMENTS_CREATED_COUNT}<br>
+        <h3>Друзья:</h3>
+        <div class="profile-friends-info">
+            <div id="profile-friends-div">
+                <p>Друзей: <span id="profile-friends-counter">{PROFILE_PAGE:USER_FRIENDS_COUNT}</span></p>
+                <div class="profile-friends-panel" id="profile-friends-panel"></div>
+            </div>
+            <div id="profile-friends-online-div">
+                <p>Друзья онлайн: <span id="profile-friends-online-counter">{PROFILE_PAGE:USER_ONLINE_FRIENDS_COUNT}</span></p>
+                <div class="profile-friends-panel" id="profile-friends-online-panel"></div>
+            </div>
+            {PROFILE_PAGE:USER_FRIENDLIST_MANAGE_BTN}
+        </div>
+    </div>
+</div>

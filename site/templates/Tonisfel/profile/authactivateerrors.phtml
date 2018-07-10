@@ -1,0 +1,10 @@
+<?php if (!empty($_REQUEST["res"])) { ?>
+    <div class="profile-reg-error-div">
+        <?php if ($_REQUEST["res"] == "nac"){ ?>
+            <span class="glyphicon glyphicon-warning-sign"></span> Вы не ввели код активации.
+        <?php } ?>
+        <?php if ($_REQUEST["res"] == "iac"){ ?>
+            <span class="glyphicon glyphicon-remove"></span> Введённый код активации не подходит для этого аккаунта.
+        <?php }?>
+    </div>
+<?php } ?>

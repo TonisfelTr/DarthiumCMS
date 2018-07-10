@@ -1,0 +1,114 @@
+<div data-div-title="pm" hidden>
+    <div class="profile-profile-panel-btn-group" data-div-title="btn-parent">
+        <button class="profile-profile-panel-btn active" id="profile-pm-incoming-btn" type="button" onclick="showSubpanel('pm', 1);"><span class="glyphicons glyphicons-message-in"></span> Входящие</button>
+        <button class="profile-profile-panel-btn" id="profile-pm-outcoming-btn" type="button" onclick="showSubpanel('pm', 2);"><span class="glyphicons glyphicons-message-out"></span> Исходящие</button>
+        <button class="profile-profile-panel-btn" id="profile-pm-sended-btn" type="button" onclick="showSubpanel('pm', 3);"><span class="glyphicons glyphicons-inbox-out"></span> Отправленные</button>
+        <button class="profile-profile-panel-btn" id="profile-pm-bin-btn" type="button" onclick="showSubpanel('pm', 4);"><span class="glyphicons glyphicons-bin"></span> Корзина</button>
+        <button class="profile-profile-panel-btn" id="profile-pm-write-btn" type="button" onclick="showSubpanel('pm', 5);"><span class="glyphicons glyphicons-message-plus"></span> Написать письмо</button>
+        {PROFILE_PAGE:USER_READ_PM_BUTTON}
+    </div>
+    <div class="profile-reg-info-div" id="profile-pm-counter-div" hidden>
+        Выбрано писем: <span id="profile-pm-counter-span"></span>
+    </div>
+    <input type="hidden" id="profile-pm-remove-ids">
+    <div data-div-title="body">
+        <div id="profile-pm-incoming" hidden>
+            <h2>Входящие</h2>
+            <p>Писем в папке: {PROFILE_PAGE:USER_PM_INCOMING_COUNT}</p>
+            <table class="profile-pm-table">
+                <tbody>
+                    {PROFILE_PAGE:USER_PM_INCOMING_TABLE}
+                </tbody>
+            </table>
+        </div>
+        <div id="profile-pm-outcoming" hidden>
+            <h2>Исходящие</h2>
+            <p>Писем в папке: {PROFILE_PAGE:USER_PM_OUTCOMING_COUNT}</p>
+            <table class="profile-pm-table">
+                <tbody>
+                {PROFILE_PAGE:USER_PM_OUTCOMING_TABLE}
+                </tbody>
+            </table>
+        </div>
+        <div id="profile-pm-sended" hidden>
+            <h2>Отправленные</h2>
+            <p>Писем в папке: {PROFILE_PAGE:USER_PM_SENDED_COUNT}</p>
+            <table class="profile-pm-table">
+                <tbody>
+                {PROFILE_PAGE:USER_PM_SENDED_TABLE}
+                </tbody>
+            </table>
+        </div>
+        <div id="profile-pm-bin" hidden>
+            <h2>Корзина</h2>
+            <p>Писем в папке: {PROFILE_PAGE:USER_PM_BIN_COUNT}</p>
+            <table class="profile-pm-table">
+                <thead>
+                <tr>
+                    <td class="profile-pm-table-icon"></td>
+                    <td class="profile-pm-table-author">Отправитель</td>
+                    <td class="profile-pm-table-author">Получатель</td>
+                    <td class="profile-pm-table-subject">Тема</td>
+                    <td class="profile-pm-table-time">Дата получения</td>
+                    <td></td>
+                </tr>
+                </thead>
+                <tbody>
+                    {PROFILE_PAGE:USER_PM_BIN_TABLE}
+                </tbody>
+            </table>
+        </div>
+        <div id="profile-pm-write" hidden>
+            <input class="profile-pm-input" type="text" id="profile-pm-receiver-input" name="profile-pm-receiver-input" value="{PROFILE_PAGE:USER_PM_SENDING_RECEIVER}" placeholder="Кому" maxlength="16">
+            <input class="profile-pm-input" type="text" id="profile-pm-subject-input" name="profile-pm-subject-input" placeholder="Тема" value="{PROFILE_PAGE:USER_PM_SENDING_SUBJECT}" maxlength="100">
+            <div class="profile-bb-btn-panel">
+                <button type="button" onclick="insertBBCode('b');"><strong>B</strong></button>
+                <button type="button" onclick="insertBBCode('u');"><span style="text-decoration: underline;">U</span></button>
+                <button type="button" onclick="insertBBCode('i');"><em>I</em></button>
+                <button type="button" onclick="insertBBCode('s');"><strike>S</strike></button>
+            </div>
+            <div class="profile-bb-btn-panel">
+                <button type="button" onclick="insertBBCode('align=left', 'align');"><span class="glyphicons glyphicons-align-left"></span></button>
+                <button type="button" onclick="insertBBCode('align=center', 'align');"><span class="glyphicons glyphicons-align-center"></span></button>
+                <button type="button" onclick="insertBBCode('align=right', 'align');"><span class="glyphicons glyphicons-align-right"></span></button>
+            </div>
+            <div class="profile-bb-btn-panel">
+                <button type="button" onclick="insertBBCode('youtube=', true);" id="profile-bb-btn-youtube">►</button>
+                <button type="button" onclick="insertBBCode('link=', 'link');"><span class="glyphicons glyphicons-link"></span></button>
+                <button type="button" onclick="insertBBCode('img=', true);"><span class="glyphicons glyphicons-picture"></span></button>
+                <button type="button" onclick="insertBBCode('quote=', 'quote');"><span class="glyphicons glyphicons-quote"></span></button>
+                <button type="button" onclick="$('#uploader-main').show();"><span class="glyphicons glyphicons-upload"></span></button>
+            </div>
+            <div class="profile-bb-btn-panel">
+                <select id="profile-bb-color-select" onchange="insertBBCode('color='+$('#profile-bb-color-select').val() , 'color');">
+                <option>Цвет</option>
+                <option value="black" style="color: black;">Чёрный</option>
+                <option value="red" style="color: red;">Красный</option>
+                <option value="yellow" style="color: yellow;">Жёлтый</option>
+                <option value="green" style="color: green;">Зелёный</option>
+                <option value="blue" style="color: blue;">Синий</option>
+                <option value="darkviolet" style="color: darkviolet;">Фиолетовый</option>
+                <option value="brown" style="color: saddlebrown;">Коричневый</option>
+                </select>
+                <select id="profile-bb-size-select" onchange="insertBBCode('size='+$('#profile-bb-size-select').val() , 'size');">
+                <option>Размер</option>
+                <option value="10" style="font-size: 10px;">10</option>
+                <option value="12" style="font-size: 12px;">12</option>
+                <option value="14" style="font-size: 14px;">14</option>
+                <option value="16" style="font-size: 16px;">16</option>
+                <option value="18" style="font-size: 18px;">18</option>
+                <option value="20" style="font-size: 20px;">20</option>
+                <option value="22" style="font-size: 22px;">22</option>
+                </select>
+            </div>
+            <textarea class="profile-pm-text" id="profile-pm-text" name="profile-pm-text" placeholder="Текст Вашего сообщения">{PROFILE_PAGE:USER_PM_SENDING_TEXT}</textarea>
+            <div class="profile-pm-write-see" id="profile-pm-write-see" hidden>
+            </div>
+            <div class="profile-profile-footer-btn-group" id="profile-pm-foot-panel-btn">
+                <button class="profile-profile-panel-btn" id="profile-pm-send-btn" type="submit" formaction="/site/scripts/pmanager.php?send"><span class="glyphicons glyphicons-message-forward"></span> Отправить</button>
+                <button class="profile-profile-panel-btn" id="profile-pm-watch-btn" type="button"><span class="glyphicons glyphicons-eye-open"></span> Предварительный просмотр</button>
+            </div>
+        </div>
+        {PROFILE_PAGE:USER_PM_READER}
+    </div>
+</div>

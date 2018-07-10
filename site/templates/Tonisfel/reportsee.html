@@ -1,0 +1,36 @@
+<form method="post" action="site/scripts/reports.php" name="report-form">
+    <h3>{REPORT_PAGE:SHORT_MESSAGE}</h3>
+    <hr>
+    <div class="report-header">
+        <div class="report-header-head">
+            Категория: {REPORT_PAGE:SUBJECT}
+            <span style="float: right;">Дата создания: {REPORT_PAGE:CREATE_DATE}</span>
+        </div>
+        <div class="report-header-author">
+            <img class="report-header-author-avatar" src="{REPORT_PAGE:AUTHOR_AVATAR}">
+            <br>
+            <span class="report-header-author-nickname">{REPORT_PAGE:AUTHOR_NICKNAME}</span>
+            <br>
+            <span class="report-header-author-group" style="color: {REPORT_PAGE:AUTHOR_GROUP_COLOR};">{REPORT_PAGE:AUTHOR_GROUP_NAME}</span>
+            <hr>
+            <p class="report-header-author-info">
+                {REPORT_PAGE:AUTHOR_REALNAME}
+                {REPORT_PAGE:AUTHOR_FROM}
+                {REPORT_PAGE:VK}
+            </p>
+        </div>
+        <div class="report-header-body">
+            {REPORT_PAGE:REPORT_TEXT}
+            <hr>
+            <em class="report-header-body-foot">{REPORT_PAGE:AUTHOR_SIGNATURE}</em>
+        </div>
+        <div class="report-header-foot">
+            <span class="report-header-status">Статус: {REPORT_PAGE:REPORT_STATUS}</span>
+            {REPORT_PAGE:BTNS_PANEL}
+        </div>
+    </div>
+    <hr>
+    {REPORT_PAGE:ANSWER_ADD_FORM}
+    {REPORT_PAGE:SOLVE_ANSWER}
+    {REPORT_PAGE:ANSWERS}
+</form>

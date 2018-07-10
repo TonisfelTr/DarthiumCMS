@@ -1,0 +1,89 @@
+<div data-div-title="edit" hidden>
+    <div data-div-title="btn-parent" class="profile-profile-panel-btn-group">
+        {PROFILE_PAGE:USER_EDITPANEL_BTN}
+        <button type="button" id="profile-edit-btn-security-panel" class="profile-profile-panel-btn" onclick="showSubpanel('edit', 2);"><span></span> Безопасность</button>
+        <button type="button" id="profile-edit-btn-blacklist-panel" class="profile-profile-panel-btn" onclick="showSubpanel('edit', 3);"><span></span> Чёрный список</button>
+    </div>
+    <div data-div-title="body">
+        {PROFILE_PAGE:USER_EDITPANEL}
+        <div id="profile-profile-edit-security" data-desc-div="security" hidden>
+            <p>Здесь Вы можете изменить настройки безопасности: поменять пароль, настроить отображение некоторых полей при просмотре Вашего профиля.</p>
+            Следующие настройки определяют, могут ли пользователи, не находящиеся в списке Ваших друзей просматривать некоторую Вашу личную информацию.
+            <div class="profile-about-info-div">
+                <div class="profile-profile-edit-group">
+                    <label for="profile-public-vk">Показывать аккаунт</label>
+                    <input type="checkbox" id="profile-public-acc" name="profile-public-acc" {PROFILE_PAGE:USER_PRIVATE_ACC}>
+                </div>
+                <p class="helper"><span class="glyphicons glyphicons-info-sign"></span> Если данная опция отключена, тогда Ваш аккаунт смогут просматривать только те, кто состоит у Вас в друзьях.</p>
+            </div>
+            <div class="profile-profile-edit-group">
+                <label for="profile-public-vk">Показывать VK</label>
+                <input type="checkbox" id="profile-public-vk" name="profile-public-vk" {PROFILE_PAGE:USER_PRIVATE_VK}>
+            </div>
+            <div class="profile-profile-edit-group">
+                <label for="profile-public-skype">Показывать Skype</label>
+                <input type="checkbox" id="profile-public-skype" name="profile-public-skype" {PROFILE_PAGE:USER_PRIVATE_SKYPE}>
+            </div>
+            <div class="profile-profile-edit-group">
+                <label for="profile-public-email">Показывать Email</label>
+                <input type="checkbox" id="profile-public-email" name="profile-public-email" {PROFILE_PAGE:USER_PRIVATE_EMAIL}>
+            </div>
+            <div class="profile-profile-edit-group">
+                <label for="profile-public-birth">Показывать дату рождения</label>
+                <input type="checkbox" id="profile-public-birth" name="profile-public-birth" {PROFILE_PAGE:USER_PRIVATE_BIRTHDAY}>
+            </div>
+            <hr>
+            <h4>Замена пароля</h4>
+            <div class="profile-profile-edit-group">
+                <label for="profile-change-pass-checkbox">Изменить пароль</label>
+                <input type="checkbox" id="profile-change-pass-checkbox" name="profile-change-pass-checkbox">
+            </div>
+            <div id="profile-change-pass-div">
+                <div class="profile-profile-edit-group">
+                    <label for="profile-change-oldpass">Введите старый пароль: </label>
+                    <input class="profile-input" type="password" id="profile-change-oldpass" name="profile-change-oldpass" disabled>
+                </div>
+                <div class="profile-profile-edit-group">
+                    <label for="profile-change-newpass">Введите новый пароль: </label>
+                    <input class="profile-input" type="password" id="profile-change-newpass" name="profile-change-newpass" disabled>
+                </div>
+                <div class="profile-profile-edit-group">
+                    <label for="profile-change-renewpass">Повторите: </label>
+                    <input class="profile-input" type="password" id="profile-change-renewpass" name="profile-change-renewpass" disabled>
+                </div>
+            </div>
+        </div>
+        <div id="profile-profile-edit-blacklist" data-desc-div="blacklist" hidden>
+        <p>Здесь Вы можете управлять списком нежелательных пользователей: перечисленные не смогут писать Вам личные сообщения,
+            просматривать Ваш профиль, а также Вы не будете получать уведомления при упоминании Вас на форуме.</p>
+        <div class="profile-profile-edit-group">
+            <label for="profile-edit-blacklist-nickname">Введите никнейм:</label>
+            <input type="text" maxlength="16" class="profile-input" name="profile-edit-blacklist-nickname" id="profile-edit-blacklist-nickname">
+            <button class="profile-input-btn" type="submit" name="profile-blacklist-add" formaction="/site/scripts/blacklister.php"><span class="glyphicons glyphicons-fingerprint-lock"></span> Заблокировать</button>
+        </div>
+        <div class="profile-profile-edit-group">
+            <label for="profile-edit-blacklist-comment">Комментарий:</label>
+            <input type="text" maxlength="50" class="profile-input" name="profile-edit-blacklist-comment" id="profile-edit-blacklist-comment" placeholder="не обязательно">
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <td>Никнейм</td>
+                <td>Дата добавления</td>
+                <td>Причина</td>
+                <td></td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                {PROFILE_PAGE:USER_BLACKLIST_TABLE}
+            </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+    <div class="profile-profile-footer-btn-group" id="profile-edit-control-btn-panel">
+        <button class="profile-profile-panel-btn" type="submit" id="profile-edit-save" formaction="/site/scripts/profiler.php">Сохранить изменения</button>
+        <button class="profile-profile-panel-btn" type="reset" id="profile-edit-reset">Вернуть изменения</button>
+    </div>
+</div>

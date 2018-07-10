@@ -1,0 +1,139 @@
+<?php #Панель ошибок при операциях с авторизированным пользователем.
+if (!empty($response)) {
+    //Отрицательные ответы.
+    if (in_array($response, ["nsnfb", "une", "uiab", "uhnbb", "uinb", "cnuu",
+        "nsop", "nsnp", "nsrnp", "narnpane", "iop", "nsi",
+        "rins", "rine", "nt", "mhnbs", "nprm", "nmid", "yibl", "nprmm",
+        "uine", "unins", "cnaf",
+        "neav", "neavvf", "neavvb", "neavvs"])){ ?>
+        <div id="profile-reg-message-div" class="profile-reg-error-div">
+            <?php
+            if ($response == "nsnfb"){ ?>
+                <p><span class="glyphicons glyphicons-warning-sign"></span> Вы не указали никнейм пользователя для блокировки.</p>
+            <?php }
+            if ($response == "une"){ ?>
+                <p><span class="glyphicons glyphicons-remove"></span> Пользователя с таким никнеймом не существует.</p>
+            <?php }
+            if ($response == "uiab"){ ?>
+                <p><span class="glyphicons glyphicons-warning-sign"></span> Этот пользователь уже заблокирован.</p>
+            <?php }
+            if ($response == "uhnbb"){ ?>
+                <p><span class="glyphicons glyphicons-remove"></span> Не удалось заблокировать этого пользователя. Обратитесь к Администратору.</p>
+            <?php }
+            if ($response == "uinb"){ ?>
+                <p><span class="glyphicons glyphicons-warning-sign"></span> Этот пользователь не заблокирован.</p>
+            <?php }
+            if ($response == "cnuu"){ ?>
+                <p><span class="glyphicons glyphicons-warning-sign"></span> Не удалось разблокировать пользователя. Обратитесь к Администратору.</p>
+            <?php }
+            if ($response == "nsop"){ ?>
+                <p><span class="glyphicons glyphicons-warning-sign"></span> Вы не указали старый пароль.</p>
+            <?php }
+            if ($response == "nsnp"){ ?>
+                <p><span class="glyphicons glyphicons-warning-sign"></span> Вы не указали новый пароль.</p>
+            <?php }
+            if ($response == "nsrnp"){ ?>
+                <p><span class="glyphicons glyphicons-warning-sign"></span> Вы не повторили новый пароль.</p>
+            <?php }
+            if ($response == "narnpane"){ ?>
+                <p><span class="glyphicons glyphicons-remove"></span> Введённые Вами пароли не совпадают. Проверьте правильность введённых паролей и повторите попытку.</p>
+            <?php }
+            if ($response == "iop"){ ?>
+                <p><span class="glyphicons glyphicons-remove"></span> Вами введён неверный старый пароль. Проверьте правильность и попробуйте ещё раз.</p>
+            <?php }
+            if ($response == "nsi"){ ?>
+                <p><span class="glyphicons glyphicons-warning-sign"></span> У вас недостаточно прав для совершения данного действия.</p>
+            <?php }
+            if ($response == "rins"){ ?>
+                <p><span class="glyphicons glyphicons-warning-sign"></span> Вы не указали получателя письма.</p>
+            <?php }
+            if ($response == "rine"){ ?>
+                <p><span class="glyphicons glyphicons-warning-sign"></span> Пользователя с данным никнеймом нет в системе.</p>
+            <?php }
+            if ($response == "nt"){ ?>
+                <p><span class="glyphicons glyphicons-warning-sign"></span> Вы не указали текст письма.</p>
+            <?php }
+            if ($response == "mhnbs"){ ?>
+                <p><span class="glyphicons glyphicons-warning-sign"></span> Не удалось отправить письмо. Обратитесь к Администратору.</p>
+            <?php }
+            if ($response == "nprm"){ ?>
+                <p><span class="glyphicons glyphicons-remove"></span> У Вас нет доступа к данному сообщению.</p>
+            <?php }
+            if ($response == "nmid"){ ?>
+                <p><span class="glyphicons glyphicons-warning-sign"></span> Не указан уникальный номер письма.</p>
+            <?php }
+            if ($response == "yibl"){ ?>
+                <p><span class="glyphicons glyphicons-warning-sign"></span> Вы не можете написать сообщение данному пользователю, так как адрессат
+                    ограничивает круг пользователей, которые могут взаимодействовать с ним.</p>
+            <?php }
+            if ($response == "nprmm"){ ?>
+                <p><span class="glyphicons glyphicons-remove"></span> Не удалось удалить сообщение.</p>
+            <?php }
+            if ($response == "uine"){ ?>
+                <p><span class="glyphicons glyphicons-remove"></span> Пользователя с таким никнеймом нет в системе.</p>
+            <?php }
+            if ($response == "unins"){ ?>
+                <p><span class="glyphicons glyphicons-warning-sign"></span> Вы не указали никнейм пользователя, которого надо добавить в список друзей.</p>
+            <?php }
+            if ($response == "cnaf"){ ?>
+                <p><span class="glyphicons glyphicons-remove"></span> Данный пользователь уже находится у Вас в списке друзей. Если Вы уверены, что
+                    его там нет, обратитесь к Администратору.</p>
+            <?php }
+            if ($response == "neav"){ ?>
+                <p><span class="glyphicons glyphicons-remove"></span> Не удалось изменить аватарку. Обратитесь к Администратору.</p>
+            <?php }
+            if ($response == "neavvf"){ ?>
+                <p><span class="glyphicons glyphicons-remove"></span> Этот файл не может быть аватаркой.</p>
+            <?php }
+            if ($response == "neavvs"){ ?>
+                <p><span class="glyphicons glyphicons-remove"></span> Аватарка имеет неправильные размеры. Убедитесь, что она соответствует требованиям.</p>
+            <?php }
+            if ($response == "neavvb"){ ?>
+                <p><span class="glyphicons glyphicons-remove"></span> Аватарка весит больше 6 мегабайт.</p>
+            <?php } ?>
+            <hr>
+            <p style="color: lightblue; text-decoration: underline;" onclick="$('#profile-reg-message-div').hide();">Закрыть сообщение</p>
+        </div>
+    <?php }
+    // Позитивные ответы.
+    elseif (in_array($response, ["uhbb", "uhbub",
+        "aphbs", "phbc", "apaphbs",
+        "mhbs", "mhbr", "mhbrt",
+        "uhbatfl",
+        "seav"])){ ?>
+        <div id="profile-reg-message-div" class="profile-reg-success-div">
+            <?php if ($response == "uhbb"){ ?>
+                <p><span class="glyphicons glyphicons-ok"></span> Пользователь был заблокирован.</p>
+            <?php } ?>
+            <?php if ($response == "uhbub"){ ?>
+                <p><span class="glyphicons glyphicons-ok"></span> Пользователь был разблокирован.</p>
+            <?php } ?>
+            <?php if ($response == "aphbs"){ ?>
+                <p><span class="glyphicons glyphicons-ok"></span> Все настройки были сохраненны.</p>
+            <?php } ?>
+            <?php if ($response == "phbc"){ ?>
+                <p><span class="glyphicons glyphicons-ok"></span> Пароль был изменён.</p>
+            <?php } ?>
+            <?php if ($response == "apaphbs"){ ?>
+                <p><span class="glyphicons glyphicons-ok"></span> Все настройки были сохранены, а пароль был успешно изменён.</p>
+            <?php } ?>
+            <?php if ($response == "mhbs"){ ?>
+                <p><span class="glyphicons glyphicons-ok"></span> Письмо было успешно отправлено!</p>
+            <?php } ?>
+            <?php if ($response == "mhbr"){ ?>
+                <p><span class="glyphicons glyphicons-bin"></span> Письмо было успешно перенесено в корзину!</p>
+            <?php } ?>
+            <?php if ($response == "mhbrt"){ ?>
+                <p><span class="glyphicons glyphicons-bin"></span> Сообщение было успешно восстановленно!</p>
+            <?php } ?>
+            <?php if ($response == "uhbatfl"){ ?>
+                <p><span class="glyphicons glyphicons-ok"></span> Пользователь был успешно добавлен в Ваш список друзей!</p>
+            <?php } ?>
+            <?php if ($response == "seav"){ ?>
+                <p><span class="glyphicons glyphicons-ok"></span> Ваша аватарка была обновлена!</p>
+            <?php } ?>
+            <hr>
+            <p style="color: lightblue; text-decoration: underline;" onclick="$('#profile-reg-message-div').remove();">Закрыть сообщение</p>
+        </div>
+    <?php } ?>
+<?php }  ?>

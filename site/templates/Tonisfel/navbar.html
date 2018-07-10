@@ -1,0 +1,25 @@
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a href="#" class="navbar-brand">Навигация</a>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="nav navbar-nav">
+                <li><a href="index.php">Главная</a></li>
+                <li><a href="?page=rules">Правила</a></li>
+                <li class="dropdown">
+                    <a aria-expanded="false" aria-haspopup="true" role="button" data-toggle="dropdown" class="dropdown-toggle" href="#">Категории <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        {INDEX_CATEGORY_LIST}
+                    </ul>
+                </li>
+                <li><a href="?sp=1">Помощь</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    {INDEX_PROFILE_MENU}
+                </li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>

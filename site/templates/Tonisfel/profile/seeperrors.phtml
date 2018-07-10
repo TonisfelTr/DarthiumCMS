@@ -1,0 +1,28 @@
+<?php if ($errorCode == 1) { ?>
+    <div class="profile-reg-error-div">
+        <p><span class="glyphicon glyphicon-remove"></span> Чтобы просматривать профили пользователей сайта, Вам необходимо авторизоваться.</p>
+        <a class="profile-link" href="index.php">Вернуться на главную</a>
+        <a class="profile-link" href="profile.php">Перейти к авторизации</a>
+    </div>
+<?php }
+elseif ($errorCode == 2){ ?>
+    <div class="profile-reg-error-div">
+        <p><span class="glyphicon glyphicon-remove"></span> Аккаунта с данным ID нет в системе.</p>
+        <a class="profile-link" href="index.php">Вернуться на главную</a>
+        <a class="profile-link" href="profile.php">Перейти в свой профиль</a>
+    </div>
+<?php }
+elseif ($errorCode == 3) { ?>
+    <div class="profile-reg-error-div">
+        <p><span class="glyphicon glyphicon-remove"></span> У Вас недостаточно прав для просмотра профилей пользователей сайта, кроме собственного.</p>
+        <a class="profile-link" href="index.php">Вернуться на главную</a>
+        <a class="profile-link" href="profile.php">Перейти в свой профиль</a>
+    </div>
+<?php }
+elseif ($errorCode == 4) { ?>
+    <div class="profile-reg-error-div">
+        <p><span class="glyphicon glyphicon-remove"></span> У Вас недостаточно прав для просмотра данного профиля из-за политики сайта или аккаунта.</p>
+        <a class="profile-link" href="index.php">Вернуться на главную</a>
+        <a class="profile-link" href="profile.php">Перейти в свой профиль</a>
+    </div>
+<?php } ?>

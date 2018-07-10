@@ -1,0 +1,16 @@
+<div id="profile-profile-panels">
+    <div class="center" data-div-title="auth">
+        <form method="post" action="./site/scripts/authorizator.php">
+            <input class="profile-input" type="text" name="profile-auth-uid" placeholder="{AUTH_PAGE:UID_INPUT_PLACEHOLDER}">
+            <input class="profile-input" type="password" name="profile-auth-password" placeholder="Пароль">
+            <div class="profile-btn-group">
+                <button type="submit" name="profile_auth_signin">Войти</button>
+                <button type="button" id="profile_auth_signup">Регистрация</button>
+                <button type="button" id="profile_auth_password_restore">Забыл пароль...</button>
+                <button type="button" id="profile_auth_toindex">На главную</button>
+            </div>
+            </form>
+    </div>
+    {AUTH_PAGE:ACCOUNT_ACTIVATOR}
+    {AUTH_PAGE:SIGN_UP}
+</div>

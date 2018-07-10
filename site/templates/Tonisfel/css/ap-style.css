@@ -1,0 +1,388 @@
+html,
+body{
+    height: 100%;
+    width: 100%;
+    overflow-x: auto;
+    padding: 0;
+}
+
+@font-face {
+    font-family: "My Passion";
+    src: url("../../../../libs/styles/font.otf");
+}
+
+body{
+    position: fixed;
+    font-size: 13px;
+    color: white;
+}
+
+.index-body{
+    background: url(bground.jpg) no-repeat;
+    background-size: cover;
+}
+
+.offline_screen_body{
+    background: radial-gradient(at center, #9698ff, #2b32fc);
+    width: 90%;
+    padding: 10%;
+}
+
+.header{
+    position: relative;
+    font-family: "My Passion";
+    width: 100%;
+}
+
+.wrapper{
+    margin-top: 5%;
+    min-height: 85%;
+    position: relative;
+}
+
+.center {
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h1{
+    font-size: 80px;
+}
+
+h2{
+    font-size: 64px;
+}
+
+.h1-header{
+    text-shadow: 8px 3px 2px #000000;
+}
+
+.h1-helper{
+    padding: 10px;
+    font-size: 25px;
+    background-color: rgba(156, 156, 156, 0.45);
+    border: 1px solid #cccccc;
+    border-radius: 7px;
+
+}
+
+.top-border{
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+}
+
+.bottom-border{
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.banned-screen-body{
+    background: radial-gradient(at left top, #ff0000, #351822);
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 8px;
+
+}
+
+.banned-info-form {
+    position: absolute;
+    background: rgba(113, 113, 113, 0.50);
+
+    border: 1px solid black;
+    border-radius: 5px;
+    min-width: 350px;
+    display: inline-block;
+    white-space: normal;
+    vertical-align: middle;
+
+}
+
+.banned-info-text{
+    text-align: left;
+    padding: 10px;
+    padding-bottom: 30px;
+}
+
+.button-banned-logout{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: rgba(15,15,15,0.1);
+    border: 0px solid;
+    border-top: 1px solid black;
+    border-radius: inherit;
+    border-top-right-radius: 0px;
+    border-top-left-radius: 0px;
+}
+
+.button-banned-logout:active{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: rgba(15,15,15,0.1);
+    border-top: 1px solid red;
+    border-radius: inherit;
+    border-top-right-radius: 0px;
+    border-top-left-radius: 0px;
+}
+
+.side-block{
+    width: 100%;
+    background: rgba(0,0,0,0.4);
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+.side-block-header-left,
+.side-block-header-right{
+    width: inherit;
+    background: rgba(0,0,0,0.4);
+    padding: 6px;
+    border: 1px solid black;
+
+}
+
+.side-block-header-left{
+    border-top-left-radius: 6px;
+}
+
+.side-block-header-right{
+    border-top-right-radius: 6px;
+}
+
+.side-block-body{
+    height: 100%;
+    padding: 7px;
+}
+
+
+.content-block{
+    border: 1px solid black;
+    color: black;
+    background: rgba(255, 255, 255, 0.9);
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+#thead-reports{
+    background: radial-gradient(at center, #524245, #857d79);
+    color: white;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.wrapper{
+    position: relative;
+    min-height: 80%
+}
+
+.main-footer{
+    margin-top: 25px;
+    width: 100%;
+    height: 125px;
+    bottom: 0;
+    padding: 25px;
+    background: rgba(0, 0, 0, 0.8);
+    color: rgb(200,200,200);
+    border-top: 1px solid black;
+}
+
+.footer-info-left{
+    float: left;
+    font-size: 11px;
+}
+
+.footer-info-right{
+    float: right;
+    font-size: 11px;
+}
+
+.img-smbanner{
+    margin: 4px;
+    border: 1px solid #cdcdcd;
+    border-radius: 6px;
+}
+
+.img-smbanner:hover{
+    border: 1px solid #007fff;
+    transition: 0.8s;
+}
+
+.btn-youtube{
+    font-size: 10px;
+    background: radial-gradient(at center, #ff0000, #ff5555);
+    border-radius: 3px;
+    color: white;
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.report-header{
+    display: flex;
+    flex-flow: row wrap;
+    position: relative;
+    min-height: 300px;
+    margin: 10px;
+    border: 1px solid #555;
+    border-top-right-radius: 10px;
+}
+
+.report-header-head{
+    order: 1;
+    flex: 1 1 100%;
+    padding: 10px;
+    min-height: 40px;
+    background: radial-gradient(at left, #5c1018, #835209);
+    color: white;
+    border-top-right-radius: 10px;
+    text-shadow: 1px 2px 6px #050202;
+}
+
+.report-header-body{
+    padding: 10px;
+    order: 2;
+    flex: 1 1 40px;
+}
+
+.report-header-author{
+    width: 150px;
+    min-height: 200px;
+    max-height: 300px;
+    margin: 20px;
+    padding: 9px;
+    border: 1px solid #570000;
+    box-shadow: 1px 1px 10px rgba(45,45,0,0.8);
+    order: 1;
+}
+
+.report-header-author-avatar{
+    margin: 15px;
+}
+
+.report-header-author-info{
+    margin-top: 5px;
+    font-size: 12px;
+}
+
+.report-header-author-group,
+.report-header-author-nickname{
+    text-align: center;
+}
+
+.report-header-author-nickname{
+    font-size: 16px;
+}
+
+.report-header-body-foot{
+    bottom: 0;
+    color: #570000;
+    margin-top: 50px;
+    font-size: 13px;
+
+}
+
+.report-header-foot{
+    width: 100%;
+    border-top: 1px solid #5c1018;
+    background: rgba(131, 82, 9, 0.70);
+    padding: 3px;
+    order: 3;
+}
+
+.report-header-status{
+    color: white;
+    font-size: 12px;
+}
+
+.report-answer{
+    position: relative;
+    border: 1px solid #202020;
+    border-top-right-radius: 10px;
+    min-height: 385px;
+}
+
+.report-answer-head,
+.report-solve-head{
+    float: right;
+    width: calc(100% - 200px);
+    min-height: 30px;
+    border: 1px solid #707070;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 15px;
+    padding: 9px;
+    background: radial-gradient(at left, #6e6c6c, #3c1c46);
+    color: white;
+}
+
+.report-answer-author,
+.report-solve-author{
+    margin: 20px;
+    padding: 7px;
+    min-height: 250px;
+    width: 150px;
+    border: 1px solid #a4a4a4;
+    box-shadow: 1px 3px 6px #040404;
+    float: left;
+}
+
+.report-answer-body,
+.report-solve-body{
+    max-width: calc(100% - 200px);
+    word-wrap: break-word;
+    display: inline-block;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-left: 15px;
+    height: 305px;
+}
+
+.report-answer-footer,
+.report-solve-footer{
+    bottom: 0;
+    background: rgb(82, 44, 90);
+    width: 100%;
+    padding: 3px;
+    min-height: 40px;
+}
+
+.report-solve-head{
+    background: radial-gradient(at right, rgba(30, 79, 25, 1), rgba(39, 133, 30, 1));
+}
+
+.report-solve-footer{
+    border-top: 2px solid #002904;
+    background: #145303;
+    color: white;
+    padding: 6px;
+}
+
+.message-quote-block{
+     border: 1px solid #450000;
+     border-radius: 5px;
+     padding: 10px;
+     box-shadow: 1px 1px 3px #040404;
+ }
+
+.message-quote-author-sign{
+    text-align: right;
+    font-style: italic;
+    font-weight: bold;
+}
+
+span.nav-btn-counter,
+span.nav-btn-new-counter{
+    color: white;
+    background: #2a2a2a;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+span.nav-btn-new-counter{
+    background: #aa0000;
+}
