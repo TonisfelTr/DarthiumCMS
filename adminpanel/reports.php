@@ -14,11 +14,11 @@ else {
     }
     if (isset($_GET["reqtype"]) && $_GET["reqtype"] == "discusion"){
         if (empty($_GET["rid"])){
-            header("Location: ../../adminpanel.php?p=reports&res=5nrid");
+            header("Location: ../../adminpanel.php?p=report&res=5nrid");
             exit;
         } else {
             if (!Guards\ReportAgent::isReportExists($_GET["rid"])){
-                header("Location: ../../adminpanel.php?p=reports&res=5ne");
+                header("Location: ../../adminpanel.php?p=report&res=5ne");
                 exit;
             }
         }
@@ -31,7 +31,7 @@ else {
     if (isset($_GET["reqtype"]) && $_GET["reqtype"] == "edit"){
         if (empty($_GET["rid"]) || empty($_GET["ansid"])){
             if (empty($_GET["rid"]) && empty($_GET["ansid"])){
-                header("Location: ../../adminpanel.php?p=reports&res=5nroai");
+                header("Location: ../../adminpanel.php?p=report&res=5nroai");
                 exit;
             } elseif (!empty($_GET["rid"])){
                 $report = new \Guards\Report($_GET["rid"]);
@@ -47,7 +47,7 @@ else {
             }
         }
         if (\Guards\Report::GetReportParam($_REQUEST["rid"], "status") == 2) {
-            header("Location: ../../adminpanel.php?p=reports&res=5naacr");
+            header("Location: ../../adminpanel.php?p=report&res=5naacr");
             exit;
         }
     }?>
@@ -73,9 +73,9 @@ else {
                         <strong>Выделенно</strong>: <span id="report-counter-span">0</span>
                     </div>
                     <div class="btn-group">
-                        <button class="btn btn-danger" type="submit" id="report-table-delete-selected-btn" name="report-table-delete-btn" disabled><span class="glyphicons glyphicons-delete"></span> Удалить выделенные</button>
+                        <button class="btn btn-danger" type="submit" id="report-table-delete-selected-btn" name="reports-table-delete-btn" disabled><span class="glyphicons glyphicons-delete"></span> Удалить выделенные</button>
                     </div>
-                    <input type="hidden" id="report-ids-for-delete" name="report-ids-for-delete">
+                    <input type="hidden" id="report-ids-for-delete" name="reports-ids-for-delete">
                     <hr>
                     <table class="table">
                         <thead style="background: radial-gradient(at center, #b40000, #351822); color: white;">
@@ -103,7 +103,7 @@ else {
                                         <td><?php echo htmlentities($report->getShortMessage()); ?></td>
                                         <td><?php echo $report->getMark(); ?></td>
                                         <td><?php echo $report->ReportAnswerAuthor()->getNickname(); ?></td>
-                                        <td><button class="btn btn-default" style="width:100%;" type="submit" name="report-see-btn" formaction="adminpanel/scripts/reports.php?rid=<?php echo $report->getId(); ?>">Просмотреть</button></td>
+                                        <td><button class="btn btn-default" style="width:100%;" type="submit" name="reports-see-btn" formaction="adminpanel/scripts/reports.php?rid=<?php echo $report->getId(); ?>">Просмотреть</button></td>
                                     </tr>
                                 <?php }} ?>
                         </tbody>
@@ -113,7 +113,7 @@ else {
                             <?php for ($i = 0; $i <= $allReportsCount/50; $i++) {
                                 $rp = $i + 1;
                                 $class = $_GET["rpage"] == $rp ? "active" : "";
-                                echo "<a class=\"btn btn-default $class\" href=\"adminpanel.php?p=reports&rpage=$rp\">$rp</a>";
+                                echo "<a class=\"btn btn-default $class\" href=\"adminpanel.php?p=report&rpage=$rp\">$rp</a>";
                             }
                             ?>
                         </div>
@@ -137,8 +137,8 @@ else {
                         <div class="report-header-footer">
                             Статус: <?php echo $report->getStatus(); ?>
                             <div class="btn-group" style="float: right;">
-                                <button class="btn btn-default" type="submit" name="report-report-edit" formaction="adminpanel/scripts/reports.php?rid=<?php echo $report->getId(); ?>" title="Отредактировать жалобу"><span class="glyphicons glyphicons-pen"></span></button>
-                                <button class="btn btn-danger" type="submit" name="report-report-delete" formaction="adminpanel/scripts/reports.php?rid=<?php echo $report->getId(); ?>" title="Удалить жалобу"><span class="glyphicons glyphicons-erase"></span></button>
+                                <button class="btn btn-default" type="submit" name="reports-report-edit" formaction="adminpanel/scripts/reports.php?rid=<?php echo $report->getId(); ?>" title="Отредактировать жалобу"><span class="glyphicons glyphicons-pen"></span></button>
+                                <button class="btn btn-danger" type="submit" name="reports-report-delete" formaction="adminpanel/scripts/reports.php?rid=<?php echo $report->getId(); ?>" title="Удалить жалобу"><span class="glyphicons glyphicons-erase"></span></button>
                             </div>
                         </div>
                     </div>
@@ -191,12 +191,12 @@ else {
                                     onclick="insertBBCode('quote', 'quote', document.getElementById('report-answer-text'));"><span
                                     class="glyphicons glyphicons-user-conversation"></span></button>
                         </div>
-                         <textarea class="form-control" id="report-answer-text" name="report-answer-text"
+                         <textarea class="form-control" id="report-answer-text" name="reports-answer-text"
                           style="resize: none; height: 300px;"
                           placeholder="Здесь Вы можете ответить на жалобу."></textarea>
 
                         <div class="btn-group">
-                            <button class="btn btn-default" type="submit" name="report-answer-send" formaction="adminpanel/scripts/reports.php?rid=<?php echo $report->getId(); ?>">Опубликовать ответ</button>
+                            <button class="btn btn-default" type="submit" name="reports-answer-send" formaction="adminpanel/scripts/reports.php?rid=<?php echo $report->getId(); ?>">Опубликовать ответ</button>
                             <button class="btn btn-default" type="reset">Очистить форму</button>
                         </div>
                     </div>
@@ -238,9 +238,9 @@ else {
                         <div class="report-answer-footer">
                             <?php if (!$report->isClosed()) { ?>Действия:
                             <div class="btn-group" style="float: right;">
-                                <button class="btn btn-default" type="submit" name="report-answer-accept" title="Отметить решением проблемы" formaction="adminpanel/scripts/reports.php?rid=<?php echo $answer->getParentReportID(); ?>&ansid=<?php echo $answer->getAnswerId(); ?>"><span class="glyphicon glyphicon-ok"></span></button>
-                                <button class="btn btn-default" type="submit" name="report-answer-edit" title="Редактировать" formaction="adminpanel/scripts/reports.php?rid=<?php echo $answer->getParentReportID(); ?>&ansid=<?php echo $answer->getAnswerId(); ?>"><span class="glyphicons glyphicons-pen"></span></button>
-                                <button class="btn btn-danger" type="submit" name="report-answer-delete" title="Удалить" formaction="adminpanel/scripts/reports.php?rid=<?php echo $answer->getParentReportID(); ?>&ansid=<?php echo $answer->getAnswerId(); ?>"><span class="glyphicons glyphicons-delete"></span></button>
+                                <button class="btn btn-default" type="submit" name="reports-answer-accept" title="Отметить решением проблемы" formaction="adminpanel/scripts/reports.php?rid=<?php echo $answer->getParentReportID(); ?>&ansid=<?php echo $answer->getAnswerId(); ?>"><span class="glyphicon glyphicon-ok"></span></button>
+                                <button class="btn btn-default" type="submit" name="reports-answer-edit" title="Редактировать" formaction="adminpanel/scripts/reports.php?rid=<?php echo $answer->getParentReportID(); ?>&ansid=<?php echo $answer->getAnswerId(); ?>"><span class="glyphicons glyphicons-pen"></span></button>
+                                <button class="btn btn-danger" type="submit" name="reports-answer-delete" title="Удалить" formaction="adminpanel/scripts/reports.php?rid=<?php echo $answer->getParentReportID(); ?>&ansid=<?php echo $answer->getAnswerId(); ?>"><span class="glyphicons glyphicons-delete"></span></button>
                             </div>
                             <?php } ?>
                         </div>
@@ -255,12 +255,12 @@ else {
                     <?php if (!empty($_GET["rid"])) { ?>
                         <div class="input-group">
                             <div class="input-group-addon">Название:</div>
-                            <input name="report-edit-shortmessage" class="form-control" type="text" value="<?php echo $report->getShortMessage(); ?>">
+                            <input name="reports-edit-shortmessage" class="form-control" type="text" value="<?php echo $report->getShortMessage(); ?>">
                         </div>
                     <?php } else { ?>
                         <div class="input-group">
                             <div class="input-group-addon">Причина редактирования:</div>
-                            <input type="text" name="report-edit-reason" class="form-control">
+                            <input type="text" name="reports-edit-reason" class="form-control">
                         </div>
                     <?php } ?>
                     <hr>
@@ -286,11 +286,11 @@ else {
                             <button class="btn btn-default" title="Спойлер" type="button" onclick="insertBBCode('spoiler', false, document.getElementById('report-edit-message-text'));"><span class="glyphicons glyphicons-note-empty"></span></button>
                             <button class="btn btn-default" title="Цитата" type="button" onclick="insertBBCode('quote', 'quote', document.getElementById('report-edit-message-text'));"><span class="glyphicons glyphicons-user-conversation"></span></button>
                         </div>
-                        <textarea class="form-control" name="report-edit-message-text" id="report-edit-message-text" style="resize: none; height: 350px;"><?php echo $message; ?></textarea>
+                        <textarea class="form-control" name="reports-edit-message-text" id="report-edit-message-text" style="resize: none; height: 350px;"><?php echo $message; ?></textarea>
                         <div class="btn-group">
                             <button type="submit" class="btn btn-default" formaction="adminpanel/scripts/reports.php?<?php echo $suffixFormaction; ?>" name="<?php echo $nameBtnEdit; ?>"><span class="glyphicons glyphicons-pencil"></span> Сохранить изменения</button>
-                            <button type="reset" class="btn btn-info" name="report-edit-message-erase"><span class="glyphicons glyphicons-erase"></span> Отменить изменения</button>
-                            <button type="button" class="btn btn-default" onclick="window.history.back();" name="report-edit-message-back"><span class="glyphicons glyphicons-arrow-left"></span> Вернуться назад</button>
+                            <button type="reset" class="btn btn-info" name="reports-edit-message-erase"><span class="glyphicons glyphicons-erase"></span> Отменить изменения</button>
+                            <button type="button" class="btn btn-default" onclick="window.history.back();" name="reports-edit-message-back"><span class="glyphicons glyphicons-arrow-left"></span> Вернуться назад</button>
                         </div>
                 </div>
                 <?php if (!empty($_GET["rid"])){ ?>
@@ -319,7 +319,7 @@ else {
             </div>
                 <?php } }
                 else {
-                    header("Location: ../../adminpanel.php?p=reports&res=2");
+                    header("Location: ../../adminpanel.php?p=report&res=2");
                     exit;
                 } ?>
             </div>
@@ -331,8 +331,8 @@ else {
     //reports-table-select-all - checkbox for checking all id
     //report-ids-for-delete - hidden input for accumulate ids for deleting
 
-    $("#reports-table-select-all").change(function(){
-        if ($("#reports-table-select-all").is(":checked")){
+    $("#report-table-select-all").change(function(){
+        if ($("#report-table-select-all").is(":checked")){
             $("tbody input[type=checkbox]").prop("checked", true);
         } else {
             $("tbody input[type=checkbox]").prop("checked", false);
@@ -374,7 +374,7 @@ else {
     var texterID = "report-edit-message-text";
     function insertBBCode(openTag, notNeedClose = false, texterElement = null){
         if (texterElement == null)
-            var texter = document.getElementById("reports-add-message");
+            var texter = document.getElementById("report-add-message");
         else
             var texter = texterElement;
         startText = texter.value.substring(0, texter.selectionStart);
@@ -409,7 +409,7 @@ else {
                 if (data == "User is added.") {
                     return;
                 }
-                $("#reports-au-list").append("<div class=\"report-user-added-btn\"><a target=\"_blank\" href=\"/adminpanel.php?p=users&uid=" + data.substring(0, data.indexOf(" ")) + "\">"
+                $("#report-au-list").append("<div class=\"report-user-added-btn\"><a target=\"_blank\" href=\"/adminpanel.php?p=users&uid=" + data.substring(0, data.indexOf(" ")) + "\">"
                     + data.substring(data.indexOf(" ") + 1, data.length) + "</a><span class=\"report-user-added-btn-cls\" id=\"report-user-added-btn-span-" + data.substring(0, data.indexOf(" ")) +
                     "\" onclick=\"deleteFromDiscuse('" + data.substring(0, data.indexOf(" ")) + "');\">X</span>");
             }

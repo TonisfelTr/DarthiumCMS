@@ -8,7 +8,7 @@ else { header("Location: ../../index.php?page=errors/nonauth"); exit;}
 
 if (isset($_REQUEST["reports-create"])) {
     if ($user->UserGroup()->getPermission("report_create")) {
-        header("Location: ../../index.php?page=reports&preg=add");
+        header("Location: ../../index.php?page=report&preg=add");
         exit;
     } else {
         header("Location: ../../index.php?page=errors/notperm");
@@ -16,17 +16,17 @@ if (isset($_REQUEST["reports-create"])) {
     }
 }
 
-if (isset($_REQUEST["report-send-btn"])){
+if (isset($_REQUEST["reports-send-btn"])){
     if ($user->UserGroup()->getPermission("report_create")) {
-        $backRequest = "Location: ../../index.php?page=reports&preg=add";
-        if (isset($_REQUEST["report-theme-selector"]) && $_REQUEST["report-theme-selector"] == "other"){
-            if (!empty($_REQUEST["report-select-other-theme"])) $theme = $_REQUEST["report-select-other-theme"];
+        $backRequest = "Location: ../../index.php?page=report&preg=add";
+        if (isset($_REQUEST["reports-theme-selector"]) && $_REQUEST["reports-theme-selector"] == "other"){
+            if (!empty($_REQUEST["reports-select-other-theme"])) $theme = $_REQUEST["reports-select-other-theme"];
             else {
                 $backRequest .= "&res=2nst";
                 header($backRequest);
                 exit;
             }
-        } else $theme = $_REQUEST["report-theme-selector"];
+        } else $theme = $_REQUEST["reports-theme-selector"];
 
         if ($_REQUEST["reports-add-short-message"] == ''){
             $backRequest .= "&res=2nnsm";
@@ -48,7 +48,7 @@ if (isset($_REQUEST["report-send-btn"])){
             exit;
         }
 
-        echo $backRequest = "Location: ../../index.php?page=reports&preg=see&rid=$result&res=2scr";
+        echo $backRequest = "Location: ../../index.php?page=report&preg=see&rid=$result&res=2scr";
         header($backRequest);
         exit;
 
@@ -58,14 +58,14 @@ if (isset($_REQUEST["report-send-btn"])){
     }
 }
 
-if (isset( $_REQUEST["report-edit"])){
+if (isset( $_REQUEST["reports-edit"])){
     if (empty($_REQUEST["rid"])){
-        header("Location: ../../index.php?page=reports&res=2nrid");
+        header("Location: ../../index.php?page=report&res=2nrid");
         exit;
     }
     if (($user->UserGroup()->getPermission("report_edit") && $user->getId() == \Guards\ReportAgent::GetReportParam($_REQUEST["rid"], "author"))
         || $user->UserGroup()->getPermission("report_foreign_edit")){
-        header("Location: ../../index.php?page=reports&preg=edit&rid=" . $_REQUEST["rid"]);
+        header("Location: ../../index.php?page=report&preg=edit&rid=" . $_REQUEST["rid"]);
         exit;
     } else {
         header("Location: ../../index.php?page=errors/notperm");
@@ -73,14 +73,14 @@ if (isset( $_REQUEST["report-edit"])){
     }
 }
 
-if (isset( $_REQUEST["report-edit"])){
+if (isset( $_REQUEST["reports-edit"])){
     if (empty($_REQUEST["rid"])){
-        header("Location: ../../index.php?page=reports&res=2nrid");
+        header("Location: ../../index.php?page=report&res=2nrid");
         exit;
     }
     if (($user->UserGroup()->getPermission("report_edit") && $user->getId() == \Guards\ReportAgent::GetReportParam($_REQUEST["rid"], "author"))
         || $user->UserGroup()->getPermission("report_foreign_edit")){
-        header("Location: ../../index.php?page=reports&preg=edit&rid=" . $_REQUEST["rid"]);
+        header("Location: ../../index.php?page=report&preg=edit&rid=" . $_REQUEST["rid"]);
         exit;
     } else {
         header("Location: ../../index.php?page=errors/notperm");
@@ -88,17 +88,17 @@ if (isset( $_REQUEST["report-edit"])){
     }
 }
 
-if (isset( $_REQUEST["report-edit-message-edit"])){
+if (isset( $_REQUEST["reports-edit-message-edit"])){
     if (empty($_REQUEST["rid"])){
-        header("Location: ../../index.php?page=reports&res=2nrid");
+        header("Location: ../../index.php?page=report&res=2nrid");
         exit;
     }
     if ($user->UserGroup()->getPermission("report_edit") && $user->getId() == \Guards\ReportAgent::GetReportParam($_REQUEST["rid"], "author")){
-        if (\Guards\ReportAgent::ChangeReportParam($_REQUEST["rid"], "message", $_REQUEST["report-edit-message-text"]) !== TRUE){
-            header("Location: ../../index.php?page=reports&res=2nscm&preg=edit&rid=".$_REQUEST["rid"]);
+        if (\Guards\ReportAgent::ChangeReportParam($_REQUEST["rid"], "message", $_REQUEST["reports-edit-message-text"]) !== TRUE){
+            header("Location: ../../index.php?page=report&res=2nscm&preg=edit&rid=".$_REQUEST["rid"]);
             exit;
         } else {
-            header("Location: ../../index.php?page=reports&res=2sscm&preg=see&rid=".$_REQUEST["rid"]);
+            header("Location: ../../index.php?page=report&res=2sscm&preg=see&rid=".$_REQUEST["rid"]);
             exit;
         }
     } else {
@@ -107,29 +107,29 @@ if (isset( $_REQUEST["report-edit-message-edit"])){
     }
 }
 
-if (isset ($_REQUEST["report-edit-answer-edit"])){
+if (isset ($_REQUEST["reports-edit-answer-edit"])){
     if (empty($_REQUEST["ansid"])){
-        header("Location: ../../index.php?page=reports&res=2nnas");
+        header("Location: ../../index.php?page=report&res=2nnas");
         exit;
     }
     if ($user->getId() == \Guards\ReportAgent::GetAnswerParam($_REQUEST["ansid"], "authorId") && $user->UserGroup()->getPermission("report_answer_edit")){
-        if (!empty($_REQUEST["report-edit-message-text"])){
-            if (strlen($_REQUEST["report-edit-message-text"]) > 4) {
-                $result = \Guards\ReportAgent::ChangeAnswerText($_REQUEST["ansid"], $_REQUEST["report-edit-message-text"], $_REQUEST["report-edit-reason"], $user->getId());
+        if (!empty($_REQUEST["reports-edit-message-text"])){
+            if (strlen($_REQUEST["reports-edit-message-text"]) > 4) {
+                $result = \Guards\ReportAgent::ChangeAnswerText($_REQUEST["ansid"], $_REQUEST["reports-edit-message-text"], $_REQUEST["reports-edit-reason"], $user->getId());
                 if ($result === true){
-                    header("Location: ../../index.php?page=reports&preg=see&res=2ses&rid=" . \Guards\ReportAgent::GetAnswerParam($_REQUEST["ansid"], "reportId"));
+                    header("Location: ../../index.php?page=report&preg=see&res=2ses&rid=" . \Guards\ReportAgent::GetAnswerParam($_REQUEST["ansid"], "reportId"));
                     exit;
                 } else {
-                    header("Location: ../../index.php?page=reports&preg=edit&res=2nes&ansid =" . $_REQUEST["ansid"]);
+                    header("Location: ../../index.php?page=report&preg=edit&res=2nes&ansid =" . $_REQUEST["ansid"]);
                     exit;
                 }
 
             } else {
-                header("Location: ../../index.php?page=reports&preg=edit&res=2nmts&ansid=" . $_REQUEST["ansid"]);
+                header("Location: ../../index.php?page=report&preg=edit&res=2nmts&ansid=" . $_REQUEST["ansid"]);
                 exit;
             }
         } else {
-            header("Location: ../../index.php?page=reports&preg=edit&res=2nm&ansid=" . $_REQUEST["ansid"]);
+            header("Location: ../../index.php?page=report&preg=edit&res=2nm&ansid=" . $_REQUEST["ansid"]);
             exit;
         }
     } else {
@@ -138,18 +138,18 @@ if (isset ($_REQUEST["report-edit-answer-edit"])){
     }
 }
 
-if (isset( $_REQUEST["report-answer-send"])){
+if (isset( $_REQUEST["reports-answer-send"])){
     if (empty($_REQUEST["rid"])){
-        header("Location: ../../index.php?page=reports&res=2nrid");
+        header("Location: ../../index.php?page=report&res=2nrid");
         exit;
     }
     if ($user->UserGroup()->getPermission("report_talking") &&
        ($user->getId() == \Guards\ReportAgent::GetReportParam($_REQUEST["rid"], "author") ||
        in_array($user->getId(), explode(",", \Guards\ReportAgent::GetReportParam($_REQUEST["rid"], "added"))))){
         if (\Guards\Report::GetReportParam($_REQUEST["rid"], "status") != 2) {
-            if (!empty($_REQUEST["report-answer-text"])) {
-                if (strlen($_REQUEST["report-answer-text"]) > 4) {
-                    $result = \Guards\ReportAgent::CreateAnswer($user->getId(), $_REQUEST["report-answer-text"], $_REQUEST["rid"]);
+            if (!empty($_REQUEST["reports-answer-text"])) {
+                if (strlen($_REQUEST["reports-answer-text"]) > 4) {
+                    $result = \Guards\ReportAgent::CreateAnswer($user->getId(), $_REQUEST["reports-answer-text"], $_REQUEST["rid"]);
                     if ($result === true) {
                         $report = new \Guards\Report($_REQUEST["rid"]);
                         if ($report->getAuthorID() != $user->getId()){
@@ -160,23 +160,23 @@ if (isset( $_REQUEST["report-answer-send"])){
                                 }
                             }
                         }
-                        header("Location: ../../index.php?page=reports&preg=see&res=2sap&rid=" . $_REQUEST["rid"]);
+                        header("Location: ../../index.php?page=report&preg=see&res=2sap&rid=" . $_REQUEST["rid"]);
                         exit;
                     } else {
-                        header("Location: ../../index.php?page=reports&preg=see&res=2nap&rid=" . $_REQUEST["rid"]);
+                        header("Location: ../../index.php?page=report&preg=see&res=2nap&rid=" . $_REQUEST["rid"]);
                         exit;
                     }
 
                 } else {
-                    header("Location: ../../index.php?page=reports&preg=see&res=2nmts&rid=" . $_REQUEST["rid"]);
+                    header("Location: ../../index.php?page=report&preg=see&res=2nmts&rid=" . $_REQUEST["rid"]);
                     exit;
                 }
             } else {
-                header("Location: ../../index.php?page=reports&preg=see&res=2nm&rid=" . $_REQUEST["rid"]);
+                header("Location: ../../index.php?page=report&preg=see&res=2nm&rid=" . $_REQUEST["rid"]);
                 exit;
             }
         } else {
-            header("Location: ../../index.php?p=reports&preg=see&res=2naacr&rid=" . $_REQUEST["rid"]);
+            header("Location: ../../index.php?p=report&preg=see&res=2naacr&rid=" . $_REQUEST["rid"]);
             exit;
         }
     } else {
@@ -185,17 +185,17 @@ if (isset( $_REQUEST["report-answer-send"])){
     }
 }
 
-if (isset( $_REQUEST["report-answer-edit"])){
+if (isset( $_REQUEST["reports-answer-edit"])){
     if (empty($_REQUEST["rid"])){
-        header("Location: ../../index.php?page=reports&res=2nrid");
+        header("Location: ../../index.php?page=report&res=2nrid");
         exit;
     }
     if (empty($_REQUEST["ansid"])){
-        header("Location: ../../index.php?page=reports&rid=" . $_REQUEST["rid"] . "&res=2nnas");
+        header("Location: ../../index.php?page=report&rid=" . $_REQUEST["rid"] . "&res=2nnas");
         exit;
     }
     if ($user->getId() == \Guards\ReportAgent::GetAnswerParam($_REQUEST["ansid"], "authorId") && $user->UserGroup()->getPermission("report_answer_edit")){
-        header("Location: ../../index.php?page=reports&preg=edit&ansid=".$_REQUEST["ansid"]);
+        header("Location: ../../index.php?page=report&preg=edit&ansid=".$_REQUEST["ansid"]);
         exit;
     } else {
         header("Location: ../../index.php?page=errors/notperm");
@@ -203,22 +203,22 @@ if (isset( $_REQUEST["report-answer-edit"])){
     }
 }
 
-if (isset( $_REQUEST["report-answer-delete"])){
+if (isset( $_REQUEST["reports-answer-delete"])){
     if (empty($_REQUEST["rid"])){
-        header("Location: ../../index.php?page=reports&res=2nrid");
+        header("Location: ../../index.php?page=report&res=2nrid");
         exit;
     }
     if (empty($_REQUEST["ansid"])){
-        header("Location: ../../index.php?page=reports&rid=" . $_REQUEST["rid"] . "&res=2nnas");
+        header("Location: ../../index.php?page=report&rid=" . $_REQUEST["rid"] . "&res=2nnas");
         exit;
     }
     if ($user->getId() == \Guards\ReportAgent::GetAnswerParam($_REQUEST["ansid"], "authorId") && $user->UserGroup()->getPermission("report_answer_edit")){
         $result = \Guards\ReportAgent::DeleteAnswer($_REQUEST["ansid"]);
         if ($result === TRUE){
-            header("Location: ../../index.php?page=reports&preg=see&rid=".$_REQUEST["rid"]."&res=2sda");
+            header("Location: ../../index.php?page=report&preg=see&rid=".$_REQUEST["rid"]."&res=2sda");
             exit;
         } else {
-            header("Location: ../../index.php?page=reports&preg=see&rid=".$_REQUEST["rid"]."&res=2nda");
+            header("Location: ../../index.php?page=report&preg=see&rid=".$_REQUEST["rid"]."&res=2nda");
             exit;
         }
     } else {
@@ -228,5 +228,5 @@ if (isset( $_REQUEST["report-answer-delete"])){
 }
 
 
-
-header("Location: ../../index.php?page=errors/forbidden");
+var_dump($_REQUEST);
+//header("Location: ../../index.php?page=errors/forbidden");

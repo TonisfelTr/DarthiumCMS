@@ -298,7 +298,7 @@ if ($session === true && $user->getId() == $_SESSION["uid"]){
         $userNotificsTable .= "<a class=\"profile-link\" href=\"profile.php?uid=" . $ntf[$i]["fromUid"] . "\">" . \Users\UserAgent::GetUserNick($ntf[$i]["fromUid"]) . "</a>";
         switch ($ntf[$i]["type"]){
             case 1:
-                $userNotificsTable .= " добавил Вас в <a href=\"index.php?page=reports&preg=see&rid=" . $ntf[$i]["subject"] . "\">комнату</a> для обсуждения жалобы.";
+                $userNotificsTable .= " добавил Вас в <a href=\"index.php?page=report&preg=see&rid=" . $ntf[$i]["subject"] . "\">комнату</a> для обсуждения жалобы.";
                 break;
             case 2:
                 $userNotificsTable .= " добавил Вас в свой список друзей.";
@@ -310,7 +310,7 @@ if ($session === true && $user->getId() == $_SESSION["uid"]){
                 $userNotificsTable .= " удалил Вас из комнаты для обсуждения жалобы.";
                 break;
             case 5:
-                $userNotificsTable .= " добавил своё сообщение в <a href=\"index.php?page=reports&preg=see&rid=" . $ntf[$i]["subject"] . "\">комнате</a> для обсуждения жалобы.";
+                $userNotificsTable .= " добавил своё сообщение в <a href=\"index.php?page=report&preg=see&rid=" . $ntf[$i]["subject"] . "\">комнате</a> для обсуждения жалобы.";
                 break;
             case 6:
                 $userNotificsTable .= " добавил своё сообщение к созданному Вами посту.";
@@ -340,25 +340,25 @@ if ($session === true && $user->getId() == $_SESSION["uid"]){
                 $userNotificsTable .= " зарегистрировался, указав Вас в качестве реферера.";
                 break;
             case 15:
-                $userNotificsTable .= " закрыл созданную Вами <a href=\"index.php?page=reports&preg=see&rid=" . $ntf[$i]["subject"] . "\">жалобу</a>.";
+                $userNotificsTable .= " закрыл созданную Вами <a href=\"index.php?page=report&preg=see&rid=" . $ntf[$i]["subject"] . "\">жалобу</a>.";
                 break;
             case 16:
-                $userNotificsTable .= " удалил Ваш ответ в <a href=\"index.php?page=reports&preg=see&rid=" . $ntf[$i]["subject"] . "\">жалобе.</a>. Напишите ему, чтобы узнать детали.";
+                $userNotificsTable .= " удалил Ваш ответ в <a href=\"index.php?page=report&preg=see&rid=" . $ntf[$i]["subject"] . "\">жалобе.</a>. Напишите ему, чтобы узнать детали.";
                 break;
             case 18:
                 $nAID = end(explode(",", $ntf[$i]["subject"]));
                 $nANickname = \Users\UserAgent::GetUserNick($nAID);
-                $userNotificsTable .= " добавил <a href=\"profile.php?uid=$nAID\">$nANickname</a> в <a href=\"index.php?page=reports&preg=see&rid=" . reset(explode(",", $ntf[$i]["subject"])) . "\">комнату</a> для обсуждения жалобы.";
+                $userNotificsTable .= " добавил <a href=\"profile.php?uid=$nAID\">$nANickname</a> в <a href=\"index.php?page=report&preg=see&rid=" . reset(explode(",", $ntf[$i]["subject"])) . "\">комнату</a> для обсуждения жалобы.";
                 break;
             case 19:
                 $nAID = end(explode(",", $ntf[$i]["subject"]));
                 $nANickname = \Users\UserAgent::GetUserNick($nAID);
-                $userNotificsTable .= " удалил <a href=\"profile.php?uid=$nAID\">$nANickname</a> из <a href=\"index.php?page=reports&preg=see&rid=" . reset(explode(",", $ntf[$i]["subject"])) . "\">комнаты</a> для обсуждения жалобы.";
+                $userNotificsTable .= " удалил <a href=\"profile.php?uid=$nAID\">$nANickname</a> из <a href=\"index.php?page=report&preg=see&rid=" . reset(explode(",", $ntf[$i]["subject"])) . "\">комнаты</a> для обсуждения жалобы.";
                 break;
             case 20:
                 $nAID = end(explode(",", $ntf[$i]["subject"]));
                 $nANickname = \Users\UserAgent::GetUserNick($nAID);
-                $userNotificsTable .= " закрыл <a href=\"index.php?page=reports&rid=".reset(explode(",", $ntf[$i]["subject"]))."\">жалобу</a>, созданную <a href=\"profile.php?uid=$nAID\">$nANickname</a>.";
+                $userNotificsTable .= " закрыл <a href=\"index.php?page=report&rid=".reset(explode(",", $ntf[$i]["subject"]))."\">жалобу</a>, созданную <a href=\"profile.php?uid=$nAID\">$nANickname</a>.";
                 break;
         }
         $userNotificsTable .= "<p class=\"profile-notification-time\">" . Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s", $ntf[$i]["createTime"])) . "</p>";

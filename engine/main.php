@@ -2,6 +2,7 @@
 
     namespace Engine {
 
+        use http\Exception\BadMessageException;
         use Users\UserAgent;
 
         class Engine
@@ -36,6 +37,10 @@
             static private $UploadPermittedSize = 10*1024*1024;
             static private $UploadPermittedFormats = "gif,png,img,tif,zip,rar,txt,doc";
             static private $CanGuestsSeeProfiles = false;
+
+            public static function ConstructTemplatePath($loadingPage,$module = "", $ext = "php"){
+                return $_SERVER["DOCUMENT_ROOT"] . "/site/templates/" . Engine::$SiteTemplate . "/$module/$module$loadingPage.$ext";
+            }
 
             public static function GetDBInfo($code)
             {
@@ -371,6 +376,13 @@
                 return array_search($error, self::$errors);
             }
 
+            public static function PretendToBeDied($lastText){
+                if (!isset($lastText)){
+                    $lastText = "This is just a joke! Don't be boring, site at the maintenance.";
+                }
+                $itisjoke = true;
+                include_once "error.php";
+            }
         }
 
         class Uploader
@@ -523,13 +535,17 @@
         }
 
         class LanguageManager{
+            private static $languageArray = [];
             /**
              * Include language file to project.
              *
              * @return mixed
              */
             public static function load(){
-                return require_once($_SERVER["DOCUMENT_ROOT"] . "/languages/" . Engine::GetEngineInfo("sl") . ".php");
+                $languageFile = $_SERVER["DOCUMENT_ROOT"] . "/languages/" . Engine::GetEngineInfo("sl") . ".php";
+                if (!file_exists($languageFile))
+                    throw new \Error("Language file is not exist.");
+                self::$languageArray = require_once($_SERVER["DOCUMENT_ROOT"] . "/languages/" . Engine::GetEngineInfo("sl") . ".php");
             }
             /**
              * *
@@ -540,6 +556,10 @@
              */
             public static function getTranslate($translations, $desc){
                 return $translations[$desc];
+            }
+
+            public static function translate($desc){
+                return self::$languageArray[$desc];
             }
         }
 

@@ -9,7 +9,7 @@ else { header("Location: ../../adminpanel.php?p=forbidden"); exit; }
 #Удаление жалоб(ы) из страницы просмотра таблицы жалоб.
 if (isset($_REQUEST["report-table-delete-btn"])){
     if ($user->UserGroup()->getPermission("report_foreign_remove")){
-        $backRequest = "Location: ../../adminpanel.php?p=reports";
+        $backRequest = "Location: ../../adminpanel.php?p=report";
         if (empty($_POST["report-ids-for-delete"])){
             header($backRequest . "&res=5nsrd");
             exit;
@@ -30,23 +30,23 @@ if (isset($_REQUEST["report-table-delete-btn"])){
 if (isset($_REQUEST["report-see-btn"])){
     if ($user->UserGroup()->getPermission("report_talking")){
         if (empty($_REQUEST["rid"])){
-            header("Location: ../../adminpanel.php?p=reports&res=5nrid");
+            header("Location: ../../adminpanel.php?p=report&res=5nrid");
             exit;
         }
-        header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=". $_REQUEST["rid"]);
+        header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=". $_REQUEST["rid"]);
         exit;
-    } else { header("Location: ../../adminpanel.php?p=reports&res=1"); exit; }
+    } else { header("Location: ../../adminpanel.php?p=report&res=1"); exit; }
 }
 
 # Отметить ответ решением проблемы.
 if (isset($_REQUEST["report-answer-accept"])){
     if ($user->UserGroup()->getPermission("report_close")){
         if (empty($_REQUEST["rid"])){
-            header("Location: ../../adminpanel.php?p=reports&res=5nrid");
+            header("Location: ../../adminpanel.php?p=report&res=5nrid");
             exit;
         }
         if (empty($_REQUEST["ansid"])){
-            header("Location: ../../adminpanel.php?p=reports&res=5nnas");
+            header("Location: ../../adminpanel.php?p=report&res=5nnas");
             exit;
         }
         $result = \Guards\ReportAgent::SetAsSolveOfReportTheAnswer($_REQUEST["rid"], $_REQUEST["ansid"]);
@@ -58,42 +58,42 @@ if (isset($_REQUEST["report-answer-accept"])){
                 \Users\UserAgent::GetUser($atdUser)->Notifications()->createNotify(20, $user->getId(),
                     $_REQUEST["rid"] . "," . \Guards\ReportAgent::GetReportParam($_REQUEST["rid"], "author"));
             }
-            header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5scr");
+            header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5scr");
             exit;
         } elseif ($result == 30) {
-            header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5nta");
+            header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5nta");
             exit;
         } elseif ($result == 29){
-            header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5ntr");
+            header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5ntr");
             exit;
         } else {
-            header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5ncr");
+            header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5ncr");
             exit;
         }
-    } else { header("Location: ../../adminpanel.php?p=reports&res=1"); exit; }
+    } else { header("Location: ../../adminpanel.php?p=report&res=1"); exit; }
 }
 
 #Перенаправление на редактирование конкретного ответа (не жалобы)
 if (isset($_REQUEST["report-answer-edit"])){
     if (empty($_REQUEST["rid"])){
-        header("Location: ../../adminpanel.php?p=reports&res=5nrid");
+        header("Location: ../../adminpanel.php?p=report&res=5nrid");
         exit;
     }
     if (empty($_REQUEST["ansid"])){
-        header("Location: ../../adminpanel.php?p=reports&res=5nnas");
+        header("Location: ../../adminpanel.php?p=report&res=5nnas");
         exit;
     }
     if (\Guards\ReportAgent::GetReportParam($_REQUEST["rid"], "status") != 2) {
         if (($user->getId() == \Guards\ReportAgent::GetAnswerParam($_REQUEST["ansid"], "authorId") && $user->UserGroup()->getPermission("report_answer_edit")) ||
             ($user->getId() != \Guards\ReportAgent::GetAnswerParam($_REQUEST["ansid"], "authorId") && $user->UserGroup()->getPermission("report_foreign_answer_edit"))){
-                header("Location: ../../adminpanel.php?p=reports&reqtype=edit&ansid=" . $_REQUEST["ansid"]);
+                header("Location: ../../adminpanel.php?p=report&reqtype=edit&ansid=" . $_REQUEST["ansid"]);
                 exit;
             } else {
-                header("Location: ../../adminpanel.php?p=reports&res=1");
+                header("Location: ../../adminpanel.php?p=report&res=1");
                 exit;
             }
     } else {
-        header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5naacr");
+        header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5naacr");
         exit;
     }
 }
@@ -101,21 +101,21 @@ if (isset($_REQUEST["report-answer-edit"])){
 #Перенаправление на редактирование жалобы
 if (isset($_REQUEST["report-report-edit"])){
     if (empty($_REQUEST["rid"])){
-        header("Location: ../../adminpanel.php?p=reports&res=5nrid");
+        header("Location: ../../adminpanel.php?p=report&res=5nrid");
         exit;
     }
 
     if (\Guards\ReportAgent::GetReportParam($_REQUEST["rid"], "status") != 2) {
         if (($user->getId() == \Guards\ReportAgent::GetReportParam($_REQUEST["rid"], "author") && $user->UserGroup()->getPermission("report_edit")) ||
             ($user->getId() != \Guards\ReportAgent::GetReportParam($_REQUEST["rid"], "author") && $user->UserGroup()->getPermission("report_foreign_edit"))){
-            header("Location: ../../adminpanel.php?p=reports&reqtype=edit&rid=" . $_REQUEST["rid"]);
+            header("Location: ../../adminpanel.php?p=report&reqtype=edit&rid=" . $_REQUEST["rid"]);
             exit;
         } else {
-            header("Location: ../../adminpanel.php?p=reports&res=1");
+            header("Location: ../../adminpanel.php?p=report&res=1");
             exit;
         }
     } else {
-        header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5naacr");
+        header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5naacr");
         exit;
     }
 }
@@ -123,7 +123,7 @@ if (isset($_REQUEST["report-report-edit"])){
 # Удаление жалобы
 if (isset($_REQUEST["report-report-delete"])){
     if (empty($_REQUEST["rid"])){
-        header("Location: ../../adminpanel.php?p=reports&res=5nrid");
+        header("Location: ../../adminpanel.php?p=report&res=5nrid");
         exit;
     }
 
@@ -136,21 +136,21 @@ if (isset($_REQUEST["report-report-delete"])){
                     $ntf = new \Users\UserNotificator(\Guards\ReportAgent::GetReportParam($_REQUEST["rid"], "author"));
                     $ntf->createNotify("11", $user->getId(), \Guards\ReportAgent::GetReportParam($_REQUEST["rid"], "short_message"));
                 }
-                header("Location: ../../adminpanel.php?p=reports&res=5sdr");
+                header("Location: ../../adminpanel.php?p=report&res=5sdr");
                 exit;
             } elseif ($result == 29){
-                header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5ntr");
+                header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5ntr");
                 exit;
             } else {
-                header("Location: ../../adminpanel.php?p=reports&res=5ndr");
+                header("Location: ../../adminpanel.php?p=report&res=5ndr");
                 exit;
             }
         } else {
-            header("Location: ../../adminpanel.php?p=reports&res=1");
+            header("Location: ../../adminpanel.php?p=report&res=1");
             exit;
         }
     } else {
-        header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5naacr");
+        header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5naacr");
         exit;
     }
 }
@@ -158,11 +158,11 @@ if (isset($_REQUEST["report-report-delete"])){
 #Удаление ответа к репорту.
 if (isset($_REQUEST["report-answer-delete"])){
     if (empty($_REQUEST["rid"])){
-        header("Location: ../../adminpanel.php?p=reports&res=5nrid");
+        header("Location: ../../adminpanel.php?p=report&res=5nrid");
         exit;
     }
     if (empty($_REQUEST["ansid"])){
-        header("Location: ../../adminpanel.php?p=reports&res=5nnas");
+        header("Location: ../../adminpanel.php?p=report&res=5nnas");
         exit;
     }
 
@@ -176,24 +176,24 @@ if (isset($_REQUEST["report-answer-delete"])){
             if ($result === TRUE) {
                 $ntf = new \Users\UserNotificator(\Guards\ReportAgent::GetAnswerParam($_REQUEST["ansid"], "authorId"));
                 $ntf->createNotify("16", $user->getId(), $_REQUEST["rid"]);
-                header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5sda");
+                header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5sda");
                 exit;
             } elseif ($result == 31) {
-                header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5ncds");
+                header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5ncds");
                 exit;
             } elseif ($result == 30) {
-                header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5nta");
+                header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5nta");
                 exit;
             } else {
-                header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5nda");
+                header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5nda");
                 exit;
             }
         } else {
-            header("Location: ../../adminpanel.php?p=reports&res=1");
+            header("Location: ../../adminpanel.php?p=report&res=1");
             exit;
         }
     } else {
-        header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5naacr");
+        header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5naacr");
         exit;
     }
 }
@@ -202,16 +202,16 @@ if (isset($_REQUEST["report-answer-delete"])){
 if (isset($_REQUEST["report-answer-send"])){
     if ($user->UserGroup()->getPermission("report_talking")){
         if (empty($_REQUEST["rid"])){
-            header("Location: ../../adminpanel.php?p=reports&res=5nrid");
+            header("Location: ../../adminpanel.php?p=report&res=5nrid");
             exit;
         }
         if (\Guards\Report::GetReportParam($_REQUEST["rid"], "status") != 2) {
             if (empty($_REQUEST["report-answer-text"])) {
-                header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5nmt");
+                header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5nmt");
                 exit;
             }
             if (strlen($_REQUEST["report-answer-text"]) < 4) {
-                header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5ntsm");
+                header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5ntsm");
                 exit;
             }
             $result = \Guards\ReportAgent::CreateAnswer($user->getId(), $_REQUEST["report-answer-text"], $_REQUEST["rid"]);
@@ -219,21 +219,21 @@ if (isset($_REQUEST["report-answer-send"])){
                 \Guards\ReportAgent::ChangeReportParam($_REQUEST["rid"], "viewed", 1);
                 $ntf = new \Users\UserNotificator(\Guards\ReportAgent::GetReportParam($_REQUEST["rid"], "author"));
                 $ntf->createNotify("5", $user->getId(), $_REQUEST["rid"]);
-                header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5sad");
+                header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5sad");
                 exit;
             } elseif ($result == 29){
-                header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5ntr");
+                header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5ntr");
                 exit;
             } else {
-                header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5nad");
+                header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5nad");
                 exit;
             }
         } else {
-            header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5naacr");
+            header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5naacr");
             exit;
         }
     } else {
-        header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=1");
+        header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=1");
         exit;
     }
 }
@@ -241,34 +241,34 @@ if (isset($_REQUEST["report-answer-send"])){
 # Изменить ответ.
 if (isset($_REQUEST["report-edit-answer-edit"])){
     if (empty($_REQUEST["ansid"])){
-        header("Location: ../../adminpanel.php?p=reports&res=5nna");
+        header("Location: ../../adminpanel.php?p=report&res=5nna");
         exit;
     }
 
     if (($user->getId() == \Guards\ReportAgent::GetAnswerParam($_REQUEST["ansid"], "authorId") && $user->UserGroup()->getPermission("report_answer_edit") ||
         ($user->getId() != \Guards\ReportAgent::GetAnswerParam($_REQUEST["ansid"], "authorId") && $user->UserGroup()->getPermission("report_foreign_answer_edit")))){
         if (empty($_REQUEST["report-edit-message-text"])){
-            header("Location: ../../adminpanel.php?p=reports&reqtype=edit&ansid=" . $_REQUEST["ansid"]. "&res=5nmt");
+            header("Location: ../../adminpanel.php?p=report&reqtype=edit&ansid=" . $_REQUEST["ansid"]. "&res=5nmt");
             exit;
         }
         if (strlen($_REQUEST["report-edit-message-text"]) < 4){
-            header("Location: ../../adminpanel.php?p=reports&reqtype=edit&ansid=" . $_REQUEST["ansid"] . "&res=5ntsm");
+            header("Location: ../../adminpanel.php?p=report&reqtype=edit&ansid=" . $_REQUEST["ansid"] . "&res=5ntsm");
             exit;
         }
         $result = \Guards\ReportAgent::ChangeAnswerText($_REQUEST["ansid"], $_REQUEST["report-edit-message-text"], $_REQUEST["report-edit-reason"], $user->getId());
         if ($result === TRUE){
             $ntf = new \Users\UserNotificator(\Guards\ReportAgent::GetAnswerParam($_REQUEST["ansid"], "authorId"));
             $ntf->createNotify("17", $user->getId(), $_REQUEST["rid"]);
-            header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . \Guards\ReportAgent::GetAnswerParam($_REQUEST["ansid"], "reportId") . "&res=5sea");
+            header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=" . \Guards\ReportAgent::GetAnswerParam($_REQUEST["ansid"], "reportId") . "&res=5sea");
             exit;
         } elseif ($result == 30){
-            header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . \Guards\ReportAgent::GetAnswerParam($_REQUEST["ansid"], "reportId") . "&res=5nta");
+            header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=" . \Guards\ReportAgent::GetAnswerParam($_REQUEST["ansid"], "reportId") . "&res=5nta");
             exit;
         } elseif ($result == 31){
-            header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . \Guards\ReportAgent::GetAnswerParam($_REQUEST["ansid"], "reportId") . "&res=5ncds");
+            header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=" . \Guards\ReportAgent::GetAnswerParam($_REQUEST["ansid"], "reportId") . "&res=5ncds");
             exit;
         } else {
-            header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . \Guards\ReportAgent::GetAnswerParam($_REQUEST["ansid"], "reportId") . "&res=5nea");
+            header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=" . \Guards\ReportAgent::GetAnswerParam($_REQUEST["ansid"], "reportId") . "&res=5nea");
             exit;
         }
     }
@@ -276,18 +276,18 @@ if (isset($_REQUEST["report-edit-answer-edit"])){
 
 if (isset($_REQUEST["report-edit-report-edit"])){
     if (empty($_REQUEST["rid"])){
-        header("Location: ../../adminpanel.php?p=reports&res=5nrid");
+        header("Location: ../../adminpanel.php?p=report&res=5nrid");
         exit;
     }
 
     if (($user->getId() == \Guards\ReportAgent::GetReportParam($_REQUEST["rid"], "author") && $user->UserGroup()->getPermission("report_edit") ||
         ($user->getId() != \Guards\ReportAgent::GetReportParam($_REQUEST["rid"], "author") && $user->UserGroup()->getPermission("report_foreign_edit")))){
         if (empty($_REQUEST["report-edit-message-text"])){
-            header("Location: ../../adminpanel.php?p=reports&reqtype=edit&rid=" . $_REQUEST["rid"]. "&res=5nmt");
+            header("Location: ../../adminpanel.php?p=report&reqtype=edit&rid=" . $_REQUEST["rid"]. "&res=5nmt");
             exit;
         }
         if (strlen($_REQUEST["report-edit-message-text"]) < 4){
-            header("Location: ../../adminpanel.php?p=reports&reqtype=edit&rid=" . $_REQUEST["rid"] . "&res=5ntsm");
+            header("Location: ../../adminpanel.php?p=report&reqtype=edit&rid=" . $_REQUEST["rid"] . "&res=5ntsm");
             exit;
         }
 
@@ -309,13 +309,13 @@ if (isset($_REQUEST["report-edit-report-edit"])){
         if ($result === TRUE){
             $ntf = new \Users\UserNotificator(\Guards\ReportAgent::GetReportParam($_REQUEST["rid"], "author"));
             $ntf->createNotify("10", $user->getId(), $_REQUEST["rid"]);
-            header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=". $_REQUEST["rid"] . "&res=5ser");
+            header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=". $_REQUEST["rid"] . "&res=5ser");
             exit;
         } elseif ($result == 29){
-            header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5ntr");
+            header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5ntr");
             exit;
         } else {
-            header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5ner");
+            header("Location: ../../adminpanel.php?p=report&reqtype=discusion&rid=" . $_REQUEST["rid"] . "&res=5ner");
             exit;
         }
     }

@@ -50,7 +50,7 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
                     <ul class="nav navbar-nav">
                         <li <?php if (!isset($_GET["p"])) echo "class='active'"; ?>><a href="adminpanel.php">Главная</a></li>
                         <li <?php if (isset($_GET["p"])) if ($_GET["p"] == 'settings') echo "class='active'"; ?>><a href="?p=settings">Настройки</a></li>
-                        <li <?php if (isset($_GET["p"])) if ($_GET["p"] == 'reports') echo "class='active'"; ?>><a href="?p=reports">Жалобы
+                        <li <?php if (isset($_GET["p"])) if ($_GET["p"] == 'report') echo "class='active'"; ?>><a href="?p=reports">Жалобы
                                 <?php if (($rc = \Guards\ReportAgent::GetUnreadedReportsCount()) > 0) { ?><span class="adminpanel-reports-inc"><span class="glyphicons glyphicons-bell"></span> <?php echo $rc; ?></span><?php } ?></a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
@@ -287,7 +287,7 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
                     Не удалось активировать данного пользователя.
                 </div> <?php }
             }
-            if ($_GET["p"] == "reports"){
+            if ($_GET["p"] == "report"){
                 if ($_GET["res"] == "5nrid") { ?>
                     <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Не указан уникальный номер жалобы для совершения данного действия.
                     </div><?php }

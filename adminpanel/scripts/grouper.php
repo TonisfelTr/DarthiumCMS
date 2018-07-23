@@ -53,7 +53,7 @@ if ((!$user->UserGroup()->getPermission("group_create")) &&
             \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "user_banip", $_REQUEST["user_banip"]);
             \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "user_unbanip", $_REQUEST["user_unbanip"]);
 
-            //Custom reports perms
+            //Custom report perms
             \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "report_create", $_REQUEST["report_create"]);
             \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "report_remove", $_REQUEST["report_remove"]);
             \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "report_foreign_remove", $_REQUEST["report_foreign_remove"]);

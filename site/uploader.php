@@ -68,10 +68,10 @@ if ($uploadCount == 0) {
     }
 }
 
-include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/uploadermain.html";
+include_once \Engine\Engine::ConstructTemplatePath("main", "uploader", "html");
 $uploaderBlock = getBrick();
 
-include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/uploaderscript.js";
+include_once \Engine\Engine::ConstructTemplatePath("script", "uploader", "js");
 $uploaderJS = getBrick();
 
 $uploaderBlock = str_replace_once("{PROFILE_UPLOADER:HIDDEN_ATTR}", $uploaderVisible, $uploaderBlock);

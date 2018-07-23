@@ -207,7 +207,7 @@ else {
                 <hr>
                 <div class="input-group">
                     <div class="input-group-addon">Возможные причины жалоб</div>
-                    <textarea class="form-control" style="resize: vertical; min-height: 100px;" name="report-reasons"><?php echo \Engine\Engine::GetReportReasons(); ?></textarea>
+                    <textarea class="form-control" style="resize: vertical; min-height: 100px;" name="reports-reasons"><?php echo \Engine\Engine::GetReportReasons(); ?></textarea>
                 </div>
                 <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> Перечислите все возможные причины жалоб пользователей. Каждая
                     новая причина должна быть на новой строке.</div>

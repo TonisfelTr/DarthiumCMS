@@ -1,6 +1,6 @@
 function insertBBCode(openTag, notNeedClose = false, texterElement = null){
     if (texterElement == null)
-        var texter = document.getElementById("reports-add-message");
+        var texter = document.getElementById("report-add-message");
     else
         var texter = texterElement;
     startText = texter.value.substring(0, texter.selectionStart);

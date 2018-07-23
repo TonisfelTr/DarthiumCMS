@@ -10,6 +10,11 @@ body{
     src: url(../../../../libs/styles/font.otf);
 }
 
+@font-face {
+    font-family: "Trebuchet MS";
+    src: url("../../../../libs/styles/site-font.ttf");
+}
+
 body{
     padding: 0;
     margin: 0;

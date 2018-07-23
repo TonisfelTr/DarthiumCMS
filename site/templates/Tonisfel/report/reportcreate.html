@@ -1,18 +1,18 @@
-<form method="post" action="site/scripts/reports.php" name="report-form">
+<form method="post" action="site/scripts/reports.php" name="reports-form">
     <h4>Создать жалобу</h4>
     <hr>
     <p>Пожалуйста, заполните все поля.</p>
-    <input type="hidden" value="1" id="report-select-theme-status" name="report-select-theme-status">
+    <input type="hidden" value="1" id="report-select-theme-status" name="reports-select-theme-status">
     <div class="input-group" id="report-selector-div">
         <div class="input-group-addon">Тема жалобы</div>
-        <select class="form-control" id="report-theme-selector" name="report-theme-selector">
+        <select class="form-control" id="report-theme-selector" name="reports-theme-selector">
             {REPORT_PAGE:SUBJECTS_SELECTOR}
             <option value="other">Другое...</option>
         </select>
     </div>
     <div class="input-group" id="report-input-div" style="display: none;">
         <div class="input-group-addon">Тема жалобы</div>
-        <input class="form-control" type="text" name="report-select-other-theme" maxlength="100" placeholder="Напишите тему, но не более 100 символов.">
+        <input class="form-control" type="text" name="reports-select-other-theme" maxlength="100" placeholder="Напишите тему, но не более 100 символов.">
         <span class="input-group-btn">
                 <button class="btn btn-info" type="button" title="Вернуться к выбору темы" id="report-return-selector-btn">
                     <span class="glyphicons glyphicons-list"></span>
@@ -49,6 +49,6 @@
     </div>
     <hr>
     <div class="btn-group">
-        <button class="btn btn-default" type="submit" name="report-send-btn">Отправить на рассмотрение</button>
+        <button class="btn btn-default" type="submit" name="reports-send-btn">Отправить на рассмотрение</button>
     </div>
 </form>

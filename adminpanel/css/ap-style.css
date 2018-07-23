@@ -8,6 +8,11 @@ body{
     src: url("../../libs/styles/font.otf");
 }
 
+@font-face {
+    font-family: "Trebuchet MS";
+    src: url("../../libs/styles/site-font.ttf");
+}
+
 #jumbotron{
     font: 17px "My Passion";
     color: white;

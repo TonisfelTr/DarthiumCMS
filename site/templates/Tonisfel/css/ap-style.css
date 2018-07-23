@@ -11,6 +11,11 @@ body{
     src: url("../../../../libs/styles/font.otf");
 }
 
+@font-face {
+    font-family: "Trebuchet MS";
+    src: url("../../../../libs/styles/site-font.ttf");
+}
+
 body{
     position: fixed;
     font-size: 13px;

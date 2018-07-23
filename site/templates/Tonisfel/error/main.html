@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{ENGINE_META:DESCRIPTION}">
+    <meta name="keywords" content="{ENGINE_META:KEYWORDS}">
+    <title>Ошибка #{ERROR_CODE} - Таверна Тонисфеля</title>
+    <link rel="stylesheet" type="text/css" href="../../../../site/templates/Tonisfel/css/error-style.css">
+    <link href="../../../../libs/bootstrap/css/bootstrap.css">
+    <link href="../../../../libs/bootstrap/css/bootstrap.min.css">
+    <script src="../../../../libs/js/jquery-3.1.0.min.js"></script>
+    <script src="../../../../libs/bootstrap/js/bootstrap.js"></script>
+</head>
+<body>
+    <div class="header">
+        <h1>Таверна Тонисфеля</h1>
+        <p>Обработчик ошибок</p>
+    </div>
+    <p class="helper">Эта страница предназначена для разработчиков и Администрации сайта. Здесь можно узнать подробности
+    об ошибке, внезапно появившейся из-за угла.</p>
+    <div class="container-fluid">
+        <div class="error-informer col-lg-6 col-md-6 col-xs-6 col-sm-6">
+            <!--Здесь должно быть сообщение самого менеджера ошибок, которое было отправлено
+            в стек.-->
+            <p class="helper"></p>
+            {ERROR_MANAGER:MESSAGE}
+        </div>
+        <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 error-code-analyzator">
+            <!--Здесь должен быть кусок кода, в котором произошло исключение.-->
+            <p class="helper">Выполняемый код:</p>
+            {ERROR_MANAGER:WRONG_CODE}
+        </div>
+        <div class="error-stacktrace col-lg-12 col-md-12 col-xs-12 col-sm-12">
+            <!--А здесь должен быть стактрейс исключения, который будет разделён по столбцам.-->
+            <p class="helper">Exception stacktrace:</p>
+            <hr>
+            {ERROR_MANAGER:EXCEPTION_FORMATED_TEXT}
+        </div>
+        {ERROR_MANAGER:MODE_TIP}
+    </div>
+</body>
+</html>

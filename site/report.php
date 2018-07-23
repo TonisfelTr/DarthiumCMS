@@ -30,7 +30,7 @@ function constructReasonsSelector()
     return $result;
 }
 
-include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/reportscript.js";
+include_once \Engine\Engine::ConstructTemplatePath("script", "report", "js");
 $reportJS = getBrick();
 $main = str_replace("{REPORT_PAGE:JS}", $reportJS, $main);
 
@@ -123,7 +123,7 @@ if (empty($_GET["preg"])) {
             $reportsTable .= "<tr>";
             $reportsTable .= "<td>" . $report->getStatus() . "</td>";
             $reportsTable .= "<td>" . htmlentities($report->getTheme()) . "</td>";
-            $reportsTable .= "<td><a href=\"?page=reports&preg=see&rid=$reportList[$i]\">" . htmlentities($report->getShortMessage()) . "</a></td>";
+            $reportsTable .= "<td><a href=\"?page=report&preg=see&rid=$reportList[$i]\">" . htmlentities($report->getShortMessage()) . "</a></td>";
             $reportsTable .= "<td>" . \Engine\Engine::DateFormatToRead($report->getCreateDate()) . "</td>";
             $reportsTable .= "<td>$reportSolveAnswerAuthor</td>";
             $reportsTable .= "<td>$reportCloseDate</td>";
@@ -131,7 +131,7 @@ if (empty($_GET["preg"])) {
         }
     }
 
-    include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/reportmain.html";
+    include_once \Engine\Engine::ConstructTemplatePath("main", "report", "html");
     $reportMainBlock = getBrick();
 
     $reportMainBlock = str_replace_once("{REPORTS_PAGE:TABLE}", $reportsTable, $reportMainBlock);
@@ -139,7 +139,7 @@ if (empty($_GET["preg"])) {
     $reportTablePageBtns = "";
     for ($i = 0; $i < $allReportsCount/20; $i++){
         $rp = $i +1;
-        $reportTablePageBtns .= "<a class=\"btn btn-default\" href=\"?page=reports&rp=$rp\">$rp</a>";
+        $reportTablePageBtns .= "<a class=\"btn btn-default\" href=\"?page=report&rp=$rp\">$rp</a>";
     }
     $reportMainBlock = str_replace_once("{REPORT_PAGE:TABLE_PAGE_BTNS}", $reportTablePageBtns, $reportMainBlock);
 
@@ -147,7 +147,7 @@ if (empty($_GET["preg"])) {
 } else {
     switch($_GET["preg"]){
         case "add": {
-            include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/reportcreate.html";
+            include_once \Engine\Engine::ConstructTemplatePath("create", "report", "html");
             $reportCreateBlock = getBrick();
 
             $reportCreateBlock = str_replace_once("{REPORT_PAGE:SUBJECTS_SELECTOR}", constructReasonsSelector(), $reportCreateBlock);
@@ -156,17 +156,17 @@ if (empty($_GET["preg"])) {
         }
         case "see": {
             if (empty($_GET["rid"])) {
-                header("Location: ../index.php?page=reports&res=2nrid");
+                header("Location: ../index.php?page=report&res=2nrid");
                 exit;
             }
 
             $report = new \Guards\Report($_GET["rid"]);
             if (!$report->isAdded($user->getId()) && $report->ReportAuthor() != $user) {
-                header("Location: ../index.php?page=reports&res=2nnia");
+                header("Location: ../index.php?page=report&res=2nnia");
                 exit;
             }
 
-            include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/reportsee.html";
+            include_once \Engine\Engine::ConstructTemplatePath("see", "report", "html");
             $reportSeeBlock = getBrick();
 
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:SHORT_MESSAGE}", htmlentities($report->getShortMessage()), $reportSeeBlock);
@@ -183,7 +183,7 @@ if (empty($_GET["preg"])) {
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_SIGNATURE}", nl2br(\Engine\Engine::CompileBBCode($report->ReportAuthor()->getSignature())), $reportSeeBlock);
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:REPORT_STATUS}", $report->getStatus(), $reportSeeBlock);
             if (($report->ReportAuthor() == $user || $user->UserGroup()->getPermission("report_foreign_edit")) && !$report->isClosed()) {
-                include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/reportpanelbtn.html";
+                include_once \Engine\Engine::ConstructTemplatePath("panelbtn", "report", "html");
                 $reportBtnBlock = getBrick();
                 $reportBtnBlock = str_replace("{REPORT_PAGE:REPORT_ID}", $report->getId(), $reportBtnBlock);
 
@@ -192,13 +192,13 @@ if (empty($_GET["preg"])) {
                 $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_GROUP_NAME}", "", $reportSeeBlock);
 
             if (!$report->isClosed()){
-                include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/reportansweraddform.html";
+                include_once \Engine\Engine::ConstructTemplatePath("answeraddform", "report", "html");
                 $reportAddAnswerForm = getBrick();
 
                 $reportSeeBlock = str_replace_once("{REPORT_PAGE:ANSWER_ADD_FORM}", $reportAddAnswerForm, $reportSeeBlock);
                 $reportSeeBlock = str_replace_once("{REPORT_PAGE:SOLVE_ANSWER}", "", $reportSeeBlock);
             } else {
-                include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/reportsolveanswer.html";
+                include_once \Engine\Engine::ConstructTemplatePath("solveanswer", "report", "html");
                 $reportSolveAnswer = getBrick();
 
                 $answer = new \Guards\ReportAnswer($report->getAnswerId());
@@ -235,7 +235,7 @@ if (empty($_GET["preg"])) {
                 for ($i = 0; $i <= $ansCount-1; $i++) {
                     $answer = new \Guards\ReportAnswer($answerList[$i]);
 
-                    include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/reportanswer.html";
+                    include_once \Engine\Engine::ConstructTemplatePath("answer", "report", "html");
                     $reportAnswer = getBrick();
 
                     $reportAnswer = str_replace_once("{REPORT_PAGE:AO_AVATAR}", $answer->getAuthor()->getAvatar() ,$reportAnswer);
@@ -261,7 +261,7 @@ if (empty($_GET["preg"])) {
 
                     $reportAnswerBtn = "";
                     if ($answer->getAuthor() == $user && !$report->isClosed()) {
-                        include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/reportpanelanswerbtn.html";
+                        include_once \Engine\Engine::ConstructTemplatePath("panelanswerbtn", "report", "html");
                         $reportAnswerBtn = getBrick();
 
                         $reportAnswerBtn = str_replace("{REPORT_PAGE:ID}", $report->getId(), $reportAnswerBtn);
@@ -278,10 +278,10 @@ if (empty($_GET["preg"])) {
         }
         case "edit": {
             if (empty($_GET["rid"]) && empty($_GET["ansid"])) {
-                header("Location: ../index.php?page=reports&res=2nidfe");
+                header("Location: ../index.php?page=report&res=2nidfe");
                 exit;
             } elseif (!empty($_GET["rid"]) && !empty($_GET["ansid"])){
-                header("Location: ../index.php?page=reports&res=2nmea");
+                header("Location: ../index.php?page=report&res=2nmea");
                 exit;
             }
 
@@ -318,7 +318,7 @@ if (empty($_GET["preg"])) {
                                         </div>";
             }
 
-            include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/reportedit.html";
+            include_once \Engine\Engine::ConstructTemplatePath("edit", "report", "html");
             $reportEditBlock = getBrick();
 
             $reportEditBlock = str_replace_once("{REPORT_PAGE:EDIT_OF_LABEL}", $reportEditFormLabel, $reportEditBlock);
