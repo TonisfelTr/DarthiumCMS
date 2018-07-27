@@ -700,7 +700,7 @@ if ($session === true) {
     $main = str_replace("{PROFILE_JS:SHOW_PANEL}", "showPanel('$parentDivName');" . PHP_EOL . "showSubpanel('$parentDivName', $subpanelDivNumber);", $main);
 }
 
-if (($session !== true && !\Engine\Engine::GetEngineInfo("gsp") && $user === false)
+if (($session !== true && !\Engine\Engine::GetEngineInfo("gsp") && $user !== false)
     || (!empty($user) && !$user->IsAccountPublic() && $session !== true)
     || (!empty($user) && !$user->IsAccountPublic() && !$user->FriendList()->isFriend($_SESSION["uid"]))){
 
