@@ -109,8 +109,11 @@
             {
 
                 $file = file_get_contents("config/config.sfc", FILE_USE_INCLUDE_PATH);
-                $a = unserialize($file);
-                $engConf = include "config/engineconf.sfc";
+                $a = json_decode($file, true);
+                //var_dump(scandir("./engine/config/"));
+                //echo "dbconfig:";
+                //echo (file_exists("./engine/config/dbconf.sfc")) ? 1 : 0;exit;
+                $engConf = json_decode(file_get_contents("config/dbconf.sfc", FILE_USE_INCLUDE_PATH), true);
 
                 self::$EmailAcc = $a["emailAcc"];
                 self::$EmailPass = $a["emailPass"];
@@ -153,6 +156,12 @@
                 include "users.php";
                 include "forum.php";
                 error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
+
+                //Definition constant for correct working.
+                define("TT_ADMINPANEL", __DIR__ . "../adminpanel.php");
+                define("TT_INDEX", __DIR__ . "../index.php");
+                define("TT_PROFILE", __DIR__ . "../profile.php");
+                define("TT_BAN", __DIR__ . "../banned.php");
             }
             public static function SettingsSave($DomainSite, $siteName, $siteTagline, $siteStatus,
                                                 $siteSubscribe, $siteHashtags, $siteLang, $siteTemplate, $siteRegionTime,
@@ -186,7 +195,7 @@
                     'metricType' => $siteMetricType,
                     'metricStatus' => $siteMetricStatus
                 );
-                if (file_put_contents($_SERVER["DOCUMENT_ROOT"]."/engine/config/config.sfc", serialize($settingsArray))) return True;
+                if (file_put_contents($_SERVER["DOCUMENT_ROOT"]."/engine/config/config.sfc", json_encode($settingsArray))) return True;
                 else { ErrorManager::GenerateError(14); return ErrorManager::GetError(); }
             }
             public static function GetEngineInfo($code){

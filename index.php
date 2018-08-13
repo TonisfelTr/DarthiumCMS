@@ -28,7 +28,7 @@ include "./engine/main.php";
 $user = false;
 $sessionRes = \Users\UserAgent::SessionContinue();
 if ($sessionRes == 1) $user = new \Users\User($_SESSION["uid"]);
-if ((\Engine\Engine::GetEngineInfo("ss") == 0 && !isset($user)) ||
+if ((\Engine\Engine::GetEngineInfo("ss") == 0 && !$user) ||
     (\Engine\Engine::GetEngineInfo("ss") == 0 && $user->UserGroup()->getPermission("offline_visiter") != 1)) header("Location: offline.php");
 if ($user !== false) if ($user->isBanned()) { header("Location: banned.php"); exit; }
 if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Location: banned.php"); exit; }

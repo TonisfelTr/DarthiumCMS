@@ -435,7 +435,7 @@ if ($session === true && $user->getId() == $_SESSION["uid"]){
         $userEmailLink = "Email: <a class=\"profile-profile-link\" href=\"mailto:".$user->getEmail()."\">" . $user->getEmail() . "</a><br>";
     else $userEmailLink = "";
     if ($user->getReferer() != null)
-        $userRefererLink = "Реферер: <a href=\"profile.php?uid=".$user->getReferer()->getId()."\">". $user->getReferer()->getNickname() . "</a><br>";
+        $userRefererLink = "Реферер: <a class=\"profile-profile-link\" href=\"profile.php?uid=".$user->getReferer()->getId()."\">". $user->getReferer()->getNickname() . "</a><br>";
     else $userRefererLink = "";
     switch ($user->getSex()){
         case 1:
@@ -558,7 +558,7 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user))
         $userEmailLink = "Email: <a class=\"profile-profile-link\" href=\"mailto:".$user->getEmail()."\">" . $user->getEmail() . "</a><br>";
     else $userEmailLink = "";
     if ($user->getReferer() != null)
-        $userRefererLink = "Реферер: <a href=\"profile.php?uid=".$user->getReferer()->getId()."\"><br>". $user->getReferer()->getNickname() . "</a><br>";
+        $userRefererLink = "Реферер: <a class=\"profile-profile-link\" href=\"profile.php?uid=".$user->getReferer()->getId()."\">". $user->getReferer()->getNickname() . "</a><br>";
     else $userRefererLink = "";
     switch ($user->getSex()){
         case 1:
@@ -571,7 +571,6 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user))
             $userSex = "не указан";
             break;
     }
-
     $main = str_replace_once("{PROFILE_PAGE_GUI_SCRIPT}", $profileJS, $main);
     $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}", $profileSeeErrors, $main);
     $main = str_replace_once("{PROFILE_MAIN_BODY}",$profileMainPanel, $main);
