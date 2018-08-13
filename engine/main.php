@@ -2,7 +2,6 @@
 
     namespace Engine {
 
-        use http\Exception\BadMessageException;
         use Users\UserAgent;
 
         class Engine
@@ -37,6 +36,9 @@
             static private $UploadPermittedSize = 10*1024*1024;
             static private $UploadPermittedFormats = "gif,png,img,tif,zip,rar,txt,doc";
             static private $CanGuestsSeeProfiles = false;
+
+            static private $SiteMetricType;
+            static private $SiteMetricStatus;
 
             public static function ConstructTemplatePath($loadingPage,$module = "", $ext = "php"){
                 return $_SERVER["DOCUMENT_ROOT"] . "/site/templates/" . Engine::$SiteTemplate . "/$module/$module$loadingPage.$ext";
@@ -140,6 +142,9 @@
                 self::$UploadPermittedSize = $a["uploadPermSize"];
                 self::$UploadPermittedFormats = $a["uploadPermFormats"];
                 self::$CanGuestsSeeProfiles = $a["guestsseeprofiles"];
+
+                self::$SiteMetricType = $a["metricType"];
+                self::$SiteMetricStatus = $a["metricStatus"];
                 if (Engine::$SiteLang != (null||0)){
                     LanguageManager::load();
                 }
@@ -150,8 +155,10 @@
                 error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
             }
             public static function SettingsSave($DomainSite, $siteName, $siteTagline, $siteStatus,
-                                                $siteSubscribe, $siteHashtags, $siteLang, $siteTemplate, $siteRegionTime, $emailAcc, $emailPass, $emailHost, $emailPort, $emailCP, $needActivate,
-                                                $multiAccPermited, $standartGroup, $avatarHeight, $avatarWidth, $uploadPermittedSize, $uploadPermittedFormats, $canGuestsSeeProfiles)
+                                                $siteSubscribe, $siteHashtags, $siteLang, $siteTemplate, $siteRegionTime,
+                                                $emailAcc, $emailPass, $emailHost, $emailPort, $emailCP, $needActivate,
+                                                $multiAccPermited, $standartGroup, $avatarHeight, $avatarWidth, $uploadPermittedSize, $uploadPermittedFormats, $canGuestsSeeProfiles,
+                                                $siteMetricStatus, $siteMetricType)
             {
                 $settingsArray = array(
                     'domainSite' => $DomainSite,
@@ -175,7 +182,9 @@
                     'avatarWidth' => $avatarWidth,
                     'uploadPermSize' => $uploadPermittedSize,
                     'uploadPermFormats' => $uploadPermittedFormats,
-                    'guestsseeprofiles' => $canGuestsSeeProfiles
+                    'guestsseeprofiles' => $canGuestsSeeProfiles,
+                    'metricType' => $siteMetricType,
+                    'metricStatus' => $siteMetricStatus
                 );
                 if (file_put_contents($_SERVER["DOCUMENT_ROOT"]."/engine/config/config.sfc", serialize($settingsArray))) return True;
                 else { ErrorManager::GenerateError(14); return ErrorManager::GetError(); }
@@ -204,6 +213,8 @@
                     case "upf": return self::$UploadPermittedFormats;
                     case "gsp": return self::$CanGuestsSeeProfiles;
                     case "stp": return self::$SiteTemplate;
+                    case "smt": return self::$SiteMetricType;
+                    case "sms": return self::$SiteMetricStatus;
                 }
 
                 return false;
@@ -319,6 +330,12 @@
             public static function GetSiteTime(){
                 return time()-date("Z")+60*60*Engine::GetEngineInfo("srt");
             }
+            public static function SaveAnalyticScript($text){
+               return file_put_contents("config/analytic.js", $text, FILE_USE_INCLUDE_PATH);
+            }
+            public static function GetAnalyticScript(){
+                return file_get_contents("config/analytic.js", FILE_USE_INCLUDE_PATH);
+            }
          }
 
         class ErrorManager{
@@ -376,11 +393,13 @@
                 return array_search($error, self::$errors);
             }
 
-            public static function PretendToBeDied($lastText){
+            public static function PretendToBeDied($lastText, $exception){
+                $itisjoke = false;
                 if (!isset($lastText)){
                     $lastText = "This is just a joke! Don't be boring, site at the maintenance.";
+                    $itisjoke = true;
                 }
-                $itisjoke = true;
+
                 include_once "error.php";
             }
         }
@@ -579,6 +598,52 @@
                 $result = $mailer->send($message);
                 if(!$result) return false;
                 else return true;
+            }
+        }
+
+        class DataKeeper{
+            private static $connection;
+
+            public static function connect()
+            {
+                if (is_a(self::$connection, "mysqli")) return false;
+
+                self::$connection = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+                if (self::$connection->errno){
+                    ErrorManager::GenerateError(2);
+                    ErrorManager::PretendToBeDied(self::$connection->error, new \mysqli_sql_exception("MySQL connect exception"));
+                }
+                return true;
+            }
+
+            public static function MakeQuery($queryText, $varsArr){
+
+                $strContent = "";
+                foreach($varsArr as $var){
+                    if (is_numeric($var)){
+                        $strContent .= "i";
+                        break;
+                    }
+                    if (is_double($var)){
+                        $strContent .= "d";
+                        break;
+                    }
+                    if (is_string($var)){
+                        $strContent .= "s";
+                        break;
+                    }
+
+                }
+
+                if ($stmt = self::$connection->prepare($queryText)){
+                    $stmt->bind_param($strContent, $varsArr);
+                    $stmt->execute();
+                    if ($stmt->errno){
+                        ErrorManager::GenerateError(9);
+                        ErrorManager::PretendToBeDied($stmt->error, new \mysqli_sql_exception("STMT query exception"));
+
+                    }
+                }
             }
         }
     }

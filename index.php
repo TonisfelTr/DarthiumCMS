@@ -130,6 +130,15 @@ if (!defined("TT_Uploader"))
     $main = str_replace("{PROFILE_UPLOADER:STYLESHEET}", null, $main);
 else
     $main = str_replace("{PROFILE_UPLOADER:STYLESHEET}", "<link rel=\"stylesheet\" href=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/css/uploader-style.css\">", $main);
+if (\Engine\Engine::GetEngineInfo("smt")){
+    if (\Engine\Engine::GetEngineInfo("sms") == 0) {
+        $main = str_replace_once("{METRIC_JS}", null, $main);
+    } else {
+        $main = str_replace_once("{METRIC_JS}", \Engine\Engine::GetAnalyticScript(), $main);
+    }
+} else {
+    $main = str_replace_once("{METRIC_JS}", null, $main);
+}
 ob_end_clean();
 
 

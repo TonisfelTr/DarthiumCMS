@@ -11,20 +11,24 @@ if (!defined("TT_AP")){ header("Location: ../adminpanel.php?p=forbidden"); exit;
 //Проверка на наличие доступа к изменению конфигурации движка.
 if (!$user->UserGroup()->getPermission("change_engine_settings")) header("Location: ../../adminpanel.php?res=1");
 else {
-   $langs = \Engine\Engine::GetLanguagePacks();?>
+   $langs = \Engine\Engine::GetLanguagePacks();
+   $hasPerms = ($user->UserGroup()->getPermission("look_statistic")) ? true : false; ?>
 <div class="inner cover">
     <h1 class="cover-heading">Настройки</h1>
     <p class="lead">Настройки работы сайта.</p>
     <div id="btn-show-panel" class="btn-group">
-        <button id="btn-show-custom" class="btn btn-default active" onclick="showToBelow('custom_sets', 'btn-show-custom')"><span class="glyphicon glyphicon-cog"></span> Конфигурация</button>
-        <button id="btn-show-email" class="btn btn-default" onclick="showToBelow('email_sets', 'btn-show-email')"><span class="glyphicon glyphicon-envelope"></span> Бот-рассылка</button>
-        <button id="btn-show-reg" class="btn btn-default" onclick="showToBelow('reg_sets', 'btn-show-reg')"><span class="glyphicon glyphicon-pencil"></span> Регистрация</button>
-        <button id="btn-show-users" class="btn btn-default" onclick="showToBelow('users_sets', 'btn-show-users')"><span class="glyphicon glyphicon-user"></span> Пользователи</button>
-        <button id="btn-show-todo" class="btn btn-default" onclick="showToBelow('todoeditor', 'btn-show-todo')"><span class="glyphicon glyphicon-th-list"></span> To-do лист</button>
+        <button type="button" class="btn btn-default active" data-div-number="1"><span class="glyphicon glyphicon-cog"></span> Конфигурация</button>
+        <button type="button" class="btn btn-default" data-div-number="2"><span class="glyphicon glyphicon-envelope"></span> Бот-рассылка</button>
+        <button type="button" class="btn btn-default" data-div-number="3"><span class="glyphicon glyphicon-pencil"></span> Регистрация</button>
+        <button type="button" class="btn btn-default" data-div-number="4"><span class="glyphicon glyphicon-user"></span> Пользователи</button>
+        <?php if ($hasPerms) { ?>
+        <button type="button" class="btn btn-default" data-div-number="5"><span class="glyphicons glyphicons-pie-chart"></span> Статистика</button>
+        <?php } ?>
+        <button type="button" class="btn btn-default" data-div-number="6"><span class="glyphicon glyphicon-th-list"></span> To-do лист</button>
     </div>
     <form name="settings" method="post" action="adminpanel/scripts/replacer.php">
         <div class="custom-group">
-            <div class="div-border" id="custom_sets">
+            <div class="div-border" id="custom_sets" data-number="1">
                 <h3><span class="glyphicon glyphicon-cog"></span> Конфигурация</h3>
                 <p class="helper">Здесь находятся основные настройки сайта: описание, язык, региональные настройки.</p>
                 <hr>
@@ -133,7 +137,7 @@ else {
                     <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> Выберите часовой пояс, удобный Вам. Это нужно для корректирования времени сайта.</div>
                 </div>
             </div>
-            <div class="div-border" id="email_sets" hidden>
+            <div class="div-border" id="email_sets" data-number="2" hidden>
                 <h3><span class="glyphicon glyphicon-envelope"></span> Бот-рассылка</h3>
                 <p class="helper">Параметры почты для рассылки писем при регистрации и прочем.</p>
                 <hr>
@@ -167,7 +171,7 @@ else {
                 <div class="alert alert-warning">Ваш почтовый ящик используется ТОЛЬКО для рассылки писем посредством административной панели сайта и соответствующих писем при регистрации. Сайт не
                 следит за Вашими сообщениями и так же не учавствует в поддержании чистоты на предоставленном для рассылки аккаунте электронной почты.</div>
             </div>
-            <div class="div-border" id="reg_sets"  hidden>
+            <div class="div-border" id="reg_sets"  data-number="3" hidden>
                 <h3><span class="glyphicon glyphicon-pencil"></span> Регистрация</h3>
                 <p class="helper">Конфигурация регистрации и авторизации на сайте.</p>
                 <hr>
@@ -201,7 +205,7 @@ else {
                     <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> Новички будут зачисляться в эту группу.</div>
                 </div>
             </div>
-            <div class="div-border" id="users_sets" hidden>
+            <div class="div-border" id="users_sets" data-number="4" hidden>
                 <h3><span class="glyphicon glyphicon-user"></span> Пользователи</h3>
                 <p class="helper">Здесь меняются настройки общие для всех пользователей.</p>
                 <hr>
@@ -237,7 +241,37 @@ else {
                 </div>
                 <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> Под гостями подразумеваются незарегистрированные пользователи.</div>
             </div>
-            <div class="div-border" id="todoeditor" hidden>
+            <?php if ($hasPerms) { ?>
+            <div class="div-border" id="metric_sets" data-number="5" hidden>
+                <h3><span class="glyphicons glyphicons-pie-chart"></span> Статистика</h3>
+                <p class="helper">Здесь меняются настройки статистики сайта.</p>
+                <hr>
+                <p>Вы можете использовать как сторонние сервисы для анализирования клиентского потока Вашего портала, так и встроенный. Для этого выберите соответствующий
+                параметр, нужный Вам. Также, Вы можете вовсе отказаться от использования аналитических сервисов.</p>
+                <div class="input-group">
+                    <div class="input-group-addon">Записывать статистику:</div>
+                    <div class="form-control">
+                        <input type="checkbox" name="metric-lever-btn" id="metric-level-btn" <?php if (\Engine\Engine::GetEngineInfo("smt")) echo "checked"; ?>>
+                    </div>
+                </div>
+                <div id="metric-information" style="display: none;">
+                    <div class="input-group">
+                        <div class="input-group-addon">Сервис:</div>
+                        <select id="metric-service-select" name="metric-service-select" class="form-control">
+                            <option value="0" <?php if (\Engine\Engine::GetEngineInfo("sms") == 0) echo "selected";?>>Встроенный</option>
+                            <option value="1" <?php if (\Engine\Engine::GetEngineInfo("sms") == 1) echo "selected";?>>Сторонний</option>
+                        </select>
+                    </div>
+                    <div class="input-group" style="display: none;" id="metric-code-div">
+                        <div class="input-group-addon">Текст для встраивания:</div>
+                        <textarea class="form-control" style="height: 300px; resize: none;" name="metric-script-text"><?php echo \Engine\Engine::GetAnalyticScript(); ?></textarea>
+                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> Здесь должен быть код, который предоставляется сервисом.
+                            В инструкции Вас попросят разместить этот код на всех страницах Вашего портала, именно данный текст Вам нужно вставить сюда.</div>
+                    </div>
+                </div>
+            </div>
+            <?php } ?>
+            <div class="div-border" id="todoeditor" data-number="6" hidden>
                 <h3><span class="glyphicon glyphicon-th-list"></span> To-do</h3>
                 <p class="helper">Здесь вы можете оставлять заметки по работе на сайте.</p>
                 <hr>
@@ -252,26 +286,47 @@ else {
     </form>
 </div>
 <script>
-    var settingDivs = [];
-    settingDivs[0] = document.getElementById("custom_sets");
-    settingDivs[1] = document.getElementById("email_sets");
-    settingDivs[2] = document.getElementById("reg_sets");
-    settingDivs[3] = document.getElementById("users_sets");
-    settingDivs[4] = document.getElementById("todoeditor");
+    var MetricCodeGUIPrepare = function () {
+        if ($("#metric-service-select").val() == "1") {
+            $("#metric-code-div").show();
+        } else {
+            $("#metric-code-div").hide();
+        }
+    };
 
-    function showToBelow(parentDivId, butId) {
-        parentDivId = document.getElementById(parentDivId);
-        settingDivs.forEach(function (item) {
-            if (item != parentDivId)
-                $(item).hide();
+    var MetricSystemGUIPrepare = function() {
+        if ($("#metric-level-btn").is(":checked")){
+            $("#metric-information").show();
+            MetricCodeGUIPrepare();
+        } else {
+            $("#metric-information").hide();
+        }
+    };
+
+    $(document).ready(MetricSystemGUIPrepare);
+
+    $("#metric-level-btn").on("change", MetricSystemGUIPrepare);
+
+    $("#metric-service-select").on("change", MetricCodeGUIPrepare);
+
+    $("button").on("click", function() {
+       if ($(this).data("div-number") != undefined){
+           var divNum = $(this).data("div-number");
+           $("div.custom-group > div.div-border").hide();
+           $("div.custom-group > div.div-border[data-number=" + divNum +"]").show();
+           $("button").removeClass("active");
+           $("button[data-div-number=" + divNum + "]").addClass("active");
+       }
+    });
+
+    <?php if ($user->UserGroup()->getPermission("look_statistic")) { ?>
+        $("#metric-type-info").on("change", function(){
+           if ($(this).val() >= 2){
+               $("#metric-code-js-div").show();
+           } else {
+               $("#metric-code-js-div").hide();
+           }
         });
-        $(parentDivId).show();
-
-        document.getElementById("btn-show-panel").childNodes.forEach(function (item) {
-            $(item).removeClass("active");
-        });
-
-        $("#"+butId).addClass("active");
-    }
+    <?php } ?>
 </script>
 <?php } ?>

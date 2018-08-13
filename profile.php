@@ -777,8 +777,17 @@ $main = str_replace_once("{PROFILE_REPUTATIONER_BLOCK}", $reputationerBlock, $ma
 $main = str_replace_once("{PROFILE_PAGE_GUI_CUSTOM_SCRIPT}", $customScript, $main);
 $main = str_replace_once("{PROFILE_JS:SHOW_PANEL}", $authJS, $main);
 
-ob_end_clean();
+if (\Engine\Engine::GetEngineInfo("smt")){
+    if (\Engine\Engine::GetEngineInfo("sms") == 0) {
+        $main = str_replace_once("{METRIC_JS}", null, $main);
+    } else {
+        $main = str_replace_once("{METRIC_JS}", \Engine\Engine::GetAnalyticScript(), $main);
+    }
+} else {
+    $main = str_replace_once("{METRIC_JS}", null, $main);
+}
 
+ob_end_clean();
 echo $main;
 
 ?>
