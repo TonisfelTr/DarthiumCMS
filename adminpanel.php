@@ -9,8 +9,14 @@ include "engine/main.php";
 define("TT_AP", true);
 ob_start();
 \Engine\Engine::LoadEngine();
-if ($sessionRes = \Users\UserAgent::SessionContinue()) $user = new \Users\User($_SESSION["uid"]);
-else header("Location: profile.php");
+
+if ($sessionRes = \Users\UserAgent::SessionContinue()){
+    $user = new \Users\User($_SESSION["uid"]);
+}
+else {
+    header("Location: profile.php");
+    exit;
+}
 //Проверка на наличие доступа в АП.
 if (!isset($user) || !$user->UserGroup()->getPermission("enterpanel")){ header("Location: index.php?page=errors/forbidden"); exit; }
 if (isset($user)) if ($user->isBanned()) { header("Location: banned.php"); exit; }
@@ -50,7 +56,7 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
                     <ul class="nav navbar-nav">
                         <li <?php if (!isset($_GET["p"])) echo "class='active'"; ?>><a href="adminpanel.php">Главная</a></li>
                         <li <?php if (isset($_GET["p"])) if ($_GET["p"] == 'settings') echo "class='active'"; ?>><a href="?p=settings">Настройки</a></li>
-                        <li <?php if (isset($_GET["p"])) if ($_GET["p"] == 'report') echo "class='active'"; ?>><a href="?p=reports">Жалобы
+                        <li <?php if (isset($_GET["p"])) if ($_GET["p"] == 'reports') echo "class='active'"; ?>><a href="?p=reports">Жалобы
                                 <?php if (($rc = \Guards\ReportAgent::GetUnreadedReportsCount()) > 0) { ?><span class="adminpanel-reports-inc"><span class="glyphicons glyphicons-bell"></span> <?php echo $rc; ?></span><?php } ?></a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
@@ -154,6 +160,9 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
                     </div><?php }
             }
             if ($_GET["p"] == "users"){
+                if ($_GET["res"] == "4ncdu") { ?>
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span> Вы не можете удалить сами себя или профиль главного администратора.
+                    </div><?php }
                 if ($_GET["res"] == "4sdu") { ?>
                     <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span> Пользователи были успешно удалены!
                     </div><?php }
