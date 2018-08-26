@@ -457,8 +457,8 @@ if ($canIPBan || $canIPUnban){
                             echo ">" . \Users\GroupAgent::GetGroupNameById($groupList[$i]) . "</option>";
                         } ?>
                     </select>
-                <?php } ?>
                 </div>
+                <?php } ?>
                 <br>
                 <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> Здесь действуют те же правила, что и при регистрации: пароль и никнейм не длиннее
                 16 символов, и не короче 4; использовать можно только буквы латиницы, цифры и точки.</div>
