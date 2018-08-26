@@ -446,6 +446,7 @@ if ($canIPBan || $canIPUnban){
                         </button>
                     </span>
                 </div>
+                <?php if ($user->UserGroup()->getPermission("change_user_group")){ ?>
                 <div class="input-group">
                     <div class="input-group-addon">Группа:</div>
                     <select class="form-control" name="user-edit-group">
@@ -456,6 +457,7 @@ if ($canIPBan || $canIPUnban){
                             echo ">" . \Users\GroupAgent::GetGroupNameById($groupList[$i]) . "</option>";
                         } ?>
                     </select>
+                <?php } ?>
                 </div>
                 <br>
                 <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> Здесь действуют те же правила, что и при регистрации: пароль и никнейм не длиннее
