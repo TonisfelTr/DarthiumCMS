@@ -12,7 +12,16 @@ if (!defined("TT_AP")){ header("Location: ../adminpanel.php?p=forbidden"); exit;
 if (!$user->UserGroup()->getPermission("change_engine_settings")) header("Location: ../../adminpanel.php?res=1");
 else {
    $langs = \Engine\Engine::GetLanguagePacks();
-   $hasPerms = ($user->UserGroup()->getPermission("look_statistic")) ? true : false; ?>
+   $hasPerms = ($user->UserGroup()->getPermission("look_statistic")) ? true : false;
+   $additionalFields = \Users\UserAgent::GetAdditionalFieldsList();
+   $additionalFieldsOptions = [];
+   $additionalFieldsOptions[] = "<option value=\"0\">Не выбрано</option>";
+   foreach ($additionalFields as $field) {
+       $additionalFieldsOptions[] = "<option value=\"" . $field["id"] . "\">" . $field["name"] . "</option>";
+   }
+
+
+   ?>
 <div class="inner cover">
     <h1 class="cover-heading">Настройки</h1>
     <p class="lead">Настройки работы сайта.</p>
@@ -170,6 +179,8 @@ else {
                 <br>
                 <div class="alert alert-warning">Ваш почтовый ящик используется ТОЛЬКО для рассылки писем посредством административной панели сайта и соответствующих писем при регистрации. Сайт не
                 следит за Вашими сообщениями и так же не учавствует в поддержании чистоты на предоставленном для рассылки аккаунте электронной почты.</div>
+                <div class="alert alert-warning">Чтобы протестировать правильность введённых данных и доступ к аккаунту, Вам нужно сначала сохранить настройки почты и только потом нажать на кнопку.</div>
+                <button class="btn btn-default" id="mail-test-ajax-btn" type="button" style="width: 100%;"><span class="glyphicons glyphicons-message-out"></span> Протестировать правильность</button>
             </div>
             <div class="div-border" id="reg_sets"  data-number="3" hidden>
                 <h3><span class="glyphicon glyphicon-pencil"></span> Регистрация</h3>
@@ -209,6 +220,83 @@ else {
                 <h3><span class="glyphicon glyphicon-user"></span> Пользователи</h3>
                 <p class="helper">Здесь меняются настройки общие для всех пользователей.</p>
                 <hr>
+                <div class="alert hidden" id="add-fields-info-div"><span></span></div>
+                <h4>Дополнительные поля</h4>
+                <p>Здесь Вы можете создать свои поля, которые Вы считаете нужными. Можно настроить их отображение в профиле, приватность и логику; например, если Вы хотите
+                сделать поле, по клику на которое в профиле будет происходить какое-либо действие.</p>
+                <div class="input-group">
+                    <div class="input-group-addon">Дополнительные поля</div>
+                    <select class="form-control" name="user-additional-fields" id="user-add-fields">
+                        <?php foreach($additionalFieldsOptions as $option) echo $option; ?>
+                    </select>
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" type="button" id="field-add-btn" title="Добавить поле"><span class="glyphicons glyphicons-plus"></span></button>
+                        <button class="btn btn-default" type="button" id="field-remove-btn" title="Удалить поле" disabled><span class="glyphicons glyphicons-minus"></span></button>
+                    </div>
+                </div>
+                <div id="field-panel-manage" class="div-border" style="display: none; margin-top: 15px;">
+                    <div class="input-group">
+                        <div class="input-group-addon">Название поля</div>
+                        <input class="form-control" name="field-name-input" id="field-name-input" maxlength="16">
+                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> Максимальная длина - 16 букв.</div>
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <div class="input-group-addon">Описание</div>
+                        <input class="form-control" type="text" name="field-description" id="field-description">
+                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> Данный текст будет показываться как подсказка при наведении на соответствующее поле.</div>
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <div class="input-group-addon">Тип</div>
+                        <select class="form-control" id="field-type-selector">
+                            <option value="1">Сведение</option>
+                            <option value="2">Контакт</option>
+                            <option value="3">Общее</option>
+                        </select>
+                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> Здесь Вы можете выбрать, где будет отображаться поле.</div>
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <div class="input-group-addon">Обязательное поле</div>
+                        <div class="form-control">
+                            <input type="checkbox" name="field-requied" id="field-requied">
+                        </div>
+                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> Если данное поле обязательное, его нужно будет заполнить при регистрации.</div>
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <div class="input-group-addon">Показывать при регистрации</div>
+                        <div class="form-control">
+                            <input type="checkbox" name="field-reg-show" id="field-reg-show">
+                        </div>
+                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> Показывать поле при регистрации нового пользователя.</div>
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <div class="input-group-addon">Может быть частным</div>
+                        <div class="form-control">
+                            <input type="checkbox" name="field-private" id="field-private">
+                        </div>
+                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> Добавляет настройку приватности поля в профиль.</div>
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <div class="input-group-addon">Ссылка</div>
+                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> Введите ссылку, на которую нужно переходить по клику на неё. Значение поля можно получить
+                            написав в нужном месте "<a href="#" id="field-add-to-textarea"><strong>{{1}}</strong></a>". Система сама заменит данную конструкцию на значение поля.</div>
+                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> Это необязательный параметр. Если Вы не укажете ссылку, то поле
+                        будет чисто текстовым, а не представлять из себя ссылку.</div>
+                        <textarea class="form-control" name="field-link-textarea" style="resize: vertical; min-height: 100px;" id="field-link-textarea"></textarea>
+                    </div>
+                    <br>
+                    <div class="btn-group">
+                        <button class="btn btn-default" type="button" id="field-add-ajax-btn"><span class="glyphicons glyphicons-ok"></span> Применить</button>
+                        <button class="btn btn-default" type="button" id="field-cancel-btn"><span class="glyphicons glyphicons-erase"></span> Отменить</button>
+                    </div>
+                </div>
+                <hr>
+                <h4>Жалобы</h4>
                 <div class="input-group">
                     <div class="input-group-addon">Возможные причины жалоб</div>
                     <textarea class="form-control" style="resize: vertical; min-height: 100px;" name="reports-reasons"><?php echo \Engine\Engine::GetReportReasons(); ?></textarea>
@@ -216,6 +304,7 @@ else {
                 <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> Перечислите все возможные причины жалоб пользователей. Каждая
                     новая причина должна быть на новой строке.</div>
                 <hr>
+                <h4>Настройки аватарок</h4>
                 <div class="input-group">
                     <div class="input-group-addon">Максимальная ширина аватарки</div>
                     <input type="number" class="form-control"  name="avatarmaxwidth" value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("aw"));?>">
@@ -225,6 +314,7 @@ else {
                     <input type="number" class="form-control"  name="avatarmaxheight" value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("ah"));?>">
                 </div>
                 <hr>
+                <h4>Настройки загрузки файлов</h4>
                 <div class="input-group">
                     <div class="input-group-addon">Разрешённые к загрузке форматы</div>
                     <input type="text" class="form-control"  name="uploadformats" value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("upf"));?>">
@@ -237,7 +327,9 @@ else {
                 <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> Размер указывается в байтах.</div>
                 <div class="input-group">
                     <div class="input-group-addon">Разрешить гостям просматривать профили</div>
-                    <input type="checkbox" class="form-control" name="guest_see_profiles" <?php if (\Engine\Engine::GetEngineInfo("gsp")) echo "checked"; ?>>
+                    <div class="form-control">
+                        <input type="checkbox" name="guest_see_profiles" <?php if (\Engine\Engine::GetEngineInfo("gsp")) echo "checked"; ?>>
+                    </div>
                 </div>
                 <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> Под гостями подразумеваются незарегистрированные пользователи.</div>
             </div>
@@ -302,6 +394,183 @@ else {
             $("#metric-information").hide();
         }
     };
+
+    var ClearFieldForm = function(){
+        $("#field-panel-manage > div > input").val("");
+        $("#field-panel-manage > div > textarea").val("");
+        $("#field-panel-manage > div > select").val(1);
+        $("#field-panel-manage > div > div > input[type=checkbox]").prop("checked", false);
+    };
+
+    var ShowAnswerForm = function (type, text){
+        var span = $("#add-fields-info-div > span");
+        var div = $("#add-fields-info-div");
+        $(div).show();
+        switch(type){
+            case 1:
+            case "success":
+            case "okey": {
+                $(div).html("");
+                $(div).append($(span));
+                $(div).removeClass("hidden");
+                $(div).addClass("alert-success");
+                $(span).addClass("glyphicons glyphicons-ok");
+                $(span).after(" " + text);
+                break;
+            };
+            case 0:
+            case "error":
+            case "failed":
+            case "fail": {
+                $(div).removeClass("hidden");
+                $(div).addClass("alert-danger");
+                $(span).addClass("glyphicons glyphicons-remove");
+                $(span).after("");
+                $(span).after(" "+text);
+                break;
+            }
+        }
+        $('html, body').animate({
+            scrollTop: $(div).offset().top-100
+        }, 1000);
+    };
+
+    $("#field-add-btn").on("click", function() {
+       $(this).attr("disabled", true);
+       $("#field-panel-manage").show();
+       $("#user-add-fields").val(0);
+       ClearFieldForm();
+    });
+
+    $("#field-cancel-btn").on("click", function () {
+        $("#field-add-btn").attr("disabled", false);
+        $("#field-remove-btn").attr("disabled", true);
+        $("#field-panel-manage").hide();
+        ClearFieldForm();
+    });
+
+    //Save or create additional field.
+    $("#field-add-ajax-btn").on("click", function() {
+       var action = ($("#user-add-fields").val() != 0) ? "edit" : "add";
+       var dataVar = "field-id=" + $("#user-add-fields").val() +
+                     "&field-name=" + $("#field-name-input").val() +
+                     "&field-description=" + $("#field-description").val() +
+                     "&field-type=" + $("#field-type-selector").val() +
+                     "&field-isreq=" + $("#field-requied").is(":checked") +
+                     "&field-inregister=" + $("#field-reg-show").is(":checked") +
+                     "&field-privatestat=" + $("#field-private").is(":checked") +
+                     "&field-link=" + $("#field-link-textarea").val() +
+                     "&action=" + action;
+       $.ajax({
+           url: "adminpanel/scripts/ajax/adfieldsajax.php",
+           type: "POST",
+           data: dataVar,
+           success: function (data){
+                if (action === "add"){
+                    if ($.isNumeric(data)){
+                        $("#user-add-fields").append("<option value=\"" + data + "\">" + $("#field-name-input").val() + "</option>");
+                        ShowAnswerForm("okey", "Поле \"" + $("#field-name-input").val() + "\" было успешно создано!");
+                        $("#field-cancel-btn").click();
+                    } else if (data == "in") {
+                        ShowAnswerForm("error", "Название не отвечает требованиям: название поля должно быть меньше 16 и больше 4 символов.");
+                    }
+                }
+                if (action === "edit") {
+                    if (data === "sef") {
+                        $("#field-cancel-btn").click();
+                        $("#user-add-fields").val(0);
+                        $("#field-panel-manage").hide();
+                        ShowAnswerForm("okey", "Параметры поля успешно изменены!");
+                    } else if (data == "fef") {
+                        ShowAnswerForm("error", "Не удалось отредактировать поле.");
+                    } else if (data == "fne") {
+                        ShowAnswerForm("error", "Такого поля не существует. Вероятно, его кто-то удалил, обновите страницу.");
+                    } else if (data == "in") {
+                        ShowAnswerForm("error", "Название не отвечает требованиям: название поля должно быть меньше 16 и больше 4 символов.");
+                    }
+                }
+           },
+           error: function (){
+               $("#add-fields-info-div").removeClass("hidden");
+               $("#add-fields-info-div").addClass("alert-error");
+               $("#add-fields-info-div > span").addClass("glyphicons glyphicons-remove");
+               $("#add-fields-info-div > span").after(" Не удалось сохранить дополнительное поле.")
+           }
+       });
+    });
+
+    //Get info about the additional field.
+    $("#user-add-fields").on("change", function() {
+       var id = $("#user-add-fields").val();
+       if (id > 0){
+           $("#add-fields-info-div").hide();
+           $("#field-remove-btn").prop("disabled", false);
+           $.ajax({
+               url: "adminpanel/scripts/ajax/adfieldsajax.php",
+               type: "POST",
+               data: "action=get&field-id=" + id,
+               success: function (data){
+                   var result = $.parseJSON(data);
+                   $("#field-panel-manage").show();
+                   $("#field-name-input").val(result.name);
+                   $("#field-description").val(result.description);
+                   $("#field-type-selector").val(result.type);
+                   if (result.isRequied == "1")
+                       $("#field-requied").prop("checked", true);
+                   if (result.inRegister == "1")
+                       $("#field-reg-show").prop("checked", true);
+                   if (result.canBePrivate == "1"){
+                       $("#field-private").prop("checked", true);
+                   }
+                   $("#field-link-textarea").val(result.link);
+               }
+           });
+       } else {
+           $("#field-remove-btn").attr("disabled", true);
+           $("#field-panel-manage").hide();
+       }
+    });
+
+    //Delete additional field.
+    $("#field-remove-btn").on("click", function() {
+       if ($("#user-add-fields").val() != 0){
+           var id = $("#user-add-fields").val();
+            $.ajax({
+                url: "adminpanel/scripts/ajax/adfieldsajax.php",
+                type: "POST",
+                data: "action=delete&field-id=" + id,
+                success: function (data){
+                    if (data == "sdf"){
+                        ShowAnswerForm("okey", "Дополнительное поле успешно удалено.");
+                        $("#user-add-fields").children("option[value=" + id + "]").remove();
+                        $("#user-add-fields").val(0);
+                        $("#field-cancel-btn").click();
+                    } else if (data == "fdf"){
+                        //Failed deleting.
+                        ShowAnswerForm("fail", "Не удалось удалить дополнительное поле.");
+                    } else if (data == "fne"){
+                        ShowAnswerForm("fail", "Такого поля не существует. Возможно его уже кто-то удалил, обновите страницу и попробуйте ещё раз.");
+                    }
+                }
+            });
+       } else {
+           $(this).prop("disabled", true);
+       }
+    });
+
+    $("#mail-test-ajax-btn").on("click", function () {
+       $.ajax({
+           url: "adminpanel/scripts/ajax/testmailajax.php",
+           type: "POST",
+           data: "test=1",
+           success: function (data){
+               if (data == "okey")
+                   alert("Тестовое письмо было успешно отправлено.");
+               else if (data == "false")
+                   alert("Не удалось отправить тестовое сообщение. Проверьте правильность введённых данных.");
+           }
+       });
+    });
 
     $(document).ready(MetricSystemGUIPrepare);
 
