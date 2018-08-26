@@ -58,6 +58,10 @@ if (isset($_REQUEST["users-delete-button"])){
         if (isset($_REQUEST["duids"])){
             $deleteUIDs = explode(",", $_REQUEST["duids"]);
             for ($i = 0; $i < count($deleteUIDs); $i++){
+                if ($user->getId() == $deleteUIDs[$i] || $deleteUIDs[$i] == 1){
+                    header("Location: ../../adminpanel.php?p=users&res=4ncdu");
+                    exit;
+                }
                 if (\Users\UserAgent::DeleteUser($deleteUIDs[$i]) !== True) {
                     header("Location: ../../adminpanel.php?p=users&res=4ndu");
                     exit;
