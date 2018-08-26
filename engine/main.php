@@ -646,9 +646,9 @@
 
                 $query = "SELECT count(*) FROM `$table` WHERE `$column`=?";
                 $preparedQuery = $pdo->prepare($query);
-                $preparedQuery->execute([$content]);
+                $preparedQuery->execute(array($content));
                 $result = $preparedQuery->fetch($pdo::FETCH_ASSOC);
-                if ($result["count(*)"] == 0) return false;
+                if ($result["count(*)"] == 0 || $result[0] == 0) return false;
                 else return true;
 
             }
@@ -758,7 +758,7 @@
                     $result = $preparedQuery->execute();
                 if (!$result){
                     ErrorManager::GenerateError(33);
-                    ErrorManager::PretendToBeDied("Cannot make special SQL query:" . $preparedQuery->errorInfo()[2], new \PDOException("Cannot make special SQL query."));
+                    ErrorManager::PretendToBeDied("Cannot make special SQL query: [" . $preparedQuery->errorInfo()[0] . "] " . $preparedQuery->errorInfo()[2], new \PDOException("Cannot make special SQL query."));
                     return false;
                 }
                 return $preparedQuery->fetch($pdo::FETCH_ASSOC);
