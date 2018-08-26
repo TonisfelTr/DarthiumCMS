@@ -17,7 +17,8 @@ function str_replace_once($search, $replace, $text){
 
 ###############################################
 # Менеджер пользователя.
-if ($session === TRUE || !empty($_GET["uid"])) $seeProfile = true; else $seeProfile = false;
+if ($session === TRUE || !empty($_GET["uid"]))
+    $seeProfile = true; else $seeProfile = false;
 if ($session === TRUE){
     $user = new \Users\User($_SESSION["uid"]);
     if (!empty($_REQUEST["res"])){
@@ -27,8 +28,9 @@ if ($session === TRUE){
 
 }
 if (!empty($_GET["uid"])){
-    if (\Users\UserAgent::IsUserExist($_GET["uid"]))
+    if (\Users\UserAgent::IsUserExist($_GET["uid"])) {
         $user = new \Users\User($_GET["uid"]);
+    }
     else $user = false;
 }
 if (!$session) {
@@ -137,6 +139,99 @@ if ($session === true && $user->getId() == $_SESSION["uid"]){
         $profileEditCustomPanel = getBrick();
         $userEdit = str_replace_once("{PROFILE_PAGE:USER_EDITPANEL}", $profileEditCustomPanel, $userEdit);
     }
+    include_once "./site/reputationer.php";
+    include_once "./site/uploader.php";
+
+    $parentDivName = "";
+    $subpanelDivNumber = "";
+    switch ($page) {
+        case "none":
+            $main = str_replace("{PROFILE_JS:SHOW_PANEL}", "", $main);
+            break;
+        case "edit":
+        case "security":
+        case "blacklist":
+            $parentDivName = "edit";
+            switch ($page) {
+                case "edit":
+                    $subpanelDivNumber = 1;
+                    break;
+                case "security":
+                    $subpanelDivNumber = 2;
+                    break;
+                case "blacklist":
+                    $subpanelDivNumber = 3;
+                    break;
+                default:
+                    $subpanelDivNumber = 1;
+                    break;
+            }
+            break;
+        case "pm":
+        case "ic":
+        case "oc":
+        case "sd":
+        case "rm":
+        case "bin":
+        case "wm":
+            $parentDivName = "pm";
+            switch ($page) {
+                case "pm":
+                case "ic":
+                    $subpanelDivNumber = 1;
+                    break;
+                case "oc":
+                    $subpanelDivNumber = 2;
+                    break;
+                case "sd":
+                    $subpanelDivNumber = 3;
+                    break;
+                case "rm":
+                    $subpanelDivNumber = 6;
+                    break;
+                case "bin":
+                    $subpanelDivNumber = 4;
+                    break;
+                case "wm":
+                    $subpanelDivNumber = 5;
+                    break;
+                default:
+                    $subpanelDivNumber = 1;
+                    break;
+            }
+            break;
+        case "news":
+            $parentDivName = "notifications";
+            $subpanelDivNumber = 1;
+            break;
+        default:
+            $main = str_replace("{PROFILE_JS:SHOW_PANEL}", "", $main);
+            break;
+    }
+
+    $main = str_replace_once("{PROFILE_REPUTATIONER:STYLESHEET}", "<link rel=\"stylesheet\" href=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/css/reputationer-style.css\">", $main);
+    $main = str_replace_once("{PROFILE_PAGE:USER_REPUTATION_AONCLICK}", "onclick=\"$('#reputation-frame').show();\"", $main);
+    $main = str_replace_once("{PROFILE_REPUTATIONER_BLOCK}", $reputationerBlock, $main);
+    $main = str_replace_once("{PROFILE_UPLOADER_BLOCK}", $uploaderBlock, $main);
+    $main = str_replace("{PROFILE_JS:SHOW_PANEL}", "showPanel('$parentDivName');" . PHP_EOL . "showSubpanel('$parentDivName', $subpanelDivNumber);", $main);
+
+    ///////////////////////////////////////////////////////////////////////
+    /// Build additional fields mechanism.
+    ///////////////////////////////////////////////////////////////////////
+
+//    $additionalFields = \Users\UserAgent::GetAdditionalFieldsList();
+//    $customAF = [];
+//    $contactAF = [];
+//    $infoAF = [];
+//
+//    foreach($additionalFields as $field){
+//        $additionalField = "";
+//        if ($field["type"] == 1){
+//            if ($field["link"] != ""){
+//                $additionalField = "<a href=";
+//            }
+//        }
+//    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Building PMs module.
@@ -411,7 +506,7 @@ if ($session === true && $user->getId() == $_SESSION["uid"]){
     $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}", $profileSeeErrors, $main);
     $main = str_replace_once("{PROFILE_MAIN_BODY}",$profileMainPanel, $main);
     $main = str_replace("{PROFILE_PAGE:USER_NICKNAME}", $user->getNickname(), $main);
-    $main = str_replace("{PROFILE_PAGE:USER_GROUP_COLOR}", $user->UserGroup()->getColor(), $main);
+    $main = str_replace("{PROFILE_PAGE:USER_GROUP_COLOR}", ($user->UserGroup()->getColor() == "#000000") ? "#ffffff" : $user->UserGroup()->getColor(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_GROUP_NAME}", $user->UserGroup()->getName(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_LASTONLINE}", (\Engine\Engine::GetSiteTime() > $user->getLastTime()+15*60) ? "заходил" . (($user->getSex() == 2) ? "а" : "")
         . " в " . \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s",$user->getLastTime())) : "<span style=\"color: #00dd00;\">онлайн</span>", $main);
@@ -524,10 +619,19 @@ if ($session === true && $user->getId() == $_SESSION["uid"]){
         else $main = str_replace_once("{PROFILE_PAGE:USER_SIGNATURE_FORM}", null, $main);
         if ($user->UserGroup()->getPermission("enterpanel"))
             $main = str_replace_once("{PROFILE_AUTH_ADMINPANEL_BTN}", "<a class=\"profile-profile-btn\" href=\"adminpanel.php\"><span class=\"profile-btn-span\"></span> Админ-панель</a>", $main);
-
+        else
+            $main = str_replace_once("{PROFILE_AUTH_ADMINPANEL_BTN}", "", $main);
     }
     $main = str_replace("{PROFILE_PAGE:USER_AVATAR}", $user->getAvatar(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_AVATAR_SIZE}", \Engine\Engine::GetEngineInfo("aw") . "x" . \Engine\Engine::GetEngineInfo("ah"), $main);
+}
+
+if ($session === true && (isset($_REQUEST["activate"]) || $user->getActiveStatus())){
+    include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/authactivation.html";
+    $authActivateForm = getBrick();
+
+    $main = str_replace_once("{PROFILE_MAIN_BODY}", $authActivateForm, $main);
+    $main = str_replace_once("{PROFILE_PAGE_TITLE}", "Активация аккаунта - " . \Engine\Engine::GetEngineInfo("sn"), $main);
 }
 
 if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user))
@@ -557,6 +661,7 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user))
     if ($user->IsEmailPublic())
         $userEmailLink = "Email: <a class=\"profile-profile-link\" href=\"mailto:".$user->getEmail()."\">" . $user->getEmail() . "</a><br>";
     else $userEmailLink = "";
+
     if ($user->getReferer() != null)
         $userRefererLink = "Реферер: <a class=\"profile-profile-link\" href=\"profile.php?uid=".$user->getReferer()->getId()."\">". $user->getReferer()->getNickname() . "</a><br>";
     else $userRefererLink = "";
@@ -576,7 +681,7 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user))
     $main = str_replace_once("{PROFILE_MAIN_BODY}",$profileMainPanel, $main);
     $main = str_replace("{PROFILE_PAGE:USER_AVATAR}", $user->getAvatar(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_NICKNAME}", $user->getNickname(), $main);
-    $main = str_replace("{PROFILE_PAGE:USER_GROUP_COLOR}", $user->UserGroup()->getColor(), $main);
+    $main = str_replace("{PROFILE_PAGE:USER_GROUP_COLOR}", ($user->UserGroup()->getColor() == "#000000") ? "#ffffff" : $user->UserGroup()->getColor(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_GROUP_NAME}", $user->UserGroup()->getName(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_LASTONLINE}", (\Engine\Engine::GetSiteTime() > $user->getLastTime()+15*60) ? "заходил" . (($user->getSex() == 2) ? "а" : "")
         . " в " . \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s",$user->getLastTime())) : "<span style=\"color: #00dd00;\">онлайн</span>", $main);
@@ -621,84 +726,6 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user))
     $main = str_replace("{PROFILE_FOOTER_BTNS}", $userFootBtns, $main);
 }
 
-if ($session === true) {
-    include_once "./site/reputationer.php";
-    include_once "./site/uploader.php";
-
-    $parentDivName = "";
-    $subpanelDivNumber = "";
-    switch ($page) {
-        case "none":
-            $main = str_replace("{PROFILE_JS:SHOW_PANEL}", "", $main);
-            break;
-        case "edit":
-        case "security":
-        case "blacklist":
-            $parentDivName = "edit";
-            switch ($page) {
-                case "edit":
-                    $subpanelDivNumber = 1;
-                    break;
-                case "security":
-                    $subpanelDivNumber = 2;
-                    break;
-                case "blacklist":
-                    $subpanelDivNumber = 3;
-                    break;
-                default:
-                    $subpanelDivNumber = 1;
-                    break;
-            }
-            break;
-        case "pm":
-        case "ic":
-        case "oc":
-        case "sd":
-        case "rm":
-        case "bin":
-        case "wm":
-            $parentDivName = "pm";
-            switch ($page) {
-                case "pm":
-                case "ic":
-                    $subpanelDivNumber = 1;
-                    break;
-                case "oc":
-                    $subpanelDivNumber = 2;
-                    break;
-                case "sd":
-                    $subpanelDivNumber = 3;
-                    break;
-                case "rm":
-                    $subpanelDivNumber = 6;
-                    break;
-                case "bin":
-                    $subpanelDivNumber = 4;
-                    break;
-                case "wm":
-                    $subpanelDivNumber = 5;
-                    break;
-                default:
-                    $subpanelDivNumber = 1;
-                    break;
-            }
-            break;
-        case "news":
-            $parentDivName = "notifications";
-            $subpanelDivNumber = 1;
-            break;
-        default:
-            $main = str_replace("{PROFILE_JS:SHOW_PANEL}", "", $main);
-            break;
-    }
-
-    $main = str_replace_once("{PROFILE_REPUTATIONER:STYLESHEET}", "<link rel=\"stylesheet\" href=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/css/reputationer-style.css\">", $main);
-    $main = str_replace_once("{PROFILE_PAGE:USER_REPUTATION_AONCLICK}", "onclick=\"$('#reputation-frame').show();\"", $main);
-    $main = str_replace_once("{PROFILE_REPUTATIONER_BLOCK}", $reputationerBlock, $main);
-    $main = str_replace_once("{PROFILE_UPLOADER_BLOCK}", $uploaderBlock, $main);
-    $main = str_replace("{PROFILE_JS:SHOW_PANEL}", "showPanel('$parentDivName');" . PHP_EOL . "showSubpanel('$parentDivName', $subpanelDivNumber);", $main);
-}
-
 if (($session !== true && !\Engine\Engine::GetEngineInfo("gsp") && $user !== false)
     || (!empty($user) && !$user->IsAccountPublic() && $session !== true)
     || (!empty($user) && !$user->IsAccountPublic() && !$user->FriendList()->isFriend($_SESSION["uid"]))){
@@ -709,6 +736,23 @@ if (($session !== true && !\Engine\Engine::GetEngineInfo("gsp") && $user !== fal
     $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}", $profileSeeErrors, $main);
     $main = str_replace_once("{PROFILE_MAIN_BODY}", null, $main);
 
+}
+
+/*********************************************************************************************/
+
+/*****************************Account activating block****************************************/
+
+if (isset($_REQUEST["activate"]) || session_id() && empty($user)){
+    $main = str_replace_once("{PROFILE_PAGE_TITLE}", "Активация аккаунта - " . \Engine\Engine::GetEngineInfo("sn"), $main);
+    $header = str_replace_once("{PROFILE_PAGE:PAGE_NAME}", "Активация аккаунта", $header);
+
+    include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/authactivateerrors.phtml";
+    $activateErrors = getBrick();
+    $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}", $activateErrors, $main);
+
+    include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/authactivation.html";
+    $authActivateForm = getBrick();
+    $main = str_replace_once("{PROFILE_MAIN_BODY}", $authActivateForm, $main);
 }
 
 /*********************************************************************************************/
@@ -729,9 +773,6 @@ if (!$session && empty($user)){
     include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/auth.html";
     $authForm = getBrick();
 
-    include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/authactivation.html";
-    $authActivateForm = getBrick();
-
     include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/authsignup.html";
     $authSignUpForm = getBrick();
 
@@ -741,7 +782,6 @@ if (!$session && empty($user)){
     $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}", (!empty($_REQUEST["res"]) && !in_array($_REQUEST["res"], ["ic", "nc", "nr"])) ? $authErrors : "", $main);
     $main = str_replace_once("{PROFILE_MAIN_BODY}", $authForm, $main);
     $main = str_replace_once("{PROFILE_PAGE_GUI_SCRIPT}", "", $main);
-    $main = str_replace_once("{AUTH_PAGE:ACCOUNT_ACTIVATOR}", $authActivateForm, $main);
     $main = str_replace_once("{AUTH_PAGE:SIGN_UP}", $authSignUpForm, $main);
     $main = str_replace_once("{AUTH_PAGE:RULES}", html_entity_decode(\Engine\Engine::CompileBBCode(file_get_contents("./engine/config/rules.sfc", FILE_USE_INCLUDE_PATH))), $main);
     $main = str_replace_once("{AUTH_PAGE:REGISTER_ERRORS}", $authRegErrors, $main);
@@ -752,7 +792,7 @@ if (!$session && empty($user)){
     $main = str_replace_once("{AUTH_PAGE:EMAIL_TIP}", $emailTipText, $main);
     $main = str_replace_once("{AUTH_PAGE:CAPTCHA_PIC}", "<img src=\"$captchaImgPath\">", $main);
     $main = str_replace_once("{AUTH_PAGE:CAPTCHA_ID}", $captchaID, $main);
-    $main = str_replace_once("{AUTH_PAGE:UID_INPUT_PLACEHOLDER}", \Engine\Engine::GetEngineInfo("na") ? "Email или никнейм" : "Никнейм", $main);
+    $main = str_replace("{AUTH_PAGE:UID_INPUT_PLACEHOLDER}", \Engine\Engine::GetEngineInfo("na") ? "Email или никнейм" : "Никнейм", $main);
 
     if (!empty($_REQUEST["res"])){
         if (in_array($_REQUEST["res"], ["ic", "nc", "nr"]))

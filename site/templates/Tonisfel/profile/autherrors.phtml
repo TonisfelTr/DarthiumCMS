@@ -1,4 +1,4 @@
-<div id="profile-reg-message-div">
+<div class="profile-reg-message-div">
     <?php if (!empty($_REQUEST["res"])) {
              if ($_REQUEST["res"] == "sr"){ ?>
 
@@ -38,6 +38,6 @@
                 <span class="glyphicon glyphicon-warning-sign"></span> Авторизация не удалась. Обратитесь к Администрации через форму жалоб на главной странице портала.
             <?php } ?>
                 <hr>
-                <p style="color: lightblue; text-decoration: underline;" onclick="$('#profile-reg-message-div').hide();">Закрыть сообщение</p>
+                <p style="color: lightblue; text-decoration: underline;" onclick="$(this).parent('div').hide();">Закрыть сообщение</p>
             </div>
 <?php } ?>

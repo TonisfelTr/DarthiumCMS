@@ -1,6 +1,7 @@
 <?php
 namespace Users {
 
+    use Engine\DataKeeper;
     use Engine\Engine;
     use Engine\ErrorManager;
     use Engine\Mailer;
@@ -19,7 +20,7 @@ namespace Users {
 
             if ($mysqli->errno){
                 ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
+                ErrorManager::PretendToBeDied(ErrorManager::GetErrorCode(2), "Could not connect to the db in Group constructor.");
             }
 
             if ($stmt = $mysqli->prepare("SELECT * FROM `tt_groups` WHERE `id`=?")){
@@ -207,62 +208,51 @@ namespace Users {
         private $uPrivateMessages;
         private $uNotifications;
         private $uFriendList;
+        private $uAdditionFields;
 
         public function __construct($userId)
         {
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            $result = DataKeeper::Get("tt_users", ["*"], ["id" => $userId])[0];
 
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
+            $this->uId = $result["id"];
+            $this->uNickname = $result["nickname"];
+            $this->uPassHash = $result["password"];
+            $this->uEmail = $result["email"];
+            $this->uGroupId = $result["group"];
+            $this->uActive = $result["active"];
+            $this->uRegIp = $result["regip"];
+            $this->uRegDate = $result["regdate"];
+            $this->uSex = $result["sex"];
+            $this->uHobbies = $result["hobbies"];
+            $this->uName = $result["realname"];
+            $this->uFrom = $result["city"];
+            $this->uLastDate = $result["lastdate"];
+            $this->uLastTime = $result["lasttime"];
+            $this->uLastIp = $result["lastip"];
+            $this->uBirth = $result["birth"];
+            $this->uAvatar = $result["avatar"];
+            $this->uSignature = $result["signature"];
+            $this->uAbout = $result["about"];
+            $this->uReferer = ($result["referer"] <= 0) ? null : $result["referer"];
+            $this->uVK = $result["vk"];
+            $this->uSkype = $result["skype"];
+            $this->uIsVKPublic = $result["public_vk"];
+            $this->uIsBirthdayPublic = $result["public_birthday"];
+            $this->uIsEmailPublic = $result["public_email"];
+            $this->uIsSkypePublic = $result["public_skype"];
+            $this->uIsAccountPublic = $result["public_account"];
 
-            if ($stmt = $mysqli->prepare("SELECT * FROM `tt_users` WHERE `id`=?")){
-                $stmt->bind_param("i", $userId);
-                $stmt->execute();
-                $stmt->bind_result($id, $nick, $passhash, $email, $group, $active, $regdate, $lastdate, $lasttime, $lastip, $regip,
-                    $avatar, $sex, $signature, $birth, $realname, $referer, $city, $about, $hobbies, $skype, $vk, $pVk, $pSkype, $pEmail, $pBirthday, $pAccount);
-                while ($stmt->fetch()){
-                    $this->uId = $id;
-                    $this->uNickname = $nick;
-                    $this->uPassHash = $passhash;
-                    $this->uEmail = $email;
-                    $this->uGroupId = $group;
-                    $this->uActive = $active;
-                    $this->uRegIp = $regip;
-                    $this->uRegDate = $regdate;
-                    $this->uSex = $sex;
-                    $this->uHobbies = $hobbies;
-                    $this->uName = $realname;
-                    $this->uFrom = $city;
-                    $this->uLastDate = $lastdate;
-                    $this->uLastTime = $lasttime;
-                    $this->uLastIp = $lastip;
-                    $this->uBirth = $birth;
-                    $this->uAvatar = $avatar;
-                    $this->uSignature = $signature;
-                    $this->uAbout = $about;
-                    $this->uReferer = $referer;
-                    $this->uVK = $vk;
-                    $this->uSkype = $skype;
-                    $this->uIsVKPublic = $pVk;
-                    $this->uIsBirthdayPublic = $pBirthday;
-                    $this->uIsEmailPublic = $pEmail;
-                    $this->uIsSkypePublic = $pSkype;
-                    $this->uIsAccountPublic = $pAccount;
-
-                    $this->uReputation = new UserReputationer($this);
-                    $this->uGroupOwner = new Group($group);
-                    $this->uBlacklist = new UserBlacklister($this->uId);
-                    $this->uPrivateMessages = new PrivateMessager($this->uId);
-                    $this->uNotifications = new UserNotificator($this->uId);
-                    $this->uFriendList = new UserFriendlist($this->uId);
-                }
-            } else {
-                ErrorManager::GenerateError(9);
-                return ErrorManager::GetError();
-            }
-
+            $this->uReputation = new UserReputationer($this);
+            $this->uGroupOwner = new Group($this->uGroupId);
+            $this->uBlacklist = new UserBlacklister($this->uId);
+            $this->uPrivateMessages = new PrivateMessager($this->uId);
+            $this->uNotifications = new UserNotificator($this->uId);
+            $this->uFriendList = new UserFriendlist($this->uId);
+//            $this->uAdditionFields = DataKeeper::Get("tt_adfieldscontent",
+//                array("fieldId", "content"), array(
+//                    "tt_adfieldscontent.userId" => $this->uId,
+//                    ""
+//                ));
             return $this;
         }
         public function getId(){
@@ -276,7 +266,7 @@ namespace Users {
             return $this->uEmail;
         }
         public function getActiveStatus(){
-            return $this->uActive;
+            return ($this->uActive === "TRUE") ? true : false;
         }
         public function getGroupId(){
             return $this->uGroupId;
@@ -318,9 +308,9 @@ namespace Users {
             return $this->uName;
         }
         public function getReferer(){
-            if (UserAgent::IsUserExist($this->uReferer)){
-                return new User($this->uReferer);
-            } else return $this->uReferer;
+           if (UserAgent::IsUserExist($this->uReferer)){
+                 return new User($this->uReferer);
+           } else return $this->uReferer;
         }
         public function getAvatar(){
             $avatar = $this->uAvatar;
@@ -1128,8 +1118,9 @@ namespace Users {
 
             $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
 
-            if (mysqli_connect_errno()) {
-                printf("Не удалось подключиться: %s\n", mysqli_connect_error());
+            if ($mysqli->errno) {
+                ErrorManager::GenerateError(2);
+                ErrorManager::PretendToBeDied(ErrorManager::GetErrorCode(2), new \mysqli_sql_exception("Cannot connect to the db"));
                 return False;
             }
             $uid = 0;
@@ -1381,33 +1372,9 @@ namespace Users {
 
         }
         public static function IsUserExist($id){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf("Не удалось подключиться: %s\n", mysqli_connect_error());
-                return False;
-            }
-
-            if($stmt = $mysqli->prepare("SELECT count(*) FROM `tt_users` WHERE id=?")){
-                $stmt->bind_param("i", $id);
-                $stmt->execute();
-                $stmt->bind_result($result);
-                $stmt->fetch();
-                if($result > 0) {
-                    $stmt->close();
-                    $mysqli->close();
-                    return True;
-                }
-                else{
-                    $stmt->close();
-                    $mysqli->close();
-                    return False;
-                }
-
-            }
-
-            return False;
-
+            if ($id <= 0) return false;
+            if (DataKeeper::isExistsIn("tt_users", "id", $id)) return true;
+            else return false;
         }
         public static function AddUser($nick, $password, $email, $referer, $unforce = False, $name = '', $city = '', $sex = 0)
         {
@@ -1429,91 +1396,82 @@ namespace Users {
                     return ErrorManager::GetError();
                 }} else $referer = 0;
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
             if (Engine::GetEngineInfo("na")) {
                 $query = "SELECT count(*) FROM `tt_users` WHERE nickname=? OR email=?";
-                if ($stmt = $mysqli->prepare($query)) {
-                    $stmt->bind_param("ss", $nick, $email);
-                    $stmt->execute();
-                    $stmt->bind_result($count);
-                    $stmt->fetch();
-                    if ($count != 0) {
-                        $stmt->close();
-                        $mysqli->close();
-                        ErrorManager::GenerateError(3);
-                        return ErrorManager::GetError();
-                    }
-                    $stmt->close();
+                $sqlResult = DataKeeper::MakeQuery($query, array($nick, $email));
+                if ($sqlResult["count(*)"] > 0){
+                    ErrorManager::GenerateError(3);
+                    return ErrorManager::GetError();
                 }
             } else {
-                $query = "SELECT count(*) FROM `tt_users` WHERE nickname=?";
-                if ($stmt = $mysqli->prepare($query)) {
-                    $stmt->bind_param("s", $nick);
-                    $stmt->execute();
-                    $stmt->bind_result($count);
-                    $stmt->fetch();
-                    if ($count != 0) {
-                        ErrorManager::GenerateError(4);
-                        $stmt->close();
-                        return ErrorManager::GetError();
+                if (DataKeeper::isExistsIn("tt_users", "nickname", $nick)){
+                    ErrorManager::GenerateError(4);
+                    return ErrorManager::GetError();
+                }
+            }
+
+            $randomWord = Engine::RandomGen(10);
+
+            $queryReqRequest = DataKeeper::InsertTo("tt_users", array(
+               "nickname" => $nick,
+               "password" => hash("sha256", $password),
+               "email" => $email,
+               "group" => Engine::GetEngineInfo("sg"),
+               "active" => (Engine::GetEngineInfo("na") && $unforce != False) ? $randomWord : "TRUE",
+               "regdate" => date("Y-m-d", Engine::GetSiteTime()),
+               "regip" => $_SERVER["REMOTE_ADDR"],
+               "avatar" => "no",
+               "referer" => $referer,
+               "city" => $city,
+               "realname" => $name,
+               "sex" => $sex
+            ));
+            if ($queryReqRequest){
+                ob_start();
+                include_once "../../site/templates/" . Engine::GetEngineInfo("stp") . "/mailbody.html";
+                $body = ob_get_contents();
+                ob_end_clean();
+
+                $link = ((!empty(Engine::GetEngineInfo("dm"))) ? Engine::GetEngineInfo("dm") : $_SERVER['HTTP_HOST']) .
+                        "/profile.php?activate=$randomWord&uid=" . UserAgent::GetUserId($nick);
+                if (Engine::GetEngineInfo("na") &&  $unforce != false) {
+                    $bodyMain = "<p> Вы получили данное сообщение, поскольку на нашем сайте при регистрации кто-то указал этот Email. Если это были не Вы, тогда
+                                      забудьте о существовании этого письма, предварительно кинув его в мусорку. А так же в небытье пустоты.</p>
+                                 <p> Если же это были всё таки Вы, то напоминаем, что для того, чтобы начать пользоваться Вашим аккаунтом нужно его активировать, перейдя по
+                                      ссылке ниже. Также, Вы можете активировать свой аккаунт при входе. После авторизации, сайт попросит у Вас код активации.</p>
+                                  <span class=\"mail-span\">Никнейм: </span>$nick<br>
+                                  <span class=\"mail-span\">Код активации: </span>$randomWord
+                                  <p class=\"mail-link\">Вы также можете активировать свой аккаунт просто перейдя по ссылке: <a href=\"$link\">$link</a>";
+                    $body = str_replace("{MAIL_TITLE}", "Активация аккаунта - Администрация \"" . Engine::GetEngineInfo("sn") . "\"", $body);
+                    $body = str_replace("{MAIL_SITENAME}", Engine::GetEngineInfo("sn") , $body);
+                    $body = str_replace("{MAIL_NICKNAME_TO}", $nick , $body);
+                    $body = str_replace("{MAIL_BODY_MAIN}", $bodyMain, $body);
+                    $body = str_replace("{MAIL_FOOTER_INFORMATION}", "С уважением, Администрация \"" . Engine::GetEngineInfo("sn") . "\"<br>
+                                                                                 Все права защищены ©", $body);
+                    var_dump($body);
+                    if (!Mailer::SendMail($body, $email, "Активация аккаунта - Администрация \"" . Engine::GetEngineInfo("sn") . "\"")){
+                        DataKeeper::Delete("tt_users", ["nickname" => $nick]);
+                        return false;
                     }
-                    $stmt->close();
+                } else {
+                    $bodyMain = "<p> Вы получили данное сообщение, поскольку на нашем сайте при регистрации кто-то указал этот Email. Если это были не Вы, тогда
+                                      забудьте о существовании этого письма, предварительно кинув его в мусорку. А так же в небытье пустоты.</p>
+                                 <p> На нашем сайте не требуется активация аккаунтов, но мы не хотим, чтобы Вы забылы данные от Ващего аккаунта.</p>
+                                  <span class=\"mail-span\">Никнейм: </span>$nick<br>
+                                  <span class=\"mail-span\">Пароль: </span>$password";
+                    $body = str_replace("{MAIL_TITLE}", "Регистрация аккаунта - Администрация \"" . Engine::GetEngineInfo("sn") . "\"", $body);
+                    $body = str_replace("{MAIL_SITENAME}", Engine::GetEngineInfo("sn") , $body);
+                    $body = str_replace("{MAIL_NICKNAME_TO}", $nick , $body);
+                    $body = str_replace("{MAIL_BODY_MAIN}", $bodyMain, $body);
+                    $body = str_replace("{MAIL_FOOTER_INFORMATION}", "С уважением, Администрация \"" . Engine::GetEngineInfo("sn") . "\"<br>
+                                                                                 Все права защищены ©", $body);
+                    if (!Mailer::SendMail($body, $email, "Регистрация аккаунта - Администрация \"" . Engine::GetEngineInfo("sn") . "\"")) {
+                        DataKeeper::Delete("tt_users", ["nickname" => $nick]);
+                        return false;
+                    }
                 }
-
+                return true;
             }
-
-            $queryRegRequest = "INSERT INTO `tt_users` (`id`, `nickname`, `password`, `email`, `group`, `active`, `regdate`,`regip`,`avatar`, `referer`, `city`, `realname`, `sex`) VALUE (NULL,?,?,?,?,?,?,?,?,?,?,?,?)";
-            if ($stmtRegRequest = $mysqli->prepare($queryRegRequest)) {
-                $password = hash("sha256", $password);
-                $avatar = "no";
-                $date = date("Y-m-d", Engine::GetSiteTime());
-                $regIp = $_SERVER["REMOTE_ADDR"];
-                $defGroup = Engine::GetEngineInfo("sg");
-                if (Engine::GetEngineInfo("na") && $unforce != False) {
-                    $activateWord = Engine::RandomGen(10);
-                    $stmtRegRequest->bind_param("sssissssissi", $nick, $password, $email, $defGroup,
-                        $activateWord, $date, $regIp, $avatar, $referer, $city, $name, $sex);
-                    $stmtRegRequest->execute();
-                    $domainName = (!empty(Engine::GetEngineInfo("dm"))) ? Engine::GetEngineInfo("dm") : $_SERVER['HTTP_HOST'];
-                    $mBody = "Приветствуем, " . $nick . "!
-                                  Вы получили данное сообщение, поскольку на нашем сайте при регистрации кто-то указал этот Email. Если это были не Вы, тогда
-                                  забудьте о существовании этого письма, предварительно кинув его в мусорку. А так же в небытье пустоты.
-
-                                  Если же это были всё таки Вы, то напоминаем, что для того, чтобы начать пользоваться Вашим аккаунтом нужно его активировать, перейдя по
-                                  ссылке ниже. Также, Вы можете активировать свой аккаунт при входе. После авторизации, сайт попросит у Вас код активации.
-
-                                  Ваш никнейм: $nick.
-                                  Ваш код активации: $activateWord.
-
-                                  Ссылка на активацию вашего аккаунта: http://$domainName/profile.php?activate=$activateWord&uid=" . UserAgent::GetUserId($nick) . "
-
-                                  Приятного времени суток!
-                                  С превеликим уважением нашего Ордена, Администрация " . '"' . Engine::GetEngineInfo("sn") . '"';
-                    Mailer::SendMail($mBody, $email);
-                }
-                else {
-                    $activeWord = "TRUE";
-                    $stmtRegRequest->bind_param("sssissssissi", $nick, $password, $email, $defGroup, $activeWord, $date, $regIp,
-                        $avatar, $referer, $city, $name, $sex);
-                    $stmtRegRequest->execute();
-                }
-
-                if (mysqli_stmt_errno($stmtRegRequest))
-                    return mysqli_stmt_error($stmtRegRequest);
-                else {
-                    $stmtRegRequest->close();
-                    $mysqli->close();
-                    return True;
-                }
-            }
-
-            $mysqli->close();
             return false;
 
         }
@@ -2003,6 +1961,10 @@ namespace Users {
             $stmt->close();
             return false;
         }
+        public static function GetAdditionalFieldsList(){
+            return DataKeeper::Get("tt_adfields", ["*"]);
+        }
+
 
     }
     class GroupAgent{
