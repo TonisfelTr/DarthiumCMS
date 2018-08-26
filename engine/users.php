@@ -248,11 +248,7 @@ namespace Users {
             $this->uPrivateMessages = new PrivateMessager($this->uId);
             $this->uNotifications = new UserNotificator($this->uId);
             $this->uFriendList = new UserFriendlist($this->uId);
-            ////////////////////////////////////////////////////
-            /// Getting additional fields content
-            ////////////////////////////////////////////////////
-
-            $adFields = UserAgent::GetAdditionalFieldsList();
+            $this->uAdditionFields = UserAgent::GetAdditionalFieldsListOfUser($userId);
 
             return $this;
         }
@@ -348,6 +344,9 @@ namespace Users {
 
             $mysqli->close();
             return 0;
+        }
+        public function getAdditionalFields(){
+            return $this->uAdditionFields;
         }
 
         public function IsVKPublic(){
@@ -1324,8 +1323,11 @@ namespace Users {
         }
         public static function IsUserExist($id){
             if ($id <= 0) return false;
-            if (DataKeeper::isExistsIn("tt_users", "id", $id)) return true;
-            else return false;
+            $res = DataKeeper::isExistsIn("tt_users", "id", $id);
+            if ($res)
+                return true;
+            else
+                return false;
         }
         public static function AddUser($nick, $password, $email, $referer, $unforce = False, $name = '', $city = '', $sex = 0)
         {
@@ -1602,7 +1604,7 @@ namespace Users {
             return False;
         }
         public static function GetUserNick($id){
-            if (!self::IsUserExist($id)) {
+            if (self::IsUserExist($id) === false) {
                 ErrorManager::GenerateError(7);
                 return ErrorManager::GetError();
             }
@@ -1877,6 +1879,9 @@ namespace Users {
         }
         public static function GetAdditionalFieldsList(){
             return DataKeeper::Get("tt_adfields", ["*"]);
+        }
+        public static function GetAdditionalFieldsListOfUser($userId){
+            return DataKeeper::Get("tt_adfieldscontent", array("fieldId", "content", "isPrivate"), array("userId" => $userId));
         }
 
 

@@ -14,7 +14,6 @@ function str_replace_once($search, $replace, $text){
     $pos = strpos($text, $search);
     return $pos!==false ? substr_replace($text, $replace, $pos, strlen($search)) : $text;
 }
-
 ###############################################
 # Менеджер пользователя.
 if ($session === TRUE || !empty($_GET["uid"]))
@@ -122,7 +121,6 @@ include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profil
 $profileSeeErrors = getBrick();
 
 /***********************************Block profile page if user is exist.*********************/
-
 if ($session === true && $user->getId() == $_SESSION["uid"]){
     include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/userprofile.html";
     $profileMainPanel = getBrick();
@@ -251,7 +249,7 @@ if ($session === true && $user->getId() == $_SESSION["uid"]){
     if ($user->MessageManager()->getIncomeSize() == 0) {
         $table = "<tr><td class=\"profile-pm-table-empty-td\" colspan=\"6\"><span class=\"glyphicons glyphicons-info-sign\"></span> У вас нет новых сообщений :(</td></tr>";
     } else
-        {
+    {
         $table = "";
         for ($k = 0; $k < $user->MessageManager()->getIncomeSize(); $k++) {
             $icon = ($user->MessageManager()->incomes()[$k]["isRead"] == false) ? "message-full" : "message-empty";
@@ -385,87 +383,89 @@ if ($session === true && $user->getId() == $_SESSION["uid"]){
     else {
         $userNotificsTable = "";
         for ($i = 0; $i < $user->Notifications()->getNotifiesCount(); $i++){
-        $ntf = $user->Notifications()->getNotifies();
-        $userNotificsTable .= "<hr><div class=\"profile-notification-body\">";
-        if (!$ntf[$i]["isRead"])
-             $userNotificsTable .= "<span class=\"glyphicons glyphicons-info-sign\" style=\"font-size: 25px;\"></span>";
+            $ntf = $user->Notifications()->getNotifies();
+            $userNotificsTable .= "<hr><div class=\"profile-notification-body\">";
+            if (!$ntf[$i]["isRead"])
+                $userNotificsTable .= "<span class=\"glyphicons glyphicons-info-sign\" style=\"font-size: 25px;\"></span>";
 
-        $userNotificsTable .= "<a class=\"profile-link\" href=\"profile.php?uid=" . $ntf[$i]["fromUid"] . "\">" . \Users\UserAgent::GetUserNick($ntf[$i]["fromUid"]) . "</a>";
-        switch ($ntf[$i]["type"]){
-            case 1:
-                $userNotificsTable .= " добавил Вас в <a href=\"index.php?page=report&preg=see&rid=" . $ntf[$i]["subject"] . "\">комнату</a> для обсуждения жалобы.";
-                break;
-            case 2:
-                $userNotificsTable .= " добавил Вас в свой список друзей.";
-                break;
-            case 3:
-                $userNotificsTable .= " изменил Ваш профиль через администраторскую панель. Напишите ему, чтобы узнать детали.";
-                break;
-            case 4:
-                $userNotificsTable .= " удалил Вас из комнаты для обсуждения жалобы.";
-                break;
-            case 5:
-                $userNotificsTable .= " добавил своё сообщение в <a href=\"index.php?page=report&preg=see&rid=" . $ntf[$i]["subject"] . "\">комнате</a> для обсуждения жалобы.";
-                break;
-            case 6:
-                $userNotificsTable .= " добавил своё сообщение к созданному Вами посту.";
-                break;
-            case 7:
-                $userNotificsTable .= " понравился созданный Вами пост.";
-                break;
-            case 8:
-                $userNotificsTable .= " перенёс Ваш пост.";
-                break;
-            case 9:
-                $userNotificsTable .= " удалил созданный Вами пост. Напишите ему, чтобы узнать детали.";
-                break;
-            case 10:
-                $userNotificsTable .= " изменил текст в созданной Вами жалобе.";
-                break;
-            case 11:
-                $userNotificsTable .= " удалил созданную Вами жалобу. Напишите ему, чтобы узнать детали.";
-                break;
-            case 12:
-                $userNotificsTable .= " изменил текст Вашего поста.";
-                break;
-            case 13:
-                $userNotificsTable .= " поменял статус Вашего поста. Напишите ему, чтобы узнать детали, если они не указаны в посте.";
-                break;
-            case 14:
-                $userNotificsTable .= " зарегистрировался, указав Вас в качестве реферера.";
-                break;
-            case 15:
-                $userNotificsTable .= " закрыл созданную Вами <a href=\"index.php?page=report&preg=see&rid=" . $ntf[$i]["subject"] . "\">жалобу</a>.";
-                break;
-            case 16:
-                $userNotificsTable .= " удалил Ваш ответ в <a href=\"index.php?page=report&preg=see&rid=" . $ntf[$i]["subject"] . "\">жалобе.</a>. Напишите ему, чтобы узнать детали.";
-                break;
-            case 18:
-                $nAID = end(explode(",", $ntf[$i]["subject"]));
-                $nANickname = \Users\UserAgent::GetUserNick($nAID);
-                $userNotificsTable .= " добавил <a href=\"profile.php?uid=$nAID\">$nANickname</a> в <a href=\"index.php?page=report&preg=see&rid=" . reset(explode(",", $ntf[$i]["subject"])) . "\">комнату</a> для обсуждения жалобы.";
-                break;
-            case 19:
-                $nAID = end(explode(",", $ntf[$i]["subject"]));
-                $nANickname = \Users\UserAgent::GetUserNick($nAID);
-                $userNotificsTable .= " удалил <a href=\"profile.php?uid=$nAID\">$nANickname</a> из <a href=\"index.php?page=report&preg=see&rid=" . reset(explode(",", $ntf[$i]["subject"])) . "\">комнаты</a> для обсуждения жалобы.";
-                break;
-            case 20:
-                $nAID = end(explode(",", $ntf[$i]["subject"]));
-                $nANickname = \Users\UserAgent::GetUserNick($nAID);
-                $userNotificsTable .= " закрыл <a href=\"index.php?page=report&rid=".reset(explode(",", $ntf[$i]["subject"]))."\">жалобу</a>, созданную <a href=\"profile.php?uid=$nAID\">$nANickname</a>.";
-                break;
-        }
-        $userNotificsTable .= "<p class=\"profile-notification-time\">" . Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s", $ntf[$i]["createTime"])) . "</p>";
-        $userNotificsTable .= "</div>";
-    if (!$ntf[$i]["isRead"]) $user->Notifications()->setRead($ntf[$i]["id"]);
+            $userNotificsTable .= "<a class=\"profile-link\" href=\"profile.php?uid=" . $ntf[$i]["fromUid"] . "\">" . \Users\UserAgent::GetUserNick($ntf[$i]["fromUid"]) . "</a>";
+            switch ($ntf[$i]["type"]){
+                case 1:
+                    $userNotificsTable .= " добавил Вас в <a href=\"index.php?page=report&preg=see&rid=" . $ntf[$i]["subject"] . "\">комнату</a> для обсуждения жалобы.";
+                    break;
+                case 2:
+                    $userNotificsTable .= " добавил Вас в свой список друзей.";
+                    break;
+                case 3:
+                    $userNotificsTable .= " изменил Ваш профиль через администраторскую панель. Напишите ему, чтобы узнать детали.";
+                    break;
+                case 4:
+                    $userNotificsTable .= " удалил Вас из комнаты для обсуждения жалобы.";
+                    break;
+                case 5:
+                    $userNotificsTable .= " добавил своё сообщение в <a href=\"index.php?page=report&preg=see&rid=" . $ntf[$i]["subject"] . "\">комнате</a> для обсуждения жалобы.";
+                    break;
+                case 6:
+                    $userNotificsTable .= " добавил своё сообщение к созданному Вами посту.";
+                    break;
+                case 7:
+                    $userNotificsTable .= " понравился созданный Вами пост.";
+                    break;
+                case 8:
+                    $userNotificsTable .= " перенёс Ваш пост.";
+                    break;
+                case 9:
+                    $userNotificsTable .= " удалил созданный Вами пост. Напишите ему, чтобы узнать детали.";
+                    break;
+                case 10:
+                    $userNotificsTable .= " изменил текст в созданной Вами жалобе.";
+                    break;
+                case 11:
+                    $userNotificsTable .= " удалил созданную Вами жалобу. Напишите ему, чтобы узнать детали.";
+                    break;
+                case 12:
+                    $userNotificsTable .= " изменил текст Вашего поста.";
+                    break;
+                case 13:
+                    $userNotificsTable .= " поменял статус Вашего поста. Напишите ему, чтобы узнать детали, если они не указаны в посте.";
+                    break;
+                case 14:
+                    $userNotificsTable .= " зарегистрировался, указав Вас в качестве реферера.";
+                    break;
+                case 15:
+                    $userNotificsTable .= " закрыл созданную Вами <a href=\"index.php?page=report&preg=see&rid=" . $ntf[$i]["subject"] . "\">жалобу</a>.";
+                    break;
+                case 16:
+                    $userNotificsTable .= " удалил Ваш ответ в <a href=\"index.php?page=report&preg=see&rid=" . $ntf[$i]["subject"] . "\">жалобе.</a>. Напишите ему, чтобы узнать детали.";
+                    break;
+                case 18:
+                    $nAID = end(explode(",", $ntf[$i]["subject"]));
+                    $nANickname = \Users\UserAgent::GetUserNick($nAID);
+                    $userNotificsTable .= " добавил <a href=\"profile.php?uid=$nAID\">$nANickname</a> в <a href=\"index.php?page=report&preg=see&rid=" . reset(explode(",", $ntf[$i]["subject"])) . "\">комнату</a> для обсуждения жалобы.";
+                    break;
+                case 19:
+                    $nAID = end(explode(",", $ntf[$i]["subject"]));
+                    $nANickname = \Users\UserAgent::GetUserNick($nAID);
+                    $userNotificsTable .= " удалил <a href=\"profile.php?uid=$nAID\">$nANickname</a> из <a href=\"index.php?page=report&preg=see&rid=" . reset(explode(",", $ntf[$i]["subject"])) . "\">комнаты</a> для обсуждения жалобы.";
+                    break;
+                case 20:
+                    $nAID = end(explode(",", $ntf[$i]["subject"]));
+                    $nANickname = \Users\UserAgent::GetUserNick($nAID);
+                    $userNotificsTable .= " закрыл <a href=\"index.php?page=report&rid=".reset(explode(",", $ntf[$i]["subject"]))."\">жалобу</a>, созданную <a href=\"profile.php?uid=$nAID\">$nANickname</a>.";
+                    break;
+            }
+            $userNotificsTable .= "<p class=\"profile-notification-time\">" . Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s", $ntf[$i]["createTime"])) . "</p>";
+            $userNotificsTable .= "</div>";
+            if (!$ntf[$i]["isRead"]) $user->Notifications()->setRead($ntf[$i]["id"]);
         }
     }
 
     $userNotifics = str_replace_once("{PROFILE_PAGE:USER_NOTIFICATIONS}", $userNotificsTable, $userNotifics);
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //End building.
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Friendlist building.
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/userfriends.html";
     $userFriendList = getBrick();
@@ -498,6 +498,8 @@ if ($session === true && $user->getId() == $_SESSION["uid"]){
     }
 
     $userFriendList = str_replace_once("{PROFILE_PAGE:USER_FRIEND_TABLE}", $friendListTable, $userFriendList);
+
+    //End building.
 
     $header = str_replace_once("{PROFILE_PAGE:PAGE_NAME}","Профиль", $header);
 
@@ -581,8 +583,8 @@ if ($session === true && $user->getId() == $_SESSION["uid"]){
         $userFootBtns = getBrick();
 
         $sexOptions = "<option value=\"0\"". (($user->getSex() == 0) ? " selected" : "" ). ">не указан</option>". PHP_EOL .
-                      "<option value=\"1\"". (($user->getSex() == 1) ? " selected" : "" ). ">Мужской</option>" . PHP_EOL .
-                      "<option value=\"2\"". (($user->getSex() == 2) ? " selected" : "" ). ">Женский</option>";
+            "<option value=\"1\"". (($user->getSex() == 1) ? " selected" : "" ). ">Мужской</option>" . PHP_EOL .
+            "<option value=\"2\"". (($user->getSex() == 2) ? " selected" : "" ). ">Женский</option>";
         if (count($user->Blacklister()->getList()) == 0) {
             $blacklistTable = "<td colspan=\"4\" style=\"text-align: center;\"><span class=\"glyphicons glyphicons-info-sign\"></span> Пока что Ваш чёрный список пуст.</td>";
         } else {
@@ -626,7 +628,7 @@ if ($session === true && $user->getId() == $_SESSION["uid"]){
     $main = str_replace("{PROFILE_PAGE:USER_AVATAR_SIZE}", \Engine\Engine::GetEngineInfo("aw") . "x" . \Engine\Engine::GetEngineInfo("ah"), $main);
 }
 
-if ($session === true && (isset($_REQUEST["activate"]) || $user->getActiveStatus())){
+if ($session === true && $user->getId() == $_SESSION["uid"] && !$user->getActiveStatus()){
     include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/authactivation.html";
     $authActivateForm = getBrick();
 
@@ -635,7 +637,7 @@ if ($session === true && (isset($_REQUEST["activate"]) || $user->getActiveStatus
 }
 
 if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user))
-    || ($session === true && $user->getId() != $_SESSION["uid"] && \Users\UserAgent::GetUser($_SESSION["uid"])->UserGroup()->getPermission("user_see_foreign")))
+        || ($session === true && $user->getId() != $_SESSION["uid"] && \Users\UserAgent::GetUser($_SESSION["uid"])->UserGroup()->getPermission("user_see_foreign")))
     && ($user->IsAccountPublic() || $user->FriendList()->isFriend($_SESSION["uid"]))){
     include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/userprofile.html";
     $profileMainPanel = getBrick();
@@ -726,7 +728,7 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user))
     $main = str_replace("{PROFILE_FOOTER_BTNS}", $userFootBtns, $main);
 }
 
-if (($session !== true && !\Engine\Engine::GetEngineInfo("gsp") && $user !== false)
+if (($session !== true && !\Engine\Engine::GetEngineInfo("gsp"))
     || (!empty($user) && !$user->IsAccountPublic() && $session !== true)
     || (!empty($user) && !$user->IsAccountPublic() && !$user->FriendList()->isFriend($_SESSION["uid"]))){
 
@@ -736,23 +738,6 @@ if (($session !== true && !\Engine\Engine::GetEngineInfo("gsp") && $user !== fal
     $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}", $profileSeeErrors, $main);
     $main = str_replace_once("{PROFILE_MAIN_BODY}", null, $main);
 
-}
-
-/*********************************************************************************************/
-
-/*****************************Account activating block****************************************/
-
-if (isset($_REQUEST["activate"]) || session_id() && empty($user)){
-    $main = str_replace_once("{PROFILE_PAGE_TITLE}", "Активация аккаунта - " . \Engine\Engine::GetEngineInfo("sn"), $main);
-    $header = str_replace_once("{PROFILE_PAGE:PAGE_NAME}", "Активация аккаунта", $header);
-
-    include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/authactivateerrors.phtml";
-    $activateErrors = getBrick();
-    $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}", $activateErrors, $main);
-
-    include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/authactivation.html";
-    $authActivateForm = getBrick();
-    $main = str_replace_once("{PROFILE_MAIN_BODY}", $authActivateForm, $main);
 }
 
 /*********************************************************************************************/
