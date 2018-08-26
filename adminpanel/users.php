@@ -418,7 +418,7 @@ if ($canIPBan || $canIPUnban){
                 </div>
                 <div class="input-group">
                     <div class="input-group-addon">Активация:</div>
-                    <div class="form-control alert-info"><?php echo ($USER->getActiveStatus() === "true") ? "Активен" : $USER->getActiveStatus();?></div>
+                    <div class="form-control alert-info"><?php echo ($USER->getActiveStatus() === true) ? "Активен" : $USER->Activate();?></div>
                     <?php if ($USER->getActiveStatus() != true) { ?>
                     <span class="input-group-btn">
                         <button class="btn btn-default" type="submit" title="Автивировать" name="user-edit-activate">
@@ -472,7 +472,7 @@ if ($canIPBan || $canIPUnban){
                 </div>
                 <div class="input-group">
                     <div class="input-group-addon">Последний вход:</div>
-                    <div class="form-control alert-info"><?php echo \Engine\Engine::DateFormatToRead($USER->getLastDate());?></div>
+                    <div class="form-control alert-info"><?php echo ($USER->getLastDate() != "1970-01-01") ? \Engine\Engine::DateFormatToRead($USER->getLastDate()) : "не заходил";?></div>
                 </div>
                 <div class="input-group">
                     <div class="input-group-addon">IP при регистрации:</div>

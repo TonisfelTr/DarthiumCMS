@@ -285,8 +285,8 @@ if (isset ($_REQUEST["user-edit-save"])){
         }
         if ($eUser->getEmail() != $_REQUEST["user-edit-email"]) {
             $res = \Users\UserAgent::ChangeUserParams($eUser->getId(), "email", $_REQUEST["user-edit-email"]);
-            if ($res == 22) $backRequest .= "&res=4neve";
-            if ($res == 4) $backRequest .= "&res=4neee";
+            if ($res === 22) $backRequest .= "&res=4neve";
+            elseif ($res === 4) $backRequest .= "&res=4neee";
         }
         if ($eUser->getGroupId() != $_REQUEST["user-edit-group"]){
             $eUser->groupChange($_REQUEST["user-edit-group"]);

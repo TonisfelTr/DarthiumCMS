@@ -248,11 +248,12 @@ namespace Users {
             $this->uPrivateMessages = new PrivateMessager($this->uId);
             $this->uNotifications = new UserNotificator($this->uId);
             $this->uFriendList = new UserFriendlist($this->uId);
-//            $this->uAdditionFields = DataKeeper::Get("tt_adfieldscontent",
-//                array("fieldId", "content"), array(
-//                    "tt_adfieldscontent.userId" => $this->uId,
-//                    ""
-//                ));
+            ////////////////////////////////////////////////////
+            /// Getting additional fields content
+            ////////////////////////////////////////////////////
+
+            $adFields = UserAgent::GetAdditionalFieldsList();
+
             return $this;
         }
         public function getId(){
