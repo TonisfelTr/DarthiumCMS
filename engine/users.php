@@ -1116,69 +1116,37 @@ namespace Users {
          * @return bool|int
          */
         private static function Authorization($param, $pass, $passIsHash = False){
-
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno) {
-                ErrorManager::GenerateError(2);
-                ErrorManager::PretendToBeDied(ErrorManager::GetErrorCode(2), new \mysqli_sql_exception("Cannot connect to the db"));
-                return False;
-            }
-            $uid = 0;
             if (Engine::GetEngineInfo("na")){
-                if (!self::IsEmailValid($param)){
-                    ErrorManager::GenerateError(22);
-                    return ErrorManager::GetError();
+                $paramsToEnter = array($param, (($passIsHash) ? $pass : hash("sha256", $pass)));
+                if (self::IsValidNick($param))
+                    $autorizationResult = DataKeeper::MakeQuery("SELECT `id` FROM `tt_users` WHERE `nickname`=? AND `password`=?", $paramsToEnter);
+                if (self::IsEmailExists($param)) {
+                    $autorizationResult = DataKeeper::MakeQuery("SELECT `id` FROM `tt_users` WHERE `email`=? AND `password`=?", $paramsToEnter);
                 }
-                if ($stmt = $mysqli->prepare("SELECT `id` FROM `tt_users` WHERE `email`=? OR `nickname`=? AND `password`=?")){
-                    if ($passIsHash != True) $pass = hash("sha256", $pass);
-                    $stmt->bind_param("sss", $param, $param, $pass);
-                    $stmt->execute();
-                    if ($stmt->errno){
-                        ErrorManager::GenerateError(9);
+                if (isset($autorizationResult["id"]) && !empty($autorizationResult["id"])) {
+                    if (self::IsActivate($autorizationResult["id"]) == false) {
+                        ErrorManager::GenerateError(26);
                         return ErrorManager::GetError();
                     }
-                    $stmt->bind_result($uid);
-                    $stmt->fetch();
-                    if ($uid != 0){
-                        if(self::IsActivate($uid) != true){
-                            ErrorManager::GenerateError(26);
-                            return ErrorManager::GetError();
-                        }
-                        if (self::UpdateLastData($uid)) return True;
-                        else return False;
-                    }
-                    else return False;
-                } else echo $mysqli->error;
-
+                    self::UpdateLastData($autorizationResult["id"]);
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
-                if (!self::IsValidNick($param)){
-                    ErrorManager::GenerateError(21);
-                    return ErrorManager::GetError();
-                }
-
-                if ($stmt = $mysqli->prepare("SELECT `id` FROM `tt_users` WHERE `nickname`=? AND `password`=?")){
-                    if ($passIsHash != True){ $pass = hash("sha256", $pass); }
-                    $stmt->bind_param("ss", $param, $pass);
-                    $stmt->execute();
-                    if ($stmt->errno){
-                        ErrorManager::GenerateError(9);
+                $autorizationResult = DataKeeper::MakeQuery("SELECT `id` FROM `tt_users` WHERE `nickname`=? AND `password`=?",
+                    array($param, (($passIsHash) ? $pass : hash("sha256", $pass))));
+                if (isset($autorizationResult["id"])) {
+                    if (self::IsActivate($autorizationResult["id"]) == false) {
+                        ErrorManager::GenerateError(26);
                         return ErrorManager::GetError();
                     }
-                    $stmt->bind_result($uid);
-                    $stmt->fetch();
-                    if ($uid != 0) {
-                        if(self::IsActivate($uid) != true){
-                            ErrorManager::GenerateError(26);
-                            return ErrorManager::GetError();
-                        }
-                        if(self::UpdateLastData($uid)) return True;
-                    }
-                    else return False;
+                    self::UpdateLastData($autorizationResult["id"]);
+                    return true;
                 }
+                else
+                    return false;
             }
-
-            return False;
         }
         private static function AfterAuth(){
             self::$authID = $_SESSION["uid"];
@@ -1191,27 +1159,9 @@ namespace Users {
             return ErrorManager::GetError();
         }
         private static function IsActivate($id){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf("Не удалось подключиться: %s\n", mysqli_connect_error());
-                return False;
-            }
-
-            $value = 'TRUE';
-            if ($stmt = $mysqli->prepare("SELECT count(*) FROM `tt_users` WHERE `id`=? AND active=?")){
-                $stmt->bind_param("is", $id, $value);
-                $stmt->execute();
-                if ($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                $stmt->bind_result($act);
-                $stmt->fetch();
-                if ($act != 1) return false;
-                else return true;
-            }
-            return false;
+            $result = DataKeeper::MakeQuery("SELECT `active` FROM `tt_users` WHERE `id`=?", array($id));
+            if ($result["active"] == "TRUE") return true;
+            else return false;
         }
 
         public static function IsEmailExists($email){
@@ -1628,30 +1578,7 @@ namespace Users {
                 return ErrorManager::GetError();
             }
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf(mysqli_connect_error() . "<br />");
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            $query = "UPDATE `tt_users` SET `password` = ? WHERE `id`= ?";
-            if ($stmt = $mysqli->prepare($query)){
-                $pass = hash("sha256", $newPass);
-                $stmt->bind_param("si", $pass, $id);
-                $stmt->execute();
-                if (mysqli_stmt_errno($stmt))
-                    return mysqli_stmt_error($stmt);
-                else {
-                    $stmt->close();
-                    $mysqli->close();
-                    return True;
-                }
-
-            }
-
-            return false;
+            return DataKeeper::Update("tt_users", array("password" => hash("sha256", $newPass)), array("id" => $id));
         }
         public static function GetUserId($param){
 

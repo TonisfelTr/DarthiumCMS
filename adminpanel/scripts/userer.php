@@ -279,17 +279,21 @@ if (isset ($_REQUEST["user-edit-save"])){
                 $backRequest .= "&res=4neae";
         }
         if (!empty($_REQUEST["user-edit-password"])) {
-            if (!$eUser->passChange($_REQUEST["user-edit-password"])) {
+            $res = $eUser->passChange($_REQUEST["user-edit-password"]);
+            if ($res === false)
                 $backRequest .= "&res=4nep";
-            }
+            elseif ($res === 7)
+                $backRequest .= "&res=4neu";
         }
         if ($eUser->getEmail() != $_REQUEST["user-edit-email"]) {
             $res = \Users\UserAgent::ChangeUserParams($eUser->getId(), "email", $_REQUEST["user-edit-email"]);
             if ($res === 22) $backRequest .= "&res=4neve";
             elseif ($res === 4) $backRequest .= "&res=4neee";
         }
-        if ($eUser->getGroupId() != $_REQUEST["user-edit-group"]){
-            $eUser->groupChange($_REQUEST["user-edit-group"]);
+        if ($user->UserGroup()->getPermission("change_user_group")) {
+            if ($eUser->getGroupId() != $_REQUEST["user-edit-group"]) {
+                $eUser->groupChange($_REQUEST["user-edit-group"]);
+            }
         }
         if ($eUser->getFrom() != $_REQUEST["user-edit-from"]) {
             if (!\Users\UserAgent::ChangeUserParams($eUser->getId(), "city", $_REQUEST["user-edit-from"])) {
