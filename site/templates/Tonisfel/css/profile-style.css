@@ -697,3 +697,19 @@ span.profile-btn-new-counter{
     background: radial-gradient(at left, #2b2c2b, #7c7c7c);
     color: white;
 }
+
+td.table-friends-online-td,
+td.table-friends-list-td,
+td.table-no-online-friends-td{
+    text-align: center;
+}
+
+td.table-friends-online-td{
+    background: linear-gradient(75deg, #0e5424, #2e2e2e);
+    color: white;
+}
+
+td.table-friends-list-td{
+    background: linear-gradient(75deg, #1b2f54, #2e2e2e);
+    color: white;
+}

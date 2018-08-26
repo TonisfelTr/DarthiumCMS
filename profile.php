@@ -473,8 +473,11 @@ if ($session === true && $user->getId() == $_SESSION["uid"]){
     if ($user->FriendList()->getFriendsCount() == 0)
         $friendListTable = "<tr><td colspan=\"4\" style=\"text-align: center\">У вас пока что нет ни одного друга :(</td></tr>";
     else {
-        $friendListTable = "<tr><td colspan=\"4\" style=\"text-align: center;\">Друзья онлайн</td></tr>";
+        $friendListTable = "<tr><td class=\"table-friends-online-td\" colspan=\"4\">Друзья онлайн</td></tr>";
         $onlineList = \Users\UserAgent::GetOnlineFriends($user->getId());
+        if (\Users\UserAgent::GetOnlineFriendsCount($user->getId()) == 0){
+            $friendListTable .= "<tr><td colspan=\"4\" class=\"table-no-online-friends-td\">Пока что нет друзей в онлайне :(</td></tr>";
+        } else
         for ($i = 0; $i < \Users\UserAgent::GetOnlineFriendsCount($user->getId()); $i++) {
             $friend = new \Users\User($onlineList[$i]);
             $friendListTable .= "<tr>
@@ -484,7 +487,7 @@ if ($session === true && $user->getId() == $_SESSION["uid"]){
                                     <td></td>
                                  </tr>";
         }
-        $friendListTable .= "<tr><td colspan=\"4\" style=\"text-align: center;\">Остальные друзья</td></tr>";
+        $friendListTable .= "<tr><td colspan=\"4\" class=\"table-friends-list-td\">Остальные друзья</td></tr>";
         @$offlineList = array_diff($user->FriendList()->getFriendsList(), $onlineList);
         for ($i = 0; $i < count($offlineList); $i++) {
             $friend = new \Users\User($offlineList[$i]["friendId"]);
