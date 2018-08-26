@@ -162,6 +162,7 @@
                 define("TT_INDEX", __DIR__ . "../index.php");
                 define("TT_PROFILE", __DIR__ . "../profile.php");
                 define("TT_BAN", __DIR__ . "../banned.php");
+                define("TT_ROOT", __DIR__ . "../");
             }
             public static function SettingsSave($DomainSite, $siteName, $siteTagline, $siteStatus,
                                                 $siteSubscribe, $siteHashtags, $siteLang, $siteTemplate, $siteRegionTime,
@@ -276,6 +277,7 @@
             public static function CompileBBCode($stext){
                 $text = $stext;
 
+                $text = strip_tags($text);
                 $text = str_ireplace("[ol]", "<ol type=\"1\">", $text);
                 $text = str_ireplace("[/ol]", "</ol>", $text);
                 $text = str_ireplace("[/size]", "</p>", $text);
@@ -299,13 +301,8 @@
                 $text = preg_replace("/\[color\=(.+)\]/", "<span style=\"color: $1;\">",$text);
                 $text = preg_replace("/\[\*\](.*)/", "<li>$1</li>", $text);
                 $text = preg_replace("/\[quote\=(.+)\]/", "<p class=\"message-quote-author-sign\">$1 сказал(а):</p><div class=\"message-quote-block\"><span style=\"font-size: 50px; display: inline-block;\">“</span>",$text);
-                //$text = preg_replace("/\[link\=(.+)\].*\[\/link\]/", "<a href=\"$1\" class=\"profile-link\">$1</a>", $text);
                 $text = preg_replace("/\[link\=(.+)\](.*)\[\/link\]/", "<a href=\"$1\" class=\"profile-link\">$2</a>", $text);
-                while(strstr($text, "<script")) {
-                    $text = substr($text, strstr($text, "<script"), (!strstr($text, "</script>")) ? strlen($text) :  strstr($text, "</script>"));
-                }
 
-                //$text = preg_replace("/\[ol\]/", "<p style=\"font-size: $1px;\">",$text);
 
                 return $text;
             }
@@ -384,8 +381,8 @@
                 29 => "This report is not exist.",
                 30 => "This answer for report is not exist.",
                 31 => "This answer is a solve of one report.",
-                32 => "This category is not exist."
-
+                32 => "This category is not exist.",
+                33 => "Error in MySQL query"
             );
 
             static public function GenerateError($errorCode){
@@ -409,7 +406,7 @@
                     $itisjoke = true;
                 }
 
-                include_once "error.php";
+                include_once __DIR__ . "/../error.php";
             }
         }
 
@@ -592,67 +589,178 @@
         }
 
         class Mailer{
-            public static function SendMail($text, $sendTo){
-                include_once $_SERVER["DOCUMENT_ROOT"] . "/engine/mailer/swift_required.php";
+            public static function SendMail($text, $sendTo, $subject){
+                if ($text == "") return false;
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/engine/mailer/autoload.php";
 
-                $transport = \Swift_SmtpTransport::newInstance(Engine::GetEngineInfo("eh"),
-                    Engine::GetEngineInfo("ept"), Engine::GetEngineInfo("ecp"))
+                // Create the Transport
+                $transport = (new \Swift_SmtpTransport(Engine::GetEngineInfo("ecp") . "://" . Engine::GetEngineInfo("eh"), Engine::GetEngineInfo("ept")))
                     ->setUsername(Engine::GetEngineInfo("el"))
-                    ->setPassword(Engine::GetEngineInfo("ep"));
-                $mailer = \Swift_Mailer::newInstance($transport);
-                $message = \Swift_Message::newInstance(Engine::GetEngineInfo("sn") . " - Активация аккаунта")
-                    ->setFrom(array(Engine::GetEngineInfo("el") => 'Администрация "' . Engine::GetEngineInfo("sn") . '"'))
-                    ->setTo(array($sendTo => 'Активация аккаунта'))
-                    ->setBody($text);
+                    ->setPassword(Engine::GetEngineInfo("ep"))
+                ;
+
+                // Create the Mailer using your created Transport
+                $mailer = new \Swift_Mailer($transport);
+
+                // Create a message
+                $message = (new \Swift_Message($subject))
+                    ->setFrom([Engine::GetEngineInfo("el") => 'Администрация "' . Engine::GetEngineInfo("sn") . '"'])
+                    ->setTo([$sendTo])
+                    ->setBody($text, "text/html")
+                ;
+                $message->addPart(strip_tags($text), "text/plain");
+
+                // Send the message
                 $result = $mailer->send($message);
-                if(!$result) return false;
-                else return true;
+                return $result;
             }
         }
 
-        class DataKeeper{
-            private static $connection;
-
-            public static function connect()
-            {
-                if (is_a(self::$connection, "mysqli")) return false;
-
-                self::$connection = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-                if (self::$connection->errno){
+        class DataKeeper
+        {
+            private static function connect(){
+                $dsn = "mysql:dbname=" . Engine::GetDBInfo(3) . ";host=" . Engine::GetDBInfo(0) . ";";
+                $dblogin = Engine::GetDBInfo(1);
+                $dbpass = Engine::GetDBInfo(2);
+                try {
+                    $pdo = new \PDO($dsn, $dblogin, $dbpass);
+                    return $pdo;
+                } catch (\PDOException $pdoExcp){
                     ErrorManager::GenerateError(2);
-                    ErrorManager::PretendToBeDied(self::$connection->error, new \mysqli_sql_exception("MySQL connect exception"));
+                    ErrorManager::PretendToBeDied(ErrorManager::GetErrorCode(2), $pdoExcp);
                 }
-                return true;
+                return false;
             }
 
-            public static function MakeQuery($queryText, $varsArr){
+            public static function getMax($table, $column){
+                $pdo = self::connect();
+                $preparedQuery = $pdo->prepare("SELECT MAX(`$column`) FROM $table");
+                $preparedQuery->execute();
+                $result = $preparedQuery->fetch();
+                return $result[0];
+            }
 
-                $strContent = "";
-                foreach($varsArr as $var){
-                    if (is_numeric($var)){
-                        $strContent .= "i";
-                        break;
-                    }
-                    if (is_double($var)){
-                        $strContent .= "d";
-                        break;
-                    }
-                    if (is_string($var)){
-                        $strContent .= "s";
-                        break;
-                    }
+            public static function isExistsIn($table, $column, $content){
+                $pdo = self::connect();
 
+                $query = "SELECT count(*) FROM `$table` WHERE `$column`=?";
+                $preparedQuery = $pdo->prepare($query);
+                $preparedQuery->execute([$content]);
+                $result = $preparedQuery->fetch($pdo::FETCH_ASSOC);
+                if ($result["count(*)"] == 0) return false;
+                else return true;
+
+            }
+
+            public static function InsertTo($table, array $varsArr){
+                $pdo = self::connect();
+                $keys = "";
+                $values = "";
+                $varsArrToSend = [];
+                foreach ($varsArr as $key => $value){
+                    $keys .= "`$key`,";
+                    $values .= "?,";
+                    $varsArrToSend[] = $value;
+                }
+                $keys = rtrim($keys, ",");
+                $values = rtrim($values, ",");
+                $query = "INSERT INTO $table ($keys) VALUE ($values)";
+                $preparedQuery = $pdo->prepare($query);
+                $execute = $preparedQuery->execute($varsArrToSend);
+                if ($execute){
+                    return $pdo->lastInsertId();
+                } else return false;
+            }
+
+            public static function Update($table, array $varsArr, array $whereArr){
+                $pdo = self::connect();
+                $keys = "";
+                $whereKeys = "";
+                $varsArrToSend = [];
+                foreach ($varsArr as $key => $value){
+                    $keys .= "`$key`=?,";
+                    $varsArrToSend[] = $value;
+                }
+                foreach ($whereArr as $whereKey => $whereValue){
+                    $whereKeys .= "`$whereKey`=?,";
+                    $varsArrToSend[] = $whereValue;
                 }
 
-                if ($stmt = self::$connection->prepare($queryText)){
-                    $stmt->bind_param($strContent, $varsArr);
-                    $stmt->execute();
-                    if ($stmt->errno){
-                        ErrorManager::GenerateError(9);
-                        ErrorManager::PretendToBeDied($stmt->error, new \mysqli_sql_exception("STMT query exception"));
+                $keys = rtrim($keys, ",");
+                $whereKeys = rtrim($whereKeys, ",");
+                $query = "UPDATE $table SET $keys WHERE $whereKeys";
+                $preparedQuery = $pdo->prepare($query);
+                if ($preparedQuery->execute($varsArrToSend))
+                    return true;
+                else{
+                    ErrorManager::GenerateError(33);
+                    ErrorManager::PretendToBeDied("Cannot execute UPDATE query: " . $preparedQuery->errorInfo()[2], new \PDOException($preparedQuery->errorInfo()[2]));
+                    return false;
+                }
+            }
 
+            public static function Delete($table, array $whereArr){
+                $pdo = self::connect();
+                $whereStr = "";
+                $varsArrToSend = [];
+                foreach ($whereArr as $key => $value){
+                    $whereStr .= "`$key`=?,";
+                    $varsArrToSend[] = $value;
+                }
+                $whereStr = trim($whereStr, ",");
+                $query = "DELETE FROM `$table` WHERE $whereStr";
+                $preparedQuery = $pdo->prepare($query);
+                return $preparedQuery->execute( $varsArrToSend);
+            }
+
+            public static function Get($table, array $whatArr, array $whereArr = null){
+                $pdo = self::connect();
+                $varsArrToSend = [];
+                if ($whereArr != null) {
+                    $whereStr = "";
+                    foreach ($whereArr as $key => $value) {
+                        $whereStr .= "`$key`=?,";
+                        $varsArrToSend[] = $value;
                     }
                 }
+                $whatStr = "";
+                foreach ($whatArr as $key => $value){
+                    if ($value != "*")
+                        $whatStr .= "`$value`,";
+                    else {
+                        $whatStr .= "$value";
+                        break;
+                    }
+                }
+                $whatStr = rtrim($whatStr, ",");
+                $whereStr = rtrim($whereStr, ",");
+
+                if ($whereArr != null) {
+                    $query = "SELECT $whatStr FROM `$table` WHERE $whereStr";
+                    $preparedQuery = $pdo->prepare($query);
+                    $preparedQuery->execute($varsArrToSend);
+                } else {
+                    $query = "SELECT $whatStr FROM `$table`";
+                    $preparedQuery = $pdo->prepare($query);
+                    $preparedQuery->execute();
+                }
+                return $preparedQuery->fetchAll($pdo::FETCH_ASSOC);
+            }
+
+            public static function MakeQuery($query, array $whereArr = null){
+                $pdo = self::connect();
+
+                $preparedQuery = $pdo->prepare($query);
+                if ($whereArr != null)
+                    $result = $preparedQuery->execute($whereArr);
+                else
+                    $result = $preparedQuery->execute();
+                if (!$result){
+                    ErrorManager::GenerateError(33);
+                    ErrorManager::PretendToBeDied("Cannot make special SQL query:" . $preparedQuery->errorInfo()[2], new \PDOException("Cannot make special SQL query."));
+                    return false;
+                }
+                return $preparedQuery->fetch($pdo::FETCH_ASSOC);
             }
         }
     }
