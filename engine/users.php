@@ -890,7 +890,7 @@ namespace Users {
          * 11. Have deleted report. +
          * 12. Have changed a topic.
          * 13. Have changed status of topic.
-         * 14. Somebody has been signed up indicated referrer.
+         * 14. Somebody has been signed up indicated referrer. +
          * 15. Have closed report. +
          * 16. Your answer in report discussion has been deleted. +
          * 17. Answer in report discussion has been changed. +
@@ -1073,7 +1073,7 @@ namespace Users {
         private static function IsValidNick($str){
             if (strlen($str) > 16) return false;
             if (strlen($str) < 4) return false;
-            if (preg_match("/^[a-zA-Z0-9_]+$/", $str) == 1) return true;
+            if (preg_match("/^[a-zA-Z0-9_]+$/", $str) === 1) return true;
             else return false;
         }
         private static function IsEmailValid($str){
@@ -1448,10 +1448,14 @@ namespace Users {
                     $body = str_replace("{MAIL_BODY_MAIN}", $bodyMain, $body);
                     $body = str_replace("{MAIL_FOOTER_INFORMATION}", "С уважением, Администрация \"" . Engine::GetEngineInfo("sn") . "\"<br>
                                                                                  Все права защищены ©", $body);
-                    var_dump($body);
                     if (!Mailer::SendMail($body, $email, "Активация аккаунта - Администрация \"" . Engine::GetEngineInfo("sn") . "\"")){
                         DataKeeper::Delete("tt_users", ["nickname" => $nick]);
                         return false;
+                    } else {
+                        if ($referer !== false){
+                            $notificator = new UserNotificator($referer);
+                            $notificator->createNotify(14, $queryReqRequest);
+                        }
                     }
                 } else {
                     $bodyMain = "<p> Вы получили данное сообщение, поскольку на нашем сайте при регистрации кто-то указал этот Email. Если это были не Вы, тогда
@@ -1468,6 +1472,11 @@ namespace Users {
                     if (!Mailer::SendMail($body, $email, "Регистрация аккаунта - Администрация \"" . Engine::GetEngineInfo("sn") . "\"")) {
                         DataKeeper::Delete("tt_users", ["nickname" => $nick]);
                         return false;
+                    } else {
+                        if ($referer !== false){
+                            $notificator = new UserNotificator($referer);
+                            $notificator->createNotify(14, $queryReqRequest);
+                        }
                     }
                 }
                 return true;
@@ -1581,59 +1590,36 @@ namespace Users {
                 return false;
             }
 
-            if ($param == 'nickname'){
+            if (!self::IsUserExist($id)){
+                ErrorManager::GenerateError(7);
+                return ErrorManager::GetError();
+            }
+
+            if ($param == "nickname"){
                 if (!self::IsValidNick($newparam)){
                     ErrorManager::GenerateError(21);
                     return ErrorManager::GetError();
                 }
 
-                if (!self::IsNicknameExists($newparam)){
+                if (self::IsNicknameExists($newparam)){
                     ErrorManager::GenerateError(4);
                     return ErrorManager::GetError();
                 }
             }
 
-            if ($param == 'email'){
+            if ($param == "email"){
                 if (!self::IsEmailValid($newparam)){
                     ErrorManager::GenerateError(22);
                     return ErrorManager::GetError();
                 }
-                if (Engine::GetEngineInfo("na")){
-                    if (!self::IsEmailExists($newparam)){
-                        ErrorManager::GenerateError(3);
-                        return ErrorManager::GetError();
-                    }
+
+                if (Engine::GetEngineInfo("na") && self::IsEmailExists($newparam)){
+                    ErrorManager::GenerateError(34);
+                    return ErrorManager::GetError();
                 }
             }
 
-            if (!self::IsUserExist($id)) {
-                ErrorManager::GenerateError(7);
-                return ErrorManager::GetError();
-            }
-
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf(mysqli_connect_error() . "<br />");
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            $query = "UPDATE `tt_users` SET `$param` = ? WHERE `id`= ?";
-            if ($stmt = $mysqli->prepare($query)){
-                $stmt->bind_param("si", $newparam, $id);
-                $stmt->execute();
-                if (mysqli_stmt_errno($stmt))
-                    return mysqli_stmt_error($stmt);
-                else {
-                    $stmt->close();
-                    $mysqli->close();
-                    return True;
-                }
-
-            }
-
-            return false;
+            return DataKeeper::Update("tt_users", array($param => $newparam), array("id" => $id));
         }
         public static function ChangeUserPassword($id, $newPass){
             if (!self::IsUserExist($id)) {

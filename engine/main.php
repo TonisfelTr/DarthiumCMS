@@ -353,7 +353,7 @@
                 1 => "Database data is not set.",
                 2 => "MYSQL connection has not been established.",
                 3 => "These nickname or email are already exist.",
-                4 => "That nickname is already exist.",
+                4 => "This nickname is already exist.",
                 5 => "This banned-var is exist.",
                 6 => "This banned-var is not exist.",
                 7 => "This account is not exist.",
@@ -382,7 +382,8 @@
                 30 => "This answer for report is not exist.",
                 31 => "This answer is a solve of one report.",
                 32 => "This category is not exist.",
-                33 => "Error in MySQL query"
+                33 => "Error in MySQL query",
+                34 => "This email is already exist."
             );
 
             static public function GenerateError($errorCode){

@@ -165,7 +165,7 @@ if ($canIPBan || $canIPUnban){
                 <div class="btn-group">
                     <button class="btn btn-default" type="submit" name="users-find-button">Найти пользователей</button>
                     <?php if ($user->UserGroup()->getPermission("user_remove")) {?><button class="btn btn-default alert-danger" type="button" name="users-delete-button" id="users-delete-button" disabled>Удалить пользователей</button><?php } ?>
-                    <a class="btn btn-default" href="adminpanel.php?p=users" name="users-reset-button">Отчистить</a>
+                    <a class="btn btn-default" href="adminpanel.php?p=users" name="users-reset-button">Отчистить фильтры</a>
                 </div>
                 <hr>
                 <h2>Результаты поиска</h2>
@@ -418,7 +418,7 @@ if ($canIPBan || $canIPUnban){
                 </div>
                 <div class="input-group">
                     <div class="input-group-addon">Активация:</div>
-                    <div class="form-control alert-info"><?php echo ($USER->getActiveStatus()) ? "Активен" : $USER->getActiveStatus();?></div>
+                    <div class="form-control alert-info"><?php echo ($USER->getActiveStatus() === "true") ? "Активен" : $USER->getActiveStatus();?></div>
                     <?php if ($USER->getActiveStatus() != true) { ?>
                     <span class="input-group-btn">
                         <button class="btn btn-default" type="submit" title="Автивировать" name="user-edit-activate">

@@ -267,8 +267,16 @@ if (isset ($_REQUEST["user-edit-save"])){
         $eUser = new \Users\User($_REQUEST["user-edit-id"]);
         if ($eUser->getNickname() != $_REQUEST["user-edit-nickname"]) {
             $res = \Users\UserAgent::ChangeUserParams($eUser->getId(), "nickname", $_REQUEST["user-edit-nickname"]);
-            if ($res == 21) $backRequest .= "&res=4nenvn";
-            elseif ($res == 3) $backRequest .= "&res=4neenn";
+            if ($res === 21)
+                $backRequest .= "&res=4nenvn";
+            elseif ($res === 4)
+                $backRequest .= "&res=4neenn";
+            elseif ($res === 7)
+                    $backRequest .= "&res=4neu";
+            elseif ($res === 22)
+                $backRequest .= "&res=4nve";
+            elseif ($res === 34)
+                $backRequest .= "&res=4neae";
         }
         if (!empty($_REQUEST["user-edit-password"])) {
             if (!$eUser->passChange($_REQUEST["user-edit-password"])) {

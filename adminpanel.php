@@ -28,7 +28,7 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?php echo \Engine\Engine::GetEngineInfo("sn") . ' - Админпанель';?></title>
+    <title><?php echo "Администраторская панель - " . \Engine\Engine::GetEngineInfo("sn");?></title>
     <script src="libs/js/ie-emulator.js"></script>
     <script src="libs/js/jquery-3.1.0.min.js"></script>
     <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -232,16 +232,16 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
                 if ($_REQUEST["res"] == "4sru") { ?><div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span>
                     Пользователь "<?php echo $_REQUEST["nunn"]; ?>" был зарегистрирован!
                 </div> <?php }
-                if ($_REQUEST["res"] == ("4nvnn" | "4nenvn")) { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    В выбранной никнейме есть запрещённые символы. Вы можете использовать только цифры, буквы латинского алфавита и точку.
+                if (($_REQUEST["res"] == "4nvnn") || ($_REQUEST["res"] == "4nenvn")) { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                    В выбранном никнейме есть запрещённые символы. Вы можете использовать только цифры, буквы латинского алфавита и точку.
                     </div> <?php }
-                if ($_REQUEST["res"] == ("4nve" | "4neve")) { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                if (($_REQUEST["res"] == "4nve") || ($_REQUEST["res"] == "4neve")) { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
                     Вы ввели неверный адрес электронной почты.
                     </div> <?php }
-                if ($_REQUEST["res"] == ("4nnee" | "4neee")) { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                if (($_REQUEST["res"] == "4nnee") || ($_REQUEST["res"] == "4neee")) { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
                     Пользователь с такими никнеймом или email уже есть.
                     </div> <?php }
-                if ($_REQUEST["res"] == ("4nne" | "4neenn")) { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                if (($_REQUEST["res"] == "4nne") || ($_REQUEST["res"] == "4neenn")) { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
                     Пользователь таким никнеймом уже есть.
                     </div> <?php }
                 if ($_REQUEST["res"] == "4nep") { ?><div class="alert alert-fanger"><span class="glyphicon glyphicon-warning-sign"></span>
@@ -292,8 +292,14 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
                 if ($_REQUEST["res"] == "4sua") { ?><div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span>
                     Аккаунт пользователя "<?php echo \Users\UserAgent::GetUserNick($_REQUEST["uid"]); ?>" был активирован.
                 </div> <?php }
-                if ($_REQUEST["res"] == "4nua") { ?><div class="alert alert-fanger"><span class="glyphicon glyphicon-remove"></span>
+                if ($_REQUEST["res"] == "4nua") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span>
                     Не удалось активировать данного пользователя.
+                </div> <?php }
+                if ($_REQUEST["res"] == "4neu") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span>
+                    Такого пользователя не существует.
+                </div> <?php }
+                if ($_REQUEST["res"] == "4neae") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span>
+                    Такой Email уже зарегистрирован.
                 </div> <?php }
             }
             if ($_GET["p"] == "report"){
