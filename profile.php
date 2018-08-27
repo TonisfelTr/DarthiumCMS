@@ -522,16 +522,16 @@ if ($session === true && $user->getId() == $_SESSION["uid"]){
     $main = str_replace_once("{PROFILE_PAGE_FRIENDS}", $userFriendList, $main);
     $main = str_replace("{PROFILE_PAGE:USER_REGDATETIME}", \Engine\Engine::DateFormatToRead($user->getRegDate()) . ".", $main);
 
-    if ($user->IsVKPublic())
+    if ($user->IsVKPublic() || $user->getId() == $_SESSION["uid"])
         $userVKLink = ($user->getVK() == "") ? "VK: не указано<br>" : "VK: <a class=\"profile-profile-link\" href=\"http://vk.com/".htmlentities($user->getVK())."\">" . htmlentities($user->getVK()) . "</a><br>";
     else $userVKLink = "";
-    if ($user->IsBirthdayPublic())
+    if ($user->IsBirthdayPublic() || $user->getId() == $_SESSION["uid"])
         $userBirthday = $user->getBirth() == "" ? "День рождения: не указано<br>" : "День рождения: " . htmlentities($user->getBirth()) . "<br>";
     else $userBirthday = "";
-    if ($user->IsSkypePublic())
+    if ($user->IsSkypePublic() || $user->getId() == $_SESSION["uid"])
         $userSkypeLink = $user->getSkype() == "" ? "Skype: не указано<br>" : "Skype: <a class=\"profile-profile-link\" href=\"skype:". htmlentities($user->getSkype())."?chat\">написать</a><br>";
     else $userSkypeLink = "";
-    if ($user->IsEmailPublic())
+    if ($user->IsEmailPublic() || $user->getId() == $_SESSION["uid"])
         $userEmailLink = "Email: <a class=\"profile-profile-link\" href=\"mailto:".$user->getEmail()."\">" . $user->getEmail() . "</a><br>";
     else $userEmailLink = "";
     if ($user->getReferer() != null)
@@ -654,16 +654,16 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user))
     include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/userinfo.html";
     $userInfo = getBrick();
 
-    if ($user->IsVKPublic())
+    if ($user->IsVKPublic() || $user->FriendList()->isFriend($_SESSION["uid"]))
         $userVKLink = ($user->getVK() == "") ? "VK: не указано<br>" : "VK: <a class=\"profile-profile-link\" href=\"http://vk.com/".$user->getVK()."\">" . $user->getVK() . "</a><br>";
     else $userVKLink = "";
-    if ($user->IsBirthdayPublic())
+    if ($user->IsBirthdayPublic() || $user->FriendList()->isFriend($_SESSION["uid"]))
         $userBirthday = $user->getBirth() == "" ? "День рождения: не указано<br>" : "День рождения: " . $user->getBirth() . "<br>";
     else $userBirthday = "";
-    if ($user->IsSkypePublic())
+    if ($user->IsSkypePublic() || $user->FriendList()->isFriend($_SESSION["uid"]))
         $userSkypeLink = $user->getSkype() == "" ? "Skype: не указано<br>" : "Skype: <a class=\"profile-profile-link\" href=\"skype:". $user->getSkype()."?chat\">написать</a><br>";
     else $userSkypeLink = "";
-    if ($user->IsEmailPublic())
+    if ($user->IsEmailPublic() || $user->FriendList()->isFriend($_SESSION["uid"]))
         $userEmailLink = "Email: <a class=\"profile-profile-link\" href=\"mailto:".$user->getEmail()."\">" . $user->getEmail() . "</a><br>";
     else $userEmailLink = "";
 
