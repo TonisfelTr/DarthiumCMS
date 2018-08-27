@@ -97,13 +97,12 @@ if ($nicknameResult.$passwordResult.$emailResult.$refererResult == ("ok,ok,ok;ok
         header("Location: ../../profile.php?signup&res=ic");
         exit;
     }
-    try {
-        if (\Users\UserAgent::AddUser($nickname, $password, $email, $referer,
-                true, @$_REQUEST["profile-reg-realname-input"], @$_REQUEST["profile-reg-city-input"], @$_REQUEST["profile-reg-sex-input"]) === TRUE) {
-            header("Location: ../../profile.php?res=sr");
-            exit;
-        }
-    } catch(\Exception $e) {
+
+    if (\Users\UserAgent::AddUser($nickname, $password, $email, $referer,
+            true, @$_REQUEST["profile-reg-realname-input"], @$_REQUEST["profile-reg-city-input"], @$_REQUEST["profile-reg-sex-input"]) === TRUE) {
+        header("Location: ../../profile.php?res=sr");
+        exit;
+    } else {
         header("Location: ../../profile.php?signup&res=nr");
         exit;
     }

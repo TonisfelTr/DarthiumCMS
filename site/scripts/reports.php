@@ -227,6 +227,4 @@ if (isset( $_REQUEST["reports-answer-delete"])){
     }
 }
 
-
-var_dump($_REQUEST);
-//header("Location: ../../index.php?page=errors/forbidden");
+header("Location: ../../index.php?page=errors/forbidden");
