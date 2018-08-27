@@ -23,6 +23,8 @@ function addToErrorsList(icon, text) {
 
 function showPanel(divTitle){
     $("#profile-profile-panels > div").hide();
+    $("#profile-profile-panels > div > div.profile-profile-panel-btn-group > button.active").removeClass("active");
+    $("#profile-profile-panels > div > div.profile-profile-panel-btn-group > button:first-child").addClass("active");
     $("#profile-profile-panels div[data-div-title=" + divTitle + "]").show();
     showFirstSubpanel(divTitle);
 }
