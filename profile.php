@@ -20,7 +20,7 @@ if ($session === TRUE || !empty($_GET["uid"]))
     $seeProfile = true;
 else
     $seeProfile = false;
-if ($session === TRUE){
+if ($session === TRUE || $session === 26){
     $user = new \Users\User($_SESSION["uid"]);
     if (!empty($_REQUEST["res"])){
         $response = $_REQUEST["res"];
@@ -718,10 +718,15 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
     $main = str_replace("{PROFILE_PAGE:USER_AVATAR_SIZE}", \Engine\Engine::GetEngineInfo("aw") . "x" . \Engine\Engine::GetEngineInfo("ah"), $main);
 }
 
-if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"] && !$user->getActiveStatus()){
+if ($user !== false && $session === 26 && $user->getId() == $_SESSION["uid"] && !$user->getActiveStatus()){
     include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/authactivation.html";
     $authActivateForm = getBrick();
 
+    include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/authactivateerrors.phtml";
+    $authActivationErrors = getBrick();
+
+    $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}", $authActivationErrors, $main);
+    $header = str_replace_once("{PROFILE_PAGE:PAGE_NAME}", "Активация аккаунта", $header);
     $main = str_replace_once("{PROFILE_MAIN_BODY}", $authActivateForm, $main);
     $main = str_replace_once("{PROFILE_PAGE_TITLE}", "Активация аккаунта - " . \Engine\Engine::GetEngineInfo("sn"), $main);
 }
