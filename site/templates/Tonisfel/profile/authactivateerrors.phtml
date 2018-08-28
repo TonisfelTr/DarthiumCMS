@@ -6,5 +6,8 @@
         <?php if ($_REQUEST["res"] == "iac"){ ?>
             <span class="glyphicon glyphicon-remove"></span> Введённый код активации не подходит для этого аккаунта.
         <?php }?>
+        <?php if ($session === true && $user->getId() == $_SESSION["uid"] && !$user->getActiveStatus()){ ?>
+            <span class="glyphicon glyphicon-remove"></span> Ваш аккаунт был деактивирован.
+        <?php }?>
     </div>
 <?php } ?>

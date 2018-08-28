@@ -100,7 +100,8 @@ if (!empty($response)) {
         "aphbs", "phbc", "apaphbs",
         "mhbs", "mhbr", "mhbrt",
         "uhbatfl",
-        "seav"])){ ?>
+        "seav",
+        "saa"])){ ?>
         <div id="profile-reg-message-div" class="profile-reg-success-div">
             <?php if ($response == "uhbb"){ ?>
                 <p><span class="glyphicons glyphicons-ok"></span> Пользователь был заблокирован.</p>
@@ -131,6 +132,9 @@ if (!empty($response)) {
             <?php } ?>
             <?php if ($response == "seav"){ ?>
                 <p><span class="glyphicons glyphicons-ok"></span> Ваша аватарка была обновлена!</p>
+            <?php } ?>
+            <?php if ($response == "saa"){ ?>
+                <p><span class="glyphicons glyphicons-ok"></span> Ваш аккаунт был успешно активирован! Приятного пользования!</p>
             <?php } ?>
             <hr>
             <p style="color: lightblue; text-decoration: underline;" onclick="$('#profile-reg-message-div').remove();">Закрыть сообщение</p>

@@ -26,6 +26,7 @@ if (isset($_REQUEST["profile-activation-code-send-btn"])) {
 
 
 if (isset($_REQUEST["profile-activation-cancel-btn"])){
+    \Users\UserAgent::SessionDestroy();
     header("Location: ../../profile.php");
     exit;
 }
