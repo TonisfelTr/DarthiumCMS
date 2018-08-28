@@ -340,6 +340,12 @@ if (isset ($_REQUEST["user-edit-save"])){
                 $backRequest .= "&res=4nesg";
             }
         }
+        $adFields = \Users\UserAgent::GetAdditionalFieldsList();
+        foreach ($adFields as $field){
+            if (!\Users\UserAgent::SetAdditionalFieldContent($eUser->getId(), $field["id"], @$_REQUEST["user-edit-" . $field["id"]]))
+                $backRequest .= "&res=4ncsafc";
+        }
+
         if (!empty($_REQUEST["user-edit-avatar"])) {
             $res = \Users\UserAgent::UploadAvatar($eUser->getId(), "user-form");
             if ($res === False) $backRequest .= "&res=4neav";

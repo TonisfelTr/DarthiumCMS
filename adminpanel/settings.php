@@ -417,16 +417,17 @@ else {
                 $(span).addClass("glyphicons glyphicons-ok");
                 $(span).after(" " + text);
                 break;
-            };
+            }
             case 0:
             case "error":
             case "failed":
             case "fail": {
+                $(div).html("");
+                $(div).append($(span));
                 $(div).removeClass("hidden");
                 $(div).addClass("alert-danger");
                 $(span).addClass("glyphicons glyphicons-remove");
-                $(span).after("");
-                $(span).after(" "+text);
+                $(span).after(" " + text);
                 break;
             }
         }

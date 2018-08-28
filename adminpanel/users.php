@@ -22,10 +22,62 @@ function setVisible($bool){
         return "";
     else return "hidden";
 }
+
+function constructDiv($id, $name, $content, $link = null){
+    if ($link != null){
+        $link = str_replace("{{1}}", $content, $link);
+        $linkButton = "<span class=\"input-group-btn\">
+                        <button class=\"btn btn-default\" type=\"button\" title=\"Открыть\" onclick=\"window.open('$link');\">
+                            <span class=\"glyphicons glyphicons-new-window\"></span>
+                        </button>
+                    </span>";
+    } else $linkButton = "";
+    return "<div class=\"input-group\">
+                <div class=\"input-group-addon\">$name</div>
+                <input class=\"form-control\" type=\"text\" value=\"$content\" name=\"user-edit-$id\">
+                $linkButton
+            </div>";
+}
 if(!empty($_GET["uid"])) {
     if (\Users\UserAgent::IsUserExist($_GET["uid"])) {
         $userExists = true;
         $USER = new \Users\User($_GET["uid"]);
+
+        ///////////////////////////////////////////////////////////////////////
+        /// Build additional fields mechanism.
+        ///////////////////////////////////////////////////////////////////////
+
+        $additionalFields = \Users\UserAgent::GetAdditionalFieldsList();
+        $userAdFields = $USER->getAdditionalFields();
+        $customAF = [];
+        $contactAF = [];
+        $infoAF = [];
+        foreach($additionalFields as $fieldProp){
+            $fieldName = $fieldProp["name"];
+            foreach ($userAdFields as $adField){
+                if ($fieldProp["id"] == $adField["fieldId"]){
+                    $content = $adField["content"];
+                }
+            }
+            switch ($fieldProp["type"]){
+                case 1:
+                    $infoAF[] = constructDiv($fieldProp["id"], $fieldName, @$content);
+                    break;
+                case 2:
+                    $contactAF[] = constructDiv($fieldProp["id"], $fieldName, @$content);
+                    break;
+                case 3:
+                    $customAF[] = constructDiv($fieldProp["id"], $fieldName, @$content);
+                    break;
+            }
+
+        }
+
+        $infoAFJoined = implode("", $infoAF);
+        $customAFJoined = implode("", $customAF);
+        $contactAFJoined = implode("", $contactAF);
+
+        //End building.
     }
 } else $userExists = False;
 # Проверка на права на просмотр чужих профилей.
@@ -99,6 +151,8 @@ if ($canIPBan || $canIPUnban){
     $banipList = \Guards\SocietyGuard::GetIPBanList((isset($_REQUEST["bipage"])) ? $_REQUEST["bipage"] : 1);
     $banipCount = count($banipList);
 }
+
+
 ?>
 <div class="inner cover">
     <h1 class="cover-heading">Пользователи</h1>
@@ -499,6 +553,7 @@ if ($canIPBan || $canIPUnban){
                         </button>
                     </span>
                 </div>
+                <?php echo $customAFJoined; ?>
                 <div class="input-group">
                     <div class="input-group-addon">VK:</div>
                     <input class="form-control" type="text" value="<?php echo $USER->getVK();?>" name="user-edit-vk">
@@ -517,6 +572,7 @@ if ($canIPBan || $canIPUnban){
                         </button>
                     </span>
                 </div>
+                <?php echo $contactAFJoined; ?>
                 <div class="input-group">
                     <div class="input-group-addon">Настоящее имя:</div>
                     <input class="form-control" type="text" value="<?php echo $USER->getRealName();?>" name="user-edit-realname">
@@ -533,6 +589,7 @@ if ($canIPBan || $canIPUnban){
                         <option value="2" <?php if ($USER->getSex() == 2) echo "selected";?>>Девушка</option>
                     </select>
                 </div>
+                <?php echo $infoAFJoined; ?>
                 <hr>
                 <div class="input-group">
                     <div class="input-group-addon">Хобби</div>

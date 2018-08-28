@@ -244,46 +244,49 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
                 if (($_REQUEST["res"] == "4nne") || ($_REQUEST["res"] == "4neenn")) { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
                     Пользователь таким никнеймом уже есть.
                     </div> <?php }
-                if ($_REQUEST["res"] == "4nep") { ?><div class="alert alert-fanger"><span class="glyphicon glyphicon-warning-sign"></span>
+                if ($_REQUEST["res"] == "4ncsafc") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                    Не удалось поменять содержимое дополнительных полей.
+                </div> <?php }
+                if ($_REQUEST["res"] == "4nep") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
                     Не удалось поменять пароль данного пользователя.
                 </div> <?php }
-                if ($_REQUEST["res"] == "4nef") { ?><div class="alert alert-fanger"><span class="glyphicon glyphicon-warning-sign"></span>
+                if ($_REQUEST["res"] == "4nef") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
                     Не удалось изменить графу "Откуда".
                 </div> <?php }
-                if ($_REQUEST["res"] == "4nev") { ?><div class="alert alert-fanger"><span class="glyphicon glyphicon-warning-sign"></span>
+                if ($_REQUEST["res"] == "4nev") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
                     Не удалось изменить VK ID пользователя.
                 </div> <?php }
-                if ($_REQUEST["res"] == "4nes") { ?><div class="alert alert-fanger"><span class="glyphicon glyphicon-warning-sign"></span>
+                if ($_REQUEST["res"] == "4nes") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
                     Не удалось изменить Skype пользователя.
                 </div> <?php }
-                if ($_REQUEST["res"] == "4nesx") { ?><div class="alert alert-fanger"><span class="glyphicon glyphicon-warning-sign"></span>
+                if ($_REQUEST["res"] == "4nesx") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
                     Не удалось изменить графу "Пол" пользователя.
                 </div> <?php }
-                if ($_REQUEST["res"] == "4nern") { ?><div class="alert alert-fanger"><span class="glyphicon glyphicon-warning-sign"></span>
+                if ($_REQUEST["res"] == "4nern") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
                     Не удалось изменить графу "Настоящее имя" пользователя.
                 </div> <?php }
-                if ($_REQUEST["res"] == "4nebd") { ?><div class="alert alert-fanger"><span class="glyphicon glyphicon-warning-sign"></span>
+                if ($_REQUEST["res"] == "4nebd") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
                     Не удалось изменить графу "Дата рождения" пользователя.
                 </div> <?php }
-                if ($_REQUEST["res"] == "4nehs") { ?><div class="alert alert-fanger"><span class="glyphicon glyphicon-warning-sign"></span>
+                if ($_REQUEST["res"] == "4nehs") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
                     Не удалось изменить список хобби пользователя.
                 </div> <?php }
-                if ($_REQUEST["res"] == "4nea") { ?><div class="alert alert-fanger"><span class="glyphicon glyphicon-warning-sign"></span>
+                if ($_REQUEST["res"] == "4nea") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
                     Не удалось изменить графу "Обо мне" пользователя.
                 </div> <?php }
-                if ($_REQUEST["res"] == "4nesg") { ?><div class="alert alert-fanger"><span class="glyphicon glyphicon-warning-sign"></span>
+                if ($_REQUEST["res"] == "4nesg") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
                     Не удалось изменить подпись пользователя.
                 </div> <?php }
-                if ($_REQUEST["res"] == "4neav") { ?><div class="alert alert-fanger"><span class="glyphicon glyphicon-warning-sign"></span>
+                if ($_REQUEST["res"] == "4neav") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
                     Не удалось изменить аватарку пользователя.
                 </div> <?php }
-                if ($_REQUEST["res"] == "4neavvf") { ?><div class="alert alert-fanger"><span class="glyphicon glyphicon-warning-sign"></span>
+                if ($_REQUEST["res"] == "4neavvf") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
                     Этот файл не может быть аватаркой.
                 </div> <?php }
-                if ($_REQUEST["res"] == "4neavvs") { ?><div class="alert alert-fanger"><span class="glyphicon glyphicon-warning-sign"></span>
+                if ($_REQUEST["res"] == "4neavvs") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
                     Аватарка имеет неправильные размеры. Убедитесь, что она удовлетворяет требованиям.
                 </div> <?php }
-                if ($_REQUEST["res"] == "4neavvb") { ?><div class="alert alert-fanger"><span class="glyphicon glyphicon-warning-sign"></span>
+                if ($_REQUEST["res"] == "4neavvb") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
                     Аватарка весит больше 6 мегабайт.
                 </div> <?php }
                 if ($_REQUEST["res"] == "4seu") { ?><div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span>

@@ -1883,7 +1883,17 @@ namespace Users {
         public static function GetAdditionalFieldsListOfUser($userId){
             return DataKeeper::Get("tt_adfieldscontent", array("fieldId", "content", "isPrivate"), array("userId" => $userId));
         }
-
+        public static function SetAdditionalFieldContent($userId, $fieldId, $content){
+            if (DataKeeper::_isExistsIn("tt_adfieldscontent", array("fieldId" => $fieldId, "userId" => $userId)))
+                $request = DataKeeper::Update("tt_adfieldscontent", array("content" => $content), array("fieldId" => $fieldId, "userId" => $userId));
+            else
+                $request = DataKeeper::InsertTo("tt_adfieldscontent", array("userId" => $userId, "fieldId" => $fieldId, "content" => $content));
+            return $request;
+        }
+        public static function SetPrivacyToAdditionalField($userId, $fieldId, $privacy){
+            $request = DataKeeper::Update("tt_adfieldscontent", array("isPrivate" => $privacy), array("fieldId" => $fieldId, "userId" => $userId));
+            return $request;
+        }
 
     }
     class GroupAgent{

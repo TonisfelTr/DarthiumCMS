@@ -72,6 +72,19 @@ if ($user->UserGroup()->getPermission("change_profile")) {
     else
         \Users\UserAgent::ChangeUserParams($user->getId(), "public_account", 0);
 
+    $adFields = \Users\UserAgent::GetAdditionalFieldsList();
+    foreach ($adFields as $field){
+        \Users\UserAgent::SetAdditionalFieldContent($user->getId(), $field["id"], @$_POST["profile-edit-" . $field["id"]]);
+        if (isset($_POST["profile-public-" . $field["id"]])){
+            \Users\UserAgent::SetPrivacyToAdditionalField($user->getId(), $field["id"], true);
+            echo 3;
+        }
+        else {
+            \Users\UserAgent::SetPrivacyToAdditionalField($user->getId(), $field["id"], false);
+            echo 2;
+        }
+    }
+
 } elseif (empty($_POST["profile-change-pass-checkbox"])){
     header("Location: ../../profile.php?res=nsi");
     exit;

@@ -217,19 +217,101 @@ if ($session === true && $user->getId() == $_SESSION["uid"]){
     /// Build additional fields mechanism.
     ///////////////////////////////////////////////////////////////////////
 
-//    $additionalFields = \Users\UserAgent::GetAdditionalFieldsList();
-//    $customAF = [];
-//    $contactAF = [];
-//    $infoAF = [];
-//
-//    foreach($additionalFields as $field){
-//        $additionalField = "";
-//        if ($field["type"] == 1){
-//            if ($field["link"] != ""){
-//                $additionalField = "<a href=";
-//            }
-//        }
-//    }
+    $additionalFields = \Users\UserAgent::GetAdditionalFieldsList();
+    $userAdFields = $user->getAdditionalFields();
+    $customAF = [];
+    $contactAF = [];
+    $infoAF = [];
+    /********************************************
+     * $infoEditAF[] - array with fields to edit info additional fields.
+     * And etc.
+     *******************************************/
+    foreach($additionalFields as $fieldProp){
+        $content = "";
+        $isPrivate = false;
+        $fieldName = $fieldProp["name"];
+        $tag = "";
+        $title = "";
+        $closingTag = "";
+        foreach ($userAdFields as $adField){
+            if ($fieldProp["id"] == $adField["fieldId"]){
+                $content = $adField["content"];
+                $isPrivate = $adField["isPrivate"];
+            }
+        }
+        if ($content != ""){
+            if ($fieldProp["link"] != ""){
+                $tag = "<a href=\"" . str_replace("{{1}}", $content, $fieldProp["link"])  ."\"";
+                $closingTag = "</a>";
+            }
+            if ($fieldProp["description"] != ""){
+                $title = " title=\"" . $fieldProp["description"] . "\"";
+            }
+            if ($fieldProp["link"] == "" && $title != ""){
+                $tag = "<span";
+                $closingTag = "</span>";
+            }
+            if ($fieldProp["description"] != ""){
+                $tag .= $title . ">" . $content . $closingTag;
+            }
+
+            if ($tag != "") {
+                $result = $fieldName . ": " . $tag . "<br>";
+            }
+        } else {
+            $result = $fieldName . ": не указано.<br>";
+        }
+        $isPrivate = ($isPrivate) ? "checked" : "";
+        switch ($fieldProp["type"]){
+            case 1:
+                    $infoAF[] = $result;
+                    $infoEditAF[] = "<div class=\"profile-profile-edit-area-group\">
+                                        <label class=\"profile-label\" for=\"profile-edit-" . $fieldProp["id"] . "\">$fieldName:</label>
+                                        <textarea class=\"profile-" . $fieldProp["id"] . "-input\" value=\"$content\" placeholder=\"" . $fieldProp["description"] . "\" id=\"profile-edit-" . $fieldProp["id"] . "\" name=\"profile-edit-" . $fieldProp["id"] . "\" maxlength=\"300\">$content</textarea>
+                                    </div>";
+                    break;
+            case 2:
+                    $contactAF[] = $result;
+                    $contactEditAF[] = "<div class=\"profile-profile-edit-group\">
+                                            <label class=\"profile-label\" for=\"profile-edit-" . $fieldProp["id"] . "\">$fieldName</label>
+                                            <input class=\"profile-input\" type=\"text\" id=\"profile-edit-" . $fieldProp["id"] . "\" name=\"profile-edit-" . $fieldProp["id"] . "\" value=\"$content\" placeholder=\"" . $fieldProp["description"] . "\">
+                                        </div>";
+                    $contactSecurityAF[] = "<div class=\"profile-profile-edit-group\">
+                                                <label for=\"profile-public-" . $fieldProp["id"]. "\">Показывать $fieldName</label>
+                                                <input type=\"checkbox\" id=\"profile-public-" . $fieldProp["id"] . "\" name=\"profile-public-" . $fieldProp["id"] . "\" $isPrivate>
+                                            </div>";
+                break;
+            case 3:
+                $customAF[] = $result;
+                $customEditAF[] = "<div class=\"profile-profile-edit-group\">
+                                            <label class=\"profile-label\" for=\"profile-edit-" . $fieldProp["id"] . "\">$fieldName</label>
+                                            <input class=\"profile-input\" type=\"text\" id=\"profile-edit-" . $fieldProp["id"] . "\" name=\"profile-edit-" . $fieldProp["id"] . "\" placeholder=\"" . $fieldProp["description"] . "\" value=\"$content\">
+                                    </div>";
+                break;
+        }
+
+    }
+
+    //Display on main profile page.
+    $infoAFJoined = implode("", $infoAF);
+    $customAFJoined = implode("", $customAF);
+    $contactAFJoined = implode("", $contactAF);
+    //Display on change custom profile page.
+    $infoAFEditJoined = implode("", @$infoEditAF);
+    $customAFEditJoined = implode("", @$customEditAF);
+    $contactAFEditJoined = implode("", @$contactEditAF);
+    //Display on security profile page.
+    $contactAFSecurityJoined = implode("", @$contactSecurityAF);
+
+    $userInfo = str_replace_once("{PROFILE_PAGE:CUSTOM_ADDITIONALS}", $customAFJoined, $userInfo);
+    $userInfo = str_replace_once("{PROFILE_PAGE:CONTACT_ADDITIONALS}", $contactAFJoined, $userInfo);
+    $userInfo = str_replace_once("{PROFILE_PAGE:INFO_ADDITIONALS}", $infoAFJoined, $userInfo);
+    $userEdit = str_replace_once("{PROFILE_PAGE:CUSTOM_ADDITIONALS_EDIT}", $customAFEditJoined, $userEdit);
+    $userEdit = str_replace_once("{PROFILE_PAGE:INFO_ADDITIONALS_EDIT}", $infoAFEditJoined, $userEdit);
+    $userEdit = str_replace_once("{PROFILE_PAGE:CONTACT_ADDITIONALS_EDIT}", $contactAFEditJoined, $userEdit);
+    $userEdit = str_replace_once("{PROFILE_PAGE:PRIVATE_CONTACTS_EDIT}", $contactAFSecurityJoined, $userEdit);
+
+    //End building.
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Building PMs module.
@@ -639,9 +721,78 @@ if ($session === true && $user->getId() == $_SESSION["uid"] && !$user->getActive
     $main = str_replace_once("{PROFILE_PAGE_TITLE}", "Активация аккаунта - " . \Engine\Engine::GetEngineInfo("sn"), $main);
 }
 
-if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user))
-        || ($session === true && $user->getId() != $_SESSION["uid"] && \Users\UserAgent::GetUser($_SESSION["uid"])->UserGroup()->getPermission("user_see_foreign")))
+if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $user->IsAccountPublic())
+    || ($session === true && $user->getId() != $_SESSION["uid"] && \Users\UserAgent::GetUser($_SESSION["uid"])->UserGroup()->getPermission("user_see_foreign")))
     && ($user->IsAccountPublic() || $user->FriendList()->isFriend($_SESSION["uid"]))){
+    ///////////////////////////////////////////////////////////////////////
+    /// Build additional fields mechanism.
+    ///////////////////////////////////////////////////////////////////////
+
+    $additionalFields = \Users\UserAgent::GetAdditionalFieldsList();
+    $userAdFields = $user->getAdditionalFields();
+    $customAF = [];
+    $contactAF = [];
+    $infoAF = [];
+    /********************************************
+     * $infoEditAF[] - array with fields to edit info additional fields.
+     * And etc.
+     *******************************************/
+    foreach($additionalFields as $fieldProp){
+        $content = "";
+        $isPrivate = false;
+        $fieldName = $fieldProp["name"];
+        $tag = "";
+        $title = "";
+        $closingTag = "";
+        foreach ($userAdFields as $adField){
+            if ($fieldProp["id"] == $adField["fieldId"]){
+                $content = $adField["content"];
+                $isPrivate = $adField["isPrivate"];
+            }
+        }
+        if ($content != ""){
+            if ($fieldProp["link"] != ""){
+                $tag = "<a href=\"" . str_replace("{{1}}", $content, $fieldProp["link"])  ."\"";
+                $closingTag = "</a>";
+            }
+            if ($fieldProp["description"] != ""){
+                $title = " title=\"" . $fieldProp["description"] . "\"";
+            }
+            if ($fieldProp["link"] == "" && $title != ""){
+                $tag = "<span";
+                $closingTag = "</span>";
+            }
+            if ($fieldProp["description"] != ""){
+                $tag .= $title . ">" . $content . $closingTag;
+            }
+
+            if ($tag != "") {
+                $result = $fieldName . ": " . $tag . "<br>";
+            }
+        } else {
+            $result = $fieldName . ": не указано.<br>";
+        }
+        switch ($fieldProp["type"]){
+            case 1:
+                $infoAF[] = $result;
+                break;
+            case 2:
+                $contactAF[] = $result;
+                break;
+            case 3:
+                $customAF[] = $result;
+                break;
+        }
+
+    }
+
+    //Display on main profile page.
+    $infoAFJoined = implode("", $infoAF);
+    $customAFJoined = implode("", $customAF);
+    $contactAFJoined = implode("", $contactAF);
+
+    //End building.
+
     include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/userprofile.html";
     $profileMainPanel = getBrick();
 
@@ -707,15 +858,14 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user))
     $main = str_replace("{PROFILE_PAGE:USER_VK_LINK}", $userVKLink, $main);
     $main = str_replace("{PROFILE_PAGE:USER_HOBBIES}", $user->getHobbies() == "" ? "не указано" : htmlentities($user->getHobbies()), $main);
     $main = str_replace("{PROFILE_PAGE:USER_ABOUT}", $user->getAbout() == "" ? "не указано" : htmlentities($user->getAbout()), $main);
-    $main = str_replace("{PROFILE_PAGE:USER_VK}", $user->getVK(), $main);
-    $main = str_replace("{PROFILE_PAGE:USER_SKYPE}", $user->getSkype(), $main);
-    $main = str_replace("{PROFILE_PAGE:USER_BIRTHDAY}", $user->getBirth(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_SIGNATURE}", $user->getSignature() == "" ? "не указано" : nl2br(\Engine\Engine::CompileBBCode($user->getSignature())), $main);
     $main = str_replace("{PROFILE_PAGE:USER_REPORT_CREATED_COUNT}", $user->getReportsCreatedCount(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_FRIENDS_COUNT}", $user->FriendList()->getFriendsCount(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_ONLINE_FRIENDS_COUNT}", $user->FriendList()->getOnlineFriendCount(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_FRIENDLIST_MANAGE_BTN}", "", $main);
-
+    $main = str_replace_once("{PROFILE_PAGE:CUSTOM_ADDITIONALS}", $customAFJoined, $main);
+    $main = str_replace_once("{PROFILE_PAGE:CONTACT_ADDITIONALS}", $contactAFJoined, $main);
+    $main = str_replace_once("{PROFILE_PAGE:INFO_ADDITIONALS}", $infoAFJoined, $main);
 
     include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/seeperrors.phtml";
     $userPageErrors = getBrick();

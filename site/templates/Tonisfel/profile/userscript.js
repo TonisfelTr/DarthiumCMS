@@ -33,7 +33,7 @@ function insertBBCode(openTag, notNeedClose = false, texterElement = null){
 }
 function notifyNewNotifications(){
     $.ajax({
-        type : "GET",
+        type : "POST",
         url : "/site/scripts/ajax/usernotificationsajax.php",
         success : function(data){
             var count = (data > 10) ? "10+" : data;
