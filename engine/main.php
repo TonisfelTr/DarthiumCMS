@@ -706,7 +706,6 @@
                 $keys = rtrim($keys, ", ");
                 $whereKeys = rtrim($whereKeys, "AND");
                 $query = "UPDATE $table SET $keys WHERE $whereKeys";
-                echo $query;
                 $preparedQuery = $pdo->prepare($query);
                 if ($preparedQuery->execute($varsArrToSend))
                     return true;
