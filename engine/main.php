@@ -653,15 +653,18 @@
             }
 
             public static function _isExistsIn($table, array $content){
+                $values = [];
+                $keys = "";
                 foreach ($content as $key => $value){
-                    $keys = "`$key`=?,";
+                    $keys .= "`$key`=? AND";
                     $values[] = $value;
                 }
-                $keys = rtrim($keys, ",");
+                $keys = rtrim($keys, "AND");
                 $pdo = self::connect();
                 $query = "SELECT count(*) FROM `$table` WHERE $keys";
                 $prepared = $pdo->prepare($query);
-                $result = $prepared->execute($pdo::FETCH_ASSOC);
+                $prepared->execute($values);
+                $result = $prepared->fetch($pdo::FETCH_ASSOC);
                 if ($result["count(*)"] === "0") return false;
                 else return true;
             }
@@ -696,12 +699,12 @@
                     $varsArrToSend[] = $value;
                 }
                 foreach ($whereArr as $whereKey => $whereValue){
-                    $whereKeys .= "`$whereKey`=?,";
+                    $whereKeys .= "`$whereKey`=? AND";
                     $varsArrToSend[] = $whereValue;
                 }
 
-                $keys = rtrim($keys, ",");
-                $whereKeys = rtrim($whereKeys, ",");
+                $keys = rtrim($keys, ", ");
+                $whereKeys = rtrim($whereKeys, "AND");
                 $query = "UPDATE $table SET $keys WHERE $whereKeys";
                 echo $query;
                 $preparedQuery = $pdo->prepare($query);
