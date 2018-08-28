@@ -643,14 +643,27 @@
 
             public static function isExistsIn($table, $column, $content){
                 $pdo = self::connect();
-
                 $query = "SELECT count(*) FROM `$table` WHERE `$column`=?";
                 $preparedQuery = $pdo->prepare($query);
-                $preparedQuery->execute(array($content));
+                $preparedQuery->execute([$content]);
                 $result = $preparedQuery->fetch($pdo::FETCH_ASSOC);
                 if ($result["count(*)"] === "0") return false;
                 else return true;
 
+            }
+
+            public static function _isExistsIn($table, array $content){
+                foreach ($content as $key => $value){
+                    $keys = "`$key`=?,";
+                    $values[] = $value;
+                }
+                $keys = rtrim($keys, ",");
+                $pdo = self::connect();
+                $query = "SELECT count(*) FROM `$table` WHERE $keys";
+                $prepared = $pdo->prepare($query);
+                $result = $prepared->execute($pdo::FETCH_ASSOC);
+                if ($result["count(*)"] === "0") return false;
+                else return true;
             }
 
             public static function InsertTo($table, array $varsArr){
@@ -690,6 +703,7 @@
                 $keys = rtrim($keys, ",");
                 $whereKeys = rtrim($whereKeys, ",");
                 $query = "UPDATE $table SET $keys WHERE $whereKeys";
+                echo $query;
                 $preparedQuery = $pdo->prepare($query);
                 if ($preparedQuery->execute($varsArrToSend))
                     return true;
