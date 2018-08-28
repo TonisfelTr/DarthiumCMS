@@ -17,7 +17,9 @@ function str_replace_once($search, $replace, $text){
 ###############################################
 # Менеджер пользователя.
 if ($session === TRUE || !empty($_GET["uid"]))
-    $seeProfile = true; else $seeProfile = false;
+    $seeProfile = true;
+else
+    $seeProfile = false;
 if ($session === TRUE){
     $user = new \Users\User($_SESSION["uid"]);
     if (!empty($_REQUEST["res"])){
@@ -53,39 +55,41 @@ if (!empty($_REQUEST["activate"]) && !empty($_REQUEST["uid"])){
     header("Location: ./site/scripts/activator.php?activate=".$_REQUEST["activate"]."&uid=".$_REQUEST["uid"]."&profile-activation-code-send-btn");
     exit;
 }
+
+if ($user !== false && $user->getId() == $_SESSION["uid"]) {
 ################################################
 # Менеджер личных сообщений.
-if ($session === true && $user->getId() == $_SESSION["uid"]) {
-    $letter = false;
-    $quoteLetter = false;
-    if (!empty($_GET["page"]) && $_GET["page"] == "rm") {
-        if (!empty($_GET["mid"])) {
-            $letter = $user->MessageManager()->read($_GET["mid"]);
-            if ($letter == false) $response = "nprm";
-        } else $response = "nmid";
-    }
+    if ($session === true && $user->getId() == $_SESSION["uid"]) {
+        $letter = false;
+        $quoteLetter = false;
+        if (!empty($_GET["page"]) && $_GET["page"] == "rm") {
+            if (!empty($_GET["mid"])) {
+                $letter = $user->MessageManager()->read($_GET["mid"]);
+                if ($letter == false) $response = "nprm";
+            } else $response = "nmid";
+        }
 
-    if (!empty($_GET["page"]) && $_GET["page"] == "wm"){
-        if (!empty($_GET["mid"])){
-            $quoteLetter = $user->MessageManager()->read($_GET["mid"]);
-            if ($quoteLetter == false) $response = "nprm";
+        if (!empty($_GET["page"]) && $_GET["page"] == "wm") {
+            if (!empty($_GET["mid"])) {
+                $quoteLetter = $user->MessageManager()->read($_GET["mid"]);
+                if ($quoteLetter == false) $response = "nprm";
+            }
         }
     }
-}
 
 ################################################
 # Менеджер уведомлений.
-if ($session === true && $user->getId() == $_SESSION["uid"]){
-    $notificationsCount = $user->Notifications()->getNotifiesCount();
-    $notNotifiedCount = $user->Notifications()->getNotificationsUnreadCount();
-}
+    if ($session === true && $user->getId() == $_SESSION["uid"]) {
+        $notificationsCount = $user->Notifications()->getNotifiesCount();
+        $notNotifiedCount = $user->Notifications()->getNotificationsUnreadCount();
+    }
 #################################################
 # Отображение страниц
-if (!empty($_GET["page"]))
-    $page = $_GET["page"];
-else
-    $page = "none";
-
+    if (!empty($_GET["page"]))
+        $page = $_GET["page"];
+    else
+        $page = "none";
+}
 ob_start();
 
 $reputationerBlock = "";
@@ -109,19 +113,20 @@ $main = str_replace_once("{ENGINE_META:KEYWORDS}", \Engine\Engine::GetEngineInfo
 
 $errorCode = 0;
 if ($seeProfile){
-    if (($session !== TRUE ) && !\Engine\Engine::GetEngineInfo("gsp")) $errorCode = 1;
-    elseif ($session !== true && $user === false && \Engine\Engine::GetEngineInfo("gsp")) $errorCode = 2;
-    elseif ($session === TRUE && $user->getId() != $_SESSION["uid"] && !\Users\GroupAgent::IsHavePerm(\Users\UserAgent::GetUserGroupId($_SESSION["uid"]), "user_see_foreign")) $errorCode = 3;
-    elseif (($session !== true && \Engine\Engine::GetEngineInfo("gsp") == false)
+    if ($session !== true && !empty($user) && !\Engine\Engine::GetEngineInfo("gsp"))
+        $errorCode = 1;
+    elseif (isset($_GET["uid"]) && !\Users\UserAgent::IsUserExist($_GET["uid"]))
+        $errorCode = 2;
+    elseif ($session === true && isset($_GET["uid"]) && $_GET["uid"] != $_SESSION["uid"] && !\Users\GroupAgent::IsHavePerm(\Users\UserAgent::GetUserGroupId($_SESSION["uid"]), "user_see_foreign"))
+        $errorCode = 3;
+    elseif ($session === true && isset($_GET["uid"]) && $_GET["uid"] != $_SESSION["uid"] && $user->Blacklister()->isBlocked($_SESSION["uid"])
         || (!empty($user) && !$user->IsAccountPublic() && $session !== true)
-        || (!empty($user) && $user->getId() != $_SESSION["uid"] && !$user->IsAccountPublic() && !$user->FriendList()->isFriend($_SESSION["uid"]))) $errorCode = 4;
+        || (!empty($user) && $user->getId() != $_SESSION["uid"] && !$user->IsAccountPublic() && !$user->FriendList()->isFriend($_SESSION["uid"])))
+        $errorCode = 4;
 }
 
-include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/seeperrors.phtml";
-$profileSeeErrors = getBrick();
-
 /***********************************Block profile page if user is exist.*********************/
-if ($session === true && $user->getId() == $_SESSION["uid"]){
+if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
     include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/userprofile.html";
     $profileMainPanel = getBrick();
     include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/userscript.js";
@@ -297,11 +302,11 @@ if ($session === true && $user->getId() == $_SESSION["uid"]){
     $customAFJoined = implode("", $customAF);
     $contactAFJoined = implode("", $contactAF);
     //Display on change custom profile page.
-    $infoAFEditJoined = implode("", @$infoEditAF);
-    $customAFEditJoined = implode("", @$customEditAF);
-    $contactAFEditJoined = implode("", @$contactEditAF);
+    @$infoAFEditJoined = implode("", $infoEditAF);
+    @$customAFEditJoined = implode("", $customEditAF);
+    @$contactAFEditJoined = implode("", $contactEditAF);
     //Display on security profile page.
-    $contactAFSecurityJoined = implode("", @$contactSecurityAF);
+    @$contactAFSecurityJoined = implode("", $contactSecurityAF);
 
     $userInfo = str_replace_once("{PROFILE_PAGE:CUSTOM_ADDITIONALS}", $customAFJoined, $userInfo);
     $userInfo = str_replace_once("{PROFILE_PAGE:CONTACT_ADDITIONALS}", $contactAFJoined, $userInfo);
@@ -590,7 +595,7 @@ if ($session === true && $user->getId() == $_SESSION["uid"]){
 
     $main = str_replace_once("{PROFILE_PAGE_TITLE}", "Профиль " . $user->getNickname() . " - " . \Engine\Engine::GetEngineInfo("sn"), $main);
     $main = str_replace_once("{PROFILE_PAGE_GUI_SCRIPT}", $profileJS, $main);
-    $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}", $profileSeeErrors, $main);
+    $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}", "", $main);
     $main = str_replace_once("{PROFILE_MAIN_BODY}",$profileMainPanel, $main);
     $main = str_replace("{PROFILE_PAGE:USER_NICKNAME}", $user->getNickname(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_GROUP_COLOR}", ($user->UserGroup()->getColor() == "#000000") ? "#ffffff" : $user->UserGroup()->getColor(), $main);
@@ -713,7 +718,7 @@ if ($session === true && $user->getId() == $_SESSION["uid"]){
     $main = str_replace("{PROFILE_PAGE:USER_AVATAR_SIZE}", \Engine\Engine::GetEngineInfo("aw") . "x" . \Engine\Engine::GetEngineInfo("ah"), $main);
 }
 
-if ($session === true && $user->getId() == $_SESSION["uid"] && !$user->getActiveStatus()){
+if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"] && !$user->getActiveStatus()){
     include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/authactivation.html";
     $authActivateForm = getBrick();
 
@@ -722,7 +727,7 @@ if ($session === true && $user->getId() == $_SESSION["uid"] && !$user->getActive
 }
 
 if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $user->IsAccountPublic())
-    || ($session === true && $user->getId() != $_SESSION["uid"] && \Users\UserAgent::GetUser($_SESSION["uid"])->UserGroup()->getPermission("user_see_foreign")))
+    || ($session === true && $user !== false && $user->getId() != $_SESSION["uid"] && \Users\UserAgent::GetUser($_SESSION["uid"])->UserGroup()->getPermission("user_see_foreign")))
     && ($user->IsAccountPublic() || $user->FriendList()->isFriend($_SESSION["uid"]))){
     ///////////////////////////////////////////////////////////////////////
     /// Build additional fields mechanism.
@@ -833,7 +838,7 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
             break;
     }
     $main = str_replace_once("{PROFILE_PAGE_GUI_SCRIPT}", $profileJS, $main);
-    $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}", $profileSeeErrors, $main);
+    $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}", "", $main);
     $main = str_replace_once("{PROFILE_MAIN_BODY}",$profileMainPanel, $main);
     $main = str_replace("{PROFILE_PAGE:USER_AVATAR}", $user->getAvatar(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_NICKNAME}", $user->getNickname(), $main);
@@ -867,8 +872,6 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
     $main = str_replace_once("{PROFILE_PAGE:CONTACT_ADDITIONALS}", $contactAFJoined, $main);
     $main = str_replace_once("{PROFILE_PAGE:INFO_ADDITIONALS}", $infoAFJoined, $main);
 
-    include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/seeperrors.phtml";
-    $userPageErrors = getBrick();
     if ($session === true && $user->getId() != $_SESSION["uid"] && \Users\UserAgent::GetUser($_SESSION["uid"])->UserGroup()->getPermission("user_see_foreign")) {
         include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/afup_buttons.html";
         $userFootBtns = getBrick();
@@ -881,14 +884,18 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
     $main = str_replace("{PROFILE_FOOTER_BTNS}", $userFootBtns, $main);
 }
 
-if (($session !== true && !\Engine\Engine::GetEngineInfo("gsp"))
-    || (!empty($user) && !$user->IsAccountPublic() && $session !== true)
-    || (!empty($user) && !$user->IsAccountPublic() && !$user->FriendList()->isFriend($_SESSION["uid"]))){
+if (($session !== true && !empty($user) && !\Engine\Engine::GetEngineInfo("gsp")) ||
+    (isset($_GET["uid"]) && !\Users\UserAgent::IsUserExist($_GET["uid"])) ||
+    ($session === true && isset($_GET["uid"]) && $_GET["uid"] != $_SESSION["uid"] && !\Users\GroupAgent::IsHavePerm(\Users\UserAgent::GetUserGroupId($_SESSION["uid"]), "user_see_foreign")) ||
+    ($session === true && isset($_GET["uid"]) && $_GET["uid"] != $_SESSION["uid"] && $user->Blacklister()->isBlocked($_SESSION["uid"]))){
+
+    include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/seeperrors.phtml";
+    $userPageErrors = getBrick();
 
     $header = str_replace_once("{PROFILE_PAGE:PAGE_NAME}", "Ограничение доступа", $header);
 
     $main = str_replace_once("{PROFILE_PAGE_TITLE}", "Ограничение доступа - " . \Engine\Engine::GetEngineInfo("sn"), $main);
-    $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}", $profileSeeErrors, $main);
+    $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}", $userPageErrors, $main);
     $main = str_replace_once("{PROFILE_MAIN_BODY}", null, $main);
 
 }
