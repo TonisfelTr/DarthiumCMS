@@ -322,9 +322,9 @@ else {
                 <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> Перечисляйте форматы через запятую <em>без</em> пробелов.</div>
                 <div class="input-group">
                     <div class="input-group-addon">Максимальный размер файла</div>
-                    <input type="number" class="form-control"  name="maxfilesize" value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("ups"));?>">
+                    <input type="number" class="form-control"  name="maxfilesize" id="maxfilesize" value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("ups"));?>">
                 </div>
-                <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> Размер указывается в байтах.</div>
+                <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> Размер указывается в байтах. Введённый размер: <span id="file-max-size-inmb"><?php echo \Engine\Engine::GetEngineInfo("ups") /1024 /1024; ?></span> МБ.</div>
                 <div class="input-group">
                     <div class="input-group-addon">Разрешить гостям просматривать профили</div>
                     <div class="form-control">
@@ -448,6 +448,13 @@ else {
         $("#field-remove-btn").attr("disabled", true);
         $("#field-panel-manage").hide();
         ClearFieldForm();
+    });
+
+    $("input#maxfilesize").on("input", function(){
+       var val = $(this).val();
+       var span = $("#file-max-size-inmb");
+       val = val / 1024 / 1024;
+       $(span).html(val);
     });
 
     //Save or create additional field.
