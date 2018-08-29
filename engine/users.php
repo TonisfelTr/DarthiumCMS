@@ -1881,7 +1881,12 @@ namespace Users {
             return DataKeeper::Get("tt_adfields", ["*"]);
         }
         public static function GetAdditionalFieldsListOfUser($userId){
-            return DataKeeper::Get("tt_adfieldscontent", array("fieldId", "content", "isPrivate"), array("userId" => $userId));
+            $result = [];
+            $data = DataKeeper::Get("tt_adfieldscontent", array("fieldId", "content", "isPrivate"), array("userId" => $userId));
+            foreach ($data as $d){
+                $result[$d["fieldId"]] = $d;
+            }
+            return $result;
         }
         public static function SetAdditionalFieldContent($userId, $fieldId, $content){
             if (DataKeeper::_isExistsIn("tt_adfieldscontent", array("fieldId" => $fieldId, "userId" => $userId)))

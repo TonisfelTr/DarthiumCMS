@@ -470,7 +470,7 @@ else {
                 if (action === "add"){
                     if ($.isNumeric(data)){
                         $("#user-add-fields").append("<option value=\"" + data + "\">" + $("#field-name-input").val() + "</option>");
-                        ShowAnswerForm("okey", "Поле \"" + $("#field-name-input").val() + "\" было успешно создано!");
+                        ShowAnswerForm(1, "Поле \"" + $("#field-name-input").val() + "\" было успешно создано!");
                         $("#field-cancel-btn").click();
                     } else if (data == "in") {
                         ShowAnswerForm("error", "Название не отвечает требованиям: название поля должно быть меньше 16 и больше 4 символов.");

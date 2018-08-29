@@ -7,6 +7,13 @@ function BoolToInt($i){
     else return 0;
 }
 
+function IsCorrectName($str){
+    $utfString = mb_convert_encoding($str, "WINDOWS-1251");
+    if (strlen($utfString) > 16 || strlen($utfString) < 4) return false;
+    if (preg_match("/[a-zA-ZА-Яа-я0-9_\-&\s]+/", $str) === 1) return true;
+    else return false;
+}
+
 function Add(){
     if (true === \Engine\DataKeeper::isExistsIn("tt_adfields", "name", $_POST["field-name"])) {
         echo "fae"; //field already exists.
@@ -76,7 +83,7 @@ if (\Users\UserAgent::SessionContinue() === true) {
     $user = new \Users\User($_SESSION["uid"]);
     if ($user->UserGroup()->getPermission("change_engine_settings")){
         if ($_POST["action"] == "add"){
-            if (strlen($_POST["field-name"]) > 16 || strlen($_POST["field-name"]) < 4) {
+            if (!IsCorrectName($_POST["field-name"])) {
                 echo "in";
                 exit;
             }
@@ -85,7 +92,7 @@ if (\Users\UserAgent::SessionContinue() === true) {
         }
 
         if ($_POST["action"] == "edit"){
-            if (strlen($_POST["field-name"]) > 16 || strlen($_POST["field-name"]) < 4) {
+            if (!IsCorrectName($_POST["field-name"])) {
                 echo "in";
                 exit;
             }

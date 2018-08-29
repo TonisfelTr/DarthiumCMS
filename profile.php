@@ -231,20 +231,18 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
      * $infoEditAF[] - array with fields to edit info additional fields.
      * And etc.
      *******************************************/
-    foreach($additionalFields as $fieldProp){
-        $content = "";
-        $isPrivate = false;
+    var_dump($additionalFields);
+    //foreach($additionalFields as $fieldProp){
+    for ($i = 0; $i < count($additionalFields); $i++){
+        $fieldProp = $additionalFields[$i];
+        $id = $fieldProp["id"];
         $fieldName = $fieldProp["name"];
         $tag = "";
         $title = "";
         $closingTag = "";
-        foreach ($userAdFields as $adField){
-            if ($fieldProp["id"] == $adField["fieldId"]){
-                $content = $adField["content"];
-                $isPrivate = $adField["isPrivate"];
-            }
-        }
-        if ($content != ""){
+        $content = $userAdFields[$id]["content"];
+        $isPrivate = $userAdFields[$id]["isPrivate"];
+        if (strlen($content) > 0){
             if ($fieldProp["link"] != ""){
                 $tag = "<a href=\"" . str_replace("{{1}}", $content, $fieldProp["link"])  ."\"";
                 $closingTag = "</a>";
@@ -259,42 +257,39 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
             if ($fieldProp["description"] != ""){
                 $tag .= $title . ">" . $content . $closingTag;
             }
-
             if ($tag != "") {
                 $result = $fieldName . ": " . $tag . "<br>";
+            } else {
+                $result = $fieldName . ": " . $content . "<br>";
             }
         } else {
             $result = $fieldName . ": не указано.<br>";
         }
+
         $isPrivate = ($isPrivate) ? "checked" : "";
-        switch ($fieldProp["type"]){
-            case 1:
-                    $infoAF[] = $result;
-                    $infoEditAF[] = "<div class=\"profile-profile-edit-area-group\">
+        if ($fieldProp["type"] === "1"){
+            $infoAF[] = $result;
+            $infoEditAF[] = "<div class=\"profile-profile-edit-area-group\">
                                         <label class=\"profile-label\" for=\"profile-edit-" . $fieldProp["id"] . "\">$fieldName:</label>
-                                        <textarea class=\"profile-" . $fieldProp["id"] . "-input\" value=\"$content\" placeholder=\"" . $fieldProp["description"] . "\" id=\"profile-edit-" . $fieldProp["id"] . "\" name=\"profile-edit-" . $fieldProp["id"] . "\" maxlength=\"300\">$content</textarea>
+                                        <textarea class=\"profile-about-input\" placeholder=\"" . $fieldProp["description"] . "\" id=\"profile-edit-" . $fieldProp["id"] . "\" name=\"profile-edit-" . $fieldProp["id"] . "\" maxlength=\"300\">$content</textarea>
                                     </div>";
-                    break;
-            case 2:
-                    $contactAF[] = $result;
-                    $contactEditAF[] = "<div class=\"profile-profile-edit-group\">
+        } elseif ($fieldProp["type"] === "2") {
+            $contactAF[] = $result;
+            $contactEditAF[] = "<div class=\"profile-profile-edit-group\">
                                             <label class=\"profile-label\" for=\"profile-edit-" . $fieldProp["id"] . "\">$fieldName</label>
                                             <input class=\"profile-input\" type=\"text\" id=\"profile-edit-" . $fieldProp["id"] . "\" name=\"profile-edit-" . $fieldProp["id"] . "\" value=\"$content\" placeholder=\"" . $fieldProp["description"] . "\">
                                         </div>";
-                    $contactSecurityAF[] = "<div class=\"profile-profile-edit-group\">
-                                                <label for=\"profile-public-" . $fieldProp["id"]. "\">Показывать $fieldName</label>
+            $contactSecurityAF[] = "<div class=\"profile-profile-edit-group\">
+                                                <label for=\"profile-public-" . $fieldProp["id"] . "\">Показывать $fieldName</label>
                                                 <input type=\"checkbox\" id=\"profile-public-" . $fieldProp["id"] . "\" name=\"profile-public-" . $fieldProp["id"] . "\" $isPrivate>
                                             </div>";
-                break;
-            case 3:
-                $customAF[] = $result;
-                $customEditAF[] = "<div class=\"profile-profile-edit-group\">
+        } elseif ($fieldProp["type"] === "3") {
+            $customAF[] = $result;
+            $customEditAF[] = "<div class=\"profile-profile-edit-group\">
                                             <label class=\"profile-label\" for=\"profile-edit-" . $fieldProp["id"] . "\">$fieldName</label>
                                             <input class=\"profile-input\" type=\"text\" id=\"profile-edit-" . $fieldProp["id"] . "\" name=\"profile-edit-" . $fieldProp["id"] . "\" placeholder=\"" . $fieldProp["description"] . "\" value=\"$content\">
                                     </div>";
-                break;
         }
-
     }
 
     //Display on main profile page.
