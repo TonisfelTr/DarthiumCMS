@@ -37,8 +37,8 @@ if ($editPPerm && isset($_GET["editpage"]) && \Forum\StaticPagesAgent::isPageExi
         <?php if ($editSContentPerm) { ?>        <button class="btn btn-default" type="button" id="staticc-content-edit-btn" data-div="staticc-content-edit-div"><span class="glyphicons glyphicons-puzzle-2"></span> Редактирование статических компонентов</button><?php } ?>
         <?php if ($isEditMode && $editPPerm) { ?><button class="btn btn-info" type="button" id="staticc-page-edit-btn" data-div="staticc-page-edit-div"><span class="glyphicons glyphicons-edit"></span> Редактирование страницы - "<?php echo $page->getPageName(); ?>"</button><?php } ?>
     </div>
-    <form enctype="multipart/form-data" action="adminpanel/scripts/staticc.php" method="post">
-        <div class="custom-group" id="staticc-panel">
+    <div class="custom-group" id="staticc-panel">
+        <form enctype="multipart/form-data" action="adminpanel/scripts/staticc.php" method="post">
             <?php if ($editPPerm || $removePPerm) { ?>
             <div class="div-border" id="staticc-pages-div" hidden>
                 <h2>Управление страницами</h2>
@@ -234,17 +234,32 @@ if ($editPPerm && isset($_GET["editpage"]) && \Forum\StaticPagesAgent::isPageExi
                         </div>
                     </div>
                 </div>
-            <?php }
-            if ($editSContentPerm) { ?>
+            <?php } ?>
+        </form>
+        <?php if ($editSContentPerm) { ?>
+        <form enctype="multipart/form-data" action="adminpanel/scripts/staticc.php" method="post">
             <div class="div-border" id="staticc-content-edit-div" hidden>
                 <h2>Редактирование статических компонентов</h2>
                 <p class="helper">Изменение контента боковых панелей и баннеров.</p>
                 <hr>
-                <p>Здесь Вы можете редактировать нижние и верхний баннер, контент боковых панелей </p>
+                <p>Здесь Вы можете редактировать нижние и верхний баннер, контент боковых панелей, в том числе их название. Здесь же, можно управлять полями, которые будут в навигационной панели главной страницы.</p>
+                <div class="btn-group" id="staticc-content-btn-panel">
+                    <button class="btn btn-default active" type="button" data-subpanel-id="staticc-content-banners"><span class="glyphicons glyphicons-drop"></span> Баннеры</button>
+                    <button class="btn btn-default" type="button" data-subpanel-id="staticc-content-banners"><span class="glyphicons glyphicons-more-items"></span> Боковые панели</button>
+                    <button class="btn btn-default" type="button" data-subpanel-id="staticc-content-banners"><<span class="glyphicons glyphicons-map"></span> Навигационная панель</button>
+                </div>
+                <hr>
+                <div id="staticc-content-container">
+                    <div id="staticc-content-banners" hidden>
+                        <p>На сайте стандартно присутствуют три баннера: два внизу размером 88х31 и один между темами на главной странице, однако последний не показывается, если нет
+                        ни одной созданной темы.</p>
+                        <p>Ниже предоставлены два поля</p>
+                    </div>
+                </div>
             </div>
-            <?php } ?>
-        </div>
-    </form>
+        </form>
+        <?php } ?>
+    </div>
 </div>
 <script type="text/javascript">
     $("#staticc-panel :first-child").show();
