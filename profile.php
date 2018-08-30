@@ -621,13 +621,13 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
     else $userRefererLink = "";
     switch ($user->getSex()){
         case 1:
-            $userSex = "мужской";
+            $userSex = "<span class=\"glyphicons glyphicons-gender-male\"></span> мужской";
             break;
         case 2:
-            $userSex = "женский";
+            $userSex = "<span class=\"glyphicons glyphicons-gender-female\"></span> женский";
             break;
         default:
-            $userSex = "не указан";
+            $userSex = "<span class=\"glyphicons glyphicons-gender-intersex\"></span> не указан";
             break;
     }
     if ($user->getFrom() == "")
@@ -828,13 +828,13 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
     else $userRefererLink = "";
     switch ($user->getSex()){
         case 1:
-            $userSex = "мужской";
+            $userSex = "<span class=\"glyphicons glyphicons-gender-male\"></span> мужской";
             break;
         case 2:
-            $userSex = "женский";
+            $userSex = "<span class=\"glyphicons glyphicons-gender-female\"></span> женский";
             break;
         default:
-            $userSex = "не указан";
+            $userSex = "<span class=\"glyphicons glyphicons-gender-intersex\"></span> не указан";
             break;
     }
     $main = str_replace_once("{PROFILE_PAGE_GUI_SCRIPT}", $profileJS, $main);
