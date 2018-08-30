@@ -59,17 +59,160 @@ h2{
     font-size: 64px;
 }
 
-.h1-header{
-    text-shadow: 8px 3px 2px #000000;
+@media(min-width: 320px) {
+    .h1-header {
+        text-shadow: 8px 3px 2px #000000;
+        font-size: 30px;
+        margin-top: 40px;
+    }
+
+    .h1-helper{
+        padding: 10px;
+        font-size: 19px;
+        background-color: rgba(156, 156, 156, 0.45);
+        border: 1px solid #cccccc;
+        border-radius: 7px;
+    }
+
+    .footer-info-right{
+        float: left;
+        font-size: 11px;
+    }
 }
 
-.h1-helper{
-    padding: 10px;
-    font-size: 25px;
-    background-color: rgba(156, 156, 156, 0.45);
-    border: 1px solid #cccccc;
-    border-radius: 7px;
+@media(min-width: 375px) {
+    .h1-header {
+        text-shadow: 8px 3px 2px #000000;
+        font-size: 40px;
+        margin-top: 40px;
+    }
 
+    .h1-helper{
+        padding: 10px;
+        font-size: 22px;
+        background-color: rgba(156, 156, 156, 0.45);
+        border: 1px solid #cccccc;
+        border-radius: 7px;
+    }
+
+    .footer-info-right{
+        float: left;
+        font-size: 11px;
+    }
+}
+
+@media(min-width: 425px) {
+    .h1-header {
+        text-shadow: 8px 3px 2px #000000;
+        font-size: 45px;
+        margin-top: 40px;
+    }
+
+    .h1-helper{
+        padding: 10px;
+        font-size: 26px;
+        background-color: rgba(156, 156, 156, 0.45);
+        border: 1px solid #cccccc;
+        border-radius: 7px;
+    }
+
+    .footer-info-right{
+        float: left;
+        font-size: 11px;
+    }
+}
+
+@media(min-width: 768px) {
+    .h1-header {
+        text-shadow: 8px 3px 2px #000000;
+        font-size: 50px;
+        margin-top: 40px;
+    }
+
+    .h1-helper{
+        padding: 10px;
+        font-size: 26px;
+        background-color: rgba(156, 156, 156, 0.45);
+        border: 1px solid #cccccc;
+        border-radius: 7px;
+    }
+
+    .footer-info-right{
+        float: right;
+        font-size: 11px;
+    }
+
+    .main-footer{
+        min-height: 150px;
+    }
+}
+
+@media(min-width: 1024px){
+    .h1-header {
+        text-shadow: 8px 3px 2px #000000;
+        font-size: 45px;
+        margin-top: 40px;
+    }
+
+    .h1-helper{
+        padding: 10px;
+        font-size: 26px;
+        background-color: rgba(156, 156, 156, 0.45);
+        border: 1px solid #cccccc;
+        border-radius: 7px;
+    }
+
+    .footer-info-right{
+        float:right;
+        font-size: 11px;
+    }
+
+    .main-footer{
+        min-height: 150px;
+    }
+}
+
+
+@media(min-width: 1440px){
+    .h1-header {
+        text-shadow: 8px 3px 2px #000000;
+        font-size: 55px;
+        margin-top: 40px;
+    }
+
+    .h1-helper{
+        padding: 10px;
+        font-size: 26px;
+        background-color: rgba(156, 156, 156, 0.45);
+        border: 1px solid #cccccc;
+        border-radius: 7px;
+    }
+
+    .footer-info-right{
+        float:right;
+        font-size: 11px;
+    }
+}
+
+@media(min-width: 2560px){
+    .h1-header {
+        text-shadow: 8px 3px 2px #000000;
+        font-size: 100px;
+        margin-top: 40px;
+    }
+
+    .h1-helper{
+        padding: 10px;
+        font-size: 40px;
+        background-color: rgba(156, 156, 156, 0.45);
+        border: 1px solid #cccccc;
+        border-radius: 7px;
+    }
+
+    .footer-info-right{
+        float:right;
+        font-size: 11px;
+    }
 }
 
 .top-border{
@@ -188,7 +331,6 @@ h2{
 .main-footer{
     margin-top: 25px;
     width: 100%;
-    height: 125px;
     bottom: 0;
     padding: 25px;
     background: rgba(0, 0, 0, 0.8);
@@ -198,11 +340,6 @@ h2{
 
 .footer-info-left{
     float: left;
-    font-size: 11px;
-}
-
-.footer-info-right{
-    float: right;
     font-size: 11px;
 }
 

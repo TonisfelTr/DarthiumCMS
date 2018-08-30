@@ -34,11 +34,12 @@ if ($editPPerm && isset($_GET["editpage"]) && \Forum\StaticPagesAgent::isPageExi
     <div class="btn-group" id="staticc-btn-panel">
         <?php if ($editPPerm || $removePPerm){ ?><button class="btn btn-default" type="button" id="staticc-pages-btn" data-div="staticc-pages-div"><span class="glyphicons glyphicons-pencil"></span> Управление страницами</button><?php } ?>
         <?php if ($createPPerm) { ?>             <button class="btn btn-default" type="button" id="staticc-page-create-btn" data-div="staticc-page-create-div"><span class="glyphicons glyphicons-file-plus"></span> Создание страниц</button><?php } ?>
+        <?php if ($editSContentPerm) { ?>        <button class="btn btn-default" type="button" id="staticc-content-edit-btn" data-div="staticc-content-edit-div"><span class="glyphicons glyphicons-puzzle-2"></span> Редактирование статических компонентов</button><?php } ?>
         <?php if ($isEditMode && $editPPerm) { ?><button class="btn btn-info" type="button" id="staticc-page-edit-btn" data-div="staticc-page-edit-div"><span class="glyphicons glyphicons-edit"></span> Редактирование страницы - "<?php echo $page->getPageName(); ?>"</button><?php } ?>
     </div>
     <form enctype="multipart/form-data" action="adminpanel/scripts/staticc.php" method="post">
         <div class="custom-group" id="staticc-panel">
-            <?php if ($editPPerm || $removePPerm){ ?>
+            <?php if ($editPPerm || $removePPerm) { ?>
             <div class="div-border" id="staticc-pages-div" hidden>
                 <h2>Управление страницами</h2>
                 <p class="helper">Осуществление управления статическими страницами.</p>
@@ -233,6 +234,14 @@ if ($editPPerm && isset($_GET["editpage"]) && \Forum\StaticPagesAgent::isPageExi
                         </div>
                     </div>
                 </div>
+            <?php }
+            if ($editSContentPerm) { ?>
+            <div class="div-border" id="staticc-content-edit-div" hidden>
+                <h2>Редактирование статических компонентов</h2>
+                <p class="helper">Изменение контента боковых панелей и баннеров.</p>
+                <hr>
+                <p>Здесь Вы можете редактировать нижние и верхний баннер, контент боковых панелей </p>
+            </div>
             <?php } ?>
         </div>
     </form>
