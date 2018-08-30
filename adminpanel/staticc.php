@@ -33,7 +33,7 @@ if ($editPPerm && isset($_GET["editpage"]) && \Forum\StaticPagesAgent::isPageExi
     <p class="lead">Добавление, удаление и редактирование статического контента сайта.</p>
     <div class="btn-group" id="staticc-btn-panel">
         <?php if ($editPPerm || $removePPerm){ ?><button class="btn btn-default" type="button" id="staticc-pages-btn" data-div="staticc-pages-div"><span class="glyphicons glyphicons-pencil"></span> Управление страницами</button><?php } ?>
-        <?php if ($createPPerm) { ?>             <button class="btn btn-default" type="button" id="staticc-page-create-btn" data-div="staticc-page-create-div"><span class="glyphicons glyphicons-pencil"></span> Создание страниц</button><?php } ?>
+        <?php if ($createPPerm) { ?>             <button class="btn btn-default" type="button" id="staticc-page-create-btn" data-div="staticc-page-create-div"><span class="glyphicons glyphicons-file-plus"></span> Создание страниц</button><?php } ?>
         <?php if ($isEditMode && $editPPerm) { ?><button class="btn btn-info" type="button" id="staticc-page-edit-btn" data-div="staticc-page-edit-div"><span class="glyphicons glyphicons-edit"></span> Редактирование страницы - "<?php echo $page->getPageName(); ?>"</button><?php } ?>
     </div>
     <form enctype="multipart/form-data" action="adminpanel/scripts/staticc.php" method="post">
@@ -58,10 +58,10 @@ if ($editPPerm && isset($_GET["editpage"]) && \Forum\StaticPagesAgent::isPageExi
                 <div class="btn-group">
                     <button class="btn btn-default" type="submit" name="staticc-search-btn"><span class="glyphicons glyphicons-search"></span> Искать</button>
                     <button class="btn btn-default" type="submit" name="staticc-search-reset-btn"><span class="glyphicons glyphicons-book"></span> Сбросить фильтр</button>
-                    <?php if ($removePPerm) { ?><button class="btn btn-default alert-danger" type="submit" name="staticc-search-remove-btn" disabled><span class="glyphicons glyphicons-bin"></span> Удалить страницу</button><?php }?>
-
+                    <?php if ($removePPerm) { ?><button class="btn btn-default alert-danger" type="submit" name="staticc-search-remove-btn" id="staticc-search-remove-btn" disabled><span class="glyphicons glyphicons-bin"></span> Удалить выделенные страницы</button><?php }?>
                 </div>
                 <h3>Список созданных статических страниц</h3>
+                <div class="alert alert-info" id="staticc-selected-div" style="display: none;"><strong>Выделено страниц:</strong> <span>0</span></div>
                 <table class="table" id="staticc-pages-table">
                     <thead>
                         <tr class="staticc-table-header">
@@ -84,7 +84,7 @@ if ($editPPerm && isset($_GET["editpage"]) && \Forum\StaticPagesAgent::isPageExi
                         $p = new \Forum\StaticPage($item); ?>
 
                         <tr>
-                            <td><input type="checkbox"></td>
+                            <td><input type="checkbox" data-spi="<?php echo $p->getPageID(); ?>"></td>
                             <td><a href="/?sp=<?php echo $p->getPageID(); ?>"><?php echo $p->getPageName(); ?></a></td>
                             <td><?php echo $p->getPageDescription(); ?></td>
                             <td><?php echo \Users\UserAgent::GetUserNick($p->getPageAuthorId()); ?></td>
@@ -95,6 +95,7 @@ if ($editPPerm && isset($_GET["editpage"]) && \Forum\StaticPagesAgent::isPageExi
 
                     </tbody>
                 </table>
+                <input type="hidden" id="staticc-page-delete" name="staticc-page-delete">
             </div>
             <?php }
             if ($createPPerm) { ?>
@@ -246,6 +247,40 @@ if ($editPPerm && isset($_GET["editpage"]) && \Forum\StaticPagesAgent::isPageExi
         $("div#" + data).show();
         $(this).parent("div").children("button.active").removeClass("active");
         $(this).addClass("active");
+    });
+
+    function popup(){
+        var counter = $("table#staticc-pages-table > tbody input[type=checkbox]:checked").length;
+        if (counter > 0 ) {
+            $("button#staticc-search-remove-btn").prop("disabled", false);
+            $("div#staticc-selected-div").show();
+            $("div#staticc-selected-div > span").html(counter);
+            var idForDeleting = "";
+            $("table#staticc-pages-table > tbody input[type=checkbox]:checked").each(function() {
+                idForDeleting += $(this).data("spi") + ",";
+            });
+            idForDeleting = idForDeleting.substring(0, idForDeleting.length-1);
+            $("input#staticc-page-delete").val(idForDeleting);
+        } else {
+            $("button#staticc-search-remove-btn").prop("disabled", true);
+            $("div#staticc-selected-div").hide();
+            $("div#staticc-selected-div > span").html(counter);
+            $("input#staticc-page-delete").val("");
+        }
+    }
+
+    $("#staticc-table-select-all-checkbox").on("change", function() {
+        if ($(this).prop("checked") == true) {
+            $("table#staticc-pages-table > tbody input[type=checkbox]").prop("checked", true);
+            popup();
+        } else {
+            $("table#staticc-pages-table > tbody input[type=checkbox]").prop("checked", false);
+            popup();
+        }
+    });
+
+    $("table#staticc-pages-table > tbody input[type=checkbox]").on("change", function(){
+        popup();
     });
 
     <?php if (isset($_REQUEST["reqtype"])){

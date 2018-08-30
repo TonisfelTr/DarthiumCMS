@@ -15,9 +15,11 @@
  * 7ncp - page has [not] been [created].
  * 7npe - [page] is [not] [exist].
  * 7npse - page save error.
+ * 7ndsp - not deleted some page.
  * Positive:
  * 7scp - successfull create page.
  * 7sphbe - page has been successfull edited.
+ * 7srsp - successfull remove selected pages.
 */
 require_once "../../engine/main.php";
 \Engine\Engine::LoadEngine();
@@ -69,7 +71,7 @@ if (isset($_POST["staticc-page-create-create-btn"]) && $createSPPerm) {
         header("Location: ../../adminpanel.php?p=staticc&res=7npe");
         exit;
     }
-} elseif (isset($_POST["staticc-page-edit-edit-btn"]) && $editSPPerm){
+} elseif (isset($_POST["staticc-page-edit-edit-btn"]) && $editSPPerm) {
     if (!\Forum\StaticPagesAgent::isPageExists($_REQUEST["id"])) {
         header("Location: ../../adminpanel.php?p=staticc&res=7npe");
         exit;
@@ -78,11 +80,27 @@ if (isset($_POST["staticc-page-create-create-btn"]) && $createSPPerm) {
     $result = \Forum\StaticPagesAgent::ChangePageData($pageId, "name", $_POST["staticc-page-edit-name-input"]);
     $result = \Forum\StaticPagesAgent::ChangePageData($pageId, "description", $_POST["staticc-page-edit-description-input"]);
     $result = \Forum\StaticPagesAgent::EditPage($pageId, $_POST["staticc-page-edit-textarea"]);
-    if ($result){
+    if ($result) {
         header("Location: ../../adminpanel.php?p=staticc&res=7sphbe");
         exit;
     } else {
         header("Location: ../../adminpanel.php?p=staticc&res=7npse&reqtype=2&editpage=$pageId");
+        exit;
+    }
+} elseif (isset($_POST["staticc-search-remove-btn"]) && $removeSPPerm){
+    $pagesId = explode(",", $_POST["staticc-page-delete"]);
+    foreach ($pagesId as $id){
+        if (!\Forum\StaticPagesAgent::isPageExists($id)) {
+            header("Location: ../../adminpanel.php?p=staticc&res=7nspe");
+            exit;
+        }
+        $result = \Forum\StaticPagesAgent::RemovePage($id);
+    }
+    if ($result === true){
+        header("Location: ../../adminpanel.php?p=staticc&res=7srsp");
+        exit;
+    } else {
+        header("Location: ../../adminpanel.php?p=staticc&res=7mdsp");
         exit;
     }
 } else {

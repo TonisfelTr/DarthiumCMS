@@ -440,14 +440,23 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
                 if ($_GET["res"] == "7npe") { ?>
                     <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Такой страницы не существует.
                     </div><?php }
+                if ($_GET["res"] == "7ndsp") { ?>
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Не получилось удалить некоторые страницы. Попробуйте ещё раз.
+                    </div><?php }
                 if ($_GET["res"] == "7npse") { ?>
                     <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Не удалось сохранить изменения статической страницы...
+                    </div><?php }
+                if ($_GET["res"] == "7nspe") { ?>
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Какой-то из выбранных для удаления страниц уже не существует. Обновите страницу и попробуйте ещё раз.
                     </div><?php }
                 if ($_GET["res"] == "7scp") { ?>
                     <div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign"></span> Статическая страница была успешно создана!
                     </div><?php }
                 if ($_GET["res"] == "7sphbe") { ?>
                     <div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign"></span> Статическая страница успешно отредактирована.
+                    </div><?php }
+                if ($_GET["res"] == "7srsp") { ?>
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign"></span> Выделенные статические страницы были успешно удалены!
                     </div><?php }
             }
         }
