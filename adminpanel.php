@@ -437,8 +437,17 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
                 if ($_GET["res"] == "7ncp") { ?>
                     <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Не удалось создать статическую страницу...
                     </div><?php }
+                if ($_GET["res"] == "7npe") { ?>
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Такой страницы не существует.
+                    </div><?php }
+                if ($_GET["res"] == "7npse") { ?>
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Не удалось сохранить изменения статической страницы...
+                    </div><?php }
                 if ($_GET["res"] == "7scp") { ?>
                     <div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign"></span> Статическая страница была успешно создана!
+                    </div><?php }
+                if ($_GET["res"] == "7sphbe") { ?>
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign"></span> Статическая страница успешно отредактирована.
                     </div><?php }
             }
         }

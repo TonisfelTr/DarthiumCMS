@@ -1,6 +1,8 @@
 <?php
 
 namespace Forum {
+
+    use Engine\DataKeeper;
     use Engine\Engine;
     use Engine\ErrorManager;
     use Users\User;
@@ -53,7 +55,7 @@ namespace Forum {
             return $this->pageDescription;
         }
         public function getContent(){
-            return file_get_contents("../../site/statics/$this->pageID.html", FILE_USE_INCLUDE_PATH);
+            return file_get_contents("site/statics/$this->pageID.txt", FILE_USE_INCLUDE_PATH);
         }
     }
 
@@ -159,9 +161,21 @@ namespace Forum {
             }
             return false;
         }
-        public static function EditPage($idPage){
-            if (!self::isPageExists($idPage)) return false;
-            return file_get_contents("../../site/statics/$idPage.html", FILE_USE_INCLUDE_PATH);
+        public static function ChangePageData($idPage, $param, $newValue){
+            if (!self::isPageExists($idPage))
+                return false;
+
+            if ($param == "id") return false;
+            if (!in_array($param, ["id", "authorId", "createDate"]))
+                $result = DataKeeper::Update("tt_staticpages", array($param => $newValue), array("id" => $idPage));
+            if ($result)
+                return true;
+            else
+                return false;
+
+        }
+        public static function EditPage($idPage, $newText){
+            return file_put_contents("../../site/statics/$idPage.txt", $newText, FILE_USE_INCLUDE_PATH);
         }
         public static function GetPage($idPage){
             return new StaticPage($idPage);
