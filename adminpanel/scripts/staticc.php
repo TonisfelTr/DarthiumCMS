@@ -65,7 +65,7 @@ if (isset($_POST["staticc-page-create-create-btn"]) && $createSPPerm) {
     }
 } elseif (isset($_POST["staticc-page-edit-btn"]) && $editSPPerm) {
     if (\Forum\StaticPagesAgent::isPageExists($_REQUEST["id"])) {
-        header("Location: ../../adminpanel.php?p=staticc&reqtype=2&editpage=" . $_REQUEST["id"]);
+        header("Location: ../../adminpanel.php?p=staticc&reqtype=3&editpage=" . $_REQUEST["id"]);
         exit;
     } else {
         header("Location: ../../adminpanel.php?p=staticc&res=7npe");
@@ -84,7 +84,7 @@ if (isset($_POST["staticc-page-create-create-btn"]) && $createSPPerm) {
         header("Location: ../../adminpanel.php?p=staticc&res=7sphbe");
         exit;
     } else {
-        header("Location: ../../adminpanel.php?p=staticc&res=7npse&reqtype=2&editpage=$pageId");
+        header("Location: ../../adminpanel.php?p=staticc&res=7npse&reqtype=3&editpage=$pageId");
         exit;
     }
 } elseif (isset($_POST["staticc-search-remove-btn"]) && $removeSPPerm){

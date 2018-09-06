@@ -155,6 +155,7 @@
                 include "guards.php";
                 include "users.php";
                 include "forum.php";
+                include "decorator.php";
                 error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
 
                 //Definition constant for correct working.
@@ -383,7 +384,11 @@
                 31 => "This answer is a solve of one report.",
                 32 => "This category is not exist.",
                 33 => "Error in MySQL query",
-                34 => "This email is already exist."
+                34 => "This email is already exist.",
+                /*****************************************/
+                /* Errors of static content              */
+                /*****************************************/
+                35 => "This panel is not exist."
             );
 
             static public function GenerateError($errorCode){
@@ -745,7 +750,7 @@
                     if ($value != "*")
                         $whatStr .= "`$value`,";
                     else {
-                        $whatStr .= "$value";
+                        $whatStr .= "$value,";
                         break;
                     }
                 }

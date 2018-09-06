@@ -276,36 +276,6 @@ h2{
     border-top-left-radius: 0px;
 }
 
-.side-block{
-    width: 100%;
-    background: rgba(0,0,0,0.4);
-    border-bottom-left-radius: 6px;
-    border-bottom-right-radius: 6px;
-}
-
-.side-block-header-left,
-.side-block-header-right{
-    width: inherit;
-    background: rgba(0,0,0,0.4);
-    padding: 6px;
-    border: 1px solid black;
-
-}
-
-.side-block-header-left{
-    border-top-left-radius: 6px;
-}
-
-.side-block-header-right{
-    border-top-right-radius: 6px;
-}
-
-.side-block-body{
-    height: 100%;
-    padding: 7px;
-}
-
-
 .content-block{
     border: 1px solid black;
     color: black;

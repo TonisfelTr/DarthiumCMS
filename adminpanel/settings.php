@@ -414,6 +414,7 @@ else {
                 $(div).append($(span));
                 $(div).removeClass("hidden");
                 $(div).addClass("alert-success");
+                $(span).prop("class", "");
                 $(span).addClass("glyphicons glyphicons-ok");
                 $(span).after(" " + text);
                 break;
@@ -426,6 +427,7 @@ else {
                 $(div).append($(span));
                 $(div).removeClass("hidden");
                 $(div).addClass("alert-danger");
+                $(span).prop("class", "");
                 $(span).addClass("glyphicons glyphicons-remove");
                 $(span).after(" " + text);
                 break;

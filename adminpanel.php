@@ -41,6 +41,9 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
     <link href="adminpanel/css/ap-style.css" rel="stylesheet">
     <link href="adminpanel/css/uploader-style.css" rel="stylesheet">
     <link href="adminpanel/css/icon.ico" rel="icon">
+    <?php if (@$_GET["p"] == "staticc")
+    echo "<link href=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/css/sp-style.css\" rel=\"stylesheet\">";
+    ?>
 </head>
 <body>
 <?php include "adminpanel/subpanels/uploader.php"; ?>

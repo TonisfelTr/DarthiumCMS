@@ -97,6 +97,19 @@ if ($user === false){
 }
 $authMenu = getBrick();
 
+$firstBanner = \SiteBuilders\BannerAgent::GetBannersByName("firstbanner")[0]["content"];
+$secondBanner = \SiteBuilders\BannerAgent::GetBannersByName("secondbanner")[0]["content"];
+if (empty($firstBanner))
+    $firstBanner = "<img class=\"img-smbanner\" src=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp").  "/smallbanner.png\" title=\"Это место свободно\">";
+else
+    $firstBanner = "<div class=\"img-smbanner\">" . $firstBanner . "</div>";
+if (empty($secondBanner))
+    $secondBanner = "<img class=\"img-smbanner\" src=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp").  "/smallbanner.png\" title=\"Это место свободно\">";
+else
+    $secondBanner = "<div class=\"img-smbanner\">" . $secondBanner . "</div>";
+$footer = str_replace_once("{MAIN_PAGE:FOOTER_FIRST_SMALL_BANNER}", $firstBanner, $footer);
+$footer = str_replace_once("{MAIN_PAGE:FOOTER_SECOND_SMALL_BANNER}", $secondBanner, $footer);
+
 $main = str_replace_once("{INDEX_PAGE_NAVBAR}", $navbar, $main);
 $main = str_replace_once("{INDEX_PAGE_HEADER}", $header, $main);
 $main = str_replace_once("{INDEX_PAGE_OFFLINE}", $offline, $main);

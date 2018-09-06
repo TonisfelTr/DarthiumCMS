@@ -26,6 +26,19 @@ if ($editPPerm && isset($_GET["editpage"]) && \Forum\StaticPagesAgent::isPageExi
     $isEditMode = false;
 }
 
+if ($editSContentPerm){
+    $firstSmallBannerContent = \SiteBuilders\BannerAgent::GetBannersByName("firstbanner")["firstbanner"]["content"];
+    $secondSmallBannerContent = \SiteBuilders\BannerAgent::GetBannersByName("smallbanner")["smallbanner"]["content"];
+    $bigbanners = \SiteBuilders\BannerAgent::GetBanners("banner");
+    $buttons = array();
+    foreach ($bigbanners as $bigbanner){
+        $bannerId = $bigbanner["id"];
+        $bannerName = $bigbanner["name"];
+        $class = ($bigbanner["isVisible"] == 1) ? "btn-success" : "btn-danger";
+        $buttons[] = "<button class=\"btn $class\" type=\"button\" data-banner-id=\"$bannerId\">$bannerName</button>";
+    }
+}
+
 ?>
 
 <div class="inner cover">
@@ -37,8 +50,8 @@ if ($editPPerm && isset($_GET["editpage"]) && \Forum\StaticPagesAgent::isPageExi
         <?php if ($editSContentPerm) { ?>        <button class="btn btn-default" type="button" id="staticc-content-edit-btn" data-div="staticc-content-edit-div"><span class="glyphicons glyphicons-puzzle-2"></span> Редактирование статических компонентов</button><?php } ?>
         <?php if ($isEditMode && $editPPerm) { ?><button class="btn btn-info" type="button" id="staticc-page-edit-btn" data-div="staticc-page-edit-div"><span class="glyphicons glyphicons-edit"></span> Редактирование страницы - "<?php echo $page->getPageName(); ?>"</button><?php } ?>
     </div>
-    <div class="custom-group" id="staticc-panel">
-        <form enctype="multipart/form-data" action="adminpanel/scripts/staticc.php" method="post">
+    <form enctype="multipart/form-data" action="adminpanel/scripts/staticc.php" method="post">
+        <div class="custom-group" id="staticc-panel">
             <?php if ($editPPerm || $removePPerm) { ?>
             <div class="div-border" id="staticc-pages-div" hidden>
                 <h2>Управление страницами</h2>
@@ -234,32 +247,110 @@ if ($editPPerm && isset($_GET["editpage"]) && \Forum\StaticPagesAgent::isPageExi
                         </div>
                     </div>
                 </div>
-            <?php } ?>
-        </form>
-        <?php if ($editSContentPerm) { ?>
-        <form enctype="multipart/form-data" action="adminpanel/scripts/staticc.php" method="post">
+            <?php }
+            if ($editSContentPerm) { ?>
             <div class="div-border" id="staticc-content-edit-div" hidden>
                 <h2>Редактирование статических компонентов</h2>
-                <p class="helper">Изменение контента боковых панелей и баннеров.</p>
+                <p class="helper">Изменение контента боковых панелей, баннеров и навигационной панели.</p>
                 <hr>
                 <p>Здесь Вы можете редактировать нижние и верхний баннер, контент боковых панелей, в том числе их название. Здесь же, можно управлять полями, которые будут в навигационной панели главной страницы.</p>
                 <div class="btn-group" id="staticc-content-btn-panel">
                     <button class="btn btn-default active" type="button" data-subpanel-id="staticc-content-banners"><span class="glyphicons glyphicons-drop"></span> Баннеры</button>
-                    <button class="btn btn-default" type="button" data-subpanel-id="staticc-content-banners"><span class="glyphicons glyphicons-more-items"></span> Боковые панели</button>
-                    <button class="btn btn-default" type="button" data-subpanel-id="staticc-content-banners"><<span class="glyphicons glyphicons-map"></span> Навигационная панель</button>
+                    <button class="btn btn-default" type="button" data-subpanel-id="staticc-content-sidepanels"><span class="glyphicons glyphicons-more-items"></span> Боковые панели</button>
+                    <button class="btn btn-default" type="button" data-subpanel-id="staticc-content-navbar"><span class="glyphicons glyphicons-map"></span> Навигационная панель</button>
                 </div>
                 <hr>
+                <div id="staticc-content-error-div" hidden><span id="staticc-content-error-span"></span></div>
                 <div id="staticc-content-container">
                     <div id="staticc-content-banners" hidden>
-                        <p>На сайте стандартно присутствуют три баннера: два внизу размером 88х31 и один между темами на главной странице, однако последний не показывается, если нет
-                        ни одной созданной темы.</p>
-                        <p>Ниже предоставлены два поля</p>
+                        <p>На сайте стандартно присутствуют четыре баннера: два размером 88х31 и два 468х60. Последние два не появляются, если нет ни одной созданной темы.
+                        Большие баннеры появляются в случайном порядке.</p>
+                        <div class="input-group">
+                            <div class="input-group-addon">Первый баннер</div>
+                            <input class="form-control" type="text" id="staticc-firstsm-html-input" placeholder="HTML-код для первого баннера 88х31" value="<?php echo $firstSmallBannerContent; ?>">
+                            <div class="input-group-addon">Размер: 88х31</div>
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Действия <span class="caret"></span></button>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li><a id="staticc-smbanner-first-save" title="Сохранить код баннера."><span class="glyphicons glyphicons-ok"></span> Сохранить</a></li>
+                                    <li><a id="staticc-smbanner-first-remove" title="Удалить баннер. При этом отчистится поле."><span class="glyphicons glyphicons-remove"></span> Удалить</a></li>
+                                    <li><a id="staticc-smbanner-first-clear" title="Отчистить поле. Удаления баннера не произойдёт."><span class="glyphicons glyphicons-erase"></span> Отчистить</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="input-group">
+                            <div class="input-group-addon">Второй баннер</div>
+                            <input class="form-control" type="text" id="staticc-secondsm-html-input" placeholder="HTML-код для второго баннера 88х31" value="<?php echo $secondSmallBannerContent; ?>">
+                            <div class="input-group-addon">Размер: 88х31</div>
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Действия <span class="caret"></span></button>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li><a id="staticc-smbanner-second-save" title="Сохранить код баннера."><span class="glyphicons glyphicons-ok"></span> Сохранить</a></li>
+                                    <li><a id="staticc-smbanner-second-remove" title="Удалить баннер. При этом отчистится поле."><span class="glyphicons glyphicons-remove"></span> Удалить</a></li>
+                                    <li><a id="staticc-smbanner-second-clear" title="Отчистить поле. Удаления баннера не произойдёт."><span class="glyphicons glyphicons-erase"></span> Отчистить</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="container-fluid">
+                            <div class="btn-group-vertical col-lg-3 col-md-6 col-sm-6 col-xs-12" id="staticc-banner-btns">
+                                Больших баннеров: <span id="staticc-banners-counter"><?php echo \SiteBuilders\BannerAgent::GetBigBannersCount(); ?></span>
+                                <button class="btn btn-default" type="button" id="staticc-create-banner-btn"><span class="glyphicons glyphicons-plus-sign"></span> Добавить баннер</button>
+                                <?php foreach($buttons as $b){
+                                    echo $b;
+                                } ?>
+                            </div>
+                            <div class="div-border col-lg-9 col-md-6 col-sm-6 col-xs-12" id="staticc-create-banner-div" style="display: none;">
+                                <input type="hidden" id="staticc-banner-current-id">
+                                <p>В данной форме создаются большие баннеры. Их размер должен быть точно 468х60.</p>
+                                <input class="form-control" type="text" id="staticc-create-banner-name-input" placeholder="Название баннера">
+                                <p class="alert alert-info"><span class="glyphicons glyphicons-info-sign"></span> Название нигде не будет отображаться, оно нужно для удобства Вашей координации между созданными баннерами.</p>
+                                <input class="form-control" type="text" id="staticc-create-banner-link-input" placeholder="HTML-код баннера">
+                                <br>
+                                <label for="staticc-create-banner-visibility-input">Включить баннер: </label>
+                                <input type="checkbox" id="staticc-create-banner-visibility-input">
+                                <p class="alert alert-info"><span class="glyphicons glyphicons-info-sign"></span> Если баннер отключен, то он не будет выводится.</p>
+                                <div class="btn-group">
+                                    <button class="btn btn-default" type="button" id="staticc-create-banner-send-btn"><span class="glyphicons glyphicons-ok"></span> </button>
+                                        <button class="btn btn-default" type="button" id="staticc-remove-banner-send-btn"><span class="glyphicons glyphicons-erase"></span> Удалить баннер</button>
+                                    <button class="btn btn-default" type="button" id="staticc-create-banner-cancel-btn"><span class="glyphicons glyphicons-remove"></span> Отмена</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="staticc-content-sidepanels" hidden>
+                        <p>Здесь Вы можете редактировать заголовок и содержание колонок, а также их количество.</p>
+                        <div class="alert alert-info"><span class="glyphicons glyphicons-info-sign"></span> Если Вы удалите все колонки с одной стороны, блоки сайта не сдвинутся.</div>
+                        <div class="container-fluid">
+                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2" id="staticc-sp-left-div" style="display: none;">
+                                <div class="side-block">
+                                    <div class="side-block-header-left">{PANEL_TITLE}</div>
+                                    <div class="side-block-body">
+                                        {PANEL_CONTENT}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
+
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2" id="staticc-sp-right-div" style="display: none;">
+                                <div class="side-block">
+                                    <div class="side-block-header-left">{PANEL_TITLE}</div>
+                                    <div class="side-block-body">
+                                        {PANEL_CONTENT}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="staticc-content-navbar" hidden>
                     </div>
                 </div>
             </div>
-        </form>
-        <?php } ?>
-    </div>
+            <?php } ?>
+        </div>
+    </form>
 </div>
 <script type="text/javascript">
     $("#staticc-panel :first-child").show();
@@ -272,6 +363,262 @@ if ($editPPerm && isset($_GET["editpage"]) && \Forum\StaticPagesAgent::isPageExi
         $(this).parent("div").children("button.active").removeClass("active");
         $(this).addClass("active");
     });
+
+    <?php if ($editSContentPerm) { ?>
+    function ShowSCErrorBox(type, message){
+        var div = $("div#staticc-content-error-div");
+        var span = $("span#staticc-content-error-span");
+        switch (type){
+            case 1:
+            case "okey":
+            case "ok":
+            case "true":
+            case "success":
+            case true:
+                $(div).text("");
+                $(div).prop("class", "alert alert-success");
+                $(span).prop("class", "glyphicon glyphicon-ok");
+                $(div).append($(span));
+                $(div).append(" " + message);
+                $(div).show();
+                break;
+            case 0:
+            case "error":
+            case "failed":
+            case "fail":
+            case false:
+                $(div).text("");
+                $(div).prop("class", "alert alert-danger");
+                $(span).prop("class", "glyphicon glyphicon-remove");
+                $(div).append($(span));
+                $(div).append(" " + message);
+                $(div).show();
+                break;
+            default:
+                return false;
+        }
+        $('html, body').animate({
+            scrollTop: $(div).offset().top-100
+        }, 1000);
+    }
+    function HideSCErrorBox(){
+        $("div#staticc-content-error-div").hide("slow");
+    }
+
+    $("div#staticc-content-btn-panel > button").on("click", function(){
+        var data = $(this).data("subpanel-id");
+        $("div#staticc-content-container > div").hide();
+        $("div#" + data).show();
+        $(this).parent("div").children("button").removeClass("active");
+        $(this).addClass("active");
+    });
+
+    //First small banner actions
+    $("a#staticc-smbanner-first-save").on("click", function(){
+        var dataInfo = "savefsb&link=" + $("input#staticc-firstsm-html-input").val();
+       $.ajax({
+           url: "adminpanel/scripts/ajax/bannersajax.php",
+           type: "POST",
+           data: dataInfo,
+           success: function(data){
+               if ($.isNumeric(data) || data === "okey") {
+                   ShowSCErrorBox("okey", "Первый баннер был успешно сохранён!");
+                   $("input#staticc-firstsm-html-input").data("fsbid", data);
+               }
+               else if (data === "failed")
+                   ShowSCErrorBox("fail", "Не удалось сохранить первый баннер.");
+               else
+                   ShowSCErrorBox("fail", "Не был отослан HTML код первого баннера.");
+           }
+       });
+    });
+    $("a#staticc-smbanner-first-remove").on("click", function(){
+        var dataInfo = "removefsb&id=" + $("input#staticc-firstsm-html-input").data("fsbid");
+        $.ajax({
+            url: "adminpanel/scripts/ajax/bannersajax.php",
+            type: "POST",
+            data: dataInfo,
+            success: function(data){
+                if (data === "okey")
+                    ShowSCErrorBox("okey", "Первый баннер был успешно удалён.");
+                else if (data === "failed")
+                    ShowSCErrorBox("fail", "Не удалось удалить первый баннер.");
+            }
+        });
+    });
+    $("a#staticc-smbanner-first-clear").on("click", function(){
+        $("input#staticc-firstsm-html-input").val("");
+    });
+
+    //Second small banner actions
+    $("a#staticc-smbanner-second-save").on("click", function(){
+        var dataInfo = "savessb&link=" + $("input#staticc-secondsm-html-input").val();
+        $.ajax({
+            url: "adminpanel/scripts/ajax/bannersajax.php",
+            type: "POST",
+            data: dataInfo,
+            success: function(data){
+                if ($.isNumeric(data) || data === "okey") {
+                    ShowSCErrorBox("okey", "Второй баннер был успешно сохранён!");
+                    $("input#staticc-secondsm-html-input").data("ssbid", data);
+                }
+                else if (data === "failed")
+                    ShowSCErrorBox("fail", "Не удалось сохранить второй баннер.");
+                else
+                    ShowSCErrorBox("fail", "Не был отослан HTML код второго баннера.");
+            }
+        });
+    });
+    $("a#staticc-smbanner-second-remove").on("click", function(){
+        var dataInfo = "removessb&id=" + $("input#staticc-secondsm-html-input").data("ssbid");
+        $.ajax({
+            url: "adminpanel/scripts/ajax/bannersajax.php",
+            type: "POST",
+            data: dataInfo,
+            success: function(data){
+                if (data === "okey")
+                    ShowSCErrorBox("okey", "Второй баннер был успешно удалён.");
+                else if (data === "failed")
+                    ShowSCErrorBox("fail", "Не удалось удалить второй баннер.");
+            }
+        });
+    });
+    $("a#staticc-smbanner-second-clear").on("click", function(){
+        $("input#staticc-secondsm-html-input").val("");
+    });
+
+    //Big banner edit or create.
+    $("button#staticc-create-banner-send-btn").on("click", function() {
+        if ($("input#staticc-banner-current-id").val() == ""){
+            $.ajax({
+                type: "POST",
+                url : "adminpanel/scripts/ajax/bannersajax.php",
+                data: "addbbaner&banner-name=" + $("input#staticc-create-banner-name-input").val() +
+                        "&banner-content=" + $("input#staticc-create-banner-link-input").val() +
+                        "&banner-visibility=" + (($("input#staticc-create-banner-visibility-input").is(":checked")) ? 1 : 0),
+                success: function (data){
+                    if (data === "failed")
+                        ShowSCErrorBox("error", "Не удалось создать баннер.");
+                    else if (data === "nns")
+                        ShowSCErrorBox("error", "Вы не указали имя баннера.");
+                    else if (data === "cns")
+                        ShowSCErrorBox("error", "Вы не указали HTML-код баннера.");
+                    else if ($.isNumeric(data)){
+                        var button = document.createElement("button");
+                        if ($("input#staticc-create-banner-visibility-input").is(":checked"))
+                            $(button).prop("class", "btn btn-success");
+                        else
+                            $(button).prop("class", "btn btn-danger");
+                        $(button).text($("input#staticc-create-banner-name-input").val());
+                        $(button).prop("type", "button");
+                        $(button).attr("data-banner-id", data);
+                        $("div#staticc-banner-btns").append(button);
+                        ShowSCErrorBox("success", "Баннер \"" + $("input#staticc-create-banner-name-input").val() + "\" был успешно создан!");
+                        $("span#staticc-banners-counter").val($("span#staticc-banners-counter").val()+1);
+                        $("button#staticc-create-banner-cancel-btn").click();
+                    }
+                }
+            });
+        } else {
+            var clicked = $("div#staticc-banner-btns button[data-banner-id=" + $("input#staticc-banner-current-id").val() + "]");
+            $.ajax({
+                type: "POST",
+                url : "adminpanel/scripts/ajax/bannersajax.php",
+                data: "editbbaner&banner-id=" + $("input#staticc-banner-current-id").val() +
+                    "&banner-name=" + $("input#staticc-create-banner-name-input").val() +
+                    "&banner-content=" + $("input#staticc-create-banner-link-input").val() +
+                    "&banner-visibility=" + (($("input#staticc-create-banner-visibility-input").is(":checked")) ? 1 : 0),
+                success: function (data){
+                    if (data === "failed")
+                        ShowSCErrorBox("error", "Не удалось сохранить баннер.");
+                    else if (data === "nns")
+                        ShowSCErrorBox("error", "Вы не указали имя баннера.");
+                    else if (data === "cns")
+                        ShowSCErrorBox("error", "Вы не указали HTML-код баннера.");
+                    else if (data === "okey"){
+                        ShowSCErrorBox("success", "Баннер \"" + $("input#staticc-create-banner-name-input").val() + "\" был успешно сохранён!");
+                        if ($("input#staticc-create-banner-visibility-input").is(":checked"))
+                            $(clicked).prop("class", "btn btn-success");
+                        else
+                            $(clicked).prop("class", "btn btn-danger");
+                        $(clicked).text($("input#staticc-create-banner-name-input").val());
+                        $("button#staticc-create-banner-cancel-btn").click();
+                    }
+                }
+            });
+        }
+    });
+
+    //Big banner cancel form.
+    $("button#staticc-create-banner-cancel-btn").on("click", function() {
+        $(this).parent("div").parent("div").children("input[type=text]").val("");
+        $(this).parent("div").parent("div").children("input[type=checkbox]").prop("checked", false);
+        $(this).parent("div").parent("div").hide("slow");
+    });
+
+    //Click on buttons in side frame. Here is handler "Create banner".
+    $("div#staticc-banner-btns > button").on("click", function() {
+        $("div#staticc-create-banner-div").show("slow");
+        var span = $("button#staticc-create-banner-send-btn > span");
+        $("button#staticc-create-banner-send-btn").val("");
+        if ($(this).data("banner-id") === undefined){
+            $("button#staticc-remove-banner-send-btn").hide("slow");
+            $("button#staticc-create-banner-send-btn").html("");
+            $("button#staticc-create-banner-send-btn").append($(span));
+            $("button#staticc-create-banner-send-btn").append(" Создать баннер");
+            $("div#staticc-create-banner-div > input[type=text]").val("");
+            $("div#staticc-create-banner-div > input[type=checkbox]").prop("checked", false);
+        } else {
+            $("button#staticc-remove-banner-send-btn").show("slow");
+            $("input#staticc-banner-current-id").val($(this).data("banner-id"));
+            $("button#staticc-create-banner-send-btn").html("");
+            $("button#staticc-create-banner-send-btn").append($(span));
+            $("button#staticc-create-banner-send-btn").append(" Изменить баннер");
+            $("input#staticc-create-banner-name-input").val($(this).text());
+            if ($(this).hasClass("btn-success"))
+                $("input#staticc-create-banner-visibility-input").prop("checked", true);
+            else
+                $("input#staticc-create-banner-visibility-input").prop("checked", false);
+            $.ajax({
+                type: "POST",
+                url : "adminpanel/scripts/ajax/bannersajax.php",
+                data: "getbbanner&banner-id=" + $("input#staticc-banner-current-id").val(),
+                success: function(data){
+                    if (data !== "failed") {
+                        $("input#staticc-create-banner-link-input").val(data);
+                        HideSCErrorBox();
+                    } else {
+                        ShowSCErrorBox("failed", "Не удалось получить HTML-код баннера.");
+                    }
+                }
+            });
+        }
+    });
+
+    $("button#staticc-remove-banner-send-btn").on("click", function() {
+       $.ajax({
+           type: "POST",
+           url: "adminpanel/scripts/ajax/bannersajax.php",
+           data: "removebbanner&banner-id=" + $("input#staticc-banner-current-id").val(),
+           success: function (data){
+               if (data === "okey"){
+                   ShowSCErrorBox("okey", "Баннер \"" + $("input#staticc-create-banner-name-input").val() + "\" был успешно удалён.");
+                   $("div#staticc-banner-btns > button[data-banner-id=" + $("input#staticc-banner-current-id").val() + "]").remove();
+                   $("span#staticc-banners-counter").val($("span#staticc-banners-counter").val()-1);
+                   $("button#staticc-create-banner-cancel-btn").click();
+               }
+               else if (data === "failed"){
+                   ShowSCErrorBox("failed", "Не удалось удалить баннер.");
+               }
+               else if (data === "bne"){
+                   ShowSCErrorBox("failed", "Такого баннера не существует.");
+               }
+           }
+       });
+    });
+
+    
+    <?php } ?>
 
     function popup(){
         var counter = $("table#staticc-pages-table > tbody input[type=checkbox]:checked").length;
