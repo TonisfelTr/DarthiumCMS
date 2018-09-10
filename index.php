@@ -110,12 +110,29 @@ else
 $footer = str_replace_once("{MAIN_PAGE:FOOTER_FIRST_SMALL_BANNER}", $firstBanner, $footer);
 $footer = str_replace_once("{MAIN_PAGE:FOOTER_SECOND_SMALL_BANNER}", $secondBanner, $footer);
 
+$panels = \SiteBuilders\SidePanelsAgent::GetPanelsList();
+$rightPanels = "";
+$leftPanels = "";
+foreach ($panels as $panel){
+    $panel = \SiteBuilders\SidePanelsAgent::GetPanel($panel["id"]);
+    if ($panel["type"] == "leftside"){
+        $leftPanel = str_replace_once("{PANEL_TITLE}", $panel["name"], $leftSide);
+        $leftPanel = str_replace_once("{PANEL_CONTENT}", $panel["content"], $leftPanel);
+        $leftPanels .= $leftPanel;
+    } elseif ($panel["type"] == "rightside"){
+        $rightPanel = str_replace_once("{PANEL_TITLE}", $panel["name"], $rightSide);
+        $rightPanel = str_replace_once("{PANEL_CONTENT}", $panel["content"], $rightPanel);
+        $rightPanels .= $rightPanel;
+    }
+
+}
+
 $main = str_replace_once("{INDEX_PAGE_NAVBAR}", $navbar, $main);
 $main = str_replace_once("{INDEX_PAGE_HEADER}", $header, $main);
 $main = str_replace_once("{INDEX_PAGE_OFFLINE}", $offline, $main);
-$main = str_replace_once("{INDEX_PAGE_LEFT}", $leftSide, $main);
+$main = str_replace_once("{INDEX_PAGE_LEFT}", $leftPanels, $main);
 $main = str_replace_once("{INDEX_PAGE_NEWSPAPER}", $newsPaper, $main);
-$main = str_replace_once("{INDEX_PAGE_RIGHT}", $rightSide, $main);
+$main = str_replace_once("{INDEX_PAGE_RIGHT}", $rightPanels, $main);
 $main = str_replace_once("{INDEX_PAGE_FOOTER}", $footer, $main);
 $main = str_replace_once("{ENGINE_META:DESCRIPTION}", \Engine\Engine::GetEngineInfo("ssc"), $main);
 $main = str_replace_once("{ENGINE_META:KEYWORDS}", \Engine\Engine::GetEngineInfo("sh"), $main);
