@@ -211,7 +211,7 @@ namespace SiteBuilders {
                 "isVisible" => $isVisible
             ));
             if ($result > 0)
-                return true;
+                return $result;
             else
                 return false;
         }
@@ -247,12 +247,12 @@ namespace SiteBuilders {
 
             $result = DataKeeper::Get(SB_TABLE, array("name", "type", "content", "isVisible"), array("id" => $idPanel));
             if (is_array($result))
-                return $result;
+                return $result[0];
             else
                 return false;
         }
         public static function GetPanelsList(){
-            $result = DataKeeper::Get(SB_TABLE, array("id"), array("id" => "*"));
+            $result = DataKeeper::Get(SB_TABLE, array("id"));
             if (is_array($result))
                 return $result;
             else

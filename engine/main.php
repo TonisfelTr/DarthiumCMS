@@ -755,7 +755,7 @@
                     }
                 }
                 $whatStr = rtrim($whatStr, ",");
-                $whereStr = rtrim($whereStr, ",");
+                $whereStr = rtrim(@$whereStr, ",");
 
                 if ($whereArr != null) {
                     $query = "SELECT $whatStr FROM `$table` WHERE $whereStr";

@@ -37,6 +37,14 @@ if ($editSContentPerm){
         $class = ($bigbanner["isVisible"] == 1) ? "btn-success" : "btn-danger";
         $buttons[] = "<button class=\"btn $class\" type=\"button\" data-banner-id=\"$bannerId\">$bannerName</button>";
     }
+    $panels = \SiteBuilders\SidePanelsAgent::GetPanelsList();
+    $panelsList = [];
+    foreach ($panels as $panel){
+        $id = $panel["id"];
+        $panel = \SiteBuilders\SidePanelsAgent::GetPanel($id);
+        $side = ($panel["type"] == "leftside") ? "Левая" : "Правая";
+        $panelsList[] = "<option value=\"$id\">[$side] " . $panel["name"] . "</option>";
+    }
 }
 
 ?>
@@ -323,7 +331,7 @@ if ($editSContentPerm){
                         <p>Здесь Вы можете редактировать заголовок и содержание колонок, а также их количество.</p>
                         <div class="alert alert-info"><span class="glyphicons glyphicons-info-sign"></span> Если Вы удалите все колонки с одной стороны, блоки сайта не сдвинутся.</div>
                         <div class="container-fluid">
-                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2" id="staticc-sp-left-div" style="display: none;">
+                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2" id="staticc-left-panel-div" style="display: none;">
                                 <div class="side-block">
                                     <div class="side-block-header-left">{PANEL_TITLE}</div>
                                     <div class="side-block-body">
@@ -332,13 +340,61 @@ if ($editSContentPerm){
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
-
+                                <div class="input-group">
+                                    <select class="form-control" id="staticc-panels-selector">
+                                        <option value="none" selected>Не выбрано...</option>
+                                        <?php foreach ($panelsList as $panel){
+                                            echo $panel;
+                                        } ?>
+                                    </select>
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Действия <span class="caret"></span></button>
+                                        <ul class="dropdown-menu dropdown-menu-right">
+                                            <li><a id="staticc-panels-add" title="Добавить панель."><span class="glyphicons glyphicons-plus"></span> Добавить панель</a></li>
+                                            <li><a id="staticc-panels-remove" title="Удалить панель."><span class="glyphicons glyphicons-erase"></span> Удалить</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <br>
+                                <div id="staticc-panel-editor-div" class="div-border">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">Заголовок блока</div>
+                                        <input type="text" class="form-control" id="staticc-panel-editor-title" maxlength="150">
+                                    </div>
+                                    <br>
+                                    <div class="alert alert-info">
+                                        <span class="glyphicons glyphicons-info-sign"></span> В заголовке нельзя использовать код.
+                                    </div>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">Содержимое</div>
+                                        <textarea class="form-control non-resize" id="staticc-panel-editor-content"></textarea>
+                                    </div>
+                                    <br>
+                                    <div class="alert alert-info">
+                                        <span class="glyphicons glyphicons-info-sign"></span> При написании содержимого колонки, можно использовать любой код.
+                                    </div>
+                                    <label for="staticc-panel-editor-visibility">Показывать панель:</label>
+                                    <input type="checkbox" id="staticc-panel-editor-visibility">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">Отображение панели</div>
+                                        <select class="form-control" id="staticc-panel-editor-side">
+                                            <option value="left">Слева</option>
+                                            <option value="right">Справа</option>
+                                        </select>
+                                    </div>
+                                    <br>
+                                    <div class="btn-group">
+                                        <button class="btn btn-default" id="staticc-panel-editor-send-btn" type="button"><span class="glyphicons glyphicons-ok"></span> <span id="staticc-panel-editor-send-btn-content"></span></button>
+                                        <button class="btn btn-default" id="staticc-panel-editor-remove-btn" type="button" style="display: none;"><span class="glyphicons glyphicons-delete"></span> Удалить панель</button>
+                                        <button class="btn btn-default" id="staticc-panel-editor-erase-btn" type="button"><span class="glyphicons glyphicons-erase"></span> Отмена</button>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2" id="staticc-sp-right-div" style="display: none;">
+                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2" id="staticc-right-panel-div" style="display: none;">
                                 <div class="side-block">
-                                    <div class="side-block-header-left">{PANEL_TITLE}</div>
+                                    <div class="side-block-header-right"></div>
                                     <div class="side-block-body">
-                                        {PANEL_CONTENT}
+
                                     </div>
                                 </div>
                             </div>
@@ -412,7 +468,9 @@ if ($editSContentPerm){
         $(this).parent("div").children("button").removeClass("active");
         $(this).addClass("active");
     });
-
+    ///////////////////////////////////////////////////////////////////////////
+    /// Banner algorythm
+    ///////////////////////////////////////////////////////////////////////////
     //First small banner actions
     $("a#staticc-smbanner-first-save").on("click", function(){
         var dataInfo = "savefsb&link=" + $("input#staticc-firstsm-html-input").val();
@@ -617,7 +675,181 @@ if ($editSContentPerm){
        });
     });
 
-    
+    ///////////////////////////////////////////////////////////////////////////
+    /// Panel algorythm
+    ///////////////////////////////////////////////////////////////////////////
+    function HideSidePanels(){
+        $("div#staticc-left-panel-div").hide();
+        $("div#staticc-right-panel-div").hide();
+        $("div#staticc-panel-editor-div").hide();
+    }
+    function EditorClear(){
+        $("div#staticc-panel-editor-div input[type=text]").val("");
+        $("div#staticc-panel-editor-div input[type=checkbox]").prop("checked", false);
+        $("div#staticc-panel-editor-div textarea").val("");
+        $("div#staticc-panel-editor-div select").val("left");
+        $("div.side-block-header-left").html("");
+        $("div.side-block-header-right").html("");
+        $("div.side-block-header-left").parent("div").children("div:last-child").html("");
+        $("div.side-block-header-right").parent("div").children("div:last-child").html("");
+    }
+    function RemovePanel(idPanel){
+        $.ajax({
+            type: "POST",
+            url: "adminpanel/scripts/ajax/panelsajax.php",
+            data: "deletepanel&panel-id=" + idPanel,
+            success: function (data){
+                if (data === "pne"){
+                    ShowSCErrorBox("failed", "Эта панель не существует. Возможно, её уже кто-то удалил...");
+                }
+                else if (data === "failed"){
+                    ShowSCErrorBox("failed", "Не удалось удалить панель.");
+                } else if (data === "okey"){
+                    ShowSCErrorBox("okey", "Данная панель была успешно удалена!");
+                    HideSidePanels();
+                    $("select#staticc-panels-selector > option[value=" + idPanel+ "]").remove();
+                    $("select#staticc-panels-selector").val("none");
+                }
+
+            }
+        });
+    }
+    HideSidePanels();
+
+    $("select#staticc-panels-selector").on("change", function(){
+        if ($(this).val() === "none"){
+            HideSidePanels();
+            EditorClear();
+            HideSCErrorBox();
+        } else {
+            $("button#staticc-panel-editor-remove-btn").show("slow");
+            $("div#staticc-panel-editor-div").show();
+            $.ajax({
+               type: "POST",
+               url: "adminpanel/scripts/ajax/panelsajax.php",
+               data: "getpanel&panel-id=" + $("select#staticc-panels-selector").val(),
+               success: function(data) {
+                   if (data === "pne"){
+                        ShowSCErrorBox("failed", "Данной панели не существует. Возможно, её кто-то удалил; перезагрузите страницу.");
+                   } else if (data === "failed"){
+                        ShowSCErrorBox("failed", "Не удалось получить данные панели.")
+                   } else {
+                       if (data !== undefined) {
+                           $("span#staticc-panel-editor-send-btn-content").text("Сохранить изменения");
+                           data = $.parseJSON(data);
+                           var side = (data.type == "leftside") ? "left" : "right";
+                           $("div#staticc-panel-editor-div").show();
+                           $("input#staticc-panel-editor-title").val(data.name);
+                           $("div.side-block-header-" + side).html(data.name);
+                           $("div.side-block-header-" + side).parent("div").children("div:last-child").html(data.content);
+                           $("textarea#staticc-panel-editor-content").val(data.content);
+                           $("input[type=checkbox]#staticc-panel-editor-visibility").prop("checked", (data.visibility == 0) ? false : true);
+                           $("select#staticc-panel-editor-side").val(side);
+                           if (side == "left") {
+                               $("div#staticc-left-panel-div").show();
+                               $("div#staticc-right-panel-div").hide();
+                           } else {
+                               $("div#staticc-left-panel-div").hide();
+                               $("div#staticc-right-panel-div").show();
+                           }
+                       }
+                   }
+               }
+            });
+        }
+    });
+
+    $("#staticc-panels-add").on("click", function() {
+        EditorClear();
+        HideSidePanels();
+        $(this).val("none");
+        $("div#staticc-panel-editor-div").show();
+        $("div#staticc-left-panel-div").show();
+        $("span#staticc-panel-editor-send-btn-content").text("Создать панель");
+        $("button#staticc-panel-editor-remove-btn").hide("slow");
+    });
+    $("#staticc-panels-remove").on("click", function() {
+        RemovePanel($("select#staticc-panels-selector").val());
+    });
+    $("input#staticc-panel-editor-title").on("keyup", function (){
+       if ($("select#staticc-panel-editor-side").val() == "left"){
+           $("div.side-block-header-left").text($(this).val());
+       } else {
+           $("div.side-block-header-right").text($(this).val());
+       }
+    });
+    $("textarea#staticc-panel-editor-content").on("keyup", function (){
+        if ($("select#staticc-panel-editor-side").val() == "left"){
+            $("div.side-block-header-left").parent("div").children("div:last-child").html($(this).val());
+        } else {
+            $("div.side-block-header-right").parent("div").children("div:last-child").html($(this).val());
+        }
+    });
+    $("select#staticc-panel-editor-side").on("change", function(){
+       if ($(this).val() == "left") {
+           $("div#staticc-left-panel-div").show();
+           $("div.side-block-header-left").text($("input[type=text]#staticc-panel-editor-title").val());
+           $("div.side-block-header-left").parent("div").children("div:last-child").html($("textarea#staticc-panel-editor-content").val());
+           $("div#staticc-right-panel-div").hide();
+       } else {
+           $("div#staticc-left-panel-div").hide();
+           $("div#staticc-right-panel-div").show();
+           $("div.side-block-header-right").text($("input[type=text]#staticc-panel-editor-title").val());
+           $("div.side-block-header-right").parent("div").children("div:last-child").html($("textarea#staticc-panel-editor-content").val());
+       }
+    });
+    $("button#staticc-panel-editor-send-btn").on("click", function() {
+        var side = ($("select#staticc-panel-editor-side").val() == "right") ? "Правая" : "Левая";
+        if ($("select#staticc-panels-selector").val() !== "none"){
+            $.ajax({
+                type: "POST",
+                url: "adminpanel/scripts/ajax/panelsajax.php",
+                data: "editpanel&panel-id=" + $("select#staticc-panels-selector").val() +
+                        "&panel-name=" + $("input#staticc-panel-editor-title").val() +
+                        "&panel-content=" + $("textarea#staticc-panel-editor-content").val() +
+                        "&panel-visibility=" + (($("input#staticc-panel-editor-visibility").is(":checked")) ? 1 : 0) +
+                        "&panel-side=" + $("select#staticc-panel-editor-side").val(),
+                success: function(data){
+                    if (data === "pne"){
+                        ShowSCErrorBox("failed", "Такой панели не существует. Вероятно, её кто-то удалил...");
+                    } else if(data === "failed"){
+                        ShowSCErrorBox("failed", "Не получилось сохранить изменения панели.");
+                    } else if (data === "okey"){
+                        ShowSCErrorBox("okey", "Изменения были успешно сохранены!");
+                        HideSidePanels();
+                        $("select#staticc-panels-selector > option[value=" + $("select#staticc-panels-selector").val() + "]").html("[" + side +"] " + $("input#staticc-panel-editor-title").val());
+                        $("select#staticc-panels-selector").val("none");
+                    }
+                }
+            });
+        } else {
+            $.ajax({
+                type: "POST",
+                url: "adminpanel/scripts/ajax/panelsajax.php",
+                data: "addpanel&panel-name=" + $("input#staticc-panel-editor-title").val() +
+                    "&panel-content=" + $("textarea#staticc-panel-editor-content").val() +
+                    "&panel-visibility=" + (($("input#staticc-panel-editor-visibility").is(":checked")) ? 1 : 0) +
+                    "&panel-side=" + $("select#staticc-panel-editor-side").val(),
+                success: function(data){
+                    if(data === "failed"){
+                        ShowSCErrorBox("failed", "Не удалось создать панель.");
+                    } else if ($.isNumeric(data)){
+                        ShowSCErrorBox("okey", "Панель \"" + $("input#staticc-panel-editor-title").val() + "\" была успешно создана!");
+                        var newOption = "<option value=\"" + data + "\">["+ side + "] " + $("input#staticc-panel-editor-title").val() + "</option>";
+                        $("select#staticc-panels-selector").append(newOption);
+                        HideSidePanels();
+                    }
+                }
+            })
+        }
+    });
+    $("button#staticc-panel-editor-erase-btn").on("click", function(){
+       EditorClear();
+       HideSidePanels();
+    });
+    $("button#staticc-panel-editor-remove-btn").on("click", function() {
+       RemovePanel($("select#staticc-panels-selector").val());
+    });
     <?php } ?>
 
     function popup(){

@@ -350,3 +350,9 @@ span.report-answer-edit-info{
     background: radial-gradient(at left, #0e5424, #3f7785);
     color: white;
 }
+
+textarea.non-resize {
+    width: 100%;
+    height: 350px;
+    resize: none;
+}
