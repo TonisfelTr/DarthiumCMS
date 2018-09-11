@@ -54,7 +54,6 @@ if ($editSContentPerm){
     <p class="lead">Добавление, удаление и редактирование статического контента сайта.</p>
     <div class="btn-group" id="staticc-btn-panel">
         <?php if ($editPPerm || $removePPerm){ ?><button class="btn btn-default" type="button" id="staticc-pages-btn" data-div="staticc-pages-div"><span class="glyphicons glyphicons-pencil"></span> Управление страницами</button><?php } ?>
-        <?php if ($createPPerm) { ?>             <button class="btn btn-default" type="button" id="staticc-page-create-btn" data-div="staticc-page-create-div"><span class="glyphicons glyphicons-file-plus"></span> Создание страниц</button><?php } ?>
         <?php if ($editSContentPerm) { ?>        <button class="btn btn-default" type="button" id="staticc-content-edit-btn" data-div="staticc-content-edit-div"><span class="glyphicons glyphicons-puzzle-2"></span> Редактирование статических компонентов</button><?php } ?>
         <?php if ($isEditMode && $editPPerm) { ?><button class="btn btn-info" type="button" id="staticc-page-edit-btn" data-div="staticc-page-edit-div"><span class="glyphicons glyphicons-edit"></span> Редактирование страницы - "<?php echo $page->getPageName(); ?>"</button><?php } ?>
     </div>
@@ -92,7 +91,7 @@ if ($editSContentPerm){
                             <td>Описание страницы</td>
                             <td>Автор</td>
                             <td>Время создания</td>
-                            <td></td>
+                            <td><?php if ($createPPerm) { ?><button class="btn btn-default" type="button" id="staticc-page-create-btn" data-div="staticc-page-create-div" style="width: 100%;"><span class="glyphicons glyphicons-file-plus"></span> Создать страницу</button><?php } ?></td>
                         </tr>
                     </thead>
                     <tbody>
@@ -104,7 +103,6 @@ if ($editSContentPerm){
                     <?php } else ?>
                     <?php foreach($tablePage as $item){
                         $p = new \Forum\StaticPage($item); ?>
-
                         <tr>
                             <td><input type="checkbox" data-spi="<?php echo $p->getPageID(); ?>"></td>
                             <td><a href="/?sp=<?php echo $p->getPageID(); ?>"><?php echo $p->getPageName(); ?></a></td>
@@ -265,7 +263,6 @@ if ($editSContentPerm){
                 <div class="btn-group" id="staticc-content-btn-panel">
                     <button class="btn btn-default active" type="button" data-subpanel-id="staticc-content-banners"><span class="glyphicons glyphicons-drop"></span> Баннеры</button>
                     <button class="btn btn-default" type="button" data-subpanel-id="staticc-content-sidepanels"><span class="glyphicons glyphicons-more-items"></span> Боковые панели</button>
-                    <button class="btn btn-default" type="button" data-subpanel-id="staticc-content-navbar"><span class="glyphicons glyphicons-map"></span> Навигационная панель</button>
                 </div>
                 <hr>
                 <div id="staticc-content-error-div" hidden><span id="staticc-content-error-span"></span></div>
@@ -400,8 +397,6 @@ if ($editSContentPerm){
                             </div>
                         </div>
                     </div>
-                    <div id="staticc-content-navbar" hidden>
-                    </div>
                 </div>
             </div>
             <?php } ?>
@@ -412,11 +407,12 @@ if ($editSContentPerm){
     $("#staticc-panel :first-child").show();
     $("#staticc-btn-panel :first-child").addClass("active");
 
-    $("div#staticc-btn-panel > button").on("click", function() {
+    $("div#staticc-btn-panel > button, button#staticc-page-create-btn").on("click", function() {
         var data = $(this).data("div");
         $("div#staticc-panel > div").hide();
         $("div#" + data).show();
-        $(this).parent("div").children("button.active").removeClass("active");
+        $("div#staticc-btn-panel").children("button.active").removeClass("active");
+        $("button#staticc-page-create-btn").removeClass("active");
         $(this).addClass("active");
     });
 

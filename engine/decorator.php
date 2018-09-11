@@ -69,7 +69,7 @@ namespace SiteBuilders {
         private $panelName;
         private $panelVisiblity;
 
-        public function _construct($panelId){
+        public function __construct($panelId){
             $this->panelId = $panelId;
             $panelInfo = self::GetPanel($panelId);
             if (!is_array($panelInfo))
