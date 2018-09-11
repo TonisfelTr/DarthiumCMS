@@ -114,17 +114,18 @@ $panels = \SiteBuilders\SidePanelsAgent::GetPanelsList();
 $rightPanels = "";
 $leftPanels = "";
 foreach ($panels as $panel){
-    $panel = \SiteBuilders\SidePanelsAgent::GetPanel($panel["id"]);
-    if ($panel["type"] == "leftside"){
-        $leftPanel = str_replace_once("{PANEL_TITLE}", $panel["name"], $leftSide);
-        $leftPanel = str_replace_once("{PANEL_CONTENT}", $panel["content"], $leftPanel);
-        $leftPanels .= $leftPanel;
-    } elseif ($panel["type"] == "rightside"){
-        $rightPanel = str_replace_once("{PANEL_TITLE}", $panel["name"], $rightSide);
-        $rightPanel = str_replace_once("{PANEL_CONTENT}", $panel["content"], $rightPanel);
-        $rightPanels .= $rightPanel;
-    }
-
+    $panel = new \SiteBuilders\SidePanel($panel["id"]);
+    if ($panel->getVisibility()) {
+        if ($panel->getType() == "leftside") {
+            $leftPanel = str_replace_once("{PANEL_TITLE}", $panel->getName(), $leftSide);
+            $leftPanel = str_replace_once("{PANEL_CONTENT}", $panel->getContent(), $leftPanel);
+            $leftPanels .= $leftPanel;
+        } elseif ($panel->getType() == "rightside") {
+            $rightPanel = str_replace_once("{PANEL_TITLE}", $panel->getName(), $rightSide);
+            $rightPanel = str_replace_once("{PANEL_CONTENT}", $panel->getContent(), $rightPanel);
+            $rightPanels .= $rightPanel;
+        }
+    } else continue;
 }
 
 $main = str_replace_once("{INDEX_PAGE_NAVBAR}", $navbar, $main);
