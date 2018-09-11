@@ -218,7 +218,7 @@ if (isset ($_REQUEST["user-add-add"])){
             header($backRequest);
             exit;
         } else {
-            $group = (!isset($_REQUEST["user-add-group"])) ? \Engine\Engine::GetEngineInfo("sg") : $_REQUEST["user-add-group"];
+            $group = (!isset($_REQUEST["user-add-group"]) || !$user->UserGroup()->getPermission("change_user_group")) ? \Engine\Engine::GetEngineInfo("sg") : $_REQUEST["user-add-group"];
             if (\Users\UserAgent::AddUser($_REQUEST["user-add-nickname"], $_REQUEST["user-add-password"], $_REQUEST["user-add-email"], $user->getNickname()) === TRUE) {
                 $newUser = new \Users\User(\Users\UserAgent::GetUserId($_REQUEST["user-add-nickname"]));
                 $newUser->groupChange($group);
