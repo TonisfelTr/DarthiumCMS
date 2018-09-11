@@ -204,6 +204,60 @@ namespace Forum {
             }
             return false;
         }
+        public static function GetPagesListOfName($name, $page = 1){
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+
+            if ($mysqli->errno){
+                ErrorManager::GenerateError(2);
+                ErrorManager::PretendToBeDied(ErrorManager::GetError(), new \mysqli_sql_exception());
+            }
+
+            $lowBorder = ($page - 1) * 20;
+            $highBorder = $lowBorder + 20;
+            if ($stmt = $mysqli->prepare("SELECT `id` FROM `tt_staticpages` WHERE `name` LIKE ? ORDER BY `id` DESC LIMIT $lowBorder, $highBorder")){
+                $name = "%" . str_replace("*", "%", $name) . "%";
+                $stmt->bind_param("s", $name);
+                $stmt->execute();
+                if ($stmt->errno){
+                    ErrorManager::GenerateError(9);
+                    ErrorManager::PretendToBeDied(ErrorManager::GetError(), new \mysqli_sql_exception());
+                }
+                $stmt->bind_result($id);
+                $result = [];
+                while($stmt->fetch()){
+                    array_push($result, $id);
+                }
+                return $result;
+            }
+            return false;
+        }
+        public static function GetPagesListOfAuthor($author, $page = 1){
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+
+            if ($mysqli->errno){
+                ErrorManager::GenerateError(2);
+                ErrorManager::PretendToBeDied(ErrorManager::GetError(), new \mysqli_sql_exception());
+            }
+
+            $lowBorder = ($page - 1) * 20;
+            $highBorder = $lowBorder + 20;
+            if ($stmt = $mysqli->prepare("SELECT `id` FROM `tt_staticpages` WHERE `authorId` `id` = (SELECT `id` FROM `tt_users` WHERE `nickname` LIKE ?) ORDER BY `id` DESC LIMIT $lowBorder, $highBorder")){
+                $author = "%" . str_replace("*", "%", $author) . "%";
+                $stmt->bind_param("s", $author);
+                $stmt->execute();
+                if ($stmt->errno){
+                    ErrorManager::GenerateError(9);
+                    ErrorManager::PretendToBeDied(ErrorManager::GetError(), new \mysqli_sql_exception());
+                }
+                $stmt->bind_result($id);
+                $result = [];
+                while($stmt->fetch()){
+                    array_push($result, $id);
+                }
+                return $result;
+            }
+            return false;
+        }
         public static function GetPagesCount(){
             $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
 

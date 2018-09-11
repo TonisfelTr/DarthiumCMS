@@ -63,7 +63,30 @@ if (isset($_POST["staticc-page-create-create-btn"]) && $createSPPerm) {
         //header("Location: ../../adminpanel.php?p=staticc&reqtype=1&res=7ncp");
         exit;
     }
-} elseif (isset($_POST["staticc-page-edit-btn"]) && $editSPPerm) {
+}
+elseif (isset($_POST["staticc-search-btn"])){
+    if (empty($_POST["staticc-search-input"])){
+        if (@$_POST["staticc-search-type"] == "name" ) {
+            header("Location: ../../adminpanel.php?p=staticc&res=7nssn");
+            exit;
+        }
+        elseif (@$_POST["staticc-search-type"] == "author"){
+            header("Location: ../../adminpanel.php?p=staticc&res=7nssan");
+            exit;
+        }
+    }
+
+    if (@$_POST["staticc-search-type"] == "name"){
+        header("Location: ../../adminpanel.php?p=staticc&search-name=" . $_POST["staticc-search-input"]);
+        exit;
+    }
+
+    if (@$_POST["staticc-search-type"] == "author"){
+        header("Location: ../../adminpanel.php?p=staticc&search-author=" . $_POST["staticc-search-input"]);
+        exit;
+    }
+}
+elseif (isset($_POST["staticc-page-edit-btn"]) && $editSPPerm) {
     if (\Forum\StaticPagesAgent::isPageExists($_REQUEST["id"])) {
         header("Location: ../../adminpanel.php?p=staticc&reqtype=3&editpage=" . $_REQUEST["id"]);
         exit;
@@ -71,7 +94,8 @@ if (isset($_POST["staticc-page-create-create-btn"]) && $createSPPerm) {
         header("Location: ../../adminpanel.php?p=staticc&res=7npe");
         exit;
     }
-} elseif (isset($_POST["staticc-page-edit-edit-btn"]) && $editSPPerm) {
+}
+elseif (isset($_POST["staticc-page-edit-edit-btn"]) && $editSPPerm) {
     if (!\Forum\StaticPagesAgent::isPageExists($_REQUEST["id"])) {
         header("Location: ../../adminpanel.php?p=staticc&res=7npe");
         exit;
@@ -87,7 +111,8 @@ if (isset($_POST["staticc-page-create-create-btn"]) && $createSPPerm) {
         header("Location: ../../adminpanel.php?p=staticc&res=7npse&reqtype=3&editpage=$pageId");
         exit;
     }
-} elseif (isset($_POST["staticc-search-remove-btn"]) && $removeSPPerm){
+}
+elseif (isset($_POST["staticc-search-remove-btn"]) && $removeSPPerm){
     $pagesId = explode(",", $_POST["staticc-page-delete"]);
     foreach ($pagesId as $id){
         if (!\Forum\StaticPagesAgent::isPageExists($id)) {
@@ -103,7 +128,8 @@ if (isset($_POST["staticc-page-create-create-btn"]) && $createSPPerm) {
         header("Location: ../../adminpanel.php?p=staticc&res=7mdsp");
         exit;
     }
-} else {
+}
+else {
     header("Location: ../../adminpanel.php?p=staticc&res=1");
     exit;
 }

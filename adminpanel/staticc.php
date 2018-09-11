@@ -14,9 +14,25 @@ $removePPerm = $user->UserGroup()->getPermission("sc_remove_pages");
 $editSContentPerm = $user->UserGroup()->getPermission("sc_design_edit");
 
 if ($editPPerm || $createPPerm || $removePPerm) {
-    $tablePage = \Forum\StaticPagesAgent::GetPagesList((!empty($_REQUEST["pl"])) ? $_REQUEST["pl"] : 1);
+    $pageNumber = (!empty($_REQUEST["pl"])) ? $_REQUEST["pl"] : 1;
+    if (isset($_REQUEST["search-author"]))
+        $tablePage = \Forum\StaticPagesAgent::GetPagesListOfAuthor($_REQUEST["search-author"], $pageNumber);
+    elseif (isset($_REQUEST["search-name"]))
+        $tablePage = \Forum\StaticPagesAgent::GetPagesListOfName($_REQUEST["search-name"], $pageNumber);
+    else
+        $tablePage = \Forum\StaticPagesAgent::GetPagesList($pageNumber);
     $tablePageCount = count($tablePage);
+    $previousPage = (!isset($_REQUEST["pl"])) ? "#" : "#&pl=" . $_REQUEST["pl"] - 1;
+    $nextPage = (isset($_REQUEST["pl"]) && $_REQUEST["pl"] != $tablePageCount) ? "#&pl=" . ($_REQUEST["pl"] + 1) : "#";
     $page = "";
+    if (isset($_REQUEST["search-author"])) {
+        $value = $_REQUEST["search-author"];
+        $label = "Автор:";
+    }
+    if (isset($_REQUEST["search-name"])) {
+        $value = $_REQUEST["search-name"];
+        $label = "Название страницы:";
+    }
 }
 
 if ($editPPerm && isset($_GET["editpage"]) && \Forum\StaticPagesAgent::isPageExists($_GET["editpage"])){
@@ -67,10 +83,10 @@ if ($editSContentPerm){
                 <p>Статические страницы - это страницы, вшитые в сам сайт. Они не являются топиками, в них нельзя оставлять коментарии, в чём и заключается их удобство.
                 Здесь Вы можете создавать таковые, редактировать и удалять их. Вы можете искать нужные Вам страницы по их названию и по никнейму их автора. Для переключения
                 режима поиска воспользуйтесь кнопками в конце поля ввода. Неизвестные места можно отмечать знаком звёздочки (*).</p>
-                <input type="hidden" id="staticc-search-type" name="staticc-search-type">
+                <input type="hidden" id="staticc-search-type" name="staticc-search-type" value="name">
                 <div class="input-group">
-                    <input class="form-control" type="text" id="staticc-search-input" name="staticc-search-input" placeholder="Название страницы">
-                    <div class="input-group-btn">
+                    <input class="form-control" type="text" id="staticc-search-input" name="staticc-search-input" placeholder="Название страницы" value="<?php echo $value; ?>">
+                    <div class="input-group-btn" id="staticc-page-search-btns">
                         <button class="btn btn-default active" type="button" id="staticc-search-byname-btn" title="Искать по названию страницы"><span class="glyphicons glyphicons-subtitles"></span></button>
                         <button class="btn btn-default" type="button" id="staticc-search-byauthor-btn" title="Искать по никнейму автора"><span class="glyphicons glyphicons-nameplate"></span></button>
                     </div>
@@ -78,10 +94,16 @@ if ($editSContentPerm){
                 <br>
                 <div class="btn-group">
                     <button class="btn btn-default" type="submit" name="staticc-search-btn"><span class="glyphicons glyphicons-search"></span> Искать</button>
-                    <button class="btn btn-default" type="submit" name="staticc-search-reset-btn"><span class="glyphicons glyphicons-book"></span> Сбросить фильтр</button>
+                    <a class="btn btn-default" href="?p=staticc" name="staticc-search-reset-btn"><span class="glyphicons glyphicons-book"></span> Сбросить фильтр</a>
                     <?php if ($removePPerm) { ?><button class="btn btn-default alert-danger" type="submit" name="staticc-search-remove-btn" id="staticc-search-remove-btn" disabled><span class="glyphicons glyphicons-bin"></span> Удалить выделенные страницы</button><?php }?>
                 </div>
                 <h3>Список созданных статических страниц</h3>
+                <?php if (isset($_REQUEST["search-author"]) || isset($_REQUEST["search-name"])) { ?>
+                    <div class="alert alert-info">
+                        Фильтры:
+                        <hr>
+                        <strong><?php echo $label; ?></strong> <?php echo $value; ?>
+                    </div><?php } ?>
                 <div class="alert alert-info" id="staticc-selected-div" style="display: none;"><strong>Выделено страниц:</strong> <span>0</span></div>
                 <table class="table" id="staticc-pages-table">
                     <thead>
@@ -116,6 +138,25 @@ if ($editSContentPerm){
                     </tbody>
                 </table>
                 <input type="hidden" id="staticc-page-delete" name="staticc-page-delete">
+                <?php if (\Forum\StaticPagesAgent::GetPagesCount() > 0) { ?>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li <?php if ($previousPage == "#") echo "class=\"disabled\""; ?>>
+                            <a href="<?php echo $previousPage; ?>" aria-label="Предыдущая страница">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <?php for ($i = 1; $i <= \Forum\StaticPagesAgent::GetPagesCount(); $i++){ ?>
+                        <li <?php if (!isset($_REQUEST["pl"]) || $_REQUEST["pl"] == $i) echo "class=\"active\""; ?>><a href="#&pl=<?php echo $i; ?>"><?php echo $i; ?></a></li>
+                        <?php } ?>
+                        <li <?php if ($nextPage == "#") echo "class=\"disabled\""; ?>>
+                            <a href="<?php echo $nextPage; ?>" aria-label="Следующая страница">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <?php } ?>
             </div>
             <?php }
             if ($createPPerm) { ?>
@@ -257,9 +298,9 @@ if ($editSContentPerm){
             if ($editSContentPerm) { ?>
             <div class="div-border" id="staticc-content-edit-div" hidden>
                 <h2>Редактирование статических компонентов</h2>
-                <p class="helper">Изменение контента боковых панелей, баннеров и навигационной панели.</p>
+                <p class="helper">Изменение контента боковых панелей и баннеров.</p>
                 <hr>
-                <p>Здесь Вы можете редактировать нижние и верхний баннер, контент боковых панелей, в том числе их название. Здесь же, можно управлять полями, которые будут в навигационной панели главной страницы.</p>
+                <p>Здесь Вы можете редактировать нижние и верхний баннер, контент боковых панелей, в том числе их название.</p>
                 <div class="btn-group" id="staticc-content-btn-panel">
                     <button class="btn btn-default active" type="button" data-subpanel-id="staticc-content-banners"><span class="glyphicons glyphicons-drop"></span> Баннеры</button>
                     <button class="btn btn-default" type="button" data-subpanel-id="staticc-content-sidepanels"><span class="glyphicons glyphicons-more-items"></span> Боковые панели</button>
@@ -404,6 +445,8 @@ if ($editSContentPerm){
     </form>
 </div>
 <script type="text/javascript">
+    $("")
+
     $("#staticc-panel :first-child").show();
     $("#staticc-btn-panel :first-child").addClass("active");
 
@@ -413,6 +456,20 @@ if ($editSContentPerm){
         $("div#" + data).show();
         $("div#staticc-btn-panel").children("button.active").removeClass("active");
         $("button#staticc-page-create-btn").removeClass("active");
+        $(this).addClass("active");
+    });
+
+    $("button#staticc-search-byname-btn").on("click", function() {
+        $("input#staticc-search-type").val("name");
+        $("input#staticc-search-input").prop("placeholder", "Название страницы");
+        $(this).parent("div").children("button").removeClass("active");
+        $(this).addClass("active");
+    });
+
+    $("button#staticc-search-byauthor-btn").on("click", function() {
+        $("input#staticc-search-type").val("author");
+        $("input#staticc-search-input").prop("placeholder", "Никнейм автора");
+        $(this).parent("div").children("button").removeClass("active");
         $(this).addClass("active");
     });
 

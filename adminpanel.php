@@ -452,6 +452,12 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
                 if ($_GET["res"] == "7nspe") { ?>
                     <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Какой-то из выбранных для удаления страниц уже не существует. Обновите страницу и попробуйте ещё раз.
                     </div><?php }
+                if ($_GET["res"] == "7nssan") { ?>
+                    <div class="alert alert-warning"><span class="glyphicon glyphicon-warning-sign"></span> Вы не ввели никнейм автора.
+                    </div><?php }
+                if ($_GET["res"] == "7nssn") { ?>
+                    <div class="alert alert-warning"><span class="glyphicon glyphicon-warning-sign"></span> Вы не ввели название статической страницы.
+                    </div><?php }
                 if ($_GET["res"] == "7scp") { ?>
                     <div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign"></span> Статическая страница была успешно создана!
                     </div><?php }
