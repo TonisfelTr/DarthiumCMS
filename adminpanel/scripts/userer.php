@@ -218,36 +218,34 @@ if (isset ($_REQUEST["user-add-add"])){
             header($backRequest);
             exit;
         } else {
-            if (!empty($_REQUEST["user-add-group"])){
-                $group = ($_REQUEST["user-add-group"] == 0) ? \Engine\Engine::GetEngineInfo("sg") : $_REQUEST["user-add-group"];
-                if (\Users\UserAgent::AddUser($_REQUEST["user-add-nickname"], $_REQUEST["user-add-password"], $_REQUEST["user-add-email"], $user->getNickname()) === TRUE) {
-                    $newUser = new \Users\User(\Users\UserAgent::GetUserId($_REQUEST["user-add-nickname"]));
-                    $newUser->groupChange($group);
-                    $newUser->Activate();
-                    $backRequest .= "&res=4sru&nunn=" . $_REQUEST["user-add-nickname"];
-                    header($backRequest);
-                    exit;
-                } elseif (\Engine\ErrorManager::GetError() == 21) {
-                    $backRequest .= "&res=4nvnn";
-                    header($backRequest);
-                    exit;
-                } elseif (\Engine\ErrorManager::GetError() == 22) {
-                    $backRequest .= "&res=4nve";
-                    header($backRequest);
-                    exit;
-                } elseif (\Engine\ErrorManager::GetError() == 3) {
-                    $backRequest .= "&res=4nnee";
-                    header($backRequest);
-                    exit;
-                } elseif (\Engine\ErrorManager::GetError() == 4) {
-                    $backRequest .= "&res=4nne";
-                    header($backRequest);
-                    exit;
-                } else {
-                    $backRequest .= "&res=4nru";
-                    header($backRequest);
-                    exit;
-                }
+            $group = (!isset($_REQUEST["user-add-group"])) ? \Engine\Engine::GetEngineInfo("sg") : $_REQUEST["user-add-group"];
+            if (\Users\UserAgent::AddUser($_REQUEST["user-add-nickname"], $_REQUEST["user-add-password"], $_REQUEST["user-add-email"], $user->getNickname()) === TRUE) {
+                $newUser = new \Users\User(\Users\UserAgent::GetUserId($_REQUEST["user-add-nickname"]));
+                $newUser->groupChange($group);
+                $newUser->Activate();
+                $backRequest .= "&res=4sru&nunn=" . $_REQUEST["user-add-nickname"];
+                header($backRequest);
+                exit;
+            } elseif (\Engine\ErrorManager::GetError() == 21) {
+                $backRequest .= "&res=4nvnn";
+                header($backRequest);
+                exit;
+            } elseif (\Engine\ErrorManager::GetError() == 22) {
+                $backRequest .= "&res=4nve";
+                header($backRequest);
+                exit;
+            } elseif (\Engine\ErrorManager::GetError() == 3) {
+                $backRequest .= "&res=4nnee";
+                header($backRequest);
+                exit;
+            } elseif (\Engine\ErrorManager::GetError() == 4) {
+                $backRequest .= "&res=4nne";
+                header($backRequest);
+                exit;
+            } else {
+                $backRequest .= "&res=4nru";
+                header($backRequest);
+                exit;
             }
         }
     } else {

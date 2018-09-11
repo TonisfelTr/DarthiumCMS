@@ -432,6 +432,7 @@ if ($canIPBan || $canIPUnban){
                 <input class="form-control" type="text" placeholder="Никнейм" id="user-add-nickname" name="user-add-nickname" autocomplete="new-password" maxlength="16">
                 <input class="form-control" type="password" placeholder="Пароль" id="user-add-password" name="user-add-password" autocomplete="new-password" maxlength="16">
                 <input class="form-control" type="email" placeholder="Email" id="user-add-email" name="user-add-email" autocomplete="off">
+                <?php if ($user->UserGroup()->getPermission("change_user_group")) { ?>
                 <select class="form-control" name="user-add-group" id="user-add-group">
                     <option value="0">Выберите группу...</option>
                     <?php for($i = 0; $i < count($groupList = \Users\GroupAgent::GetGroupList()); $i++){
@@ -439,7 +440,9 @@ if ($canIPBan || $canIPUnban){
                         if (isset($_REQUEST["group"])) if ($_REQUEST["group"] != 0 && $_REQUEST["group"] == $groupList[$i]) echo "selected";
                         echo ">" . \Users\GroupAgent::GetGroupNameById($groupList[$i]) . "</option>";
                     } ?>
-                </select><br>
+                </select>
+                <?php } ?>
+                <br>
                 Все поля <ins>обязательны</ins>.
                 <hr>
                 <div class="alert alert-info"><span class="glyphicon glyphicon-warning-sign"></span> Никнейм не может быть короче 4 символов и длиннее 16. Те же требования и к паролю. </div>
