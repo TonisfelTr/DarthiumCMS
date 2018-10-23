@@ -150,6 +150,20 @@ if ($user !== false) {
     else
         $main = str_replace_once("{INDEX_PROFILE_MENU:ADMPANEL_BUTTON}", "", $main);
 }
+
+$lastTopics = \Forum\ForumAgent::GetTopicList(1, true);
+if (empty($lastTopics)){
+    $ltText = "Ещё не создано не одной темы. Вы будете первым!";
+} else {
+    $lastAuthorsTopicsText = "<ol>";
+    foreach ($lastTopics as $topicId){
+        $topic = new \Forum\Topic($topicId);
+        $ltText .= "<li><a class=\"alert-link\" href=\"?topic=$topicId\">" . $topic->getName() . "</a></li>";
+    }
+    $ltText .= "</ol>";
+}
+
+$main = str_replace_once("{LAST_SITE_TOPICS}", $ltText, $main);
 $main = str_replace_once("{INDEX_CATEGORY_LIST}", $categoryMenu, $main);
 $main = str_replace("{ENGINE_META:SITE_NAME}", \Engine\Engine::GetEngineInfo("sn"), $main);
 $main = str_replace("{ENGINE_META:SITE_TAGLINE}", \Engine\Engine::GetEngineInfo("stl"), $main);

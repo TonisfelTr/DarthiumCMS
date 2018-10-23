@@ -498,3 +498,19 @@ span.nav-btn-new-counter{
 span.nav-btn-new-counter{
     background: #aa0000;
 }
+
+textarea.non-resize {
+    width: 100%;
+    height: 350px;
+    resize: none;
+}
+
+textarea#topic-descript-textarea{
+    height: 200px;
+    resize: none;
+}
+
+a.alert-link{
+    color: #ffe8e4;
+    text-shadow: 1px 3px 1px #111;
+}

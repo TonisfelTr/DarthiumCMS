@@ -5,7 +5,9 @@ namespace Forum {
     use Engine\DataKeeper;
     use Engine\Engine;
     use Engine\ErrorManager;
+    use http\Exception\InvalidArgumentException;
     use Users\User;
+    use Users\UserAgent;
 
     class StaticPage{
         private $pageAuthorId;
@@ -396,11 +398,10 @@ namespace Forum {
         private $topicAuthorId;
         private $topicCategoryId;
         private $topicText;
-        private $topicMark;
         private $topicCreateDate;
-
-        private $topicAuthor;
-        private $topicCategory;
+        private $topicSummaMarks;
+        private $topicLikes;
+        private $topicDislikes;
 
         public function __construct($topicId){
             $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
@@ -409,27 +410,46 @@ namespace Forum {
                 ErrorManager::GenerateError(2);
                 return ErrorManager::GetError();
             }
-
-            if ($stmt = $mysqli->prepare("SELECT * FROM `tt_categories` WHERE `id`=?")){
-                $stmt->bind_param("i", $topicId);
+                if ($stmt = $mysqli->prepare("select *, (sub.negatives + sub.positives) as summa from (
+    
+                                                    select topics.id, authorId, categoryId, `name`, text, createDate, 
+                                                    (select count(mark) from tt_topicsmarks as marks where marks.mark = 0 and marks.topicId = ?) as negatives, 
+                                                    (select count(mark) from tt_topicsmarks as marks where marks.mark = 1 and marks.topicId = ?) as positives
+                                                    from tt_topics as topics
+                                                    
+                                                    ) sub")){
+                $stmt->bind_param("ii", $topicId, $topicId);
                 $stmt->execute();
                 if ($stmt->errno){
                     ErrorManager::GenerateError(9);
                     return ErrorManager::GetError();
                 }
-                $stmt->bind_result($id, $authorId, $categoryId, $name, $text, $mark, $createDate);
+                $stmt->bind_result($id, $authorId, $categoryId, $name, $text, $createDate, $negatives, $positives, $summa);
                 $stmt->fetch();
                 $this->topicId = $id;
                 $this->topicAuthorId = $authorId;
                 $this->topicCategoryId = $categoryId;
                 $this->topicName = $name;
                 $this->topicText = $text;
-                $this->topicMark = $mark;
+                $this->topicSummaMarks = $summa;
+                $this->topicLikes = $positives;
+                $this->topicDislikes = $negatives;
                 $this->topicCreateDate = $createDate;
-                $this->topicAuthor = new User($authorId);
-                $this->topicCategory = new Category($categoryId);
+
             }
             return false;
+        }
+        public function getId(){
+            return $this->topicId;
+        }
+        public function getName(){
+            return $this->topicName;
+        }
+        public function getAuthorId(){
+            return $this->topicAuthorId;
+        }
+        public function getAuthor(){
+            return new User($this->topicAuthorId);
         }
     }
 
@@ -590,7 +610,61 @@ namespace Forum {
             }
             return false;
         }
-        public static function GetTopicList($page = 1, $categoryId = null){
+        public static function GetCategory($idCategory){
+            return new Category($idCategory);
+        }
+
+        public static function CreateTopic(int $userId, $name, int $categoryId, $preview, $text){
+            if (strlen($name) > 100 || strlen($name) <= 4)
+                return false;
+
+            if (!ForumAgent::isCategoryExists($categoryId))
+                return false;
+
+            $preview = Engine::CompileBBCode($preview);
+            $text = Engine::CompileBBCode($text);
+
+            if (strlen($preview) == 0){
+                $preview = substr($text, 0, 250);
+                $preview .= "...";
+            }
+
+            $int = DataKeeper::InsertTo("tt_topics", ["id" => NULL,
+                "authorId" => $userId,
+                "categoryId" => $categoryId,
+                "name" => $name,
+                "text" => $text,
+                "preview" => $preview,
+                "createDate" => date("Y-m-d H:i:s")]);
+            var_dump($int);
+            if ($int !== false) {
+                return $int;
+            }
+            else
+                return false;
+
+            return false;
+        }
+        public static function DeleteTopic(int $topicId){
+            if (!ForumAgent::isTopicExists($topicId))
+                return false;
+
+            if (DataKeeper::Delete("tt_topics", ["id" => $topicId])){
+                return true;
+            }
+
+            return false;
+        }
+        public static function EditTopic(int $topicId, $param, $newValue){
+            if (!ForumAgent::isTopicExists($topicId))
+                return false;
+
+            if (DataKeeper::Update("tt_topics", [$param => $newValue], ["id" => $topicId]))
+                return true;
+
+            return false;
+        }
+        public static function GetTopicList($page = 1, $mini = false, $categoryId = null){
             $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
 
             if ($mysqli->errno){
@@ -602,10 +676,14 @@ namespace Forum {
             $highBorder = $lowBorder + 15;
 
             $stmtQuery = false;
-            if (is_null($categoryId)) {
-                if ($stmt = $mysqli->prepare("SELECT `id` FROM `tt_topics` ORDER BY `id` DESC LIMIT $lowBorder, $highBorder")) $stmtQuery = true;
+            if (!$mini) {
+                if (is_null($categoryId)) {
+                    if ($stmt = $mysqli->prepare("SELECT `id` FROM `tt_topics` ORDER BY `id` DESC LIMIT $lowBorder, $highBorder")) $stmtQuery = true;
+                } else {
+                    if ($stmt = $mysqli->prepare("SELECT `id` FROM `tt_topics` WHERE `categoryId`=? ORDER BY `id` DESC LIMIT $lowBorder, $highBorder")) $stmtQuery = true;
+                }
             } else {
-                if ($stmt = $mysqli->prepare("SELECT `id` FROM `tt_topics` WHERE `categoryId`=? ORDER BY `id` DESC LIMIT $lowBorder, $highBorder")) $stmtQuery = true;
+                if ($stmt = $mysqli->prepare("SELECT `id` FROM `tt_topics` ORDER BY `id` DESC LIMIT 0, 5")) $stmtQuery = true;
             }
             if ($stmtQuery){
                 if (!is_null($categoryId))
@@ -647,10 +725,53 @@ namespace Forum {
             return false;
 
         }
+        public static function GetCountTopicOfAuthor($userId){
+            if (!UserAgent::IsUserExist($userId)){
+                ErrorManager::GenerateError(11);
+                ErrorManager::PretendToBeDied("User with ID $userId is not exist.", new InvalidArgumentException());
+            }
 
-        public static function GetCategory($idCategory){
-            return new Category($idCategory);
+            return DataKeeper::Get("tt_topics", ["count(*)"], ["authorId" => $userId]);
         }
+        public static function GetTopicsOfAuthor($userId, $mini = false, $page = 1){
+            if (!UserAgent::IsUserExist($userId)){
+                ErrorManager::GenerateError(11);
+                ErrorManager::PretendToBeDied("User with ID $userId is not exist.", new InvalidArgumentException());
+            }
 
+            if (!$mini)
+                return DataKeeper::MakeQuery("SELECT `id` FROM `tt_topics` WHERE `authorId`=? LIMIT 0,5", [$userId]);
+            else {
+                $start = ($page - 1) * 15;
+                $end = $start + 15;
+                return DataKeeper::MakeQuery("SELECT `id` FROM `tt_topics` WHERE `authorId`=? LIMIT $start,$end", [$userId]);
+            }
+        }
+        public static function EstimateTopic(int $topicId, int $userId, int $mark){
+            if (!ForumAgent::isTopicExists($topicId) || $mark > 1 || $mark < 0)
+                return false;
+
+            if ($dbmark = DataKeeper::MakeQuery("SELECT mark FROM `tt_topicsmarks` WHERE `topicId`=?, `userId`=?")){
+                if (empty($dbmark)){
+                    if (DataKeeper::InsertTo("tt_topicsmarks", ["topicId" => $topicId, "userId" => $userId, "mark" => $mark]))
+                        return true;
+                    else
+                        return false;
+                }
+                elseif ($dbmark[0] == $mark){
+                    if (DataKeeper::Delete("tt_topicsmarks", ["topicId" => $topicId, "userId" => $userId]))
+                        return true;
+                    else
+                        return false;
+                }
+                else {
+                    if (DataKeeper::Update("tt_topicsmarks", ["mark" => $mark], ["topicId" => $topicId, "userId" => $userId]))
+                        return true;
+                    else
+                        return false;
+                }
+            }
+            return false;
+        }
     }
 }
