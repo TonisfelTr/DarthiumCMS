@@ -1,14 +1,18 @@
 <?php
 
-function getBrick(){
-    $e = ob_get_contents();
-    ob_clean();
-    return $e;
-}
+if (!function_exists("getBrick") && !function_exists("str_replace_once")) {
+    function getBrick()
+    {
+        $e = ob_get_contents();
+        ob_clean();
+        return $e;
+    }
 
-function str_replace_once($search, $replace, $text){
-    $pos = strpos($text, $search);
-    return $pos!==false ? substr_replace($text, $replace, $pos, strlen($search)) : $text;
+    function str_replace_once($search, $replace, $text)
+    {
+        $pos = strpos($text, $search);
+        return $pos !== false ? substr_replace($text, $replace, $pos, strlen($search)) : $text;
+    }
 }
 
 include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/error/main.html";

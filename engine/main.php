@@ -110,9 +110,6 @@
 
                 $file = file_get_contents("config/config.sfc", FILE_USE_INCLUDE_PATH);
                 $a = json_decode($file, true);
-                //var_dump(scandir("./engine/config/"));
-                //echo "dbconfig:";
-                //echo (file_exists("./engine/config/dbconf.sfc")) ? 1 : 0;exit;
                 $engConf = json_decode(file_get_contents("config/dbconf.sfc", FILE_USE_INCLUDE_PATH), true);
 
                 self::$EmailAcc = $a["emailAcc"];
@@ -279,6 +276,7 @@
                 $text = $stext;
 
                 $text = strip_tags($text);
+                $text = nl2br($text);
                 $text = str_ireplace("[ol]", "<ol type=\"1\">", $text);
                 $text = str_ireplace("[/ol]", "</ol>", $text);
                 $text = str_ireplace("[/size]", "</p>", $text);
@@ -689,9 +687,12 @@
                 $query = "INSERT INTO $table ($keys) VALUE ($values)";
                 $preparedQuery = $pdo->prepare($query);
                 $execute = $preparedQuery->execute($varsArrToSend);
+                var_dump($pdo);
                 if ($execute){
                     return $pdo->lastInsertId();
-                } else return false;
+                } else {
+                    return false;
+                }
             }
 
             public static function Update($table, array $varsArr, array $whereArr){
