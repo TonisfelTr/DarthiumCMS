@@ -603,6 +603,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
     $main = str_replace_once("{PROFILE_PAGE_NOTIFICS}", $userNotifics, $main);
     $main = str_replace_once("{PROFILE_PAGE_FRIENDS}", $userFriendList, $main);
     $main = str_replace("{PROFILE_PAGE:USER_REGDATETIME}", (($user->getSex() == 2) ? "а " : " ") .\Engine\Engine::DateFormatToRead($user->getRegDate()) . ".", $main);
+    $main = str_replace("{PROFILE_PAGE:USER_TOPICS_CREATED_COUNT}", \Forum\ForumAgent::GetCountTopicOfAuthor($user->getId()), $main);
 
     if ($user->IsVKPublic() || $user->getId() == $_SESSION["uid"])
         $userVKLink = ($user->getVK() == "") ? "VK: не указано<br>" : "VK: <a class=\"profile-profile-link\" href=\"http://vk.com/".htmlentities($user->getVK())."\">" . htmlentities($user->getVK()) . "</a><br>";
@@ -852,6 +853,7 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
     $main = str_replace_once("{PROFILE_PAGE_NOTIFICS}", null, $main);
     $main = str_replace_once("{PROFILE_PAGE_FRIENDS}", null, $main);
     $main = str_replace("{PROFILE_PAGE:USER_REGDATETIME}", (($user->getSex() == 2) ? "а " : " ") . \Engine\Engine::DateFormatToRead($user->getRegDate()) . ".", $main);
+    $main = str_replace("{PROFILE_PAGE:USER_TOPICS_CREATED_COUNT}", \Forum\ForumAgent::GetCountTopicOfAuthor($user->getId()), $main);
     $main = str_replace("{PROFILE_PAGE:USER_FROM}", $user->getFrom(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_REALNAME}", $user->getRealName(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_BIRTHDAY_LINK}", $userBirthday, $main);
