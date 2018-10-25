@@ -1,0 +1,123 @@
+{TOPIC_DELETE_ERROR}
+<form action="site/scripts/topicer.php" method="post">
+    <input type="hidden" name="topic-id" value="{TOPIC_ID}">
+    <div class="topic-open-wrapper col-lg-12 col-md-12 col-xs-12 col-sm-12">
+        <div class="topic-open-header">
+            {TOPIC_HEADER}<br>
+            <a href="index.php">Лента</a>
+            <span>&raquo;</span>
+            <a href="?category={TOPIC_CATEGORY_ID}">{TOPIC_CATEGORY}</a>
+        </div>
+        <div class="topic-open-header-author row">
+            <div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
+                <div class="topic-author-avatar">
+                    <img src="{TOPIC_AUTHOR_AVATAR}" width="100" height="100">
+                </div>
+                <a href="profile.php?uid={TOPIC_AUTHOR_ID}" class="topic-author-nickname-link">{TOPIC_AUTHOR_NICKNAME}</a>
+                <br>
+                <span class="topic-author-group-span" style="color: {TOPIC_AUTHOR_GROUP_COLOR}">{TOPIC_AUTHOR_GROUP}</span>
+                <br>
+                {TOPIC_AUTHOR_SEX}
+                Последний вход: {TOPIC_AUTHOR_LAST_ONLINE}<br>
+                {TOPIC_AUTHOR_REGDATE}
+            </div>
+            <div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
+                Создано тем: {TOPICS_AUTHOR_COUNT}<br>
+                Рейтинг: {TOPICS_AUTHOR_RATE}<br>
+                {TOPIC_AUTHOR_SKYPE}
+                {TOPIC_AUTHOR_EMAIL}
+                {TOPIC_AUTHOR_VK}
+            </div>
+        </div>
+        <div class="topic-open-info">
+            <div>Дата создания: {TOPIC_CREATE_DATETIME}</div>
+            <div>{TOPIC_EDIT_INFO}</div>
+        </div>
+        <div class="col-lg-12 col-xs-12 col-md-12 col-sm-12" id="topic-author-show-panel">&#9650;</div>
+    </div>
+    <div class="topic-content">
+        {TOPIC_CONTENT}
+    </div>
+    <div class="topic-open-footer {TOPIC_FOOTER_LIKE_CLASS}">
+        <div class="btn-group">
+            {TOPIC_EDIT}
+            {TOPIC_ADD_COMMENT}
+            {TOPIC_DELETE}
+        </div>
+        <div class="topic-likes-panel">
+            <div id="topic-tolikeit">
+                <span class="glyphicons glyphicons-thumbs-up"></span> <span id="topic-likes-{TOPIC_ID}">{TOPIC_LIKES_COUNT}</span>
+            </div>
+            <div class="topic-delimiter">
+                {TOPIC_MARKS_COUNT}
+            </div>
+            <div id="topic-todislikeit">
+                <span class="glyphicons glyphicons-thumbs-down"></span> <span id="topic-dislikes-{TOPIC_ID}">{TOPIC_DISLIKES_COUNT}</span>
+            </div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+    $("div#topic-author-show-panel").on("click", function(){
+        $("div.topic-open-header-author").animate({
+            height: "toggle",
+            duration: 1000
+        }, function() {
+            if ($("div.topic-open-header-author").css("display") === "none") {
+                $("div#topic-author-show-panel").html("&#9660");
+            }
+            else
+                $("div#topic-author-show-panel").html("&#9650");
+        });
+
+    });
+
+    var UpdateLikePanel = function() {
+        $.ajax({
+            url : "site/scripts/ajax/estimatortopicajax.php",
+            type: "POST",
+            data: "topicId={TOPIC_ID}&info",
+            success: function(data){
+                if (data === "not exists")
+                    return;
+                data = $.parseJSON(data);
+                $("span#topic-likes-{TOPIC_ID}").html(data.likes);
+                $("div.topic-delimiter").html(data.summa);
+                $("span#topic-dislikes-{TOPIC_ID}").html(data.dislikes);
+
+                if (data.likes > data.dislikes && !$("div.topic-open-footer").hasClass("positive")){
+                    $("div.topic-open-footer").removeClass("negative");
+                    $("div.topic-open-footer").addClass("positive");
+                }
+
+                if (data.dislikes > data.likes && !$("div.topic-open-footer").hasClass("negative")){
+                    $("div.topic-open-footer").removeClass("positive");
+                    $("div.topic-open-footer").addClass("negative");
+                }
+
+                if (data.summa == 0){
+                    $("div.topic-open-footer").removeClass("negative");
+                    $("div.topic-open-footer").removeClass("positive");
+                }
+            }
+        });
+    };
+
+    var LikesRefresher = setInterval(UpdateLikePanel, 1000);
+
+    $("div#topic-tolikeit").on("click", function(){
+       $.ajax({
+           url : "site/scripts/ajax/estimatortopicajax.php",
+           type : "POST",
+           data : "topicId={TOPIC_ID}&mark=1"
+       });
+    });
+
+    $("div#topic-todislikeit").on("click", function(){
+        $.ajax({
+            url : "site/scripts/ajax/estimatortopicajax.php",
+            type : "POST",
+            data : "topicId={TOPIC_ID}&mark=0"
+        });
+    });
+</script>

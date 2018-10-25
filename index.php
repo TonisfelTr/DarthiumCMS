@@ -57,7 +57,8 @@ if (count($categories) == 0){
 }
 else {
     foreach($categories as $c){
-        $categoryMenu .= "<li><a href=\"?category=$c\" title=\"". \Forum\ForumAgent::GetCategory($c)->getDescription()."\">". \Forum\ForumAgent::GetCategory($c)->getName() ."</a></li>" . PHP_EOL;
+        $c = new \Forum\Category($c);
+        $categoryMenu .= "<li><a href=\"?category=". $c->getId() . "\" title=\"". $c->getDescription()."\">". $c->getName() ."</a></li>" . PHP_EOL;
     }
 }
 ################################################################################
@@ -73,6 +74,10 @@ if (!empty($_GET["page"])){
     elseif (!empty($_GET["sp"])){
         echo nl2br(\Engine\Engine::CompileBBCode(file_get_contents("./site/statics/" . $_GET["sp"] . ".txt", FILE_USE_INCLUDE_PATH)));
         $pageName = \Forum\StaticPagesAgent::GetPage($_GET["sp"])->getPageName();
+    } elseif (!empty($_GET["topic"])){
+        if (\Forum\ForumAgent::isTopicExists($_GET["topic"]))
+            include_once "./site/newsviewer.php";
+        else include_once "./site/errors/notfound.php";
     }
     else include_once "./site/news.php";
 $newsPaper = getBrick();

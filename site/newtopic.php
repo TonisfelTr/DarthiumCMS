@@ -11,7 +11,8 @@ include_once "site/uploader.php";
 $categoriesList = "";
 foreach ($categories as $c){
     $category = new \Forum\Category($c);
-    $categoriesList .= "<option value=\"" . $category->getId() . "\">" . $category->getName() . "</option>";
+    if ($category->isPublic() || (!$category->isPublic() && $user->UserGroup()->getPermission("category_see_unpublic")))
+        $categoriesList .= "<option value=\"" . $category->getId() . "\">" . $category->getName() . "</option>";
 }
 
 $lastAuthorsTopics = \Forum\ForumAgent::GetTopicsOfAuthor($user->getId(), true);
@@ -38,7 +39,9 @@ if (empty($lastTopics)){
     $lastTopicsText .= "</ol>";
 }
 
-include_once "./site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/newtopic.html";
+
+
+include_once "./site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/news/newtopic.html";
 $newtopic = getBrick();
 
 switch($_GET["res"]){

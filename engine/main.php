@@ -160,7 +160,6 @@
                 define("TT_INDEX", __DIR__ . "../index.php");
                 define("TT_PROFILE", __DIR__ . "../profile.php");
                 define("TT_BAN", __DIR__ . "../banned.php");
-                define("TT_ROOT", __DIR__ . "../");
             }
             public static function SettingsSave($DomainSite, $siteName, $siteTagline, $siteStatus,
                                                 $siteSubscribe, $siteHashtags, $siteLang, $siteTemplate, $siteRegionTime,
@@ -687,7 +686,6 @@
                 $query = "INSERT INTO $table ($keys) VALUE ($values)";
                 $preparedQuery = $pdo->prepare($query);
                 $execute = $preparedQuery->execute($varsArrToSend);
-                var_dump($pdo);
                 if ($execute){
                     return $pdo->lastInsertId();
                 } else {
@@ -727,13 +725,13 @@
                 $whereStr = "";
                 $varsArrToSend = [];
                 foreach ($whereArr as $key => $value){
-                    $whereStr .= "`$key`=?,";
+                    $whereStr .= "`$key`=? AND";
                     $varsArrToSend[] = $value;
                 }
-                $whereStr = trim($whereStr, ",");
+                $whereStr = rtrim($whereStr, "AND");
                 $query = "DELETE FROM `$table` WHERE $whereStr";
                 $preparedQuery = $pdo->prepare($query);
-                return $preparedQuery->execute( $varsArrToSend);
+                return $preparedQuery->execute($varsArrToSend);
             }
 
             public static function Get($table, array $whatArr, array $whereArr = null){
@@ -774,11 +772,13 @@
                 $pdo = self::connect();
 
                 $preparedQuery = $pdo->prepare($query);
-                if ($whereArr != null)
+                if ($whereArr !== null)
                     $result = $preparedQuery->execute($whereArr);
                 else
                     $result = $preparedQuery->execute();
                 if (!$result){
+                    echo $query;
+                    var_dump($whereArr);
                     ErrorManager::GenerateError(33);
                     ErrorManager::PretendToBeDied("Cannot make special SQL query: [" . $preparedQuery->errorInfo()[0] . "] " . $preparedQuery->errorInfo()[2], new \PDOException("Cannot make special SQL query."));
                     return false;

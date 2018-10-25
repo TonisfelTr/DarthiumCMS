@@ -1,4 +1,4 @@
-<form action="site/scripts/topiccreator.php" method="post">
+<form action="site/scripts/topicer.php" method="post">
     <h3><span class="glyphicons glyphicons-file-plus"></span> Создание новой темы</h3>
     {NEWTOPIC_ERRORS}
     <hr>
@@ -27,6 +27,27 @@
         <button class="btn btn-default" title="Выровнять вправо" type="button" onclick="insertBBCode('align=right', 'align', document.getElementById('topic-descript-textarea'));"><span class="glyphicon glyphicon-align-right"></span></button>
     </div>
     <div class="btn-group">
+        <select class="btn btn-default" title="Цвет шрифта" id="topic-preview-font-filler">
+            <option value="black" style="color: black;">Чёрный</option>
+            <option value="red" style="color: red;">Красный</option>
+            <option value="green" style="color: green;">Зелёный</option>
+            <option value="yellow" style="color: yellow;">Жёлтый</option>
+            <option value="orange" style="color: orange;">Оранжевый</option>
+            <option value="blue" style="color: blue;">Синий</option>
+            <option value="grey" style="color: grey;">Серый</option>
+            <option value="darkgrey" style="color: #545454;">Тёмносерый</option>
+            <option value="white" style="color: white; text-shadow: 1px 1px 1px black;">Белый</option>
+        </select>
+        <select class="btn btn-default" title="Размер шрифта" id="topic-preview-font-sizer">
+            <option value="12">12</option>
+            <option value="14">14</option>
+            <option value="16">16</option>
+            <option value="18">18</option>
+            <option value="20">20</option>
+            <option value="22">22</option>
+        </select>
+    </div>
+    <div class="btn-group">
         <button class="btn btn-default" title="Вставить ролик YouTube" type="button" onclick="insertBBCode('youtube=', true, document.getElementById('topic-descript-textarea'));"><span class="glyphicon glyphicon-play btn-youtube"></span></button>
         <button class="btn btn-default" title="Вставить картинку" type="button" onclick="insertBBCode('img=', true, document.getElementById('topic-descript-textarea'));"><span class="glyphicon glyphicon-picture"></span></button>
         <button class="btn btn-default" title="Загрузить файл" type="button" onclick="$('#uploader-main').show();"><span class="glyphicon glyphicon-upload"></span> Загрузить файл</button>
@@ -48,6 +69,27 @@
         <button class="btn btn-default" title="Выровнять влево" type="button" onclick="insertBBCode('align=left', 'align', document.getElementById('topic-content-textarea'));"><span class="glyphicon glyphicon-align-left"></span></button>
         <button class="btn btn-default" title="Выровнять по центру" type="button" onclick="insertBBCode('align=center', 'align', document.getElementById('topic-content-textarea'));"><span class="glyphicon glyphicon-align-center"></span></button>
         <button class="btn btn-default" title="Выровнять вправо" type="button" onclick="insertBBCode('align=right', 'align', document.getElementById('topic-content-textarea'));"><span class="glyphicon glyphicon-align-right"></span></button>
+    </div>
+    <div class="btn-group">
+        <select class="btn btn-default" title="Цвет шрифта" id="topic-text-font-filler">
+            <option value="black" style="color: black;">Чёрный</option>
+            <option value="red" style="color: red;">Красный</option>
+            <option value="green" style="color: green;">Зелёный</option>
+            <option value="yellow" style="color: yellow;">Жёлтый</option>
+            <option value="orange" style="color: orange;">Оранжевый</option>
+            <option value="blue" style="color: blue;">Синий</option>
+            <option value="grey" style="color: grey;">Серый</option>
+            <option value="darkgrey" style="color: #545454;">Тёмносерый</option>
+            <option value="white" style="color: white; text-shadow: 1px 1px 1px black;">Белый</option>
+        </select>
+        <select class="btn btn-default" title="Размер шрифта" id="topic-text-font-sizer">
+            <option value="12">12</option>
+            <option value="14">14</option>
+            <option value="16">16</option>
+            <option value="18">18</option>
+            <option value="20">20</option>
+            <option value="22">22</option>
+        </select>
     </div>
     <div class="btn-group">
         <button class="btn btn-default" title="Вставить ролик YouTube" type="button" onclick="insertBBCode('youtube=', true, document.getElementById('topic-content-textarea'));"><span class="glyphicon glyphicon-play btn-youtube"></span></button>
@@ -113,5 +155,18 @@
                 }, 'fast');
             }
         });
+    });
+
+    $("select#topic-preview-font-filler").on("change", function(){
+       insertBBCode("color=" + $(this).val(), "color", document.getElementById("topic-descript-textarea"));
+    });
+    $("select#topic-preview-font-sizer").on("change", function(){
+        insertBBCode("size=" + $(this).val(), "size", document.getElementById("topic-descript-textarea"));
+    });
+    $("select#topic-text-font-filler").on("change", function(){
+        insertBBCode("color=" + $(this).val(), "color", document.getElementById("topic-content-textarea"));
+    });
+    $("select#topic-text-font-sizer").on("change", function(){
+        insertBBCode("size=" + $(this).val(), "size", document.getElementById("topic-content-textarea"));
     });
 </script>

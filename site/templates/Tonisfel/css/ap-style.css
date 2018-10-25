@@ -284,6 +284,7 @@ h2{
     height: 100%;
     padding: 10px;
     border-radius: 6px;
+    margin: 0;
 }
 
 #thead-reports{
@@ -513,4 +514,207 @@ textarea#topic-descript-textarea{
 a.alert-link{
     color: #ffe8e4;
     text-shadow: 1px 3px 1px #111;
+}
+
+div.topic-wrapper{
+    border: 1px solid #191;
+    padding: 0;
+}
+
+div.topic-header{
+    padding: 10px 5px;
+    border-bottom: 1px solid #119911;
+    font-size: 15px;
+    text-shadow: 2px 3px 2px #888;
+    margin-bottom: 10px;
+    text-decoration: underline;
+}
+
+a.topic-head-link{
+    color: #000;
+}
+
+div.topic-body{
+    padding: 5px;
+}
+
+div.topic-footer-neutral,
+div.topic-footer-positive,
+div.topic-footer-neutral{
+    padding: 10px;
+    margin-top: 5px;
+    display: flex;
+    align-items: stretch;
+    flex-wrap: wrap;
+}
+
+div.topic-footer-neutral > div,
+div.topic-footer-positive > div,
+div.topic-footer-neutral > div{
+
+}
+
+div.topic-footer-neutral{
+    background: radial-gradient(at left, #102261, #b5bbbd);
+}
+
+div.topic-footer-positive{
+    background: radial-gradient(at left, #2f6126, #b5bbbd);
+}
+
+div.topic-footer-negative{
+    background: radial-gradient(at left, #61221f, #b5bbbd);
+}
+
+div.topic-author-header{
+
+}
+
+a.topic-author-link{
+    color: white;
+    padding: 4px;
+    padding-top: 5px;
+}
+
+a.topic-author-link:hover{
+    transition: 0.2s;
+    color: #2a2a2a;
+    padding: 4px;
+    border-radius: 3px;
+    background: #cbcbcb;
+}
+
+div.topic-likes-panel{
+    color: white;
+    margin-top: 2px;
+    display: flex;
+    margin-left: auto;
+}
+
+div.topic-likes-panel > div.topic-delimiter {
+    border: #bbb;
+    background: #2f5a61;
+    padding: 10px;
+    height: 40px;
+    margin: -11px 12px;
+    padding-top: 11px;
+}
+
+div.topic-open-wrapper{
+    padding: 0;
+    background: #4a4a4a;
+    margin-bottom: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+div.topic-open-wrapper a{
+    color: white;
+}
+
+div.topic-open-header{
+    padding: 10px;
+    margin: 0;
+    background: radial-gradient(at right, #313832, #2f9654);
+    border: 1px solid #386541;
+    border-bottom: 3px solid #386541;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    color: white;
+    font-size: 20px;
+}
+
+div.topic-open-header > a {
+    font-size: 12px;
+    color: white;
+    text-decoration: underline;
+}
+
+div.topic-open-header > span {
+    font-size: 14px;
+}
+
+div.topic-open-header-author{
+    color: #d2d2d2;
+    padding: 10px;
+}
+
+div.topic-open-info{
+    padding: 10px;
+    color: #e2e2e2;
+    background: #0b4b16;
+    display: flex;
+}
+
+div.topic-open-info > div:nth-child(2){
+    margin-left: auto;
+}
+
+div#topic-author-show-panel {
+    background: #a9a7a9;
+    color: #404040;
+    text-shadow: 1px 2px 1px #111;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    text-align: center;
+    padding: 3px;
+    box-shadow: inset 0px 4px 10px 1px rgba(0,0,0,0.5);
+}
+
+div#topic-author-show-panel:hover{
+    color: #e2e2e2;
+    transition: 0.5s;
+}
+
+div.topic-content{
+    padding: 10px;
+}
+
+a.topic-author-nickname-link{
+    font-family: "My Passion";
+    font-size: 40px;
+    color: white;
+}
+
+span.topic-author-group-span{
+    font-size: 20px;
+    font-family: "My Passion";
+}
+
+div.topic-author-avatar{
+    float: left;
+    padding: 5px;
+}
+
+div.topic-open-footer{
+    background: radial-gradient(at left, #102261, #b5bbbd);
+    border-top: 3px solid #1c3a9d;
+    border-bottom: 3px solid #1c3a9d;
+    padding: 10px;
+    color: white;
+    display: flex;
+}
+
+div.topic-open-footer.positive{
+    background: radial-gradient(at right, #313832, #2f9654);
+}
+
+div.topic-open-footer.negative{
+    background: radial-gradient(at right, #313832, #963236);
+}
+
+div.topic-open-footer > div.topic-likes-panel > * {
+    height: 54px;
+    margin: -12px 12px;
+    padding-top: 14px;
+    font-size: 18px;
+}
+
+div.topic-open-footer > div.topic-likes-panel > div.topic-delimiter {
+    padding: 14px;
+}
+
+div.topic-open-footer > div.topic-likes-panel > div#topic-tolikeit,
+div.topic-open-footer > div.topic-likes-panel > div#topic-todislikeit{
+    cursor: pointer;
 }
