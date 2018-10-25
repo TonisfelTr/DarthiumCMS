@@ -212,12 +212,6 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
             break;
     }
 
-    $main = str_replace_once("{PROFILE_REPUTATIONER:STYLESHEET}", "<link rel=\"stylesheet\" href=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/css/reputationer-style.css\">", $main);
-    $main = str_replace_once("{PROFILE_PAGE:USER_REPUTATION_AONCLICK}", "onclick=\"$('#reputation-frame').show();\"", $main);
-    $main = str_replace_once("{PROFILE_REPUTATIONER_BLOCK}", $reputationerBlock, $main);
-    $main = str_replace_once("{PROFILE_UPLOADER_BLOCK}", $uploaderBlock, $main);
-    $main = str_replace("{PROFILE_JS:SHOW_PANEL}", "showPanel('$parentDivName');" . PHP_EOL . "showSubpanel('$parentDivName', $subpanelDivNumber);", $main);
-
     ///////////////////////////////////////////////////////////////////////
     /// Build additional fields mechanism.
     ///////////////////////////////////////////////////////////////////////
@@ -604,6 +598,11 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
     $main = str_replace_once("{PROFILE_PAGE_FRIENDS}", $userFriendList, $main);
     $main = str_replace("{PROFILE_PAGE:USER_REGDATETIME}", (($user->getSex() == 2) ? "а " : " ") .\Engine\Engine::DateFormatToRead($user->getRegDate()) . ".", $main);
     $main = str_replace("{PROFILE_PAGE:USER_TOPICS_CREATED_COUNT}", \Forum\ForumAgent::GetCountTopicOfAuthor($user->getId()), $main);
+    $main = str_replace_once("{PROFILE_REPUTATIONER:STYLESHEET}", "<link rel=\"stylesheet\" href=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/css/reputationer-style.css\">", $main);
+    $main = str_replace_once("{PROFILE_PAGE:USER_REPUTATION_AONCLICK}", "onclick=\"$('#reputation-frame').show();\"", $main);
+    $main = str_replace_once("{PROFILE_REPUTATIONER_BLOCK}", $reputationerBlock, $main);
+    $main = str_replace_once("{PROFILE_UPLOADER_BLOCK}", $uploaderBlock, $main);
+    $main = str_replace("{PROFILE_JS:SHOW_PANEL}", "showPanel('$parentDivName');" . PHP_EOL . "showSubpanel('$parentDivName', $subpanelDivNumber);", $main);
 
     if ($user->IsVKPublic() || $user->getId() == $_SESSION["uid"])
         $userVKLink = ($user->getVK() == "") ? "VK: не указано<br>" : "VK: <a class=\"profile-profile-link\" href=\"http://vk.com/".htmlentities($user->getVK())."\">" . htmlentities($user->getVK()) . "</a><br>";
@@ -838,6 +837,8 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
             $userSex = "<span class=\"glyphicons glyphicons-gender-intersex\"></span> не указан";
             break;
     }
+    include_once "./site/reputationer.php";
+
     $main = str_replace_once("{PROFILE_PAGE_GUI_SCRIPT}", $profileJS, $main);
     $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}", "", $main);
     $main = str_replace_once("{PROFILE_MAIN_BODY}",$profileMainPanel, $main);
@@ -873,6 +874,9 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
     $main = str_replace_once("{PROFILE_PAGE:CUSTOM_ADDITIONALS}", $customAFJoined, $main);
     $main = str_replace_once("{PROFILE_PAGE:CONTACT_ADDITIONALS}", $contactAFJoined, $main);
     $main = str_replace_once("{PROFILE_PAGE:INFO_ADDITIONALS}", $infoAFJoined, $main);
+    $main = str_replace_once("{PROFILE_REPUTATIONER:STYLESHEET}", "<link rel=\"stylesheet\" href=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/css/reputationer-style.css\">", $main);
+    $main = str_replace_once("{PROFILE_PAGE:USER_REPUTATION_AONCLICK}", "onclick=\"$('#reputation-frame').show();\"", $main);
+    $main = str_replace("{PROFILE_JS:SHOW_PANEL}", "showPanel('info');" . PHP_EOL . "showSubpanel('info', 1);", $main);
 
     if ($session === true && $user->getId() != $_SESSION["uid"] && \Users\UserAgent::GetUser($_SESSION["uid"])->UserGroup()->getPermission("user_see_foreign")) {
         include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/afup_buttons.html";
