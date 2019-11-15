@@ -2,6 +2,7 @@
 
     namespace Engine {
 
+        use Users\User;
         use Users\UserAgent;
 
         class Engine
@@ -304,6 +305,28 @@
 
                 return $text;
             }
+            public static function CompileMentions($stext)
+            {
+                $text = $stext;
+
+                //Searching for mentions.
+                preg_match_all("/@([A-Za-z0-9\-_]+)/", $text, $matches);
+                //
+                //print_r($matches[1]); =>
+                //Array ( [0] => Admin,
+                //       [1] => 7584847575 )
+                //
+                for ($i = 0; $i < count($matches[1]); $i++) {
+                    if ($mentionUserId = UserAgent::GetUserId($matches[1][$i])) {
+                        $mentionUserNickname = UserAgent::GetUserNick($mentionUserId);
+                        $text = preg_replace("/(@$mentionUserNickname)/", "<a href=\"profile.php?uid=$mentionUserId\" class=\"mention mention-success\">$1</a>", $text);
+                    } else {
+                        $mentionUserNickname = $matches[1][$i];
+                        $text = preg_replace("/(@$mentionUserNickname)/", "<span class=\"mention mention-fail\" title=\"Такого пользователя не существует.\">$1</a>", $text);
+                    }
+                }
+                return $text;
+            }
             public static function GetLanguagePacks(){
                 $filesIn = scandir("./languages/");
                 $filesListReturn = array();
@@ -339,6 +362,9 @@
             }
             public static function GetAnalyticScript(){
                 return file_get_contents("config/analytic.js", FILE_USE_INCLUDE_PATH);
+            }
+            public static function ChatFilter($text){
+
             }
          }
 
@@ -778,9 +804,9 @@
                     $result = $preparedQuery->execute();
                 if (!$result){
                     echo $query;
-                    var_dump($whereArr);
                     ErrorManager::GenerateError(33);
                     ErrorManager::PretendToBeDied("Cannot make special SQL query: [" . $preparedQuery->errorInfo()[0] . "] " . $preparedQuery->errorInfo()[2], new \PDOException("Cannot make special SQL query."));
+                    echo 1;
                     return false;
                 }
                 return $preparedQuery->fetch($pdo::FETCH_ASSOC);

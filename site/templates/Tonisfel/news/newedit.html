@@ -15,6 +15,12 @@
             {TOPIC_PAGE:CATEGORIES_OPTION}
         </select>
     </div>
+    <div class="input-group">
+        <div class="input-group-addon">Статус темы</div>
+        <select class="form-control" name="topic-status" {TOPIC_DISABLED_STATUS_PROPERTY}>
+            {TOPIC_PAGE:STATUS_OPTIONS}
+        </select>
+    </div>
     <br>
     <div class="btn-group">
         <button class="btn btn-default" title="Выделить жирным" type="button" onclick="insertBBCode('b', false, document.getElementById('topic-descript-textarea'));"><strong>B</strong></button>

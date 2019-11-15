@@ -718,3 +718,124 @@ div.topic-open-footer > div.topic-likes-panel > div#topic-tolikeit,
 div.topic-open-footer > div.topic-likes-panel > div#topic-todislikeit{
     cursor: pointer;
 }
+
+div.comment-block{
+    padding: 0;
+    margin-top: 5px;
+}
+
+div.topic-comment-author{
+    border: 1px solid #666;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 130px;
+    position: absolute;
+    margin-top: 35px;
+    background: white;
+    box-shadow: #111;
+}
+
+img.topic-comment-author-avatar{
+    margin: 0 auto;
+    padding-top: 5px;
+}
+
+a.pm-href{
+    font-size: 12px;
+}
+
+div.topic-comment-author a.comment-author-nickname{
+    font-size: 16px;
+}
+
+div.topic-comment-header {
+    font-size: 14px;
+    width: 100%;
+    background: radial-gradient(at left, #1c3a9d, #1b6d85);
+    height: 30px;
+    color: white;
+    padding: 5px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+div.topic-comment-wrapper{
+    min-height: 300px;
+    border: 1px solid #999;
+    border-radius: 7px;
+    float: right;
+    width: 97%;
+}
+
+div.topic-comment-body{
+    margin-top: 7px;
+}
+
+@media(max-width: 2560px) {
+    div.topic-comment-body {
+        margin-left: 90px;
+    }
+}
+
+@media(max-width: 1920px) {
+    div.topic-comment-body {
+        margin-left: 105px;
+    }
+}
+
+@media(max-width: 1440px) {
+    div.topic-comment-body {
+        margin-left: 120px;
+    }
+}
+
+@media(max-width: 1024px) {
+    div.topic-comment-body {
+        margin-left: 120px;
+    }
+}
+
+@media(max-width: 425px) {
+    div.topic-comment-body {
+        margin-left: 130px;
+    }
+}
+
+div.topic-comment-footer{
+    position: absolute;
+    bottom: 0;
+    background: #eee;
+}
+
+div.topic-comment-btns{
+    background: #444;
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 7px;
+}
+
+div.topic-comment-btns > button,
+div.topic-comment-btns > a{
+    background: #777;
+    color: white;
+}
+
+a.comment-id-link{
+    color: white;
+    text-shadow: 1px 3px 1px #222;
+    text-decoration: underline;
+}
+
+a.mention{
+    border: 1px solid #222;
+    border-radius: 3px;
+    padding: 3px;
+}
+
+a.mention-success{
+    color: #1b2b85;
+}
+
+span.mention-fail{
+    color: #7f0000;
+}

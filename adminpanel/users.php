@@ -259,9 +259,9 @@ if ($canIPBan || $canIPUnban){
                                 <td><?php print(htmlentities($selUser->getNickname()));?></td>
                                 <td><?php print("<span style=\"color: " . htmlentities($selUser->UserGroup()->getColor()) . ";\">" . htmlentities($selUser->UserGroup()->getName()) . "</span>");?></td>
                                 <td><?php print(htmlentities($selUser->getEmail())); ?></td>
-                                <td><?php print(htmlentities($selUser->getLastIp())); ?></td>
+                                <td><?php print(htmlentities(($selUser->getLastIp() != "null") ? $selUser->getLastIp() : "Не заходил" . (($selUser->getSex() == 2) ? "а" : ""))); ?></td>
                                 <td><?php print(htmlentities($selUser->getRegIp())); ?></td>
-                                <td><?php print ($selUser->getLastDate() == "1970-01-01") ? ("Не заходил") : (htmlentities(\Engine\Engine::DateFormatToRead(($selUser->getLastDate())))); ?></td>
+                                <td><?php print($selUser->getLastDate() == "1970-01-01") ? ("Не заходил") : (htmlentities(\Engine\Engine::DateFormatToRead(($selUser->getLastDate())))); ?></td>
                                 <td><?php print(htmlentities($selUser->getReputation()->getReputationPoints()) . " балл."); ?></td>
                                 <td><?php print(htmlentities($selUserBan)); ?></td>
                                 <?php if ($canSeeProfiles){ ?>
@@ -470,15 +470,21 @@ if ($canIPBan || $canIPUnban){
                 </div>
                 <div class="input-group">
                     <div class="input-group-addon">Статус:</div>
-                    <?php $status = ($USER->getLastTime()+900 < time()) ? 0 : 1;?>
-                    <div class="form-control <?php echo ($status === 1) ? "alert-success" : "alert-danger"; ?>"><?php echo ($status === 1) ? "Онлайн" : "Оффлайн; был(-а) в сети в " . Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:m", $USER->getLastTime())); ?></div>
+                    <?php $status = ($USER->getLastTime()+900 < time()) ? 0 : 1;
+                    if ($status == 1)
+                        $statusText = "Онлайн";
+                    elseif ($USER->getLastTime() == 0)
+                        $statusText = "Не заходил";
+                    else
+                        $statusText = "Оффлайн; был(-а) в сети в " . Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:m", $USER->getLastTime()));?>
+                    <div class="form-control <?php echo ($status === 1) ? "alert-success" : "alert-danger"; ?>"><?php echo $statusText; ?></div>
                 </div>
                 <div class="input-group">
                     <div class="input-group-addon">Активация:</div>
-                    <div class="form-control alert-info"><?php echo ($USER->getActiveStatus() === true) ? "Активен" : $USER->Activate();?></div>
+                    <div class="form-control alert-info"><?php echo ($USER->getActiveStatus() === true) ? "Активен" : $USER->getActivationCode();?></div>
                     <?php if ($USER->getActiveStatus() != true) { ?>
                     <span class="input-group-btn">
-                        <button class="btn btn-default" type="submit" title="Автивировать" name="user-edit-activate">
+                        <button class="btn btn-default" type="submit" title="Активировать" name="user-edit-activate">
                             <span class="glyphicons glyphicons-ok"></span>
                         </button>
                     </span>
@@ -531,7 +537,7 @@ if ($canIPBan || $canIPUnban){
                 </div>
                 <div class="input-group">
                     <div class="input-group-addon">Последний вход:</div>
-                    <div class="form-control alert-info"><?php echo ($USER->getLastDate() != "1970-01-01") ? \Engine\Engine::DateFormatToRead($USER->getLastDate()) : "не заходил";?></div>
+                    <div class="form-control alert-info"><?php echo ($USER->getLastDate() != "1970-01-01") ? \Engine\Engine::DateFormatToRead($USER->getLastDate()) : "не заходил" . (($USER->getSex() == 2) ? "а" : "");?></div>
                 </div>
                 <div class="input-group">
                     <div class="input-group-addon">IP при регистрации:</div>
@@ -539,7 +545,7 @@ if ($canIPBan || $canIPUnban){
                 </div>
                 <div class="input-group">
                     <div class="input-group-addon">Последний IP:</div>
-                    <div class="form-control alert-info"><?php echo $USER->getLastIp();?></div>
+                    <div class="form-control alert-info"><?php echo ($USER->getLastIp() != "null") ? $USER->getLastIp() : "не заходил" . (($USER->getSex() == 2) ? "а" : "");?></div>
                 </div>
                 <hr>
                 <h4>Социальная информация:</h4>

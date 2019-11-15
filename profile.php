@@ -225,7 +225,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
      * $infoEditAF[] - array with fields to edit info additional fields.
      * And etc.
      *******************************************/
-    var_dump($additionalFields);
+    //var_dump($additionalFields);
     //foreach($additionalFields as $fieldProp){
     for ($i = 0; $i < count($additionalFields); $i++){
         $fieldProp = $additionalFields[$i];
@@ -411,10 +411,12 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
             $subject = $user->MessageManager()->bin()[$k]["subject"];
             $time = \Engine\Engine::DatetimeFormatToRead($user->MessageManager()->bin()[$k]["receiveTime"]);
             $id = $user->MessageManager()->bin()[$k]["id"];
+            $senderId = $sender->getId();
+            $receiverId = $receiver->getId();
             $table .= "<tr onclick=\"submitForReadLetter($id);\">
                            <td class=\"profile-pm-table-icon\"><span class=\"glyphicons glyphicons-$icon\"></span></td>
-                           <td class=\"profile-pm-table-author\"><a class=\"profile-link\" href=\"profile.php?uid=" . $sender->getId() > "\">" . $sender->getNickname() . "</a></td>
-                           <td class=\"profile-pm-table-author\"><a class=\"profile-link\" href=\"profile.php?uid=" . $receiver->getId() . "\">" . $receiver->getNickname() . "</a></td>
+                           <td class=\"profile-pm-table-author\"><a class=\"profile-link\" href=\"profile.php?uid=$senderId\">" . $sender->getNickname() . "</a></td>
+                           <td class=\"profile-pm-table-author\"><a class=\"profile-link\" href=\"profile.php?uid=" . $receiverId . "\">" . $receiver->getNickname() . "</a></td>
                            <td class=\"profile-pm-table-subject\">$subject</td>
                            <td class=\"profile-pm-table-time\">$time</td>
                            <td class=\"profile-pm-table-btn-group\">
@@ -433,7 +435,6 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
     if (is_array($letter)) {
         include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/userpm_read.html";
         $userPMReader = getBrick();
-
         $userPMs = str_replace_once("{PROFILE_PAGE:USER_PM_READER}", (!$letter) ? "" : $userPMReader, $userPMs);
 
         $userPMs = str_replace("{PROFILE_PAGE:USER_PM_FROM}", $letter["senderUID"], $userPMs);
@@ -482,13 +483,13 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
                     $userNotificsTable .= " добавил своё сообщение в <a href=\"index.php?page=report&preg=see&rid=" . $ntf[$i]["subject"] . "\">комнате</a> для обсуждения жалобы.";
                     break;
                 case 6:
-                    $userNotificsTable .= " добавил своё сообщение к созданному Вами посту.";
+                    $userNotificsTable .= " добавил своё сообщение к созданному Вами <a href=\"index.php?topic=" . $ntf[$i]["subject"] . "\">посту.</a>";
                     break;
                 case 7:
-                    $userNotificsTable .= " понравился созданный Вами пост.";
+                    $userNotificsTable .= " понравился созданный Вами <a href=\"index.php?topic=\"". $ntf[$i]["subject"] . "\">пост.</a >";
                     break;
                 case 8:
-                    $userNotificsTable .= " перенёс Ваш пост.";
+                    $userNotificsTable .= " перенёс Ваш <a href=\"index.php?topic=\"". $ntf[$i]["subject"] . "\">пост.</a >.";
                     break;
                 case 9:
                     $userNotificsTable .= " удалил созданный Вами пост. Напишите ему, чтобы узнать детали.";
@@ -528,6 +529,16 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
                     $nAID = end(explode(",", $ntf[$i]["subject"]));
                     $nANickname = \Users\UserAgent::GetUserNick($nAID);
                     $userNotificsTable .= " закрыл <a href=\"index.php?page=report&rid=".reset(explode(",", $ntf[$i]["subject"]))."\">жалобу</a>, созданную <a href=\"profile.php?uid=$nAID\">$nANickname</a>.";
+                    break;
+                case 21:
+                    $subjectNotification = $ntf[$i]["subject"];
+                    $userNotificsTable .= " упомянул Вас в <a href=\"index.php?topic=$subjectNotification\">топике</a>.";
+                    break;
+                case 22:
+                    $comment = new \Forum\TopicComment($ntf[$i]["subject"]);
+                    $commentId = $comment->getId();
+                    $topicId = $comment->getTopicParentId();
+                    $userNotificsTable .= " упомянул Вас в <a href=\"index.php?topic=$topicId#comment-$commentId\">комментарии</a>.";
                     break;
             }
             $userNotificsTable .= "<p class=\"profile-notification-time\">" . Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s", $ntf[$i]["createTime"])) . "</p>";
@@ -598,6 +609,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
     $main = str_replace_once("{PROFILE_PAGE_FRIENDS}", $userFriendList, $main);
     $main = str_replace("{PROFILE_PAGE:USER_REGDATETIME}", (($user->getSex() == 2) ? "а " : " ") .\Engine\Engine::DateFormatToRead($user->getRegDate()) . ".", $main);
     $main = str_replace("{PROFILE_PAGE:USER_TOPICS_CREATED_COUNT}", \Forum\ForumAgent::GetCountTopicOfAuthor($user->getId()), $main);
+    $main = str_replace("{PROFILE_PAGE:USER_COMMENTS_CREATED_COUNT}", \Forum\ForumAgent::GetCountOfCommentOfUser($user->getId()), $main);
     $main = str_replace_once("{PROFILE_REPUTATIONER:STYLESHEET}", "<link rel=\"stylesheet\" href=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/css/reputationer-style.css\">", $main);
     $main = str_replace_once("{PROFILE_PAGE:USER_REPUTATION_AONCLICK}", "onclick=\"$('#reputation-frame').show();\"", $main);
     $main = str_replace_once("{PROFILE_REPUTATIONER_BLOCK}", $reputationerBlock, $main);
@@ -652,7 +664,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
     $main = str_replace("{PROFILE_PAGE:USER_ABOUT}", $user->getAbout() == "" ? "не указано" : htmlentities($user->getAbout()), $main);
     $main = str_replace("{PROFILE_PAGE:USER_VK}", $user->getVK(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_SKYPE}", $user->getSkype(), $main);
-    $main = str_replace("{PROFILE_PAGE:USER_SIGNATURE}", $user->getSignature() == "" ? "не указано" : nl2br(\Engine\Engine::CompileBBCode($user->getSignature())), $main);
+    $main = str_replace("{PROFILE_PAGE:USER_SIGNATURE}", $user->getSignature() == "" ? "не указано" : nl2br(html_entity_decode(\Engine\Engine::CompileBBCode($user->getSignature()))), $main);
     $main = str_replace("{PROFILE_PAGE:USER_REPORT_CREATED_COUNT}", $user->getReportsCreatedCount(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_FRIENDS_COUNT}", $user->FriendList()->getFriendsCount(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_ONLINE_FRIENDS_COUNT}", $user->FriendList()->getOnlineFriendCount(), $main);
@@ -855,6 +867,7 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
     $main = str_replace_once("{PROFILE_PAGE_FRIENDS}", null, $main);
     $main = str_replace("{PROFILE_PAGE:USER_REGDATETIME}", (($user->getSex() == 2) ? "а " : " ") . \Engine\Engine::DateFormatToRead($user->getRegDate()) . ".", $main);
     $main = str_replace("{PROFILE_PAGE:USER_TOPICS_CREATED_COUNT}", \Forum\ForumAgent::GetCountTopicOfAuthor($user->getId()), $main);
+    $main = str_replace("{PROFILE_PAGE:USER_COMMENTS_CREATED_COUNT}", \Forum\ForumAgent::GetCountOfCommentOfUser($user->getId()), $main);
     $main = str_replace("{PROFILE_PAGE:USER_FROM}", $user->getFrom(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_REALNAME}", $user->getRealName(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_BIRTHDAY_LINK}", $userBirthday, $main);
@@ -910,7 +923,7 @@ if (($session !== true && !empty($user) && !\Engine\Engine::GetEngineInfo("gsp")
 
 /***********************************Block profile page if user is not exist.*****************/
 
-if (!$session && empty($user)){
+if (!$session || empty($user)){
     $header = str_replace_once("{PROFILE_PAGE:PAGE_NAME}", "Авторизация", $header);
 
     $main = str_replace_once("{PROFILE_PAGE_TITLE}", "Авторизация - " . \Engine\Engine::GetEngineInfo("sn"), $main);
@@ -930,6 +943,9 @@ if (!$session && empty($user)){
     include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/authregerrors.phtml";
     $authRegErrors = getBrick();
 
+    include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/authremaindpass.html";
+    $authRemaind = getBrick();
+
     $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}", (!empty($_REQUEST["res"]) && !in_array($_REQUEST["res"], ["ic", "nc", "nr"])) ? $authErrors : "", $main);
     $main = str_replace_once("{PROFILE_MAIN_BODY}", $authForm, $main);
     $main = str_replace_once("{PROFILE_PAGE_GUI_SCRIPT}", "", $main);
@@ -944,6 +960,7 @@ if (!$session && empty($user)){
     $main = str_replace_once("{AUTH_PAGE:CAPTCHA_PIC}", "<img src=\"$captchaImgPath\">", $main);
     $main = str_replace_once("{AUTH_PAGE:CAPTCHA_ID}", $captchaID, $main);
     $main = str_replace("{AUTH_PAGE:UID_INPUT_PLACEHOLDER}", \Engine\Engine::GetEngineInfo("na") ? "Email или никнейм" : "Никнейм", $main);
+    $main = str_replace("{AUTH_REMAINDER}", $authRemaind, $main);
 
     if (!empty($_REQUEST["res"])){
         if (in_array($_REQUEST["res"], ["ic", "nc", "nr"]))

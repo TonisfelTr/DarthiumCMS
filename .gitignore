@@ -1,2 +1,4 @@
 ./tests
 ./tests/*
+./engine/config/config.sfc
+./engine/config/dbconf.sfc

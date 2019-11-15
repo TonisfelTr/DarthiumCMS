@@ -6,6 +6,7 @@ namespace Forum {
     use Engine\Engine;
     use Engine\ErrorManager;
     use http\Exception\InvalidArgumentException;
+    use Users\PrivateMessager;
     use Users\User;
     use Users\UserAgent;
 
@@ -405,6 +406,7 @@ namespace Forum {
         private $topicDislikes;
         private $topicLastEditor;
         private $topicLastEditDatetime;
+        private $topicStatus;
 
         public function __construct($topicId){
             $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
@@ -427,7 +429,7 @@ namespace Forum {
                     ErrorManager::GenerateError(9);
                     return ErrorManager::GetError();
                 }
-                $stmt->bind_result($id, $authorId, $categoryId, $name, $text, $preview, $createDate, $lastEditor, $lastEditDateTime, $negatives, $positives, $summa);
+                $stmt->bind_result($id, $authorId, $categoryId, $name, $text, $preview, $createDate, $lastEditor, $lastEditDateTime, $topicStatus, $negatives, $positives, $summa);
                 $stmt->fetch();
                 $this->topicId = $id;
                 $this->topicAuthorId = $authorId;
@@ -441,6 +443,7 @@ namespace Forum {
                 $this->topicPreviewText = $preview;
                 $this->topicLastEditor = $lastEditor;
                 $this->topicLastEditDatetime = $lastEditDateTime;
+                $this->topicStatus = $topicStatus;
             }
             return false;
         }
@@ -485,6 +488,77 @@ namespace Forum {
         }
         public function getLastEditDateTime(){
             return $this->topicLastEditDatetime;
+        }
+        public function getStatus(){
+            return $this->topicStatus;
+        }
+    }
+    class TopicComment extends ForumAgent{
+        private $id;
+        private $topicParentId;
+        private $text;
+        private $authorId;
+        private $createDateTime;
+        private $changeDateTime;
+        private $changeReason;
+        private $changerId;
+
+        public function __construct(int $commentId)
+        {
+            $this->id = $commentId;
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+
+            if ($mysqli->errno){
+                ErrorManager::GenerateError(2);
+                return ErrorManager::GetError();
+            }
+            if ($stmt = $mysqli->prepare("SELECT * FROM tt_topiccomments WHERE id = ?")) {
+                $stmt->bind_param("i", $commentId);
+                $stmt->execute();
+                if ($stmt->errno) {
+                    ErrorManager::GenerateError(9);
+                    return ErrorManager::GetError();
+                }
+                $stmt->bind_result($id, $authorId, $topicParentId, $text, $createDateTime, $changeDateTime, $changeReason, $changerId);
+                $stmt->fetch();
+
+                $this->id = $id;
+                $this->topicParentId = $topicParentId;
+                $this->text = $text;
+                $this->authorId = $authorId;
+                $this->createDateTime = $createDateTime;
+                $this->changeDateTime = $changeDateTime;
+                $this->changeReason = $changeReason;
+                $this->changerId = $changerId;
+            }
+            return false;
+        }
+
+        public function getId(){
+            return $this->id;
+        }
+
+        public function getTopicParentId(){
+            return $this->topicParentId;
+        }
+
+        public function getText(){
+            return $this->text;
+        }
+        public function getAuthorId(){
+            return $this->authorId;
+        }
+        public function author(){
+            return new User($this->authorId);
+        }
+        public function getCreateDatetime(){
+            return $this->createDateTime;
+        }
+
+        public function getChangeInfo(){
+            return ["editDate" => $this->changeDateTime,
+                    "editReason" => $this->changeReason,
+                    "editorId" => $this->changerId];
         }
     }
 
@@ -665,7 +739,8 @@ namespace Forum {
                 "name" => $name,
                 "text" => $text,
                 "preview" => $preview,
-                "createDate" => date("Y-m-d H:i:s", Engine::GetSiteTime())]);
+                "createDate" => date("Y-m-d H:i:s", Engine::GetSiteTime()),
+                "status" => 1]);
             var_dump($int);
             if ($int !== false) {
                 return $int;
@@ -702,8 +777,8 @@ namespace Forum {
                 return ErrorManager::GetError();
             }
 
-            $lowBorder = ($page - 1) * 15;
-            $highBorder = $lowBorder + 15;
+            $lowBorder = ($page - 1) * 14;
+            $highBorder = 14;
 
             $stmtQuery = false;
             if (!$mini) {
@@ -806,6 +881,111 @@ namespace Forum {
         {
             $result = DataKeeper::Update("tt_topics", $whatArray, ["id" => $topicId]);
             return $result;
+        }
+
+        public static function CreateComment(int $authorId, int $topicId, string $text){
+
+            return DataKeeper::InsertTo("tt_topiccomments",
+                    ["id" => null,
+                    "authorId" => $authorId,
+                    "topicId" => $topicId,
+                    "text" => $text,
+                    "createDate" => Engine::GetSiteTime()
+                    ]);
+        }
+        public static function EditComment(int $commentId, int $editorId, string $editReason, int $editTime, string $newText){
+            return DataKeeper::Update("tt_topiccomments", [
+                "editorId" => $editorId,
+                "editReason" => $editReason,
+                "text" => $newText,
+                "editDate" => $editTime], ["id" => $commentId]);
+        }
+        public static function DeleteComment(int $commentId){
+            return DataKeeper::Delete("tt_topiccomments", ["id" => $commentId]);
+        }
+        public static function GetCountOfCommentOfUser(int $userId){
+            $result = DataKeeper::MakeQuery("SELECT count(*) FROM `tt_topiccomments` WHERE authorId = ?", [$userId]);
+            return $result["count(*)"];
+        }
+        public static function GetCommentsOfTopic(int $topicId, int $page = 1){
+            if ($page < 1)
+                throw new InvalidArgumentException("Page number cannot be less then 0.");
+
+            //Откуда отсчёт
+            $lowBorder = $page * 10 - 10;
+            //Сколько отсчитывать
+            $highBorder = 10;
+
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+
+            if ($mysqli->errno){
+                ErrorManager::GenerateError(2);
+                return ErrorManager::GetError();
+            }
+
+            if ($stmt = $mysqli->prepare("SELECT `id` FROM `tt_topiccomments` WHERE `topicId` = ? LIMIT $lowBorder,$highBorder")){
+                $stmt->bind_param("i", $topicId);
+                $stmt->execute();
+                if ($stmt->errno){
+                    ErrorManager::GenerateError(9);
+                    return ErrorManager::GetError();
+                }
+                $stmt->bind_result($topicsId);
+                $result = [];
+                while ($stmt->fetch()){
+                    array_push($result, $topicsId);
+                }
+                return $result;
+            }
+            return false;
+        }
+        public static function GetTotalCommentsOfTopic(int $topicId){
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+
+            if ($mysqli->errno){
+                ErrorManager::GenerateError(2);
+                return ErrorManager::GetError();
+            }
+
+            if ($stmt = $mysqli->prepare("SELECT count(*) FROM `tt_topiccomments` WHERE `topicId` = ?")){
+                $stmt->bind_param("i", $topicId);
+                $stmt->execute();
+                if ($stmt->errno){
+                    ErrorManager::GenerateError(9);
+                    return ErrorManager::GetError();
+                }
+                $stmt->bind_result($count);
+                $stmt->fetch();
+                return $count;
+            }
+        }
+        public static function CreateMentionNotification(string $type, int $userId, int $whereId, string $text){
+            //Searching for mentions.
+            preg_match_all("/@([A-Za-z0-9\-_]+)/", $text, $matches);
+            //
+            //print_r($matches[1]); =>
+            //Array ( [0] => Admin,
+            //       [1] => 7584847575 )
+            for ($i = 0; $i < count($matches[1]); $i++){
+                $resultChecking = false;
+                if ($toUser = UserAgent::GetUserId($matches[1][$i])){
+                    $resultChecking = true;
+                }
+
+                if ($resultChecking){
+                    switch($type){
+                        case 'c':
+                            UserAgent::GetUser($toUser)->Notifications()->createNotify('22', $userId, $whereId);
+                            break;
+                        case 't':
+                            UserAgent::GetUser($toUser)->Notifications()->createNotify('21', $userId, $whereId);
+                            break;
+                        default:
+                            throw new \InvalidArgumentException("Invalid type of notification");
+
+                    }
+                }
+            }
         }
     }
 }

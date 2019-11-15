@@ -277,7 +277,7 @@ if (isset ($_REQUEST["user-edit-save"])){
                 $backRequest .= "&res=4neae";
         }
         if (!empty($_REQUEST["user-edit-password"])) {
-            $res = $eUser->passChange($_REQUEST["user-edit-password"]);
+            $res = $eUser->passChange($_REQUEST["user-edit-password"],false);
             if ($res === false)
                 $backRequest .= "&res=4nep";
             elseif ($res === 7)
@@ -366,10 +366,10 @@ if (isset ($_REQUEST["user-edit-activate"])){
     if ($user->UserGroup()->getPermission("change_another_profiles")){
         $eUser = new \Users\User($_REQUEST["user-edit-id"]);
         if ($eUser->Activate()){
-            header("Location: ../../adminpanel.php?p=users&uid=". $eUser->getId() . "&res=2sua");
+            header("Location: ../../adminpanel.php?p=users&uid=". $eUser->getId() . "&res=4sua");
             exit;
         } else {
-            header("Location: ../../adminpanel.php?p=users&uid=". $eUser->getId() . "&res=2nua");
+            header("Location: ../../adminpanel.php?p=users&uid=". $eUser->getId() . "&res=4nua");
             exit;
         }
     }

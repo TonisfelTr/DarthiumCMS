@@ -38,10 +38,10 @@ function notifyNewNotifications(){
         success : function(data){
             var count = (data > 10) ? "10+" : data;
             if ($("#profile-btn-notifications-counter-span").html() != count) {
-                if (!needToReload) needToReload = true;
                 $("#profile-btn-notifications-counter-span").html(count);
                 $("#profile-btn-notifications-counter-span").attr("class", "profile-btn-new-counter");
-                $("#profile-notification-warning-border").show();
+                if (data != $("#profile-btn-notifications-counter-span").html())
+                    $("#profile-notification-warning-border").show();
             }
         }
     });

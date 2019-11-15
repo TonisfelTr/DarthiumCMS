@@ -338,28 +338,19 @@ else {
                 <h3><span class="glyphicons glyphicons-pie-chart"></span> Статистика</h3>
                 <p class="helper">Здесь меняются настройки статистики сайта.</p>
                 <hr>
-                <p>Вы можете использовать как сторонние сервисы для анализирования клиентского потока Вашего портала, так и встроенный. Для этого выберите соответствующий
-                параметр, нужный Вам. Также, Вы можете вовсе отказаться от использования аналитических сервисов.</p>
+                <p>Здесь настраиваются параметры статистики Вашего сайта. Они будут добавлены в конец каждой страницы, просматриваемой
+                на данном портале.</p>
                 <div class="input-group">
                     <div class="input-group-addon">Записывать статистику:</div>
                     <div class="form-control">
                         <input type="checkbox" name="metric-lever-btn" id="metric-level-btn" <?php if (\Engine\Engine::GetEngineInfo("smt")) echo "checked"; ?>>
                     </div>
                 </div>
-                <div id="metric-information" style="display: none;">
-                    <div class="input-group">
-                        <div class="input-group-addon">Сервис:</div>
-                        <select id="metric-service-select" name="metric-service-select" class="form-control">
-                            <option value="0" <?php if (\Engine\Engine::GetEngineInfo("sms") == 0) echo "selected";?>>Встроенный</option>
-                            <option value="1" <?php if (\Engine\Engine::GetEngineInfo("sms") == 1) echo "selected";?>>Сторонний</option>
-                        </select>
-                    </div>
-                    <div class="input-group" style="display: none;" id="metric-code-div">
-                        <div class="input-group-addon">Текст для встраивания:</div>
-                        <textarea class="form-control" style="height: 300px; resize: none;" name="metric-script-text"><?php echo \Engine\Engine::GetAnalyticScript(); ?></textarea>
-                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> Здесь должен быть код, который предоставляется сервисом.
-                            В инструкции Вас попросят разместить этот код на всех страницах Вашего портала, именно данный текст Вам нужно вставить сюда.</div>
-                    </div>
+                <div class="input-group" id="metric-code-div">
+                    <div class="input-group-addon">Текст для встраивания:</div>
+                    <textarea class="form-control" style="height: 300px; resize: none;" name="metric-script-text"><?php echo \Engine\Engine::GetAnalyticScript(); ?></textarea>
+                    <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> Здесь должен быть код, который предоставляется сервисом.
+                        В инструкции Вас попросят разместить этот код на всех страницах Вашего портала, именно данный текст Вам нужно вставить сюда.</div>
                 </div>
             </div>
             <?php } ?>
@@ -378,14 +369,6 @@ else {
     </form>
 </div>
 <script>
-    var MetricCodeGUIPrepare = function () {
-        if ($("#metric-service-select").val() == "1") {
-            $("#metric-code-div").show();
-        } else {
-            $("#metric-code-div").hide();
-        }
-    };
-
     var MetricSystemGUIPrepare = function() {
         if ($("#metric-level-btn").is(":checked")){
             $("#metric-information").show();
@@ -586,7 +569,7 @@ else {
 
     $("#metric-level-btn").on("change", MetricSystemGUIPrepare);
 
-    $("#metric-service-select").on("change", MetricCodeGUIPrepare);
+    $("#metric-code-div").show();
 
     $("button").on("click", function() {
        if ($(this).data("div-number") != undefined){

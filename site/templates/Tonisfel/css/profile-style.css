@@ -31,23 +31,60 @@ div {
 
 .profile-footer-angle{
     font: 11px Arial;
-    position: fixed;
     bottom: 0;
     left: 0;
     padding: 15px;
     max-width: 300px;
     color: white;
     line-height: 15px;
+
+}
+@media(min-width: 320px){
+    .profile-footer-angle{
+        margin-top: 140px;
+    }
+}
+@media(min-width: 425px){
+    .profile-footer-angle{
+        margin-top: 140px;
+    }
+}
+@media(min-width: 768px){
+    .profile-footer-angle{
+        margin-top: 140px;
+    }
+}
+@media(min-width: 1024px){
+    .profile-footer-angle{
+        position: fixed;
+    }
 }
 
-.profile-container{
+.profile-container {
     position: absolute;
     right: 0;
-    width: 75%;
     min-height: 100%;
-    background: rgba(0,0,0,0.9);
+    background: rgba(0, 0, 0, 0.9);
     padding: 10px;
     overflow-y: auto;
+}
+
+@media(min-width: 1024px) {
+    .profile-container{
+        width: 75%;
+    }
+}
+
+@media(min-width: 768px) {
+    .profile-container{
+        width: 75%;
+    }
+}
+
+@media(min-width: 425px) {
+    .profile-container{
+        width: 75%;
+    }
 }
 
 .profile-header{
@@ -99,10 +136,14 @@ select.profile-input option{
 }
 
 .profile-btn-group{
-    border: 1px solid #3e3e3e;
     border-radius: 7px;
     position: absolute;
     padding: 3px;
+    width: inherit;
+}
+
+.profile-btn-group:first-child button{
+    border-right: 1px solid black;
 }
 
 .profile-btn-group button{
@@ -285,6 +326,27 @@ div[data-div-title=info]{
     right: 0;
     position: static;
     line-height: 25px;
+}
+@media(max-width: 320px){
+    .profile-contact-info-div {
+        width: 100%;
+        margin-left: 5px;
+    }
+
+    .profile-forum-info-div{
+        width: 100%;
+    }
+}
+
+@media(max-width: 512px){
+    .profile-contact-info-div {
+        width: 100%;
+        margin-left: 5px;
+    }
+
+    .profile-forum-info-div{
+        width: 100%;
+    }
 }
 
 .profile-forum-info-div h3{
@@ -712,4 +774,8 @@ td.table-friends-online-td{
 td.table-friends-list-td{
     background: linear-gradient(75deg, #1b2f54, #2e2e2e);
     color: white;
+}
+
+div.profile-remainer-panel{
+    margin-top: 55px;
 }

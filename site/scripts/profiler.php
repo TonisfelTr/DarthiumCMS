@@ -16,19 +16,19 @@ if ($user->UserGroup()->getPermission("change_profile")) {
     if (!empty($_FILES["profile-edit-avatar"])){
         $res = \Users\UserAgent::UploadAvatar($user->getId(), "profile-edit-avatar");
         if ($res === False) {
-            header("Location: ../../profile.php?res=neav");
+            header("Location: ../../profile.php?page=edit&res=neav");
             exit;
         }
         elseif ($res == 18){
-            header("Location: ../../profile.php?res=neavvf");
+            header("Location: ../../profile.php?page=edit&res=neavvf");
             exit;
         }
         elseif ($res == 19) {
-            header("Location: ../../profile.php?res=neavvs");
+            header("Location: ../../profile.php?page=edit&res=neavvs");
             exit;
         }
         elseif ($res == 20) {
-            header("Location: ../../profile.php?res=neavvb");
+            header("Location: ../../profile.php?page=edit&res=neavvb");
             exit;
         }
         elseif ($res === true) {
@@ -36,7 +36,7 @@ if ($user->UserGroup()->getPermission("change_profile")) {
             exit;
         }
         else {
-            header("Location: ../../profile.php?res=neav");
+            header("Location: ../../profile.php?page=edit&res=neav");
             exit;
         }
         exit;
@@ -105,7 +105,7 @@ if (isset($_POST["profile-change-pass-checkbox"])) {
     }
     if ($_SESSION["passhash"] == hash("sha256", $_POST["profile-change-oldpass"])){
         if ($_POST["profile-change-newpass"] == $_POST["profile-change-renewpass"]){
-            $user->passChange($_POST["profile-change-newpass"]);
+            $user->passChange($_POST["profile-change-newpass"], true);
             header("Location: ../../profile.php?page=security&res=phbc");
             exit;
         } else {

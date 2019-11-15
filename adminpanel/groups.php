@@ -456,13 +456,6 @@ $groupList = \Users\GroupAgent::GetGroupList();
                                             <option value="0"  class="danger alert-danger" <?php if (!\Users\GroupAgent::IsHavePerm($_REQUEST["group"], "comment_foreign_delete")) echo "selected";?>>Запрещено</option>
                                         </select>
                                     </div>
-                                    <div class="input-group">
-                                        <div class="input-group-addon">Разрешение оценивать комментарии</div>
-                                        <select class="form-control" name="comment_commend">
-                                            <option value="1"  class="success alert-success" <?php if (\Users\GroupAgent::IsHavePerm($_REQUEST["group"], "comment_commend")) echo "selected";?>>Разрешено</option>
-                                            <option value="0"  class="danger alert-danger" <?php if (!\Users\GroupAgent::IsHavePerm($_REQUEST["group"], "comment_commend")) echo "selected";?>>Запрещено</option>
-                                        </select>
-                                    </div>
                                     <hr>
                                     <p class="h-helper">Права управления статическим контентом</p>
                                     <div class="input-group">

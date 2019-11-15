@@ -37,7 +37,7 @@ namespace Users {
                     $upload_add, $upload_see_all, $upload_delete, $upload_delete_foreign,
                     $category_create, $category_edit, $category_delete, $category_see_unpublic, $category_params_ignore,
                     $topic_create, $topic_edit, $topic_foreign_edit, $topic_delete, $topic_foreign_delete, $topic_manage,
-                    $comment_create, $comment_edit, $comment_foreign_edit, $comment_delete, $comment_foreing_delete, $comment_commend,
+                    $comment_create, $comment_edit, $comment_foreign_edit, $comment_delete, $comment_foreing_delete,
                     $sc_create_pages, $sc_edit_pages, $sc_remove_pages, $sc_design_edit);
                 while ($stmt->fetch()){
                     $this->gId = $id;
@@ -131,7 +131,6 @@ namespace Users {
                         'comment_foreign_edit' => $comment_foreign_edit,
                         'comment_delete' => $comment_delete,
                         'comment_foreign_delete' => $comment_foreing_delete,
-                        'comment_commend' => $comment_commend,
 
                         /**************************************************************
                          * Permissions manage with static content              *
@@ -265,6 +264,9 @@ namespace Users {
         public function getActiveStatus(){
             return ($this->uActive === "TRUE") ? true : false;
         }
+        public function getActivationCode(){
+            return $this->uActive;
+        }
         public function getGroupId(){
             return $this->uGroupId;
         }
@@ -307,7 +309,7 @@ namespace Users {
         public function getReferer(){
            if (UserAgent::IsUserExist($this->uReferer)){
                  return new User($this->uReferer);
-           } else return $this->uReferer;
+           } else return null;
         }
         public function getAvatar(){
             $avatar = $this->uAvatar;
@@ -388,11 +390,11 @@ namespace Users {
 
         public function Activate(){
             if ($this->getActiveStatus() != true)
-                return UserAgent::ActivateAccount($this->getId(), $this->getActiveStatus());
+                return UserAgent::ActivateAccount($this->getId(), $this->getActivationCode());
             else return false;
         }
-        public function passChange($new){
-            return UserAgent::ChangeUserPassword($this->uId, $new);
+        public function passChange($new, bool $relogin){
+            return UserAgent::ChangeUserPassword($this->uId, $new, $relogin);
         }
         public function groupChange($groupId){
             if (UserAgent::ChangeUserParams($this->getId(), "group", $groupId)){
@@ -882,14 +884,14 @@ namespace Users {
          * 3. Profile change by administrator. +
          * 4. Deleted from report discussing. +
          * 5. New answer in report discussing. +
-         * 6. New answer in own topic.
-         * 7. Have liked a topic.
-         * 8. Have moved a topic.
-         * 9. Have deleted a topic.
+         * 6. New answer in own topic. +
+         * 7. Have liked a topic. +
+         * 8. Have moved a topic. +
+         * 9. Have deleted a topic. +
          * 10. Have changed text of report. +
          * 11. Have deleted report. +
-         * 12. Have changed a topic.
-         * 13. Have changed status of topic.
+         * 12. Have edited a topic. +
+         * 13. Have changed status of topic. +
          * 14. Somebody has been signed up indicated referrer. +
          * 15. Have closed report. +
          * 16. Your answer in report discussion has been deleted. +
@@ -897,6 +899,8 @@ namespace Users {
          * 18. Foreign added to discusse. +
          * 19. Foreign removed from discusse. +
          * 20. Closed foreign report. +
+         * 21. Mentioned in topic. +
+         * 22. Mentioned in comment. +
          *
          * @param $notificationCode integer Notification code.
          * @param $fromUid integer User ID by creating the notification.
@@ -1163,6 +1167,26 @@ namespace Users {
             else return false;
         }
 
+        public static function Get10OnlineUsers(){
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+
+            if (mysqli_connect_errno()) {
+                printf("Не удалось подключиться: %s\n", mysqli_connect_error());
+                return False;
+            };
+
+            if ($stmt = $mysqli->prepare("SELECT `id` FROM `tt_users` WHERE NOT lasttime < ? LIMIT 0,10")){
+                $timeBorder = Engine::GetSiteTime() - 60*5;
+                $stmt->bind_param("i", $timeBorder);
+                $stmt->execute();
+                $res = array();
+                $stmt->bind_result($val);
+                while($stmt->fetch()){
+                    array_push($res, $val);
+                }
+            }
+            return $res;
+        }
         public static function IsEmailExists($email){
             $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
 
@@ -1184,22 +1208,11 @@ namespace Users {
             return false;
         }
         public static function IsNicknameExists($nickname){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
+            $query = "SELECT count(*) FROM `tt_users` WHERE nickname=?";
+            $sqlResult = DataKeeper::MakeQuery($query, array($nickname));
+            if ($sqlResult["count(*)"] > 0){
+                return true;
             }
-
-            if ($stmt = $mysqli->prepare("SELECT count(*) FROM `tt_users` WHERE `nickname` = ? ")) {
-                $stmt->bind_param("s", $nickname);
-                $stmt->execute();
-                $stmt->bind_result($res);
-                $stmt->fetch();
-                if ($res >= 1) return true;
-                else return false;
-            }
-
             return false;
         }
         public static function ActivateAccount($id = null, $code)
@@ -1377,7 +1390,8 @@ namespace Users {
                "referer" => $referer,
                "city" => $city,
                "realname" => $name,
-               "sex" => $sex
+               "sex" => $sex,
+               "lastip" => "null"
             ));
             if ($queryReqRequest){
                 ob_start();
@@ -1397,7 +1411,7 @@ namespace Users {
                                   <p class=\"mail-link\">Вы также можете активировать свой аккаунт просто перейдя по ссылке: <a href=\"$link\">$link</a>";
                     $body = str_replace("{MAIL_TITLE}", "Активация аккаунта - Администрация \"" . Engine::GetEngineInfo("sn") . "\"", $body);
                     $body = str_replace("{MAIL_SITENAME}", Engine::GetEngineInfo("sn") , $body);
-                    $body = str_replace("{MAIL_NICKNAME_TO}", $nick , $body);
+                    $body = str_replace("{MAIL_NICKNAME_TO}", "Приветствуем, " . $nick . "!" , $body);
                     $body = str_replace("{MAIL_BODY_MAIN}", $bodyMain, $body);
                     $body = str_replace("{MAIL_FOOTER_INFORMATION}", "С уважением, Администрация \"" . Engine::GetEngineInfo("sn") . "\"<br>
                                                                                  Все права защищены ©", $body);
@@ -1438,34 +1452,7 @@ namespace Users {
 
         }
         public static function DeleteUser($id){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf("Не удалось подключиться: %s\n", mysqli_connect_error());
-                return False;
-            }
-
-            if (!self::IsUserExist($id)){
-                $mysqli->close();
-                ErrorManager::GenerateError(7);
-                return False;
-            }
-
-            $query = "DELETE FROM `tt_users` WHERE `id`=?";
-            if ($stmt = $mysqli->prepare($query)){
-                $stmt->bind_param("i", $id);
-                $stmt->execute();
-                if (mysqli_stmt_errno($stmt))
-                    return mysqli_stmt_error($stmt);
-                else {
-                    $stmt->close();
-                    $mysqli->close();
-                    return True;
-                }
-            }
-
-            $mysqli->close();
-            return false;
+            DataKeeper::Delete("tt_users", ["id" => $id]);
         }
         public static function GetUsersList($paramsArray, $page = 1){
 
@@ -1574,13 +1561,18 @@ namespace Users {
 
             return DataKeeper::Update("tt_users", array($param => $newparam), array("id" => $id));
         }
-        public static function ChangeUserPassword($id, $newPass){
+        public static function ChangeUserPassword($id, $newPass, bool $relogin){
             if (!self::IsUserExist($id)) {
                 ErrorManager::GenerateError(7);
                 return ErrorManager::GetError();
             }
 
-            return DataKeeper::Update("tt_users", array("password" => hash("sha256", $newPass)), array("id" => $id));
+            $resp = DataKeeper::Update("tt_users", array("password" => hash("sha256", $newPass)), array("id" => $id));
+            if ($relogin) {
+                self::SessionDestroy();
+                self::SessionCreate(UserAgent::GetUser($id)->getEmail(), $newPass);
+            }
+            return $resp;
         }
         public static function GetUserId($param){
 

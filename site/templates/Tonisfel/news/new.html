@@ -56,8 +56,25 @@
             </div>
         </div>
     </div>
+    {TOPIC_COMMENTS}
+    <div class="topic-comment-pagination-block">
+        <div class="btn-group topic-comment-pagination">
+            {TOPIC_PAGINATION}
+        </div>
+    </div>
+    {TOPIC_CREATE_COMMENT}
 </form>
 <script type="text/javascript">
+    $("a.btn-quote").on("click", function() {
+        var commentId = $(this).attr("data-comment-id");
+        var commentText = $("input[data-comment-id=" + commentId + "]").val().trim();
+        var quoteAuthor = $("a.comment-author-nickname[data-comment-id=" + commentId + "]").html();
+
+        var quote = "[quote=" + quoteAuthor + "]" + commentText + "[/quote]";
+
+        $("textarea#comment-content-textarea").val($("textarea#comment-content-textarea").val() + quote);
+    });
+
     $("div#topic-author-show-panel").on("click", function(){
         $("div.topic-open-header-author").animate({
             height: "toggle",

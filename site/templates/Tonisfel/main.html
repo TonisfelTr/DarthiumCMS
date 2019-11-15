@@ -31,11 +31,24 @@
         {INDEX_PAGE_HEADER}
         {INDEX_PAGE_OFFLINE}
         <div class="container-fluid">
+            {INDEX_PAGE_INFORMATOR}
             <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
             {INDEX_PAGE_LEFT}
             </div>
             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
                 <div class="content-block row">
+                    <form action="/site/search.php" method="post">
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Искать" name="search-input">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="submit" name="search-start-btn">Искать!</button>
+                                    <a class="btn btn-default" href="?search">Расширенный поиск</a>
+                                </span>
+                            </div><!-- /input-group -->
+                        </div>
+                    </form>
+                    <hr>
                     {INDEX_PAGE_NEWSPAPER}
                 </div>
             </div>

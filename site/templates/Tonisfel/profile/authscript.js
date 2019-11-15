@@ -1,19 +1,47 @@
 $("#profile_auth_signup").on("click", function(){
    showPanel("signup");
+   $("#profile-form-name").html("Правила");
 });
 
 $("#profile_reg_rules_reject_btn").on("click", function() {
     showPanel("auth");
+    $("#profile-form-name").html("Авторизация");
+});
+
+$("#profile_auth_password_restore").on("click" ,function (){
+   showPanel("remaind");
+    $("#profile-form-name").html("Восстановление пароля");
+});
+
+$("#profile-auth-for-email").change(function() {
+    if (this.checked) {
+        $("#profile-password-remained-email").show();
+        $("#profile-password-remained-nickname").hide();
+    }
+});
+
+$("#profile_auth_signin").on("click", function(){
+   showPanel("auth");
+    $("#profile-form-name").html("Авторизация");
+});
+
+$("#profile-auth-for-nickname").change(function() {
+    if (this.checked) {
+        $("#profile-password-remained-nickname").show();
+        $("#profile-password-remained-email").hide();
+    }
 });
 
 $("#profile_reg_rules_confirm_btn").on("click", function() {
     showSubpanel("signup", 2);
+    $("#profile-form-name").html("Регистрация");
     if ($("#profile-reg-error-div").html().trim() == "")
         $("#profile-reg-error-div").hide();
 });
 
 $("#profile-reg-toauth-btn").on("click", function() {
     showPanel("auth");
+    $("#profile-form-name").html("Авторизация");
 });
 
 $("#profile_auth_toindex").on("click", function() {
@@ -115,4 +143,51 @@ $("#profile-reg-reg-btn").on("click", function() {
             }
         }
     });
+});
+
+$("#profile_auth_remaind_email").on("click", function() {
+    $.ajax({
+        type : "POST",
+        url : "/site/scripts/ajax/emailremainderajax.php",
+        data: "profile-auth-for-email-input=" + $("#profile-auth-for-email-input").val(),
+        success : function(data){
+            var pText = $("#profile-email-remainder");
+            pText.show();
+            switch (data) {
+                case "not exist":
+                    pText.html("Данный адрес электроной почты не зарегистрирован в системе.");
+                    break;
+                case "not sended":
+                    pText.html("Не удалось изменить пароль. Пожалуйста, свяжитесь с Aдминистрацией.");
+                    break;
+                default:
+                    pText.html("На указанный Вами адрес электронной почты была отослана инструкция по восстановлению пароля.");
+                    break;
+            }
+
+        }
+    });
+});
+
+$("#profile_auth_remaind_nickname").on("click", function() {
+   $.ajax({
+         type: "POST",
+         url: "/site/scripts/ajax/emailremainderajax.php",
+         data: "profile-auth-for-nickname-input=" + $("#profile-auth-for-nickname-input").val(),
+         success: function(data){
+             var pText = $("#profile-email-remainder");
+             pText.show();
+             switch (data) {
+                 case "not exist":
+                     pText.html("Данный никнейм не зарегистрирован в системе.");
+                     break;
+                 case "not sended":
+                     pText.html("Не удалось изменить пароль. Пожалуйста, свяжитесь с Aдминистрацией.");
+                     break;
+                 default:
+                     pText.html("На адрес электронной почты " + data + " была отослана инструкция по восстановлению пароля.");
+                     break;
+             }
+         }
+   });
 });

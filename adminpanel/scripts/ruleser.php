@@ -1,19 +1,26 @@
 <?php
 
-require_once "engine/main.php";
+require_once "../../engine/main.php";
 \Engine\Engine::LoadEngine();
 
-$sessEffect = \Users\UserAgent::SessionContinue();
-if ($sessEffect == True) {
-    echo 1;
-    $user = new \Users\User($_SESSION["uid"]);
-    if ($_REQUEST["uid"] == $_SESSION["uid"] && $user->UserGroup()->getPermission("change_engine_settings") == 1) {
-        $rulesFile = fopen("../../engine/config/rules.sfc", "w+", FILE_USE_INCLUDE_PATH);
-        if ($rulesFile) {
-            fwrite($rulesFile, $_REQUEST["rules_texter"]);
-            fclose($rulesFile);
-            $_SESSION["result"] = True;
-        }
-    } header("Location: ../../adminpanel.php?res=1");
+if ($sessionRes = \Users\UserAgent::SessionContinue()) $user = new \Users\User($_SESSION["uid"]);
+else { header("Location: ../../adminpanel.php?p=forbidden"); exit; }
+
+echo 1;
+
+if ($user->UserGroup()->getPermission("rules_edit") == 1) {
+    $rulesFile = fopen("../../engine/config/rules.sfc", "w+", FILE_USE_INCLUDE_PATH);
+    if ($rulesFile) {
+        fwrite($rulesFile, $_REQUEST["rules_texter"]);
+        fclose($rulesFile);
+        $_SESSION["result"] = True;
+        header("Location: ../../adminpanel.php?p=rules&rules_save");
+        exit;
+    }
+} else {
+    header("Location: ../../adminpanel.php?res=1");
+    exit;
 }
-header("Location: ../../adminpanel.php?p=rules");
+
+header("Location: ../../adminpanel.php?res=1");
+exit;

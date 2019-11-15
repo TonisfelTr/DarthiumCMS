@@ -62,6 +62,19 @@ else {
     }
 }
 ################################################################################
+#Build statistic block.
+
+$onlineUsers = \Users\UserAgent::Get10OnlineUsers();
+$onlineUserStatistic = "<ul>";
+if (count($onlineUsers) > 0) {
+    for ($i = 0; $i < count($onlineUsers); $i++){
+        $onlineUserStatistic .= "<li><a class=\"alert-link\" href=\"./profile.php?uid=" . $onlineUsers[$i] . "\">" . \Users\UserAgent::GetUserNick($onlineUsers[$i]) . "</a></li>";
+    }
+} else {
+    $onlineUserStatistic .= "<li>Нет онлайн пользователей</li>";
+}
+$onlineUserStatistic .= "</ul>";
+################################################################################
 ob_start();
 
 include_once "./site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/main.html";
@@ -71,15 +84,19 @@ if (!empty($_GET["page"])){
     if (file_exists("./site/". $_GET["page"] . ".php"))
         include_once "./site/".$_GET["page"] . ".php";
     else include_once "./site/errors/notfound.php"; }
-    elseif (!empty($_GET["sp"])){
+elseif (!empty($_GET["sp"])){
         echo nl2br(\Engine\Engine::CompileBBCode(file_get_contents("./site/statics/" . $_GET["sp"] . ".txt", FILE_USE_INCLUDE_PATH)));
         $pageName = \Forum\StaticPagesAgent::GetPage($_GET["sp"])->getPageName();
-    } elseif (!empty($_GET["topic"])){
+    }
+elseif (!empty($_GET["topic"])){
         if (\Forum\ForumAgent::isTopicExists($_GET["topic"]))
             include_once "./site/newsviewer.php";
         else include_once "./site/errors/notfound.php";
     }
-    else include_once "./site/news.php";
+elseif (!empty($_GET["search"])){
+
+}
+else include_once "./site/news.php";
 $newsPaper = getBrick();
 include_once "./site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/footer.html";
 $footer = getBrick();
@@ -133,9 +150,17 @@ foreach ($panels as $panel){
     } else continue;
 }
 
+$info = "";
+if (isset($_GET["res"])){
+    if ($_GET["res"] == "3sdt"){
+        $info = "<div class='alert alert-success'><span class='glyphicon glyphicon-ok'></span> Тема была успешно удалена!";
+    }
+}
+
 $main = str_replace_once("{INDEX_PAGE_NAVBAR}", $navbar, $main);
 $main = str_replace_once("{INDEX_PAGE_HEADER}", $header, $main);
 $main = str_replace_once("{INDEX_PAGE_OFFLINE}", $offline, $main);
+$main = str_replace_once("{INDEX_PAGE_INFORMATOR}", $info, $main);
 $main = str_replace_once("{INDEX_PAGE_LEFT}", $leftPanels, $main);
 $main = str_replace_once("{INDEX_PAGE_NEWSPAPER}", $newsPaper, $main);
 $main = str_replace_once("{INDEX_PAGE_RIGHT}", $rightPanels, $main);
@@ -169,17 +194,21 @@ if (empty($lastTopics)){
 }
 
 $main = str_replace_once("{LAST_SITE_TOPICS}", $ltText, $main);
+$main = str_replace_once("{STATISTIC:NOW_AVAILABLE}", $onlineUserStatistic, $main);
 $main = str_replace_once("{INDEX_CATEGORY_LIST}", $categoryMenu, $main);
 $main = str_replace("{ENGINE_META:SITE_NAME}", \Engine\Engine::GetEngineInfo("sn"), $main);
 $main = str_replace("{ENGINE_META:SITE_TAGLINE}", \Engine\Engine::GetEngineInfo("stl"), $main);
-
-$main = str_replace("{PROFILE_UPLOADER:JS}", null, $main);
 $main = str_replace("{REPORT_PAGE:JS}", null, $main);
-$main = str_replace("{PROFILE_UPLOADER_BLOCK}", null, $main);
-if (!defined("TT_Uploader"))
+
+if (!defined("TT_Uploader")) {
     $main = str_replace("{PROFILE_UPLOADER:STYLESHEET}", null, $main);
-else
+    $main = str_replace("{PROFILE_UPLOADER:JS}", null, $main);
+    $main = str_replace("{PROFILE_UPLOADER_BLOCK}", null, $main);
+}
+else {
     $main = str_replace("{PROFILE_UPLOADER:STYLESHEET}", "<link rel=\"stylesheet\" href=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/css/uploader-style.css\">", $main);
+    $main = str_replace("{PROFILE_UPLOADER:JS}", $uploaderBlock, $main);
+}
 if (\Engine\Engine::GetEngineInfo("smt")){
     if (\Engine\Engine::GetEngineInfo("sms") == 0) {
         $main = str_replace_once("{METRIC_JS}", null, $main);

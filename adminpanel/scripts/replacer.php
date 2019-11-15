@@ -28,6 +28,7 @@ else {
                 $_REQUEST["avatarmaxwidth"], $_REQUEST["avatarmaxheight"], $_REQUEST["maxfilesize"], $_REQUEST["uploadformats"], (isset($_REQUEST["guest_see_profiles"])) ? 1 : 0,
                 $metricStatus, $metricType)
             ) {
+                if (\Engine\Engine::SaveCensoredWords($_POST["chat-filter-words"]))
                 if (\Engine\Engine::SaveReportReasons($_REQUEST["reports-reasons"])) {
                     $engineSettings = true;
                     if (file_put_contents("../.todolist", $_REQUEST["todo_texter"], FILE_USE_INCLUDE_PATH)) {

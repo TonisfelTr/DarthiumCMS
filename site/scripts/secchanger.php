@@ -16,7 +16,7 @@ if ($sessEffect == True) {
                  header("Location: ../../profile.php?err=6");
                  exit;
              } else {
-                 if ($user->passChange($_REQUEST["profile-sec-npassword"]))
+                 if ($user->passChange($_REQUEST["profile-sec-npassword"], true))
                  {
                      if (\Engine\Engine::GetEngineInfo("na")){
                          $sesNew = \Users\UserAgent::SessionCreate($user->getEmail(), $_REQUEST["profile-sec-npassword"]);

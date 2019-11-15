@@ -558,6 +558,23 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
             <?php } ?>
         </div>
     </div>
+    <br>
+    <div class="container-fluid">
+        <div class="center">Рассылка сообщений</div>
+        <hr>
+        <div class="col-lg-6">
+            <div class="linker">
+                <a class="linkin" href="?p=emailsender"><span class="glyphicons glyphicons-file"></span> Электроннный почтальон</a>
+                <p class="helper">Отправка email сообщений всем пользователям.</p>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="linker">
+                <a class="linkin" href="?p=pmsender"><span class="glyphicons glyphicons-file-cloud"></span> Почтовик сайта</a>
+                <p class="helper">Отправка личных сообщений каждому зарегистрированному пользователю.</p>
+            </div>
+        </div>
+    </div>
     <?php } else { ?>
     <div class="container-fluid">
        <?php if (file_exists("adminpanel/".$_GET["p"].".php")) include_once "adminpanel/".$_GET["p"].".php";

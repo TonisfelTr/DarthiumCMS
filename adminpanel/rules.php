@@ -4,7 +4,7 @@ if (!defined("TT_AP")){ header("Location: ../adminapanel.php?p=forbidden"); exit
 if (!$user->UserGroup()->getPermission("rules_edit")){ header("Location: ../../adminpanel.php?res=1"); exit; }
 else {
 $rulesText = file_get_contents("./engine/config/rules.sfc", FILE_USE_INCLUDE_PATH);
-if (isset($_SESSION["result"])) $resultSave = False; ?>
+if (isset($_SESSION["result"])) $resultSave = $_SESSION["result"]; ?>
 <div class="inner cover">
     <?php if (isset($_REQUEST["rules_save"])){
         if ($resultSave == true) echo "<div class=\"alert alert-success\"><span class=\"glyphicon glyphicon-ok\"></span> Правила были сохранены!</div>";
@@ -56,7 +56,7 @@ if (isset($_SESSION["result"])) $resultSave = False; ?>
             <div class="center">
                 <div class="btn-group">
                     <button class="btn btn-default" type="submit" name="rules_save"><span class="glyphicon glyphicon-ok"></span> Сохранить</button>
-                    <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-arrow-left"></span> Назад</button>
+                    <a class="btn btn-default" href="../adminpanel.php"><span class="glyphicon glyphicon-arrow-left"></span> Назад</a>
                 </div>
             </div>
         </div>
