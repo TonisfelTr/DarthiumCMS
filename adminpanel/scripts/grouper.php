@@ -30,7 +30,6 @@ if ((!$user->UserGroup()->getPermission("group_create")) &&
             \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "enterpanel", $_REQUEST["permadminpanel"]);
             \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "change_engine_settings", $_REQUEST["change_engine_settings"]);
             \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "change_design", $_REQUEST["change_design"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "look_statistic", $_REQUEST["look_statistic"]);
             \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "offline_visiter", $_REQUEST["offline_visiter"]);
             \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "rules_edit", $_REQUEST["rules_edit"]);
 
@@ -91,7 +90,6 @@ if ((!$user->UserGroup()->getPermission("group_create")) &&
             \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "comment_foreign_edit", $_REQUEST["comment_foreign_edit"]);
             \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "comment_delete", $_REQUEST["comment_delete"]);
             \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "comment_foreign_delete", $_REQUEST["comment_foreign_delete"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "comment_commend", $_REQUEST["comment_commend"]);
 
             //Perms for manage static content of site.
             \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "sc_create_pages", $_REQUEST["sc_create_pages"]);
@@ -101,6 +99,7 @@ if ((!$user->UserGroup()->getPermission("group_create")) &&
 
             //Custom bot mail perms
             \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "bmail_sende", $_REQUEST["bmail_sende"]);
+            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "bmail_sends", $_REQUEST["bmail_sends"]);
         } else { header("Location: ../../adminpanel.php?res=3npc&p=groups&visible&group=" . $_REQUEST["group"]); exit; }
         { header("Location: ../../adminpanel.php?p=groups&res=3spc&visible&group=" . $_REQUEST["group"]); exit; }
 
@@ -131,10 +130,10 @@ if ((!$user->UserGroup()->getPermission("group_create")) &&
 
     if (isset($_REQUEST["save_group_button"])) {
         if ($user->UserGroup()->getPermission("group_change")) {
-            if (strlen(utf8_decode($_REQUEST["groupname"])) <= 4) {
+            if (strlen($_REQUEST["groupname"]) <= 4) {
                 \Engine\ErrorManager::GenerateError(15);
                 { header("Location: ../../adminpanel.php?p=groups&res=3nlfs&visible&group=" . $_REQUEST["group"]); exit; }
-            } elseif (strlen(utf8_decode($_REQUEST["groupname"])) >= 50) {
+            } elseif (strlen($_REQUEST["groupname"]) >= 50) {
                 \Engine\ErrorManager::GenerateError(16);
                 { header("Location: ../../adminpanel.php?p=groups&res=3nmfts&visible&group=" . $_REQUEST["group"]); exit; }
             } else {

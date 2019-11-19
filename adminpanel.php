@@ -492,12 +492,7 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
             <?php } ?>
         </div>
         <div class="col-lg-6">
-            <?php if ($user->UserGroup()->getPermission("look_statistic")) {?>
-            <div class="linker">
-                <a class="linkin" href="?p=statistic"><span class="glyphicons glyphicons-pie-chart"></span> Статистика</a>
-                <p class="helper">Статистика посещаемости, комментирования и жалоб.</p>
-            </div>
-            <?php } if ($user->UserGroup()->getPermission("report_talking") &&
+            <?php if ($user->UserGroup()->getPermission("report_talking") &&
             $user->UserGroup()->getPermission("report_foreign_remove") &&
             $user->UserGroup()->getPermission("report_foreign_edit") &&
             $user->UserGroup()->getPermission("report_close")
@@ -559,22 +554,29 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
         </div>
     </div>
     <br>
+    <?php if ($user->UserGroup()->getPermission("bmail_sende") ||
+              $user->UserGroup()->getPermission("bmail_sends") ) { ?>
     <div class="container-fluid">
         <div class="center">Рассылка сообщений</div>
         <hr>
         <div class="col-lg-6">
+            <?php if ($user->UserGroup()->getPermission("bmail_sende")) { ?>
             <div class="linker">
                 <a class="linkin" href="?p=emailsender"><span class="glyphicons glyphicons-file"></span> Электроннный почтальон</a>
                 <p class="helper">Отправка email сообщений всем пользователям.</p>
             </div>
+            <?php } ?>
         </div>
         <div class="col-lg-6">
+            <?php if ($user->UserGroup()->getPermission("bmail_sends")) { ?>
             <div class="linker">
                 <a class="linkin" href="?p=pmsender"><span class="glyphicons glyphicons-file-cloud"></span> Почтовик сайта</a>
                 <p class="helper">Отправка личных сообщений каждому зарегистрированному пользователю.</p>
             </div>
+            <?php } ?>
         </div>
     </div>
+        <?php } ?>
     <?php } else { ?>
     <div class="container-fluid">
        <?php if (file_exists("adminpanel/".$_GET["p"].".php")) include_once "adminpanel/".$_GET["p"].".php";

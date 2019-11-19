@@ -26,14 +26,14 @@ namespace Users {
             if ($stmt = $mysqli->prepare("SELECT * FROM `tt_groups` WHERE `id`=?")){
                 $stmt->bind_param("i", $groupId);
                 $stmt->execute();
-                $stmt->bind_result($id, $name, $descript, $color, $enterpanel, $offline_visiter, $look_statistic, $rules_edit,
+                $stmt->bind_result($id, $name, $descript, $color, $enterpanel, $offline_visiter, $rules_edit,
                     $change_perms, $group_create, $group_delete, $group_change,
                     $change_design, $change_another_profiles,
                     $change_user_group, $user_add, $user_remove, $user_see_foreign, $user_signs,
                     $user_ban, $user_unban, $user_banip, $user_unbanip,
                     $report_create, $report_foreign_remove, $report_talking, $report_remove, $report_edit, $report_foreign_edit, $report_answer_edit, $report_anser_foreign_edit, $report_close,
                     $change_profile, $change_engine_settings,
-                    $bmail_sende,
+                    $bmail_sende, $bmail_sends,
                     $upload_add, $upload_see_all, $upload_delete, $upload_delete_foreign,
                     $category_create, $category_edit, $category_delete, $category_see_unpublic, $category_params_ignore,
                     $topic_create, $topic_edit, $topic_foreign_edit, $topic_delete, $topic_foreign_delete, $topic_manage,
@@ -47,7 +47,6 @@ namespace Users {
 
                     $this->gPerms = array(
                         'enterpanel' => $enterpanel,
-                        'look_statistic' => $look_statistic,
                         'change_design' => $change_design,
                         'change_engine_settings' => $change_engine_settings,
                         'offline_visiter' => $offline_visiter,
@@ -145,7 +144,8 @@ namespace Users {
                          * Other                                                      *
                          **************************************************************/
 
-                        'bmail_sende' => $bmail_sende
+                        'bmail_sende' => $bmail_sende,
+                        'bmail_sends' => $bmail_sends
                     );
                 }
             } else {
@@ -1918,12 +1918,12 @@ namespace Users {
             return False;
         }
         private static function CheckNameValid($name){
-            if (strlen(utf8_decode($name)) <= 4){
+            if (strlen($name) <= 4){
                 ErrorManager::GenerateError(15);
                 return ErrorManager::GetError();
             }
 
-            if (strlen(utf8_decode($name)) >= 16){
+            if (strlen($name) >= 16){
                 ErrorManager::GenerateError(16);
                 return ErrorManager::GetError();
             }

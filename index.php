@@ -94,7 +94,7 @@ elseif (!empty($_GET["topic"])){
         else include_once "./site/errors/notfound.php";
     }
 elseif (!empty($_GET["search"])){
-
+    include_once "./site/search.php";
 }
 else include_once "./site/news.php";
 $newsPaper = getBrick();
@@ -163,6 +163,13 @@ $main = str_replace_once("{INDEX_PAGE_OFFLINE}", $offline, $main);
 $main = str_replace_once("{INDEX_PAGE_INFORMATOR}", $info, $main);
 $main = str_replace_once("{INDEX_PAGE_LEFT}", $leftPanels, $main);
 $main = str_replace_once("{INDEX_PAGE_NEWSPAPER}", $newsPaper, $main);
+if (empty($_GET) || isset($_GET["search"])){
+    include_once "./site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/searchpanel.html";
+    $searchBlock = getBrick();
+    $main = str_replace_once("{INDEX_SEARCHING}", $searchBlock, $main);
+} else {
+    $main = str_replace_once("{INDEX_SEARCHING}", "", $main);
+}
 $main = str_replace_once("{INDEX_PAGE_RIGHT}", $rightPanels, $main);
 $main = str_replace_once("{INDEX_PAGE_FOOTER}", $footer, $main);
 $main = str_replace_once("{ENGINE_META:DESCRIPTION}", \Engine\Engine::GetEngineInfo("ssc"), $main);

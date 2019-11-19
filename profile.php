@@ -600,8 +600,13 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
     $main = str_replace("{PROFILE_PAGE:USER_NICKNAME}", $user->getNickname(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_GROUP_COLOR}", ($user->UserGroup()->getColor() == "#000000") ? "#ffffff" : $user->UserGroup()->getColor(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_GROUP_NAME}", $user->UserGroup()->getName(), $main);
-    $main = str_replace("{PROFILE_PAGE:USER_LASTONLINE}", (\Engine\Engine::GetSiteTime() > $user->getLastTime()+15*60) ? "заходил" . (($user->getSex() == 2) ? "а" : "")
-        . " в " . \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s",$user->getLastTime())) : "<span style=\"color: #00dd00;\">онлайн</span>", $main);
+    $lastOnline = 0;
+    if ($user->getLastTime() == 0){
+        $lastOnline = "не заходил" . ($user->getSex() == 2) ? "а" : "";
+    } else
+        $lastOnline = (\Engine\Engine::GetSiteTime() > $user->getLastTime()+15*60) ? "заходил" . (($user->getSex() == 2) ? "а" : "")
+            . " в " . \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s",$user->getLastTime())) : "<span style=\"color: #00dd00;\">онлайн</span>";
+    $main = str_replace("{PROFILE_PAGE:USER_LASTONLINE}", $lastOnline, $main);
     $main = str_replace_once("{PROFILE_PAGE_INFO}", $userInfo, $main);
     $main = str_replace_once("{PROFILE_PAGE_EDIT}", $userEdit, $main);
     $main = str_replace_once("{PROFILE_PAGE_PM}", $userPMs, $main);
@@ -858,8 +863,14 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
     $main = str_replace("{PROFILE_PAGE:USER_NICKNAME}", $user->getNickname(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_GROUP_COLOR}", ($user->UserGroup()->getColor() == "#000000") ? "#ffffff" : $user->UserGroup()->getColor(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_GROUP_NAME}", $user->UserGroup()->getName(), $main);
-    $main = str_replace("{PROFILE_PAGE:USER_LASTONLINE}", (\Engine\Engine::GetSiteTime() > $user->getLastTime()+15*60) ? "заходил" . (($user->getSex() == 2) ? "а" : "")
-        . " в " . \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s",$user->getLastTime())) : "<span style=\"color: #00dd00;\">онлайн</span>", $main);
+    //Механизм последнего входа.
+    $lastOnline = 0;
+    if ($user->getLastTime() == 0){
+        $lastOnline = "не заходил" . ($user->getSex() == 2) ? "а" : "";
+    } else
+        $lastOnline = (\Engine\Engine::GetSiteTime() > $user->getLastTime()+15*60) ? "заходил" . (($user->getSex() == 2) ? "а" : "")
+            . " в " . \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s",$user->getLastTime())) : "<span style=\"color: #00dd00;\">онлайн</span>";
+    $main = str_replace("{PROFILE_PAGE:USER_LASTONLINE}", $lastOnline, $main);
     $main = str_replace_once("{PROFILE_PAGE_INFO}", $userInfo, $main);
     $main = str_replace_once("{PROFILE_PAGE_EDIT}", null, $main);
     $main = str_replace_once("{PROFILE_PAGE_PM}", null, $main);

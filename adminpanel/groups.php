@@ -121,13 +121,6 @@ $groupList = \Users\GroupAgent::GetGroupList();
                                         </select>
                                     </div>
                                     <div class="input-group">
-                                        <div class="input-group-addon">Разрешение на просмотр статистики</div>
-                                        <select class="form-control" name="look_statistic">
-                                            <option value="1"  class="success alert-success" <?php if (\Users\GroupAgent::IsHavePerm($_REQUEST["group"], "look_statistic")) echo "selected";?>>Разрешено</option>
-                                            <option value="0"  class="danger alert-danger" <?php if (!\Users\GroupAgent::IsHavePerm($_REQUEST["group"], "look_statistic")) echo "selected";?>>Запрещено</option>
-                                        </select>
-                                    </div>
-                                    <div class="input-group">
                                         <div class="input-group-addon">Разрешение на редактирование правил сайта</div>
                                         <select class="form-control" name="rules_edit">
                                             <option value="1"  class="success alert-success" class="success alert-success" <?php if (\Users\GroupAgent::IsHavePerm($_REQUEST["group"], "rules_edit")) echo "selected";?>>Разрешено</option>
@@ -493,6 +486,13 @@ $groupList = \Users\GroupAgent::GetGroupList();
                                         <select class="form-control" name="bmail_sende">
                                             <option value="1"  class="success alert-success" <?php if (\Users\GroupAgent::IsHavePerm($_REQUEST["group"], "bmail_sende")) echo "selected";?>>Разрешено</option>
                                             <option value="0"  class="danger alert-danger" <?php if (!\Users\GroupAgent::IsHavePerm($_REQUEST["group"], "bmail_sende")) echo "selected";?>>Запрещено</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">Рассылка сообщений сайта</div>
+                                        <select class="form-control" name="bmail_sends">
+                                            <option value="1"  class="success alert-success" <?php if (\Users\GroupAgent::IsHavePerm($_REQUEST["group"], "bmail_sends")) echo "selected";?>>Разрешено</option>
+                                            <option value="0"  class="danger alert-danger" <?php if (!\Users\GroupAgent::IsHavePerm($_REQUEST["group"], "bmail_sends")) echo "selected";?>>Запрещено</option>
                                         </select>
                                     </div>
                                     <hr />

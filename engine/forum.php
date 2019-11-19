@@ -606,6 +606,27 @@ namespace Forum {
             return false;
         }
 
+        public static function SearchByTopicName($topicName){
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            if ($mysqli->errno){
+                ErrorManager::GenerateError(2);
+                return ErrorManager::GetError();
+            }
+            if ($stmt = $mysqli->prepare("SELECT authorId, name FROM tt_topics WHERE name LIKE ?")){
+                $topicName = utf8_encode($topicName);
+                $topicSubstrName = "%$topicName%";
+                $stmt->bind_param("s", $topicSubstrName);
+                $stmt->execute();
+                $result = [];
+                $stmt->bind_result($authorId, $name);
+                while($stmt->fetch()){
+                    array_push($result, [$authorId, $name]);
+                }
+                return $result;
+            }
+            return false;
+        }
+
         public static function CreateCategory($name, $descript, $public = true, $no_comments = false, $no_new_topics = false){
             $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
 
@@ -736,7 +757,7 @@ namespace Forum {
             $int = DataKeeper::InsertTo("tt_topics", ["id" => NULL,
                 "authorId" => $userId,
                 "categoryId" => $categoryId,
-                "name" => $name,
+                "name" => utf8_encode($name),
                 "text" => $text,
                 "preview" => $preview,
                 "createDate" => date("Y-m-d H:i:s", Engine::GetSiteTime()),
@@ -757,15 +778,6 @@ namespace Forum {
             if (DataKeeper::Delete("tt_topics", ["id" => $topicId])){
                 return true;
             }
-
-            return false;
-        }
-        public static function EditTopic(int $topicId, $param, $newValue){
-            if (!ForumAgent::isTopicExists($topicId))
-                return false;
-
-            if (DataKeeper::Update("tt_topics", [$param => $newValue], ["id" => $topicId]))
-                return true;
 
             return false;
         }
@@ -881,6 +893,9 @@ namespace Forum {
         {
             $result = DataKeeper::Update("tt_topics", $whatArray, ["id" => $topicId]);
             return $result;
+        }
+        public static function GetTopicId(string $topicName){
+            return DataKeeper::Get("tt_topics", ["id"], ["name" => $topicName]);
         }
 
         public static function CreateComment(int $authorId, int $topicId, string $text){

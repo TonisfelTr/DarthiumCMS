@@ -839,3 +839,40 @@ a.mention-success{
 span.mention-fail{
     color: #7f0000;
 }
+
+div.search-result{
+    margin-top: 5px;
+    border: 1px solid #999;
+    padding: 7px;
+    border-radius: 3px;
+}
+
+img.search-author-avatar{
+    float: left;
+    width: 25px;
+    height: 25px;
+}
+
+a.search-author-link{
+    font-size: 20px;
+    padding: 10px;
+    color: black;
+}
+
+a.search-hover-link{
+    font-size: 15px;
+    padding-top: 5px;
+    color: #313032;
+}
+
+a.search-hover-link:hover{
+    background: white;
+    color: black;
+    padding: 5px;
+    border-radius: 5px;
+    transition: 0.5s;
+}
+
+hr.search-separator{
+    box-shadow: 0 3px 3px #000;
+}

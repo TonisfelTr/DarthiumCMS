@@ -445,10 +445,15 @@ if ($editSContentPerm){
     </form>
 </div>
 <script type="text/javascript">
-    $("")
-
     $("#staticc-panel :first-child").show();
     $("#staticc-btn-panel :first-child").addClass("active");
+
+    <?php if ($isEditMode && $editPPerm) { ?>
+    $("#staticc-btn-panel > button").removeClass("active");
+    $("#staticc-page-edit-btn").addClass("active");
+    $("#staticc-panel > div").css("display", "none");
+    $("#staticc-page-edit-div").show();
+    <?php } ?>
 
     $("div#staticc-btn-panel > button, button#staticc-page-create-btn").on("click", function() {
         var data = $(this).data("div");
