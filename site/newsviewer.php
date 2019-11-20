@@ -95,6 +95,7 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
         if ($user !== false && $topic->getStatus() == 1) {
             include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/news/newcomment.html";
             $newCommentForm = getBrick();
+            $newCommentForm = str_replace_once("{TOPIC_ID}", $topic->getId(), $newCommentForm);
             $new = str_replace_once("{TOPIC_CREATE_COMMENT}", $newCommentForm, $new);
         } else {
             $new = str_replace_once("{TOPIC_CREATE_COMMENT}", "", $new);

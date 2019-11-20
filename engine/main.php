@@ -293,6 +293,8 @@
                 $text = str_ireplace("[quote]", "<p class=\"message-quote-author-sign\">Неизвестный автор сказал:</p><div class=\"message-quote-block\"><span style=\"font-size: 50px; display: inline-block;\">“</span>", $text);
                 $text = str_ireplace("[/quote]", "</div>", $text);
                 $text = str_ireplace("[/align]", "</p>", $text);
+                $text = str_ireplace("[spoiler]", "<div class=\"col-12 div-spoiler\"><span class=\"glyphicons glyphicons-alert\"></span> Спойлер<div hidden>", $text);
+                $text = str_ireplace("[/spoiler]", "</div></div>", $text);
                 $text = preg_replace("/\[size\=(\d+)\]/", "<p style=\"font-size: $1px;\">",$text);
                 $text = preg_replace("/\[youtube\=https:\/\/youtu\.be\/(.+)\]/", "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/$1\" frameborder=\"0\" allowfullscreen></iframe>",$text);
                 $text = preg_replace("/\[img\=(.+)\]/", "<img src=\"$1\">",$text);

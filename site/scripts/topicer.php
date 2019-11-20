@@ -6,7 +6,6 @@ include_once "../../engine/main.php";
 $session = \Users\UserAgent::SessionContinue();
 if ($session === TRUE) {
     $user = new \Users\User($_SESSION["uid"]);
-
     if (isset($_POST["topic-create-btn"])) {
         if ($user->UserGroup()->getPermission("topic_create")) {
             $category = $_POST["topic-category-select"];
@@ -149,6 +148,7 @@ if ($session === TRUE) {
     }
 
     if (isset($_POST["topic-add-comment-btn"])){
+        $topic = new \Forum\Topic($_POST["topic-id"]);
         if ($topic->getStatus() == 0) {
             header("Location: index.php?topic=" . $topic->getId());
             exit;

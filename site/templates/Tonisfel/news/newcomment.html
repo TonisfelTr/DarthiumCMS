@@ -1,6 +1,7 @@
 <hr>
 <h3 class="cover-heading">Оставить комментарий</h3>
 <form action="site/scripts/topicer.php" method="post">
+    <input type="hidden" name="topic-id" value="{TOPIC_ID}">
     <div class="btn-group">
         <button class="btn btn-default" title="Выделить жирным" type="button" onclick="insertBBCode('b', false, document.getElementById('comment-content-textarea'));"><strong>B</strong></button>
         <button class="btn btn-default" title="Курсив" type="button" onclick="insertBBCode('i', false, document.getElementById('comment-content-textarea'));"><em>I</em></button>
@@ -98,5 +99,13 @@
     });
     $("select#comment-text-font-sizer").on("change", function(){
         insertBBCode("size=" + $(this).val(), "size", document.getElementById("comment-content-textarea"));
+    });
+
+    $("div.div-spoiler").on("click", function() {
+         var spoiler =  $(this).find("div");
+         if ($(spoiler).is(":hidden"))
+             $(spoiler).show();
+         else
+             $(spoiler).hide();
     });
 </script>
