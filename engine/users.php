@@ -1454,6 +1454,25 @@ namespace Users {
         public static function DeleteUser($id){
             DataKeeper::Delete("tt_users", ["id" => $id]);
         }
+        public static function GetAllUsers(){
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+
+            if (mysqli_connect_errno()) {
+                printf(mysqli_connect_error() . "<br />");
+                ErrorManager::GenerateError(2);
+                return ErrorManager::GetError();
+            }
+
+            if ($stmt = $mysqli->prepare("SELECT id, nickname FROM tt_users")){
+                $stmt->execute();
+                $result = [];
+                $stmt->bind_result($id, $nickname);
+                while ($stmt->fetch()){
+                    array_push($result, [$id, $nickname]);
+                }
+                return $result;
+            }
+        }
         public static function GetUsersList($paramsArray, $page = 1){
 
             $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
@@ -1891,7 +1910,6 @@ namespace Users {
             $request = DataKeeper::Update("tt_adfieldscontent", array("isPrivate" => $privacy), array("fieldId" => $fieldId, "userId" => $userId));
             return $request;
         }
-
     }
     class GroupAgent{
 

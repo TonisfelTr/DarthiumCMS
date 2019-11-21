@@ -467,6 +467,9 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
                 if ($_GET["res"] == "7srsp") { ?>
                     <div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign"></span> Выделенные статические страницы были успешно удалены!
                     </div><?php }
+                if ($_GET["res"] == "8ses") { ?>
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign"></span> Письма были разосланы!
+                    </div><?php }
             }
         }
     ?></div><?php }
