@@ -25,7 +25,7 @@ else {
         $newBody = str_replace_once("{TOPIC_MARKS_COUNT}", $topic->getMarksCount(), $newBody);
         $newBody = str_replace_once("{TOPIC_DISLIKES_COUNT}", $topic->getDislikes(), $newBody);
         $newBody = str_replace_once("{TOPIC_NAME}", (($topic->getStatus() == 0) ? "<span class=\"glyphicons glyphicons-lock\"></span> " : "" ) . $topic->getName(), $newBody);
-        $newBody = str_replace_once("{TOPIC_BODY}", \Engine\Engine::CompileBBCode($topic->getPretext()), $newBody);
+        $newBody = str_replace_once("{TOPIC_BODY}", Engine\Engine::ChatFilter(\Engine\Engine::CompileMentions(html_entity_decode(\Engine\Engine::CompileBBCode($topic->getPretext())))), $newBody);
         echo $newBody;
     }
 }
