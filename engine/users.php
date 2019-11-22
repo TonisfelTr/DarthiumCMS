@@ -38,7 +38,8 @@ namespace Users {
                     $category_create, $category_edit, $category_delete, $category_see_unpublic, $category_params_ignore,
                     $topic_create, $topic_edit, $topic_foreign_edit, $topic_delete, $topic_foreign_delete, $topic_manage,
                     $comment_create, $comment_edit, $comment_foreign_edit, $comment_delete, $comment_foreing_delete,
-                    $sc_create_pages, $sc_edit_pages, $sc_remove_pages, $sc_design_edit);
+                    $sc_create_pages, $sc_edit_pages, $sc_remove_pages, $sc_design_edit,
+                    $logs_see);
                 while ($stmt->fetch()){
                     $this->gId = $id;
                     $this->gName = $name;
@@ -145,7 +146,8 @@ namespace Users {
                          **************************************************************/
 
                         'bmail_sende' => $bmail_sende,
-                        'bmail_sends' => $bmail_sends
+                        'bmail_sends' => $bmail_sends,
+                        'logs_see' => $logs_see
                     );
                 }
             } else {

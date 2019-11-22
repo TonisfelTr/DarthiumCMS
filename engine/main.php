@@ -356,6 +356,14 @@
                 $reasons = file_put_contents("config/represes.sfc", $text, FILE_USE_INCLUDE_PATH);
                 return $reasons;
             }
+            public static function GetCensoredWords(){
+                $censors = file_get_contents("config/censore.sfc", FILE_USE_INCLUDE_PATH);
+                return $censors;
+            }
+            public static function SaveCensoredWords($text){
+                $censored = file_put_contents("config/censore.sfc", $text, FILE_USE_INCLUDE_PATH);
+                return $censored;
+            }
             public static function GetSiteTime(){
                 return time()-date("Z")+60*60*Engine::GetEngineInfo("srt");
             }
@@ -366,7 +374,13 @@
                 return file_get_contents("config/analytic.js", FILE_USE_INCLUDE_PATH);
             }
             public static function ChatFilter($text){
-
+                $stext = $text;
+                $censored = self::GetCensoredWords();
+                $censored = explode(",", $censored);
+                foreach($censored as $word){
+                    $stext = str_replace($word, "[цензура]", $stext);
+                }
+                return $stext;
             }
          }
 

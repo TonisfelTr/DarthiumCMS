@@ -495,6 +495,15 @@ $groupList = \Users\GroupAgent::GetGroupList();
                                             <option value="0"  class="danger alert-danger" <?php if (!\Users\GroupAgent::IsHavePerm($_REQUEST["group"], "bmail_sends")) echo "selected";?>>Запрещено</option>
                                         </select>
                                     </div>
+                                    <hr>
+                                    <p class="h-helper">Права просмотра истории действий</p>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">Просмотр истории действий</div>
+                                        <select class="form-control" name="logs_see">
+                                            <option value="1"  class="success alert-success" <?php if (\Users\GroupAgent::IsHavePerm($_REQUEST["group"], "logs_see")) echo "selected";?>>Разрешено</option>
+                                            <option value="0"  class="danger alert-danger" <?php if (!\Users\GroupAgent::IsHavePerm($_REQUEST["group"], "logs_see")) echo "selected";?>>Запрещено</option>
+                                        </select>
+                                    </div>
                                     <hr />
                                     <div class="btn-group" role="group">
                                         <?php if (isset($_REQUEST["visible"]) && $_REQUEST["group"] != 0){

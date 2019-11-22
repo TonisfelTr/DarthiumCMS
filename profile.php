@@ -669,7 +669,12 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
     $main = str_replace("{PROFILE_PAGE:USER_ABOUT}", $user->getAbout() == "" ? "не указано" : htmlentities($user->getAbout()), $main);
     $main = str_replace("{PROFILE_PAGE:USER_VK}", $user->getVK(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_SKYPE}", $user->getSkype(), $main);
-    $main = str_replace("{PROFILE_PAGE:USER_SIGNATURE}", $user->getSignature() == "" ? "не указано" : nl2br(html_entity_decode(\Engine\Engine::CompileBBCode($user->getSignature()))), $main);
+    if ($user->getSignature() == ""){
+        $signature = "не указано";
+    } else {
+        $signature = nl2br(html_entity_decode(\Engine\Engine::ChatFilter(\Engine\Engine::CompileBBCode($user->getSignature()))));
+    }
+    $main = str_replace("{PROFILE_PAGE:USER_SIGNATURE}", $signature, $main);
     $main = str_replace("{PROFILE_PAGE:USER_REPORT_CREATED_COUNT}", $user->getReportsCreatedCount(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_FRIENDS_COUNT}", $user->FriendList()->getFriendsCount(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_ONLINE_FRIENDS_COUNT}", $user->FriendList()->getOnlineFriendCount(), $main);
@@ -890,7 +895,12 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
     $main = str_replace("{PROFILE_PAGE:USER_VK_LINK}", $userVKLink, $main);
     $main = str_replace("{PROFILE_PAGE:USER_HOBBIES}", $user->getHobbies() == "" ? "не указано" : htmlentities($user->getHobbies()), $main);
     $main = str_replace("{PROFILE_PAGE:USER_ABOUT}", $user->getAbout() == "" ? "не указано" : htmlentities($user->getAbout()), $main);
-    $main = str_replace("{PROFILE_PAGE:USER_SIGNATURE}", $user->getSignature() == "" ? "не указано" : nl2br(\Engine\Engine::CompileBBCode($user->getSignature())), $main);
+    if ($user->getSignature() == ""){
+        $signature = "не указано";
+    } else {
+        $signature = nl2br(html_entity_decode(\Engine\Engine::ChatFilter(\Engine\Engine::CompileBBCode($user->getSignature()))));
+    }
+    $main = str_replace("{PROFILE_PAGE:USER_SIGNATURE}", $signature, $main);
     $main = str_replace("{PROFILE_PAGE:USER_REPORT_CREATED_COUNT}", $user->getReportsCreatedCount(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_FRIENDS_COUNT}", $user->FriendList()->getFriendsCount(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_ONLINE_FRIENDS_COUNT}", $user->FriendList()->getOnlineFriendCount(), $main);

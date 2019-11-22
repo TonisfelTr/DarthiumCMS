@@ -296,6 +296,14 @@ else {
                     </div>
                 </div>
                 <hr>
+                <h4>Цензура</h4>
+                <p>На сайте работает система цензурирования тем, комментариев и подписи.</p>
+                <div class="input-group">
+                    <div class="input-group-addon">Слова для цензурирования</div>
+                    <input class="form-control" type="text" name="chat-filter-words" value="<?php echo \Engine\Engine::GetCensoredWords(); ?>">
+                </div>
+                <div class="alert alert-info"><span class="glyphicons glyphicons-info-sign"></span> Перечисляйте нужные для цензурирования слова через запятую, без пробелов.</div>
+                <hr>
                 <h4>Жалобы</h4>
                 <div class="input-group">
                     <div class="input-group-addon">Возможные причины жалоб</div>

@@ -61,7 +61,7 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
         $new = str_replace_once("{TOPIC_AUTHOR_SKYPE}", (($author->IsSkypePublic()) ? "Skype: <a href=\"skype:" . $author->getSkype() . "?chat\">" . $author->getSkype() . "</a><br>" : ""), $new);
         $new = str_replace_once("{TOPIC_AUTHOR_EMAIL}", (($author->IsEmailPublic()) ? "Email: <a href=\"mailto:" . $author->getEmail() . "\">написать</a><br>" : ""), $new);
         $new = str_replace_once("{TOPIC_AUTHOR_VK}", (($author->IsVKPublic()) ? "VK: <a href=\"https://vk.com/" . $author->getVK() . "\">" . $author->getVK() . "</a><br>" : ""), $new);
-        $new = str_replace_once("{TOPIC_CONTENT}", \Engine\Engine::CompileMentions(html_entity_decode(\Engine\Engine::CompileBBCode($topic->getText()))), $new);
+        $new = str_replace_once("{TOPIC_CONTENT}", Engine\Engine::ChatFilter(\Engine\Engine::CompileMentions(html_entity_decode(\Engine\Engine::CompileBBCode($topic->getText())))), $new);
         $new = str_replace_once("{TOPIC_FOOTER_LIKE_CLASS}", (($topic->getLikes() > $topic->getDislikes()) ? "positive" : (($topic->getDislikes() > $topic->getLikes()) ? "negative" : "")), $new);
     //First condition:
         $isAuthorized = ($user !== FALSE);
@@ -139,9 +139,14 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
         $currentComment = str_replace_once("{COMMENT_AUTHOR_TO_PM}", "<a class=\"pm-href\" href=\"http://tonisfeltavern.com/profile.php?page=wm&sendTo=" . $comment->author()->getNickname() . "\">Написать...</a>", $currentComment);
         $currentComment = str_replace("{COMMENT_ID}", $comment->getId(), $currentComment);
         $currentComment = str_replace_once("{COMMENT_AUTHOR_AVATAR}", $comment->author()->getAvatar(), $currentComment);
-        $currentComment = str_replace_once("{COMMENT_TEXT}", \Engine\Engine::CompileMentions(html_entity_decode(Engine\Engine::CompileBBCode($comment->getText()))), $currentComment);
+        $currentComment = str_replace_once("{COMMENT_TEXT}", \Engine\Engine::CompileMentions(html_entity_decode(Engine\Engine::ChatFilter(Engine\Engine::CompileBBCode($comment->getText())))), $currentComment);
         $currentComment = str_replace_once("{COMMENT_BB_TEXT}", $comment->getText(), $currentComment);
-        $currentComment = str_replace_once("{COMMENT_AUTHOR_SIGNATURE}", html_entity_decode(\Engine\Engine::CompileBBCode($author->getSignature())), $currentComment);
+        if ($author->getSignature() == ""){
+            $signature = "не указано";
+        } else {
+            $signature = nl2br(html_entity_decode(\Engine\Engine::ChatFilter(\Engine\Engine::CompileBBCode($user->getSignature()))));
+        }
+        $currentComment = str_replace_once("{COMMENT_AUTHOR_SIGNATURE}", $signature, $currentComment);
         $currentComment = str_replace_once("{COMMENT_DATETIME_CREATED}", \Engine\Engine::DatetimeFormatToRead(
             date("Y-m-d H:i:s", $comment->getCreateDatetime())
         ), $currentComment);

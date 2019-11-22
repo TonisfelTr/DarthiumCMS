@@ -503,7 +503,13 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
             <div class="linker">
                 <a class="linkin" href="?p=reports"><span class="glyphicon glyphicon-fire"></span> Жалобы</a>
                 <p class="helper">Управление жалобами игроков.</p>
-            </div> <?php } ?>
+            </div> <?php }
+            if ($user->UserGroup()->getPermission("logs_see")) { ?>
+            <div class="linker">
+                <a class="linkin" href="?p=logs"><span class="glyphicon glyphicon-transfer"></span> История событий</a>
+                <p class="helper">Просмотр истории действий в админпанели.</p>
+            </div>
+            <?php } ?>
         </div>
     </div><br />
     <div class="container-fluid">

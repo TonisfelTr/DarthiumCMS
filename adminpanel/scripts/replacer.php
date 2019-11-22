@@ -13,7 +13,7 @@ else {
             if ($_REQUEST["emailconnecttype"] == 1) $type = "tls"; else $type = "ssl";
             if ($_REQUEST["multiacc"] == "on") $multiAcc = 1; else $multiAcc = 0;
             $lookStatistic = ($user->UserGroup()->getPermission("look_statistic")) ? true : false;
-            if (!$lookStatistic){
+            if (!$lookStatistic) {
                 $metricType = \Engine\Engine::GetEngineInfo("smt");
                 $metricStatus = \Engine\Engine::GetEngineInfo("sms");
             } else {
@@ -28,25 +28,25 @@ else {
                 $_REQUEST["avatarmaxwidth"], $_REQUEST["avatarmaxheight"], $_REQUEST["maxfilesize"], $_REQUEST["uploadformats"], (isset($_REQUEST["guest_see_profiles"])) ? 1 : 0,
                 $metricStatus, $metricType)
             ) {
-                if (\Engine\Engine::SaveCensoredWords($_POST["chat-filter-words"]))
-                if (\Engine\Engine::SaveReportReasons($_REQUEST["reports-reasons"])) {
-                    $engineSettings = true;
-                    if (file_put_contents("../.todolist", $_REQUEST["todo_texter"], FILE_USE_INCLUDE_PATH)) {
+                if (\Engine\Engine::SaveCensoredWords($_POST["chat-filter-words"])) {
+                    if (\Engine\Engine::SaveReportReasons($_REQUEST["reports-reasons"])) {
                         $engineSettings = true;
-                        if (!\Engine\Engine::SaveAnalyticScript($_REQUEST["metric-script-text"]))
-                            $engineSettings = false;
-                    } else $engineSettings = False;
-                } else  $engineSettings = False;
+                        if (file_put_contents("../.todolist", $_REQUEST["todo_texter"], FILE_USE_INCLUDE_PATH)) {
+                            $engineSettings = true;
+                            if (!\Engine\Engine::SaveAnalyticScript($_REQUEST["metric-script-text"]))
+                                $engineSettings = false;
+                        } else $engineSettings = False;
+                    } else  $engineSettings = False;
+                }
+            }
+            if ($engineSettings) {
+                header("Location: ../../adminpanel.php?p=settings&res=2s");
+                exit;
+            } else {
+                header("Location: ../../adminpanel.php?p=settings&res=2n");
+                exit;
             }
         }
-        if ($engineSettings){
-        header("Location: ../../adminpanel.php?p=settings&res=2s");
-        exit;
-    }
-    else {
-        header("Location: ../../adminpanel.php?p=settings&res=2n");
-        exit;
-    }
 }
 
 header("Location: ../../adminpanel.php?p=forbidden");
