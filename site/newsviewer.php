@@ -32,6 +32,9 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
                 case "3npec":
                     $info = "<div class=\"alert alert-danger\"><span class='glyphicon glyphicon-remove'></span> У Вас недостаточно прав для редактирования данного комментария.</div>";
                     break;
+                case "3ntlc":
+                    $info = "<div class=\"alert alert-danger\"><span class='glyphicon glyphicon-remove'></span> Ваш комментарий слишком короткий.</div>";
+                    break;
             }
         }
         $new = str_replace_once("{TOPIC_DELETE_ERROR}", $info, $new);
