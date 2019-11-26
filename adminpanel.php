@@ -488,12 +488,6 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
                 <p class="helper">Настройки сайта и движка.</p>
             </div>
             <?php } ?>
-            <?php if ($user->UserGroup()->getPermission("change_design")) {?>
-            <div class="linker">
-                <a class="linkin" href="?p=design"><span class="glyphicons glyphicons-magic"></span> Дизайн</a>
-                <p class="helper">Изменение шаблонов сайта.</p>
-            </div>
-            <?php } ?>
         </div>
         <div class="col-lg-6">
             <?php if ($user->UserGroup()->getPermission("report_talking") &&
