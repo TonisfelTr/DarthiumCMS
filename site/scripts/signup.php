@@ -88,18 +88,18 @@ if (!empty($referer)){
 #-------------------------------------------------------------------------
 if ($nicknameResult.$passwordResult.$emailResult.$refererResult == ("ok,ok,ok;ok,ok,ok;ok,ok;null;" || "ok,ok,ok;ok,ok,ok;ok,ok;ok;")){
     if (empty($captcha)){
-        \Guards\CaptchaMen::RemoveCaptcha($_REQUEST["profile-reg-captcha-id"]);
+        \Guards\CaptchaMen::RemoveCaptcha($_POST["profile-reg-captcha-id"]);
         header("Location: ../../profile.php?signup&res=nc");
         exit;
     }
-    if (!\Guards\CaptchaMen::CheckCaptcha($captcha, $_REQUEST["profile-reg-captcha-id"], 1)){
-        \Guards\CaptchaMen::RemoveCaptcha($_REQUEST["profile-reg-captcha-id"]);
+    if (!\Guards\CaptchaMen::CheckCaptcha($captcha, $_POST["profile-reg-captcha-id"], 1)){
+        \Guards\CaptchaMen::RemoveCaptcha($_POST["profile-reg-captcha-id"]);
         header("Location: ../../profile.php?signup&res=ic");
         exit;
     }
 
     if (\Users\UserAgent::AddUser($nickname, $password, $email, $referer,
-            true, @$_REQUEST["profile-reg-realname-input"], @$_REQUEST["profile-reg-city-input"], @$_REQUEST["profile-reg-sex-input"]) === TRUE) {
+            true, @$_POST["profile-reg-realname-input"], @$_POST["profile-reg-city-input"], @$_POST["profile-reg-sex-input"]) === TRUE) {
         header("Location: ../../profile.php?res=sr");
         exit;
     } else {

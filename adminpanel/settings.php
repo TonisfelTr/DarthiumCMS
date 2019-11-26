@@ -12,7 +12,6 @@ if (!defined("TT_AP")){ header("Location: ../adminpanel.php?p=forbidden"); exit;
 if (!$user->UserGroup()->getPermission("change_engine_settings")) header("Location: ../../adminpanel.php?res=1");
 else {
    $langs = \Engine\Engine::GetLanguagePacks();
-   $hasPerms = ($user->UserGroup()->getPermission("look_statistic")) ? true : false;
    $additionalFields = \Users\UserAgent::GetAdditionalFieldsList();
    $additionalFieldsOptions = [];
    $additionalFieldsOptions[] = "<option value=\"0\">Не выбрано</option>";
@@ -30,10 +29,8 @@ else {
         <button type="button" class="btn btn-default" data-div-number="2"><span class="glyphicon glyphicon-envelope"></span> Бот-рассылка</button>
         <button type="button" class="btn btn-default" data-div-number="3"><span class="glyphicon glyphicon-pencil"></span> Регистрация</button>
         <button type="button" class="btn btn-default" data-div-number="4"><span class="glyphicon glyphicon-user"></span> Пользователи</button>
-        <?php if ($hasPerms) { ?>
         <button type="button" class="btn btn-default" data-div-number="5"><span class="glyphicons glyphicons-pie-chart"></span> Статистика</button>
-        <?php } ?>
-        <button type="button" class="btn btn-default" data-div-number="6"><span class="glyphicon glyphicon-th-list"></span> To-do лист</button>
+    </div>
     </div>
     <form name="settings" method="post" action="adminpanel/scripts/replacer.php">
         <div class="custom-group">
@@ -164,8 +161,8 @@ else {
                 <div class="input-group">
                     <div class="input-group-addon">Тип соединения</div>
                     <select class="form-control" name="emailconnecttype">
-                        <option value="1" <?php if (\Engine\Engine::GetEngineInfo("ecp") == "tsl") echo "selected"; ?>>TSL</option>
-                        <option value="0" <?php if (\Engine\Engine::GetEngineInfo("ecp") == "ssl") echo "selected"; ?>>SSL</option>
+                        <option value="tsl" <?php if (\Engine\Engine::GetEngineInfo("ecp") == "tsl") echo "selected"; ?>>TSL</option>
+                        <option value="ssl" <?php if (\Engine\Engine::GetEngineInfo("ecp") == "ssl") echo "selected"; ?>>SSL</option>
                     </select>
                 </div>
                 <div class="input-group">
@@ -199,7 +196,10 @@ else {
                 </div>
                 <div class="input-group">
                     <div class="input-group-addon">Запрет мультиаккаунта</div>
-                    <input type="checkbox" class="form-control" name="multiacc" <?php if (\Engine\Engine::GetEngineInfo("map") == "1") echo "checked"; ?>>
+                    <select name="multiacc" class="form-control">
+                        <option value="0" <?php if (\Engine\Engine::GetEngineInfo("map") == "0") echo "selected"; ?>>Выключен</option>
+                        <option value="1" <?php if (\Engine\Engine::GetEngineInfo("map") == "1") echo "selected"; ?>>Включен</option>
+                    </select>
                     <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> Запретить регистрацию аккаунтов с одиннаковых IP адресов.</div>
                 </div>
                 <hr>
@@ -341,7 +341,6 @@ else {
                 </div>
                 <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> Под гостями подразумеваются незарегистрированные пользователи.</div>
             </div>
-            <?php if ($hasPerms) { ?>
             <div class="div-border" id="metric_sets" data-number="5" hidden>
                 <h3><span class="glyphicons glyphicons-pie-chart"></span> Статистика</h3>
                 <p class="helper">Здесь меняются настройки статистики сайта.</p>
@@ -360,13 +359,6 @@ else {
                     <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> Здесь должен быть код, который предоставляется сервисом.
                         В инструкции Вас попросят разместить этот код на всех страницах Вашего портала, именно данный текст Вам нужно вставить сюда.</div>
                 </div>
-            </div>
-            <?php } ?>
-            <div class="div-border" id="todoeditor" data-number="6" hidden>
-                <h3><span class="glyphicon glyphicon-th-list"></span> To-do</h3>
-                <p class="helper">Здесь вы можете оставлять заметки по работе на сайте.</p>
-                <hr>
-                <textarea name="todo_texter" class="form-control" style="min-width: 100%; max-width: 100%; min-height: 500px;"><?php echo trim(file_get_contents("adminpanel/.todolist")); ?></textarea>
             </div>
         </div>
         <hr />

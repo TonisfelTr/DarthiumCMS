@@ -470,14 +470,15 @@ if ($canIPBan || $canIPUnban){
                 </div>
                 <div class="input-group">
                     <div class="input-group-addon">Статус:</div>
-                    <?php $status = ($USER->getLastTime()+900 < time()) ? 0 : 1;
-                    if ($status == 1)
-                        $statusText = "Онлайн";
-                    elseif ($USER->getLastTime() == 0)
-                        $statusText = "Не заходил";
-                    else
-                        $statusText = "Оффлайн; был(-а) в сети в " . Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:m", $USER->getLastTime()));?>
-                    <div class="form-control <?php echo ($status === 1) ? "alert-success" : "alert-danger"; ?>"><?php echo $statusText; ?></div>
+                    <div class="form-control">
+                    <?php $lastOnline = 0;
+                    if ($user->getLastTime() == 0){
+                    $lastOnline = "не заходил" . ($USER->getSex() == 2) ? "а" : "";
+                    } else
+                    $lastOnline = (\Engine\Engine::GetSiteTime() > $USER->getLastTime()+15*60) ? "Заходил" . (($USER->getSex() == 2) ? "а" : "")
+                    . " в " . \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s",$USER->getLastTime())) : "<span style=\"color: #00dd00;\">онлайн</span>";
+                    echo $lastOnline; ?>
+                    </div>
                 </div>
                 <div class="input-group">
                     <div class="input-group-addon">Активация:</div>

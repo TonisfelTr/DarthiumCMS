@@ -378,7 +378,7 @@
                 $censored = self::GetCensoredWords();
                 $censored = explode(",", $censored);
                 foreach($censored as $word){
-                    $stext = str_replace($word, "[цензура]", $stext);
+                    $stext = str_ireplace($word, "[цензура]", $stext);
                 }
                 return $stext;
             }
