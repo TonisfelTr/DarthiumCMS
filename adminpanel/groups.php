@@ -107,13 +107,6 @@ $groupList = \Users\GroupAgent::GetGroupList();
                                         </select>
                                     </div>
                                     <div class="input-group">
-                                        <div class="input-group-addon">Разрешение редактирования шаблонов</div>
-                                        <select class="form-control" name="change_design">
-                                            <option value="1"  class="success alert-success" <?php if (\Users\GroupAgent::IsHavePerm($_REQUEST["group"], "change_design")) echo "selected";?>>Разрешено</option>
-                                            <option value="0"  class="danger alert-danger" <?php if (!\Users\GroupAgent::IsHavePerm($_REQUEST["group"], "change_design")) echo "selected";?>>Запрещено</option>
-                                        </select>
-                                    </div>
-                                    <div class="input-group">
                                         <div class="input-group-addon">Разрешение на изменение настроек сайта</div>
                                         <select class="form-control" name="change_engine_settings">
                                             <option value="1"  class="success alert-success" <?php if (\Users\GroupAgent::IsHavePerm($_REQUEST["group"], "change_engine_settings")) echo "selected";?>>Разрешено</option>
