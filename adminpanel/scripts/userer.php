@@ -268,8 +268,8 @@ if (isset ($_POST["user-add-add"])){
     }
 }
 
-if (!empty ($_POST["uide"])){
-    header("Location: ../../adminpanel.php?p=users&uid=". $_POST["uide"]);
+if (!empty ($_GET["uide"])){
+    header("Location: ../../adminpanel.php?p=users&uid=". $_GET["uide"]);
     exit;
 }
 
