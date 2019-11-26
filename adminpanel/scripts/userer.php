@@ -28,6 +28,10 @@
  * 4nnee - those [nickname] and [email] are already [exist].
  * 4nne - this [nickname] is already [exist]
  */
+
+function concateWithArrow($first, $second){
+    return $first . " -> " . $second;
+}
 require_once "../../engine/main.php";
 \Engine\Engine::LoadEngine();
 
@@ -316,55 +320,78 @@ if (isset ($_POST["user-edit-save"])){
                 $eUser->groupChange($_POST["user-edit-group"]);
             }
         }
+        //Change from
         if ($eUser->getFrom() != $_POST["user-edit-from"]) {
             if (!\Users\UserAgent::ChangeUserParams($eUser->getId(), "city", $_POST["user-edit-from"])) {
                 $backRequest .= "&res=4nef";
-            }
+            } else
+                \Guards\Logger::LogAction($user->getId(), " изменил(а) аккаунт пользователя " . $eUser->getNickname()
+                . "[откуда: " . concateWithArrow($eUser->getFrom(), $_POST["user-edit-form"]) . "]");
         }
+        //Change VK
         if ($eUser->getVK() != $_POST["user-edit-vk"]) {
             if (!\Users\UserAgent::ChangeUserParams($eUser->getId(), "vk", $_POST["user-edit-vk"])) {
                 $backRequest .= "&res=4nev";
-            }
+            } else
+                \Guards\Logger::LogAction($user->getId(), " изменил(а) VK ID пользователя [" . concateWithArrow($eUser->getVK(), $_POST["user-edit-vk"]) . "]");
         }
+        //Change skype login
         if ($eUser->getSkype() != $_POST["user-edit-skype"]) {
             if (!\Users\UserAgent::ChangeUserParams($eUser->getId(), "skype", $_POST["user-edit-skype"])) {
                 $backRequest .= "&res=4nes";
-            }
+            } else
+                \Guards\Logger::LogAction($user->getId(), " изменил(а) Skype ID пользователя [" . concateWithArrow($eUser->getSkype()
+                        , $_POST["user-edit-skype"]) . "]");
         }
+        //Change sex
         if ($eUser->getSex() != $_POST["user-edit-sex"]) {
             if (!\Users\UserAgent::ChangeUserParams($eUser->getId(), "sex", $_POST["user-edit-sex"])) {
                 $backRequest .= "&res=4nesx";
-            }
+            } else
+                \Guards\Logger::LogAction($user->getId(), " изменил(а) пол пользователя [" . concateWithArrow($eUser->getSex(), $_POST["user-edit-sex"]) . "]");
         }
+        //Change real name
         if ($eUser->getRealName() != $_POST["user-edit-realname"]) {
             if (!\Users\UserAgent::ChangeUserParams($eUser->getId(), "realname", $_POST["user-edit-realname"])) {
                 $backRequest .= "&res=4nern";
-            }
+            } else
+                \Guards\Logger::LogAction($user->getId(), " изменил(а) реальное имя пользователя [" . concateWithArrow($eUser->getRealName(), $_POST["user-edit-realname"]) . "]");
         }
+        //Change birthday
         if ($eUser->getBirth() != $_POST["user-edit-birthday"]) {
             if (!\Users\UserAgent::ChangeUserParams($eUser->getId(), "birth", $_POST["user-edit-birthday"])) {
                 $backRequest .= "&res=4nebd";
-            }
+            } else
+                \Guards\Logger::LogAction($user->getId(), " изменил(а) день рождения пользователя [" . concateWithArrow($eUser->getBirth(), $_POST["user-edit-birthday"]) . "]");
         }
+        //Change hobbies
         if ($eUser->getHobbies() != $_POST["user-edit-hobbies"]) {
             if (!\Users\UserAgent::ChangeUserParams($eUser->getId(), "hobbies", $_POST["user-edit-hobbies"])) {
                 $backRequest .= "&res=4nehs";
-            }
+            } else
+                \Guards\Logger::LogAction($user->getId(), " изменил(а) хобби пользователя [" . concateWithArrow($eUser->getHobbies(), $_POST["user-edit-hobbies"]) . "]");
         }
+        //Change about
         if ($eUser->getAbout() != $_POST["user-edit-about"]) {
             if (!\Users\UserAgent::ChangeUserParams($eUser->getId(), "about", $_POST["user-edit-about"])) {
                 $backRequest .= "&res=4nea";
-            }
+            } else
+                \Guards\Logger::LogAction($user->getId(), " изменил(а) автобиографию пользователя [" . concateWithArrow($eUser->getAbout(), $_POST["user-edit-about"]) . "]");
         }
+        //Change signature
         if ($eUser->getSignature() != $_POST["user-edit-signature"]) {
             if (!\Users\UserAgent::ChangeUserParams($eUser->getId(), "signature", $_POST["user-edit-signature"])) {
                 $backRequest .= "&res=4nesg";
-            }
+            } else
+                \Guards\Logger::LogAction($user->getId(), " изменил(а) подпись пользователя [" . concateWithArrow($eUser->getSignature(), $_POST["user-edit-signature"]) . "]");
         }
         $adFields = \Users\UserAgent::GetAdditionalFieldsList();
         foreach ($adFields as $field){
             if (!\Users\UserAgent::SetAdditionalFieldContent($eUser->getId(), $field["id"], @$_POST["user-edit-" . $field["id"]]))
                 $backRequest .= "&res=4ncsafc";
+            else {
+                \Guards\Logger::LogAction($user->getId(), " изменил(а) " . $field["name"] . " пользователя.");
+            }
         }
 
         if (!empty($_POST["user-edit-avatar"])) {
