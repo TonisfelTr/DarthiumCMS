@@ -61,6 +61,7 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
                         <li <?php if (isset($_GET["p"])) if ($_GET["p"] == 'settings') echo "class='active'"; ?>><a href="?p=settings">Настройки</a></li>
                         <li <?php if (isset($_GET["p"])) if ($_GET["p"] == 'reports') echo "class='active'"; ?>><a href="?p=reports">Жалобы
                                 <?php if (($rc = \Guards\ReportAgent::GetUnreadedReportsCount()) > 0) { ?><span class="adminpanel-reports-inc"><span class="glyphicons glyphicons-bell"></span> <?php echo $rc; ?></span><?php } ?></a></li>
+                        <li <?php if (isset($_GET["p"])) if ($_GET["p"] == 'logs') echo "class='active'"; ?>><a href="?p=logs">История</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="index.php">На сайт</a></li>

@@ -24,130 +24,134 @@ if ((!$user->UserGroup()->getPermission("group_create")) &&
     (!$user->UserGroup()->getPermission("group_change")) &&
     (!$user->UserGroup()->getPermission("group_delete")) &&
     (!$user->UserGroup()->getPermission("change_perms"))) { header("Location: ../../adminpanel.php&&res=1"); exit; } else {
-    if (isset($_REQUEST["save_perms_button"])) {
+    if (isset($_POST["save_perms_button"])) {
         if ($user->UserGroup()->getPermission("change_perms")) {
             //Custom engine perms
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "enterpanel", $_REQUEST["permadminpanel"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "change_engine_settings", $_REQUEST["change_engine_settings"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "change_design", $_REQUEST["change_design"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "offline_visiter", $_REQUEST["offline_visiter"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "rules_edit", $_REQUEST["rules_edit"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "enterpanel", $_POST["permadminpanel"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "change_engine_settings", $_POST["change_engine_settings"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "change_design", $_POST["change_design"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "offline_visiter", $_POST["offline_visiter"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "rules_edit", $_POST["rules_edit"]);
 
             //Custom groups perms
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "change_perms", $_REQUEST["permchangeperms"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "group_create", $_REQUEST["permgroupcreate"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "group_delete", $_REQUEST["permgroupdelete"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "group_change", $_REQUEST["permgroupchange"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "change_perms", $_POST["permchangeperms"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "group_create", $_POST["permgroupcreate"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "group_delete", $_POST["permgroupdelete"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "group_change", $_POST["permgroupchange"]);
 
             //Custom users perms
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "user_add", $_REQUEST["user_add"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "user_remove", $_REQUEST["user_remove"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "user_see_foreign", $_REQUEST["user_see_foreign"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "change_profile", $_REQUEST["change_profile"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "change_another_profiles", $_REQUEST["change_another_profiles"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "change_user_group", $_REQUEST["cug"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "user_signs", $_REQUEST["user_signs"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "user_ban", $_REQUEST["user_ban"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "user_unban", $_REQUEST["user_unban"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "user_banip", $_REQUEST["user_banip"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "user_unbanip", $_REQUEST["user_unbanip"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "user_add", $_POST["user_add"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "user_remove", $_POST["user_remove"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "user_see_foreign", $_POST["user_see_foreign"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "change_profile", $_POST["change_profile"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "change_another_profiles", $_POST["change_another_profiles"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "change_user_group", $_POST["cug"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "user_signs", $_POST["user_signs"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "user_ban", $_POST["user_ban"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "user_unban", $_POST["user_unban"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "user_banip", $_POST["user_banip"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "user_unbanip", $_POST["user_unbanip"]);
 
             //Custom report perms
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "report_create", $_REQUEST["report_create"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "report_remove", $_REQUEST["report_remove"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "report_foreign_remove", $_REQUEST["report_foreign_remove"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "report_edit", $_REQUEST["report_edit"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "report_foreign_edit", $_REQUEST["report_foreign_remove"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "report_close", $_REQUEST["report_close"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "report_talking", $_REQUEST["report_talking"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "report_answer_edit", $_REQUEST["report_answer_edit"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "report_foreign_answer_edit", $_REQUEST["report_foreign_answer_edit"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "report_create", $_POST["report_create"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "report_remove", $_POST["report_remove"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "report_foreign_remove", $_POST["report_foreign_remove"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "report_edit", $_POST["report_edit"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "report_foreign_edit", $_POST["report_foreign_remove"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "report_close", $_POST["report_close"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "report_talking", $_POST["report_talking"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "report_answer_edit", $_POST["report_answer_edit"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "report_foreign_answer_edit", $_POST["report_foreign_answer_edit"]);
 
             //Custom uploads perms
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "upload_add", $_REQUEST["upload-add"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "upload_delete", $_REQUEST["upload-delete"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "upload_delete_foreign", $_REQUEST["upload-delete-foreign"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "upload_see_all", $_REQUEST["upload_see_all"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "upload_add", $_POST["upload-add"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "upload_delete", $_POST["upload-delete"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "upload_delete_foreign", $_POST["upload-delete-foreign"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "upload_see_all", $_POST["upload_see_all"]);
 
             //Custom categories perms
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "category_create", $_REQUEST["category_create"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "category_edit", $_REQUEST["category_edit"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "category_delete", $_REQUEST["category_delete"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "category_see_unpublic", $_REQUEST["category_see_unpublic"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "category_params_ignore", $_REQUEST["category_params_ignore"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "category_create", $_POST["category_create"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "category_edit", $_POST["category_edit"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "category_delete", $_POST["category_delete"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "category_see_unpublic", $_POST["category_see_unpublic"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "category_params_ignore", $_POST["category_params_ignore"]);
 
             //Custom topics perms
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "topic_create", $_REQUEST["topic_create"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "topic_edit", $_REQUEST["topic_edit"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "topic_foreign_edit", $_REQUEST["topic_foreign_edit"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "topic_delete", $_REQUEST["topic_delete"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "topic_foreign_delete", $_REQUEST["topic_foreign_delete"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "topic_manage", $_REQUEST["topic_manage"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "topic_create", $_POST["topic_create"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "topic_edit", $_POST["topic_edit"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "topic_foreign_edit", $_POST["topic_foreign_edit"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "topic_delete", $_POST["topic_delete"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "topic_foreign_delete", $_POST["topic_foreign_delete"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "topic_manage", $_POST["topic_manage"]);
 
             //Custom comments perms
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "comment_create", $_REQUEST["comment_create"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "comment_edit", $_REQUEST["comment_edit"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "comment_foreign_edit", $_REQUEST["comment_foreign_edit"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "comment_delete", $_REQUEST["comment_delete"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "comment_foreign_delete", $_REQUEST["comment_foreign_delete"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "comment_create", $_POST["comment_create"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "comment_edit", $_POST["comment_edit"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "comment_foreign_edit", $_POST["comment_foreign_edit"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "comment_delete", $_POST["comment_delete"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "comment_foreign_delete", $_POST["comment_foreign_delete"]);
 
             //Perms for manage static content of site.
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "sc_create_pages", $_REQUEST["sc_create_pages"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "sc_edit_pages", $_REQUEST["sc_edit_pages"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "sc_remove_pages", $_REQUEST["sc_remove_pages"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "sc_design_edit", $_REQUEST["sc_design_edit"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "sc_create_pages", $_POST["sc_create_pages"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "sc_edit_pages", $_POST["sc_edit_pages"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "sc_remove_pages", $_POST["sc_remove_pages"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "sc_design_edit", $_POST["sc_design_edit"]);
 
             //Custom bot mail perms
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "bmail_sende", $_REQUEST["bmail_sende"]);
-            \Users\GroupAgent::ChangeGroupPerms($_REQUEST["group"], "bmail_sends", $_REQUEST["bmail_sends"]);
-        } else { header("Location: ../../adminpanel.php?res=3npc&p=groups&visible&group=" . $_REQUEST["group"]); exit; }
-        { header("Location: ../../adminpanel.php?p=groups&res=3spc&visible&group=" . $_REQUEST["group"]); exit; }
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "bmail_sende", $_POST["bmail_sende"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "bmail_sends", $_POST["bmail_sends"]);
+
+            //Custom logs permissions
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "logs_see", $_POST["logs_see"]);
+            \Guards\Logger::LogAction($user->getId(), "изменил(а) права для группы " . \Users\GroupAgent::GetGroupNameById($_POST["group"]) . ".");
+        } else { header("Location: ../../adminpanel.php?res=3npc&p=groups&visible&group=" . $_POST["group"]); exit; }
+        { header("Location: ../../adminpanel.php?p=groups&res=3spc&visible&group=" . $_POST["group"]); exit; }
 
     }
 
-    if (isset($_REQUEST["add_group_button"])) {
+    if (isset($_POST["add_group_button"])) {
         if (!$user->UserGroup()->getPermission("group_create")) { header("Location: ../../adminpanel.php?p=groups&res=1"); exit; }
         else {
-            if (\Users\GroupAgent::AddGroup($_REQUEST["groupname_create"], $_REQUEST["groupcolor_create"], $_REQUEST["groupsubscribe_create"]) === True)
+            if (\Users\GroupAgent::AddGroup($_POST["groupname_create"], $_POST["groupcolor_create"], $_POST["groupsubscribe_create"]) === True)
                 { header("Location: ../../adminpanel.php?p=groups&res=3sgc"); exit; }
             else { header("Location: ../../adminpanel.php?p=groups&res=3ngc"); exit; }
         }
     }
 
-    if (isset($_REQUEST["delete_group_button"])) {
+    if (isset($_POST["delete_group_button"])) {
         if (!$user->UserGroup()->getPermission("group_delete")) { header("Location: ../../adminpanel.php?p=groups&res=1"); exit; }
         else {
-            if ($_REQUEST["group"] == 1 || $_REQUEST["group"] == 2 || $_REQUEST["group"] == 3){ { header("Location: ../../adminpanel.php?p=groups&res=3ndd&group=".$_REQUEST["group"]."&visible"); exit; } }
-            elseif ($_REQUEST["group"] == \Engine\Engine::GetEngineInfo("sg")){ { header("Location: ../../adminpanel.php?p=groups&res=3ngsd&group=".$_REQUEST["group"]."&visible"); exit; } }
+            if ($_POST["group"] == 1 || $_POST["group"] == 2 || $_POST["group"] == 3){ { header("Location: ../../adminpanel.php?p=groups&res=3ndd&group=".$_POST["group"]."&visible"); exit; } }
+            elseif ($_POST["group"] == \Engine\Engine::GetEngineInfo("sg")){ { header("Location: ../../adminpanel.php?p=groups&res=3ngsd&group=".$_POST["group"]."&visible"); exit; } }
             else {
-                if (\Users\GroupAgent::MoveGroupMembers($_REQUEST["group"], \Engine\Engine::GetEngineInfo("sg"))) {
-                    if (\Users\GroupAgent::RemoveGroup($_REQUEST["group"]) === True) { header("Location: ../../adminpanel.php?p=groups&res=3sgd"); exit; }
+                if (\Users\GroupAgent::MoveGroupMembers($_POST["group"], \Engine\Engine::GetEngineInfo("sg"))) {
+                    if (\Users\GroupAgent::RemoveGroup($_POST["group"]) === True) { header("Location: ../../adminpanel.php?p=groups&res=3sgd"); exit; }
                     else { header("Location: ../../adminpanel.php?p=groups&res=3ngmm"); exit; }
                 }
             }
         }
     }
 
-    if (isset($_REQUEST["save_group_button"])) {
+    if (isset($_POST["save_group_button"])) {
         if ($user->UserGroup()->getPermission("group_change")) {
-            if (strlen($_REQUEST["groupname"]) <= 4) {
+            if (strlen($_POST["groupname"]) <= 4) {
                 \Engine\ErrorManager::GenerateError(15);
-                { header("Location: ../../adminpanel.php?p=groups&res=3nlfs&visible&group=" . $_REQUEST["group"]); exit; }
-            } elseif (strlen($_REQUEST["groupname"]) >= 50) {
+                { header("Location: ../../adminpanel.php?p=groups&res=3nlfs&visible&group=" . $_POST["group"]); exit; }
+            } elseif (strlen($_POST["groupname"]) >= 50) {
                 \Engine\ErrorManager::GenerateError(16);
-                { header("Location: ../../adminpanel.php?p=groups&res=3nmfts&visible&group=" . $_REQUEST["group"]); exit; }
+                { header("Location: ../../adminpanel.php?p=groups&res=3nmfts&visible&group=" . $_POST["group"]); exit; }
             } else {
-                \Users\GroupAgent::ChangeGroupData($_REQUEST["group"], "name", $_REQUEST["groupname"]);
-                \Users\GroupAgent::ChangeGroupData($_REQUEST["group"], "descript", $_REQUEST["groupsubscribe"]);
-                \Users\GroupAgent::ChangeGroupData($_REQUEST["group"], "color", $_REQUEST["groupcolor"]);
-                { header("Location: ../../adminpanel.php?p=groups&res=3se&visible&group=" . $_REQUEST["group"]); exit; }
+                \Users\GroupAgent::ChangeGroupData($_POST["group"], "name", $_POST["groupname"]);
+                \Users\GroupAgent::ChangeGroupData($_POST["group"], "descript", $_POST["groupsubscribe"]);
+                \Users\GroupAgent::ChangeGroupData($_POST["group"], "color", $_POST["groupcolor"]);
+                { header("Location: ../../adminpanel.php?p=groups&res=3se&visible&group=" . $_POST["group"]); exit; }
             }
-        } else { header("Location: ../../adminpanel.php?p=groups&res=3ne&visible&group=" . $_REQUEST["group"]); exit; }
+        } else { header("Location: ../../adminpanel.php?p=groups&res=3ne&visible&group=" . $_POST["group"]); exit; }
     }
 
-    if (isset($_REQUEST["edit_group_button"])) {
-        if ($_REQUEST["group"] == 0) { header("Location: ../../adminpanel.php?p=groups&res=3ngs"); exit; }
-        else { header("Location: ../../adminpanel.php?p=groups&visible&group=" . $_REQUEST["group"]); exit; }
+    if (isset($_POST["edit_group_button"])) {
+        if ($_POST["group"] == 0) { header("Location: ../../adminpanel.php?p=groups&res=3ngs"); exit; }
+        else { header("Location: ../../adminpanel.php?p=groups&visible&group=" . $_POST["group"]); exit; }
         //if ()
     }
 }

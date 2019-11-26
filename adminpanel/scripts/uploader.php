@@ -9,7 +9,7 @@ else { header("Location: ../../index.php?page=errors/nonauth"); exit;}
 if (!strstr($_SESSION["LASTADDR"], "?")) $symbol = "?";
 else $symbol = "&";
 
-if (isset($_REQUEST["uploader-upload-file-btn"])){
+if (isset($_POST["uploader-upload-file-btn"])){
     if($user->UserGroup()->getPermission("upload_add")){
         $result = \Engine\Uploader::UploadFile($user->getId(), $_FILES["uploader-file-input"]);
         if ($result === TRUE) {
@@ -52,12 +52,12 @@ if (isset($_POST["uploader-file-delete"]) || isset($_POST["uploader-delete-files
     echo 1;
     if ($user->UserGroup()->getPermission("upload_delete")){
         if (isset($_POST["uploader-delete-files-btn"])) {
-            if (empty($_REQUEST["uploader-file-delete-ids"])) {
+            if (empty($_POST["uploader-file-delete-ids"])) {
                 header("Location: " . $_SESSION["LASTADDR"] . $symbol . "res=1ndnef&upload");
                 $_SESSION["LASTADDR"] = null;
                 exit;
             } else {
-                $filesToDelete = explode(",", $_REQUEST["uploader-file-delete-ids"]);
+                $filesToDelete = explode(",", $_POST["uploader-file-delete-ids"]);
                 for ($i = 0; $i <= count($filesToDelete) - 1; $i++) {
                     if (!\Engine\Uploader::DeleteFile($filesToDelete[$i])) {
                         header("Location: " . $_SESSION["LASTADDR"] . $symbol . "res=1ndsf&upload");
@@ -71,12 +71,12 @@ if (isset($_POST["uploader-file-delete"]) || isset($_POST["uploader-delete-files
             }
         }
         if (isset($_POST["uploader-file-delete"])){
-            if (empty($_REQUEST["fid"])) {
+            if (empty($_POST["fid"])) {
                 header("Location: " . $_SESSION["LASTADDR"] . $symbol . "res=1ndnef&upload");
                 $_SESSION["LASTADDR"] = null;
                 exit;
             } else {
-                if (!\Engine\Uploader::DeleteFile($_REQUEST["fid"])) {
+                if (!\Engine\Uploader::DeleteFile($_POST["fid"])) {
                     header("Location: " . $_SESSION["LASTADDR"] . $symbol . "res=1ndsf&upload");
                     $_SESSION["LASTADDR"] = null;
                     exit;

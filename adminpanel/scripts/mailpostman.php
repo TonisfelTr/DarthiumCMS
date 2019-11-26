@@ -29,6 +29,7 @@ if ($user->UserGroup()->getPermission("bmail_sende") ||
             $mail = str_replace_once("{MAIL_BODY_MAIN}", $_POST["email-text-message"], $mail);
             $mail = str_replace_once("{MAIL_FOOTER_INFORMATION}", "Это сообщение было отослано ботом. Пожалуйста не отвечайте на него.", $mail);
             \Engine\Mailer::SendMail($mail, \Users\UserAgent::GetUserParam($someUser["id"], "email"), $_POST["email-subject-input"]);
+            \Guards\Logger::LogAction($user->getId(), "отправил Email всем пользователям сайта с темой " . $_POST["email-subject-input"] . ".");
         }
         header("Location: ../../adminpanel.php?p=emailsender&res=8ses"); exit;
     }
@@ -37,6 +38,7 @@ if ($user->UserGroup()->getPermission("bmail_sende") ||
         foreach ($userList as $someUser){
             $user->MessageManager()->send($someUser["id"], $_POST["pm-subject-input"], $_POST["pmmail-text-message"]);
         }
+        \Guards\Logger::LogAction($user->getId(), "отправил личное сообщение всем пользователям сайта с темой " . $_POST["зь-subject-input"] . ".");
         header("Location: ../../adminpanel.php?p=emailsender&res=8ses"); exit;
     }
 } else {

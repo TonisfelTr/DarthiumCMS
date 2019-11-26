@@ -161,8 +161,8 @@ else {
                 <div class="input-group">
                     <div class="input-group-addon">Тип соединения</div>
                     <select class="form-control" name="emailconnecttype">
-                        <option value="1" <?php if (\Engine\Engine::GetEngineInfo("ecp") == "tsl") echo "selected"; ?>>TSL</option>
-                        <option value="0" <?php if (\Engine\Engine::GetEngineInfo("ecp") == "ssl") echo "selected"; ?>>SSL</option>
+                        <option value="tsl" <?php if (\Engine\Engine::GetEngineInfo("ecp") == "tsl") echo "selected"; ?>>TSL</option>
+                        <option value="ssl" <?php if (\Engine\Engine::GetEngineInfo("ecp") == "ssl") echo "selected"; ?>>SSL</option>
                     </select>
                 </div>
                 <div class="input-group">
@@ -196,7 +196,10 @@ else {
                 </div>
                 <div class="input-group">
                     <div class="input-group-addon">Запрет мультиаккаунта</div>
-                    <input type="checkbox" class="form-control" name="multiacc" <?php if (\Engine\Engine::GetEngineInfo("map") == "1") echo "checked"; ?>>
+                    <select name="multiacc" class="form-control">
+                        <option value="0" <?php if (\Engine\Engine::GetEngineInfo("map") == "0") echo "selected"; ?>>Выключен</option>
+                        <option value="1" <?php if (\Engine\Engine::GetEngineInfo("map") == "1") echo "selected"; ?>>Включен</option>
+                    </select>
                     <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> Запретить регистрацию аккаунтов с одиннаковых IP адресов.</div>
                 </div>
                 <hr>

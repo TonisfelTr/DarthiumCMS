@@ -1333,4 +1333,47 @@ namespace Guards {
         }
 
     }
+
+    class Logger{
+        public static function LogAction($authorId, $log_text){
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            if (mysqli_connect_errno()) {
+                ErrorManager::GenerateError(2);
+                return ErrorManager::GetError();
+            }
+            $dataTime = Engine::GetSiteTime();
+
+            if ($stmt = $mysqli->prepare("INSERT INTO tt_logs (authorId, log_text, `datetime`) VALUE (?,?,?)")){
+                $stmt->bind_param("isi", $authorId,$log_text, $dataTime);
+                $stmt->execute();
+                return true;
+            }
+            return false;
+        }
+
+        public static function GetLogged(){
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            if (mysqli_connect_errno()) {
+                ErrorManager::GenerateError(2);
+                return ErrorManager::GetError();
+            }
+
+            if ($stmt = $mysqli->prepare("SELECT * FROM `tt_logs` ORDER BY `datetime` DESC")){
+                $stmt->execute();
+                $stmt->bind_result($id, $authorId, $log_text, $datetime);
+                $result = [];
+                while($stmt->fetch()){
+                    array_push($result, [
+                        "id" => $id,
+                        "authorId" => $authorId,
+                        "datetime" => $datetime,
+                        "log_text" => $log_text
+                    ]);
+                }
+                return $result;
+            }
+
+            return false;
+        }
+    }
 }
