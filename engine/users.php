@@ -28,7 +28,7 @@ namespace Users {
                 $stmt->execute();
                 $stmt->bind_result($id, $name, $descript, $color, $enterpanel, $offline_visiter, $rules_edit,
                     $change_perms, $group_create, $group_delete, $group_change,
-                    $change_design, $change_another_profiles,
+                    $change_another_profiles,
                     $change_user_group, $user_add, $user_remove, $user_see_foreign, $user_signs,
                     $user_ban, $user_unban, $user_banip, $user_unbanip,
                     $report_create, $report_foreign_remove, $report_talking, $report_remove, $report_edit, $report_foreign_edit, $report_answer_edit, $report_anser_foreign_edit, $report_close,
@@ -48,7 +48,6 @@ namespace Users {
 
                     $this->gPerms = array(
                         'enterpanel' => $enterpanel,
-                        'change_design' => $change_design,
                         'change_engine_settings' => $change_engine_settings,
                         'offline_visiter' => $offline_visiter,
                         'rules_edit' => $rules_edit,
