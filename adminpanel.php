@@ -490,16 +490,7 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
             <?php } ?>
         </div>
         <div class="col-lg-6">
-            <?php if ($user->UserGroup()->getPermission("report_talking") &&
-            $user->UserGroup()->getPermission("report_foreign_remove") &&
-            $user->UserGroup()->getPermission("report_foreign_edit") &&
-            $user->UserGroup()->getPermission("report_close")
-            ) { ?>
-            <div class="linker">
-                <a class="linkin" href="?p=reports"><span class="glyphicon glyphicon-fire"></span> Жалобы</a>
-                <p class="helper">Управление жалобами игроков.</p>
-            </div> <?php }
-            if ($user->UserGroup()->getPermission("logs_see")) { ?>
+            <?php if ($user->UserGroup()->getPermission("logs_see")) { ?>
             <div class="linker">
                 <a class="linkin" href="?p=logs"><span class="glyphicon glyphicon-transfer"></span> История событий</a>
                 <p class="helper">Просмотр истории действий в админпанели.</p>
@@ -554,7 +545,16 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
                 <a class="linkin" href="?p=staticc"><span class="glyphicons glyphicons-pen"></span> Управление статическим контентом</a>
                 <p class="helper">Добавление, удаление и редактирование статического контента сайта.</p>
             </div>
-            <?php } ?>
+            <?php }
+             if ($user->UserGroup()->getPermission("report_talking") &&
+            $user->UserGroup()->getPermission("report_foreign_remove") &&
+            $user->UserGroup()->getPermission("report_foreign_edit") &&
+            $user->UserGroup()->getPermission("report_close")
+            ) { ?>
+            <div class="linker">
+                <a class="linkin" href="?p=reports"><span class="glyphicon glyphicon-fire"></span> Жалобы</a>
+                <p class="helper">Управление жалобами игроков.</p>
+            </div> <?php } ?>
         </div>
     </div>
     <br>
