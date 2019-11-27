@@ -2,7 +2,7 @@
 if (!defined("TT_Index")){ header("index.php?page=errors/forbidden"); exit; }
 $pageName = "Поиск";
 
-$results = \Forum\ForumAgent::SearchByTopicName($_GET["search"]);
+$results = \Forum\ForumAgent::SearchByTopicName(iconv("windows-1251", "UTF-8". $_GET["search"]));
 if (empty($results)){
    echo "<h3><span class=\"glyphicons glyphicons-ice-cream-no\"></span> Ничего не найдено :(</h3>";
 } else {
