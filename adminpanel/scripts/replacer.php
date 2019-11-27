@@ -67,7 +67,7 @@ else {
         if ($_POST["sitetagline"] != \Engine\Engine::GetEngineInfo("stl"))
             \Guards\Logger::LogAction($user->getId(), " изменил(а) хештеги сайта [" . \Engine\Engine::GetEngineInfo("stl") . " -> " . $_POST["sitetagline"] . "]");
         if ($_POST["sitestatus"] != \Engine\Engine::GetEngineInfo("ss")) {
-            $siteStatusFrom = (\Engine\Engine::GetEngineInfo("sn") == 0) ? "выключен" : "включен";
+            $siteStatusFrom = (\Engine\Engine::GetEngineInfo("ss") == 0) ? "выключен" : "включен";
             $siteStatusTo = ($_POST["sitestatus"] == 0) ? "выключен" : "включен";
             \Guards\Logger::LogAction($user->getId(), " изменил(а) статус сайта [$siteStatusFrom -> $siteStatusTo]");
         }
