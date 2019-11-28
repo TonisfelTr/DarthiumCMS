@@ -422,8 +422,8 @@ namespace Forum {
                                                     (select count(mark) from tt_topicsmarks as marks where marks.mark = 1 and marks.topicId = ?) as positives
                                                     from tt_topics as topics
                                                     
-                                                    ) sub")){
-                $stmt->bind_param("ii", $topicId, $topicId);
+                                                    ) sub where id = ?")){
+                $stmt->bind_param("iii", $topicId, $topicId, $topicId );
                 $stmt->execute();
                 if ($stmt->errno){
                     ErrorManager::GenerateError(9);
@@ -491,6 +491,94 @@ namespace Forum {
         }
         public function getStatus(){
             return $this->topicStatus;
+        }
+    }
+    class Quize extends ForumAgent{
+        private $QuizeId;
+        private $QuizeTopicId;
+        private $QuizeQuest;
+        private $QuizeAnswers;
+        private $QuizeVars;
+        private $QuiseAnswersCount;
+
+        public function __construct($quizeId)
+        {
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            if ($mysqli->errno){
+                ErrorManager::GenerateError(2);
+                return ErrorManager::GetError();
+            }
+
+            if ($stmt = $mysqli->prepare("SELECT id, topicId, quest FROM tt_quizes WHERE id = ?")){
+                $stmt->bind_param("i", $quizeId);
+                $stmt->execute();
+                $stmt->bind_result($id,$topicId, $quest);
+                $stmt->fetch();
+                $this->QuizeTopicId = $topicId;
+                $this->QuizeId = $id;
+                $this->QuizeQuest = $quest;
+            }
+
+            if ($stmt = $mysqli->prepare("SELECT id, var FROM tt_quizesvars WHERE quizId = ?")){
+                $stmt->bind_param("i", $this->QuizeId);
+                $stmt->execute();
+                $stmt->bind_result($id, $var);
+                $varsForQuize = [];
+                while($stmt->fetch()){
+                    array_push($varsForQuize, [$id, $var]);
+                }
+                $this->QuizeVars = $varsForQuize;
+            }
+
+            if ($stmt = $mysqli->prepare("SELECT * FROM tt_quizesanswers WHERE quizId = ?")){
+                $stmt->bind_param("i", $this->QuizeId);
+                $stmt->execute();
+                $stmt->bind_result($userId, $quizeId, $varId);
+                $answers = [];
+                while($stmt->fetch()){
+                    array_push($answers, [$userId, $quizeId, $varId]);
+                }
+                $this->QuizeAnswers = $answers;
+            }
+
+            if ($stmt = $mysqli->prepare("SELECT count(*) FROM tt_quizesanswers WHERE quizId = ?")){
+                $stmt->bind_param("i", $this->QuizeId);
+                $stmt->execute();
+                $stmt->bind_result($count);
+                $stmt->fetch();
+                $this->QuiseAnswersCount = $count;
+            }
+        }
+        public function getId(){
+            return $this->QuizeId;
+        }
+        public function getQuestion(){
+            return $this->QuizeQuest;
+        }
+        public function getAnswers(){
+            return $this->QuizeAnswers;
+        }
+        public function getVars(){
+            return $this->QuizeVars;
+        }
+        public function getProcentAnswer($answerId){
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            if ($mysqli->errno){
+                ErrorManager::GenerateError(2);
+                return ErrorManager::GetError();
+            }
+
+            if ($stmt = $mysqli->prepare("SELECT count(*) FROM tt_quizesanswers WHERE varId = ?")){
+                $stmt->bind_param("i", $answerId);
+                $stmt->execute();
+                $stmt->bind_result($countAnswers);
+                $stmt->fetch();
+                return $countAnswers;
+            }
+            return false;
+        }
+        public function getTotalAnswers(){
+            return ForumAgent::GetTotalVotedCount($this->getId());
         }
     }
     class TopicComment extends ForumAgent{
@@ -613,8 +701,7 @@ namespace Forum {
                 return ErrorManager::GetError();
             }
             if ($stmt = $mysqli->prepare("SELECT authorId, name FROM tt_topics WHERE name LIKE ?")){
-                $topicName = utf8_encode($topicName);
-                $topicSubstrName = "%$topicName%";
+                $topicSubstrName = iconv("UTF-8", "windows-1251", "%$topicName%");
                 $stmt->bind_param("s", $topicSubstrName);
                 $stmt->execute();
                 $result = [];
@@ -625,6 +712,46 @@ namespace Forum {
                 return $result;
             }
             return false;
+        }
+
+        public static function GetQuizeByTopic(int $quizId){
+            return DataKeeper::Get("count(*)", ["topicId"], ["id" => $quizId]);
+        }
+        public static function IsExistQuizeInTopic(int $topicId){
+            $return = DataKeeper::Get("tt_quizes", ["count(*)"], ["topicId" => $topicId]);
+            if ($return[0] >= 1)
+                return true;
+            else
+                return false;
+        }
+        public static function IsVoted(int $userId, int $quizId){
+            $result = DataKeeper::Get("tt_quizesanswers", ["count(*)"], ["userId" => $userId, "quizId" => $quizId]);
+            if ($result[0] == 1)
+                return true;
+            else
+                return false;
+        }
+        public static function CreateQuize(int $topicId, string $quest, array $answers){
+            if ($lastId = DataKeeper::InsertTo("tt_quizes", ["topicId" => $topicId,"quest" => $quest])){
+                foreach ($answers as $answer){
+                    DataKeeper::InsertTo("tt_quizesvars", ["var" => $answer, "quizId" => $lastId]);
+                }
+            }
+
+        }
+        public static function VoteInQuize(int $voterId, int $quizId, int $answer){
+            if (DataKeeper::InsertTo("tt_quizesanswers", ["userId" => $voterId,
+                                                               "quizId" => $quizId,
+                                                                "varId" => $answer]))
+                return true;
+            else
+                return false;
+        }
+        public static function GetTotalVotedCount(int $quizId){
+            return DataKeeper::Get("tt_quizesanswers", ["count(*)"], ["quizId" => $quizId]);
+        }
+        public static function GetVotedCount(int $quizId, int $varId){
+            return DataKeeper::Get("tt_quizesanswers", ["count(*)"], ["quizId" => $quizId, "varId" => $varId]);
         }
 
         public static function CreateCategory($name, $descript, $public = true, $no_comments = false, $no_new_topics = false){
@@ -757,7 +884,7 @@ namespace Forum {
             $int = DataKeeper::InsertTo("tt_topics", ["id" => NULL,
                 "authorId" => $userId,
                 "categoryId" => $categoryId,
-                "name" => utf8_encode($name),
+                "name" => $name,
                 "text" => $text,
                 "preview" => $preview,
                 "createDate" => date("Y-m-d H:i:s", Engine::GetSiteTime()),
