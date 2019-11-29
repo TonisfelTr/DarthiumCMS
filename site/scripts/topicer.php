@@ -136,8 +136,10 @@ if ($session === TRUE) {
         }
         $topic = new \Forum\Topic($_POST["topic-id"]);
         if (($user->getId() == $topic->getAuthorId() && $user->UserGroup()->getPermission("topic_delete")) || $user->UserGroup()->getPermission("topic_foreign_delete")){
+            $author = $topic->getAuthorId();
             if (\Forum\ForumAgent::DeleteTopic($_POST["topic-id"])){
-                $topic->getAuthor()->Notifications()->createNotify(9, $user->getId());
+                if ($author != $user->getId())
+                    $topic->getAuthor()->Notifications()->createNotify(9, $user->getId());
                 header("Location: ../../index.php?res=3std");
                 exit;
             } else {
