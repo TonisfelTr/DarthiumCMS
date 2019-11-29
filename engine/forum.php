@@ -740,6 +740,20 @@ namespace Forum {
             if ($stmt = $mysqli->prepare("SELECT id FROM tt_quizes WHERE topicId = ?")){
                 $stmt->bind_param("i", $topicId);
                 $stmt->execute();
+                $stmt->bind_result($id);
+                $stmt->fetch();
+                return $id;
+            }
+        }
+        public static function IsExistQuizeInTopic(int $topicId){
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            if ($mysqli->errno){
+                ErrorManager::GenerateError(2);
+                return ErrorManager::GetError();
+            }
+            if ($stmt = $mysqli->prepare("SELECT count(*) FROM tt_quizes WHERE topicId = ?")){
+                $stmt->bind_param("i", $topicId);
+                $stmt->execute();
                 $stmt->bind_result($count);
                 $stmt->fetch();
                 if ($count < 1)
@@ -747,13 +761,6 @@ namespace Forum {
                 else
                     return true;
             }
-        }
-        public static function IsExistQuizeInTopic(int $topicId){
-            $return = DataKeeper::Get("tt_quizes", ["count(*)"], ["topicId" => $topicId]);
-            if ($return >= 1)
-                return true;
-            else
-                return false;
         }
         public static function IsVoted(int $userId, int $quizId){
             $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
