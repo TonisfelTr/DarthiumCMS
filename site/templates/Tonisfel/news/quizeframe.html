@@ -1,0 +1,46 @@
+<div class="quize-frame">
+    <div class="quize-quizer" {QUIZE_QUIZER_HIDDEN}>
+        <div class="quize-header">
+            <h3>{QUIZE_QUESTION}</h3>
+        </div>
+        <div class="quize-body container">
+            <div class="btn-group-vertical col-lg-6">
+                {QUIZE_ANSWERS}
+            </div>
+        </div>
+        <div class="quize-footer">
+            <p>Всего проголосовавших: <span class="quize-voted-count">{QUIZE_ANSWERED_COUNT}</span></p>
+        </div>
+    </div>
+    <div class="quize-results" {QUIZE_RESULTS_HIDDEN}>
+        <div class="quize-header">
+            <h3>{QUIZE_QUESTION}</h3>
+        </div>
+        <div class="quize-body container">
+            <div class="col-lg-6">
+                {QUIZE_VOTES}
+            </div>
+        </div>
+        <div class="quize-footer">
+            <p>Всего проголосовавших: <span class="quize-voted-count">{QUIZE_ANSWERED_COUNT}</span></p>
+        </div>
+    </div>
+</div>
+<hr>
+<script type="text/javascript">
+    $("div.quize-body > div.btn-group-vertical > button").on("click", function(){
+        var varId = $(this).attr("data-var-id");
+        var span = $("span[data-var-id=" + varId + "]");
+        var voteCount = parseInt($(span).text());
+        var quizeId = {QUIZE_ID};
+        $(span).text(voteCount + 1);
+        $("span.quize-voted-count").text(parseInt($("span.quize-voted-count").text()) + 1)
+        $("div.quize-quizer").hide();
+        $("div.quize-results").show();
+        $.ajax({
+            type: "POST",
+            url: "/site/scripts/ajax/quizerajax.php",
+            data: "user_id={USER_ID}" + "&quize_id=" + quizeId + "&var_id=" + varId
+        });
+    });
+</script>

@@ -60,6 +60,12 @@ switch($_GET["res"]){
     case "3ncct":
         $creatorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> Не удалось создать тему. Обратитесь к Администратору.</div>";
         break;
+    case "3nqa":
+        $creatorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> Не удалось создать опрос: один из ответов пуст.</div>";
+        break;
+    case "3nqt":
+        $creatorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> Не удалось создать опрос: вопрос опроса слишком короткий или отсутствует.</div>";
+        break;
     default:
         $creatorResponse = "";
         break;
@@ -69,5 +75,12 @@ $newtopic = str_replace_once("{NEWTOPIC_ERRORS}", $creatorResponse, $newtopic);
 $newtopic = str_replace_once("{TOPICS:LAST_CREATED_AUTHOR_TOPICS}", $lastAuthorsTopicsText, $newtopic);
 $newtopic = str_replace_once("{TOPICS:LAST_CREATED_TOPICS}", $lastTopicsText, $newtopic);
 $newtopic = str_replace_once("{NEWTOPIC_PAGE:CATEGORIES_OPTION}", $categoriesList, $newtopic);
+
+include_once "./site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/news/quizer.html";
+$quizer = getBrick();
+$quizer = str_replace_once("{QUIZE_QUESTION}", "", $quizer);
+$quizer = str_replace_once("{QUIZE_ANSWERS}", "", $quizer);
+
+$newtopic = str_replace_once("{NEWTOPIC_QUIZE}", $quizer, $newtopic);
 
 echo $newtopic;

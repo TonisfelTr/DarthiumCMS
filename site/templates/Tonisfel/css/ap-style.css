@@ -519,6 +519,7 @@ a.alert-link{
 div.topic-wrapper{
     border: 1px solid #191;
     padding: 0;
+    margin-bottom: 20px;
 }
 
 div.topic-header{
@@ -890,4 +891,62 @@ div.div-spoiler > div{
     color: #777;
     padding: 5px;
     margin-top: 5px;
+}
+
+div.quize-frame{
+    border: 1px solid #222;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+span.quize-label{
+    color: white;
+    margin: 6px;
+    padding: 6px;
+    border-radius: 3px;
+}
+
+
+span.quize-label-1{
+    background: red;
+}
+
+span.quize-label-2{
+    background: orange;
+}
+
+span.quize-label-3{
+    background: yellow;
+}
+
+span.quize-label-4{
+    background: green;
+}
+
+span.quize-label-5{
+    background: lightblue;
+}
+
+span.quize-label-6{
+    background: blue;
+}
+
+span.quize-label-7{
+    background: violet;
+}
+
+span.quize-label-8{
+    background: brown;
+}
+
+span.quize-label-9{
+    background: #6bddff;
+}
+
+span.quize-label-10{
+    background: darkred;
+}
+
+div.quize-footer{
+    margin: 5px;
 }

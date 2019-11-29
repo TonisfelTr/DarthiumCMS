@@ -36,8 +36,31 @@ if ($session === TRUE) {
                     header("Location: ../../?page=newtopic&res=3ntlm");
                     exit;
                 }
+
                 $newTopicId = \Forum\ForumAgent::CreateTopic($user->getId(), $_POST["topic-name-input"], $category->getId(), $_POST["topic-descript-textarea"], $_POST["topic-content-textarea"]);
                 if ($newTopicId !== false) {
+                    //Quize construct
+                    if ($_POST["quizer-status"] == 1){
+                        if (isset($_POST["quizer-answers"]) && $_POST["quizer-answers"] != ""){
+                            $answers = [];
+                            $answersLink = explode(",", $_POST["quizer-answers"]);
+                            for ($i = 1; $i <= count($answersLink); $i++){
+                                if (in_array($i, $answersLink)){
+                                    if (strlen($_POST["quize-answer-$i"]) < 4){
+                                        header("Location: ../../?page=newtopic&res=3nqa");
+                                        exit;
+                                    }
+                                    array_push($answers, $_POST["quize-answer-$i"]);
+                                } else
+                                    continue;
+                            }
+                            \Forum\ForumAgent::CreateQuize($newTopicId, $_POST["quize-question-input"], $answers);
+                        } else {
+                            header("Location: ../../?page=newtopic&res=3nqt");
+                            exit;
+                        }
+                    }
+
                     \Forum\ForumAgent::CreateMentionNotification('c', $user->getId(), $newTopicId, $_POST["topic-content-textarea"]);
                     header("Location: ../../?topic=$newTopicId");
                     exit;

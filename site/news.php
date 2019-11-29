@@ -1,4 +1,7 @@
 <?php
+/** TONISFEL TAVERN CMS
+ *
+ */
 if (!defined("TT_Index")){ header("index.php?page=errors/forbidden"); exit; }
 if (empty($_REQUEST["category"])) {
     $pageName = "Главная";
@@ -13,9 +16,9 @@ $topicCount = \Forum\ForumAgent::GetTopicCount($_REQUEST["category"]);
 if ($topicCount == 0)
     include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/news_empty.html";
 else {
-    foreach($topicList as $topic){
-        $topic = new \Forum\Topic($topic);
-        include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/news/preview.html";
+    for ($i = 0; $i < count($topicList); $i++){
+        $topic = new \Forum\Topic($topicList[$i]);
+        include "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/news/preview.html";
         $newBody = getBrick();
         $newBody = str_replace_once("{TOPIC_AUTHOR_AVATAR}", $topic->getAuthor()->getAvatar(), $newBody);
         $newBody = str_replace_once("{TOPIC_AUTHOR_ID}", $topic->getAuthor()->getId(), $newBody);
@@ -26,6 +29,7 @@ else {
         $newBody = str_replace_once("{TOPIC_DISLIKES_COUNT}", $topic->getDislikes(), $newBody);
         $newBody = str_replace_once("{TOPIC_NAME}", (($topic->getStatus() == 0) ? "<span class=\"glyphicons glyphicons-lock\"></span> " : "" ) . $topic->getName(), $newBody);
         $newBody = str_replace_once("{TOPIC_BODY}", Engine\Engine::ChatFilter(\Engine\Engine::CompileMentions(html_entity_decode(\Engine\Engine::CompileBBCode($topic->getPretext())))), $newBody);
+        $topic = null;
         echo $newBody;
     }
 }

@@ -1,7 +1,12 @@
 <form action="site/scripts/topicer.php" method="post">
     <h3><span class="glyphicons glyphicons-file-plus"></span> Создание новой темы</h3>
     {NEWTOPIC_ERRORS}
-    <hr>
+    {NEWTOPIC_QUIZE}
+    <div class="btn-group сol-lg-12" style="margin-bottom: 10px;">
+        <p>Включение опроса:</p>
+        <button class="btn btn-default col-lg-6" id="quize-create-btn" type="button"><span class="glyphicon glyphicon-list-alt"></span> Добавить опрос</button>
+        <button class="btn btn-default col-lg-6" id="quize-remove-btn" type="button" disabled><span class="glyphicon glyphicon-trash"></span> Удалить опрос</button>
+    </div>
     <div class="input-group">
         <div class="input-group-addon">Название темы</div>
         <input class="form-control" type="text" name="topic-name-input" placeholder="Внезапная новость" maxlength="100">
@@ -169,4 +174,20 @@
     $("select#topic-text-font-sizer").on("change", function(){
         insertBBCode("size=" + $(this).val(), "size", document.getElementById("topic-content-textarea"));
     });
+    $("button#quize-create-btn").on("click", function() {
+        if ($("div.quize-frame").is(":hidden")) {
+            $("div.quize-frame").show();
+            $(this).prop("disabled", true);
+            $("#quize-remove-btn").prop("disabled", false);
+            $("#quizer-status").val("1");
+        }
+    });
+
+    $("button#quize-remove-btn").on("click", function() {
+        $("div.quize-frame").hide();
+        $(this).prop("disabled", true);
+        $("#quize-create-btn").prop("disabled", false);
+        $("#quizer-status").val("0");
+    });
+
 </script>

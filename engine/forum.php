@@ -517,10 +517,11 @@ namespace Forum {
                 $this->QuizeTopicId = $topicId;
                 $this->QuizeId = $id;
                 $this->QuizeQuest = $quest;
+                $stmt = null;
             }
 
             if ($stmt = $mysqli->prepare("SELECT id, var FROM tt_quizesvars WHERE quizId = ?")){
-                $stmt->bind_param("i", $this->QuizeId);
+                $stmt->bind_param("i", $quizeId);
                 $stmt->execute();
                 $stmt->bind_result($id, $var);
                 $varsForQuize = [];
@@ -528,17 +529,19 @@ namespace Forum {
                     array_push($varsForQuize, [$id, $var]);
                 }
                 $this->QuizeVars = $varsForQuize;
+                $stmt = null;
             }
 
             if ($stmt = $mysqli->prepare("SELECT * FROM tt_quizesanswers WHERE quizId = ?")){
-                $stmt->bind_param("i", $this->QuizeId);
+                $stmt->bind_param("i", $quizeId);
                 $stmt->execute();
-                $stmt->bind_result($userId, $quizeId, $varId);
+                $stmt->bind_result($userId, $quizId, $varId);
                 $answers = [];
                 while($stmt->fetch()){
-                    array_push($answers, [$userId, $quizeId, $varId]);
+                    array_push($answers, [$userId, $quizId, $varId]);
                 }
                 $this->QuizeAnswers = $answers;
+                $stmt = null;
             }
 
             if ($stmt = $mysqli->prepare("SELECT count(*) FROM tt_quizesanswers WHERE quizId = ?")){
@@ -547,6 +550,7 @@ namespace Forum {
                 $stmt->bind_result($count);
                 $stmt->fetch();
                 $this->QuiseAnswersCount = $count;
+                $stmt = null;
             }
         }
         public function getId(){
@@ -578,7 +582,19 @@ namespace Forum {
             return false;
         }
         public function getTotalAnswers(){
-            return ForumAgent::GetTotalVotedCount($this->getId());
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            if ($mysqli->errno){
+                ErrorManager::GenerateError(2);
+                return ErrorManager::GetError();
+            }
+
+            if ($stmt = $mysqli->prepare("SELECT count(*) FROM tt_quizesanswers WHERE quizId = ?")){
+                $stmt->bind_param("i", $this->QuizeId);
+                $stmt->execute();
+                $stmt->bind_result($count);
+                $stmt->fetch();
+                return $count;
+            }
         }
     }
     class TopicComment extends ForumAgent{
@@ -714,22 +730,53 @@ namespace Forum {
             return false;
         }
 
-        public static function GetQuizeByTopic(int $quizId){
-            return DataKeeper::Get("count(*)", ["topicId"], ["id" => $quizId]);
+        public static function GetQuizeByTopic(int $topicId){
+            //return DataKeeper::Get("tt_quizes", ["count(*)"], ["id" => $quizId]);
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            if ($mysqli->errno){
+                ErrorManager::GenerateError(2);
+                return ErrorManager::GetError();
+            }
+            if ($stmt = $mysqli->prepare("SELECT id FROM tt_quizes WHERE topicId = ?")){
+                $stmt->bind_param("i", $topicId);
+                $stmt->execute();
+                $stmt->bind_result($count);
+                $stmt->fetch();
+                if ($count < 1)
+                    return false;
+                else
+                    return true;
+            }
         }
         public static function IsExistQuizeInTopic(int $topicId){
             $return = DataKeeper::Get("tt_quizes", ["count(*)"], ["topicId" => $topicId]);
-            if ($return[0] >= 1)
+            if ($return >= 1)
                 return true;
             else
                 return false;
         }
         public static function IsVoted(int $userId, int $quizId){
-            $result = DataKeeper::Get("tt_quizesanswers", ["count(*)"], ["userId" => $userId, "quizId" => $quizId]);
-            if ($result[0] == 1)
-                return true;
-            else
-                return false;
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+
+            if ($mysqli->errno){
+                ErrorManager::GenerateError(2);
+                return ErrorManager::GetError();
+            }
+
+            if ($stmt = $mysqli->prepare("SELECT count(*) FROM tt_quizesanswers WHERE userId=? AND quizId=?")){
+                $stmt->bind_param("ii", $userId, $quizId);
+                $stmt->execute();
+                if ($stmt->errno){
+                    ErrorManager::GenerateError(9);
+                    return ErrorManager::GetError();
+                }
+                $stmt->bind_result($count);
+                $stmt->fetch();
+                if ($count > 0)
+                    return true;
+            }
+
+            return false;
         }
         public static function CreateQuize(int $topicId, string $quest, array $answers){
             if ($lastId = DataKeeper::InsertTo("tt_quizes", ["topicId" => $topicId,"quest" => $quest])){
@@ -746,12 +793,6 @@ namespace Forum {
                 return true;
             else
                 return false;
-        }
-        public static function GetTotalVotedCount(int $quizId){
-            return DataKeeper::Get("tt_quizesanswers", ["count(*)"], ["quizId" => $quizId]);
-        }
-        public static function GetVotedCount(int $quizId, int $varId){
-            return DataKeeper::Get("tt_quizesanswers", ["count(*)"], ["quizId" => $quizId, "varId" => $varId]);
         }
 
         public static function CreateCategory($name, $descript, $public = true, $no_comments = false, $no_new_topics = false){
@@ -889,7 +930,7 @@ namespace Forum {
                 "preview" => $preview,
                 "createDate" => date("Y-m-d H:i:s", Engine::GetSiteTime()),
                 "status" => 1]);
-            var_dump($int);
+
             if ($int !== false) {
                 return $int;
             }

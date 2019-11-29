@@ -38,6 +38,47 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
             }
         }
         $new = str_replace_once("{TOPIC_DELETE_ERROR}", $info, $new);
+//Quize block
+        if (\Forum\ForumAgent::IsExistQuizeInTopic($topic->getId())) {
+            include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/news/quizeframe.html";
+            $quizeFrame = getBrick();
+            $quize = new \Forum\Quize(\Forum\ForumAgent::GetQuizeByTopic($topic->getId()));
+            if (\Forum\ForumAgent::IsVoted($user->getId(), $quize->getId())) {
+                $quizeFrame = str_replace_once("{QUIZE_QUIZER_HIDDEN}", "hidden", $quizeFrame);
+                $quizeFrame = str_replace_once("{QUIZE_RESULTS_HIDDEN}", "", $quizeFrame);
+            } else {
+                $quizeFrame = str_replace_once("{QUIZE_QUIZER_HIDDEN}", "", $quizeFrame);
+                $quizeFrame = str_replace_once("{QUIZE_RESULTS_HIDDEN}", "hidden", $quizeFrame);
+            }
+
+            $quizeFrame = str_replace("{QUIZE_QUESTION}", $quize->getQuestion(), $quizeFrame);
+            $quizeAnswersForInput = "";
+            $quizeAnswers = $quize->getVars();
+            for ($i = 0; $i < count($quizeAnswers); $i++) {
+                $color = $i + 1;
+                $id = $quizeAnswers[$i][0];
+                $var = $quizeAnswers[$i][1];
+                $quizeAnswersForInput .= "<p><span class=\"quize-label quize-label-$color\">$var</span> "
+                    . "<span data-var-id=\"$id\">" . $quize->getProcentAnswer($quizeAnswers[$i][0]) . "</span></p>";
+            }
+            $quizeFrame = str_replace_once("{QUIZE_VOTES}", $quizeAnswersForInput, $quizeFrame);
+            $quizeAnswersForInput = "";
+            $quizeAnswers = $quize->getVars();
+            for ($i = 0; $i < count($quizeAnswers); $i++) {
+                $id = $quizeAnswers[$i][0];
+                $var = $quizeAnswers[$i][1];
+                $quizeAnswersForInput .= "<button class=\"btn btn-default\" type=\"button\" id=\"quize-answer-$id\" 
+                data-var-id=\"$id\">$var</button>";
+            }
+            $quizeFrame = str_replace_once("{QUIZE_ANSWERS}", $quizeAnswersForInput, $quizeFrame);
+            $quizeFrame = str_replace("{QUIZE_ANSWERED_COUNT}", $quize->getTotalAnswers(), $quizeFrame);
+            $quizeFrame = str_replace_once("{USER_ID}", $user->getId(), $quizeFrame);
+            $quizeFrame = str_replace("{QUIZE_ID}", $quize->getId(), $quizeFrame);
+            $new = str_replace_once("{TOPIC_QUIZE}", $quizeFrame, $new);
+        } else {
+            $new = str_replace_once("{TOPIC_QUIZE}", "", $new);
+        }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         $new = str_replace("{TOPIC_ID}", $topic->getId(), $new);
         $new = str_replace_once("{TOPIC_HEADER}", (($topic->getStatus() == 0) ? "<span class=\"glyphicons glyphicons-lock\"></span> " : "" ) . $topic->getName(), $new);
         $new = str_replace_once("{TOPIC_CATEGORY_ID}", $topic->getCategoryId(), $new);
