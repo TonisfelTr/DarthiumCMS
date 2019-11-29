@@ -7,8 +7,10 @@ include "../../../engine/main.php";
 @$varId = $_POST["var_id"];
 
 if (\Users\UserAgent::IsUserExist($userId)){
-    \Forum\ForumAgent::VoteInQuize($userId, $quizeId, $varId);
-    echo "ok";
+    if (!\Forum\ForumAgent::IsVoted($userId, $quizeId)) {
+        \Forum\ForumAgent::VoteInQuize($userId, $quizeId, $varId);
+        echo "ok";
+    }
 }
 else
     echo "bad";

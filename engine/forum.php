@@ -944,6 +944,10 @@ namespace Forum {
                 return false;
 
             if (DataKeeper::Delete("tt_topics", ["id" => $topicId])){
+                $quizId = (ForumAgent::IsExistQuizeInTopic($topicId)) ? ForumAgent::GetQuizeByTopic($topicId) : "";
+                DataKeeper::Delete("tt_quizes", ["topicId" => $topicId]);
+                DataKeeper::Delete("tt_quizesanswers", ["quizId" => $quizId]);
+                DataKeeper::Delete("tt_quizesvars", ["quizId" => $quizId]);
                 return true;
             }
 
@@ -957,7 +961,7 @@ namespace Forum {
                 return ErrorManager::GetError();
             }
 
-            $lowBorder = ($page - 1) * 14;
+            $lowBorder = $page * 14 - 14;
             $highBorder = 14;
 
             $stmtQuery = false;

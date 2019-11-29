@@ -3,15 +3,15 @@
  *
  */
 if (!defined("TT_Index")){ header("index.php?page=errors/forbidden"); exit; }
-if (empty($_REQUEST["category"])) {
+if (empty($_GET["category"])) {
     $pageName = "Главная";
-    $_REQUEST["category"] = null;
+    $_GET["category"] = null;
 }
 else
-    $pageName = \Forum\ForumAgent::GetCategoryParam($_REQUEST["category"], "name");
+    $pageName = \Forum\ForumAgent::GetCategoryParam($_GET["category"], "name");
 
-$topicList = \Forum\ForumAgent::GetTopicList((!empty($_REQUEST["p"])) ? $_REQUEST["p"] : 1, $_REQUEST["category"]);
-$topicCount = \Forum\ForumAgent::GetTopicCount($_REQUEST["category"]);
+$topicList = \Forum\ForumAgent::GetTopicList((!empty($_GET["p"])) ? $_GET["p"] : 1, $_GET["category"]);
+$topicCount = \Forum\ForumAgent::GetTopicCount($_GET["category"]);
 
 if ($topicCount == 0)
     include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/news_empty.html";
@@ -32,6 +32,13 @@ else {
         $topic = null;
         echo $newBody;
     }
+    $pageBorder = $topicCount/14;
+    $btns = "<div class=\"btn-group pagination\">";
+    for ($j = 1; $j <= $pageBorder; $j++){
+        $btns .= "<a href=\"?p=$j\" class=\"btn btn-default\">$j</a>";
+    }
+    $btns .= "</div>";
+    echo $btns;
 }
 ?>
 
