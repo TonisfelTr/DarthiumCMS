@@ -46,6 +46,9 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
             if ($user !== false && \Forum\ForumAgent::IsVoted($user->getId(), $quize->getId())) {
                 $quizeFrame = str_replace_once("{QUIZE_QUIZER_HIDDEN}", "hidden", $quizeFrame);
                 $quizeFrame = str_replace_once("{QUIZE_RESULTS_HIDDEN}", "", $quizeFrame);
+            } elseif ($user === false) {
+                $quizeFrame = str_replace_once("{QUIZE_QUIZER_HIDDEN}", "hidden", $quizeFrame);
+                $quizeFrame = str_replace_once("{QUIZE_RESULTS_HIDDEN}", "", $quizeFrame);
             } else {
                 $quizeFrame = str_replace_once("{QUIZE_QUIZER_HIDDEN}", "", $quizeFrame);
                 $quizeFrame = str_replace_once("{QUIZE_RESULTS_HIDDEN}", "hidden", $quizeFrame);
@@ -72,7 +75,10 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
             }
             $quizeFrame = str_replace_once("{QUIZE_ANSWERS}", $quizeAnswersForInput, $quizeFrame);
             $quizeFrame = str_replace("{QUIZE_ANSWERED_COUNT}", $quize->getTotalAnswers(), $quizeFrame);
-            $quizeFrame = str_replace_once("{USER_ID}", $user->getId(), $quizeFrame);
+            if ($user !== false)
+                $quizeFrame = str_replace_once("{USER_ID}", $user->getId(), $quizeFrame);
+            else
+                $quizeFrame = str_replace_once("{USER_ID}", 0, $quizeFrame);
             $quizeFrame = str_replace("{QUIZE_ID}", $quize->getId(), $quizeFrame);
             $new = str_replace_once("{TOPIC_QUIZE}", $quizeFrame, $new);
         } else {
