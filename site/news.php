@@ -10,8 +10,13 @@ if (empty($_GET["category"])) {
 else
     $pageName = \Forum\ForumAgent::GetCategoryParam($_GET["category"], "name");
 
-$topicList = \Forum\ForumAgent::GetTopicList((!empty($_GET["p"])) ? $_GET["p"] : 1, $_GET["category"]);
-$topicCount = \Forum\ForumAgent::GetTopicCount($_GET["category"]);
+if (isset($_GET["category"])) {
+    $topicList = \Forum\ForumAgent::GetTopicList((!empty($_GET["p"])) ? $_GET["p"] : 1, false, $_GET["category"]);
+    $topicCount = \Forum\ForumAgent::GetTopicCount($_GET["category"]);
+} else {
+    $topicList = \Forum\ForumAgent::GetTopicList((!empty($_GET["p"])) ? $_GET["p"] : 1, false);
+    $topicCount = \Forum\ForumAgent::GetTopicCount();
+}
 
 if ($topicCount == 0)
     include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/news_empty.html";

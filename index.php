@@ -162,8 +162,16 @@ $main = str_replace_once("{INDEX_PAGE_HEADER}", $header, $main);
 $main = str_replace_once("{INDEX_PAGE_OFFLINE}", $offline, $main);
 $main = str_replace_once("{INDEX_PAGE_INFORMATOR}", $info, $main);
 $main = str_replace_once("{INDEX_PAGE_LEFT}", $leftPanels, $main);
+
+if (isset($_GET["category"]) && $_GET["category"] != "")
+    $main = str_replace_once("{INDEX_CATEGORY_HINT}", "<div class=\"alert alert-info\">
+                    <span class=\"glyphicons glyphicons-info-sign\"></span> <strong>Категория:</strong> " .
+                    \Forum\ForumAgent::GetCategoryParam($_GET["category"], "name") . "</div>", $main);
+else
+    $main = str_replace_once("{INDEX_CATEGORY_HINT}", "", $main);
+
 $main = str_replace_once("{INDEX_PAGE_NEWSPAPER}", $newsPaper, $main);
-if (empty($_GET) || isset($_GET["search"])){
+if (empty($_GET) || $_GET["category"] == "" || isset($_GET["search"])){
     include_once "./site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/searchpanel.html";
     $searchBlock = getBrick();
     $main = str_replace_once("{INDEX_SEARCHING}", $searchBlock, $main);

@@ -973,26 +973,31 @@ namespace Forum {
 
             $stmtQuery = false;
             if (!$mini) {
-                if (is_null($categoryId)) {
-                    if ($stmt = $mysqli->prepare("SELECT `id` FROM `tt_topics` ORDER BY `id` DESC LIMIT $lowBorder, $highBorder")) $stmtQuery = true;
+                if ($categoryId == null) {
+                    if ($stmt = $mysqli->prepare("SELECT `id` FROM `tt_topics` ORDER BY `id` DESC LIMIT $lowBorder, $highBorder")) $stmtQuery = false;
                 } else {
                     if ($stmt = $mysqli->prepare("SELECT `id` FROM `tt_topics` WHERE `categoryId`=? ORDER BY `id` DESC LIMIT $lowBorder, $highBorder")) $stmtQuery = true;
                 }
             } else {
-                if ($stmt = $mysqli->prepare("SELECT `id` FROM `tt_topics` ORDER BY `id` DESC LIMIT 0, 5")) $stmtQuery = true;
+                if ($stmt = $mysqli->prepare("SELECT `id` FROM `tt_topics` ORDER BY `id` DESC LIMIT 0, 5")) $stmtQuery = false;
             }
-            if ($stmtQuery){
+            if ($stmtQuery) {
                 if (!is_null($categoryId))
-                    $stmt->bind_param("i",$categoryId);
-                $stmt->execute();
-                $stmt->bind_result($id);
-                $result = [];
-                while ($stmt->fetch()){
-                    array_push($result, $id);
-                }
-                return $result;
+                    $stmt->bind_param("i", $categoryId);
             }
-            return false;
+
+            $stmt->execute();
+
+            if ($stmt->errno){
+                echo $stmt->error;
+            }
+            $stmt->bind_result($id);
+            $result = [];
+            while ($stmt->fetch()){
+                array_push($result, $id);
+            }
+            return $result;
+
         }
         public static function GetTopicCount($categoryId = null){
             $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
@@ -1004,21 +1009,19 @@ namespace Forum {
 
             $stmtQuery = false;
             if (is_null($categoryId)) {
-                if ($stmt = $mysqli->prepare("SELECT count(*) FROM `tt_topics`")) $stmtQuery = true;
+                if ($stmt = $mysqli->prepare("SELECT count(*) FROM `tt_topics`")) $stmtQuery = false;
             } else {
-                if ($stmt = $mysqli->prepare("SELECT count(*) FROM `tt_topics` WHERE `categoryId`=?")) $stmtQuery = true;
+                if ($stmt = $mysqli->prepare("SELECT count(*) FROM `tt_topics` WHERE categoryId=?")) $stmtQuery = true;
             }
-            if ($stmtQuery){
-                if (!is_null($categoryId)){
+            if ($stmtQuery) {
+                if (!is_null($categoryId)) {
                     $stmt->bind_param("i", $categoryId);
                 }
-                $stmt->execute();
-                $stmt->bind_result($result);
-                $stmt->fetch();
-                return $result;
             }
-
-            return false;
+            $stmt->execute();
+            $stmt->bind_result($result);
+            $stmt->fetch();
+            return $result;
 
         }
         public static function GetCountTopicOfAuthor($userId){
