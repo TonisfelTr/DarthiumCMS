@@ -27,4 +27,15 @@ for ($i = 0; $i < count($usersInGroup); $i++){
 }
 
 $groupPage = str_replace_once("{GROUP_USER_LIST}", $tableUnit, $groupPage);
+
+$pageCount = \Users\GroupAgent::GetUsersCountInGroup($group->getId()) % 15;
+if ($pageCount != 1){
+    $groupTablePagination = "<div class=\"btn-group\">";
+    for ($i = 0; $i < $pageCount; $i++)
+        $groupTablePagination .= "<a class=\"btn btn-default\" href=?group=" . $group->getId() . "&p=$i>$i</a>";
+    $groupTablePagination .= "</div>";
+    $groupPage = str_replace_once("{GROUP_TABLE_PAGINATION}", $groupTablePagination, $groupPage);
+} else
+    $groupPage = str_replace_once("{GROUP_TABLE_PAGINATION}", "", $groupPage);
+
 echo $groupPage;

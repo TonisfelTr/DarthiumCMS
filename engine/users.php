@@ -2178,6 +2178,24 @@ namespace Users {
             $mysqli->close();
             return $result1;
         }
+        public static function GetUsersCountInGroup(int $groupId){
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+
+            if (mysqli_connect_errno()) {
+                printf(mysqli_connect_error() . "<br />");
+                ErrorManager::GenerateError(2);
+                return ErrorManager::GetError();
+            }
+
+            if ($stmt = $mysqli->prepare("SELECT count(*) FROM tt_users WHERE group = ?")){
+                $stmt->bind_param("i", $groupId);
+                $stmt->execute();
+                $stmt->bind_result($count);
+                $stmt->fetch();
+                return $count;
+            }
+            return false;
+        }
         public static function GetGroupUsers($id, int $page = 1){
             $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
 
