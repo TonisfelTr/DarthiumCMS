@@ -168,6 +168,9 @@ namespace Users {
         public function getDescript(){
             return $this->gDescript;
         }
+        public function getId(){
+            return $this->gId;
+        }
     }
 
     class User{
