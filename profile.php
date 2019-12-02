@@ -598,6 +598,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
     $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}", "", $main);
     $main = str_replace_once("{PROFILE_MAIN_BODY}",$profileMainPanel, $main);
     $main = str_replace("{PROFILE_PAGE:USER_NICKNAME}", $user->getNickname(), $main);
+    $main = str_replace("{PROFILE_PAGE:USER_GROUP_ID}", $user->UserGroup()->getId(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_GROUP_COLOR}", ($user->UserGroup()->getColor() == "#000000") ? "#ffffff" : $user->UserGroup()->getColor(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_GROUP_NAME}", $user->UserGroup()->getName(), $main);
     $lastOnline = 0;
@@ -866,6 +867,7 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
     $main = str_replace_once("{PROFILE_MAIN_BODY}",$profileMainPanel, $main);
     $main = str_replace("{PROFILE_PAGE:USER_AVATAR}", $user->getAvatar(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_NICKNAME}", $user->getNickname(), $main);
+    $main = str_replace("{PROFILE_PAGE:USER_GROUP_ID}", $user->UserGroup()->getId(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_GROUP_COLOR}", ($user->UserGroup()->getColor() == "#000000") ? "#ffffff" : $user->UserGroup()->getColor(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_GROUP_NAME}", $user->UserGroup()->getName(), $main);
     //Механизм последнего входа.

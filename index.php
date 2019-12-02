@@ -25,6 +25,7 @@ function str_replace_once($search, $replace, $text){
 define("TT_Index", true);
 include "./engine/main.php";
 \Engine\Engine::LoadEngine();
+
 $user = false;
 $sessionRes = \Users\UserAgent::SessionContinue();
 if ($sessionRes == 1) $user = new \Users\User($_SESSION["uid"]);
@@ -95,8 +96,11 @@ elseif (!empty($_GET["topic"])){
     }
 elseif (!empty($_GET["search"])){
     include_once "./site/search.php";
+} elseif (!empty($_GET["group"])){
+    include_once "./site/grouplist.php";
 }
-else include_once "./site/news.php";
+else
+    include_once "./site/news.php";
 $newsPaper = getBrick();
 include_once "./site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/footer.html";
 $footer = getBrick();
@@ -171,9 +175,14 @@ else
     $main = str_replace_once("{INDEX_CATEGORY_HINT}", "", $main);
 
 $main = str_replace_once("{INDEX_PAGE_NEWSPAPER}", $newsPaper, $main);
-if (empty($_GET) || $_GET["category"] == "" || isset($_GET["search"])){
+
+if ($_GET["category"] == "" || isset($_GET["search"])){
     include_once "./site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/searchpanel.html";
     $searchBlock = getBrick();
+    if (isset($_GET["search"]) && $_GET["search"] != "")
+        $searchBlock = str_replace("{INDEX_SEARCHING_TEXT}", $_GET["search"], $searchBlock);
+    else
+        $searchBlock = str_replace("{INDEX_SEARCHING_TEXT}", "", $searchBlock);
     $main = str_replace_once("{INDEX_SEARCHING}", $searchBlock, $main);
 } else {
     $main = str_replace_once("{INDEX_SEARCHING}", "", $main);
