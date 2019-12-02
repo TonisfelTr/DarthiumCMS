@@ -950,3 +950,11 @@ span.quize-label-10{
 div.quize-footer{
     margin: 5px;
 }
+
+table.group-users-table > thead > tr
+{
+    padding: 10px;
+    background: #0b4b16;
+    color: white;
+
+}

@@ -93,6 +93,7 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
         $new = str_replace_once("{TOPIC_AUTHOR_NICKNAME}", $author->getNickname(), $new);
         $new = str_replace_once("{TOPIC_AUTHOR_GROUP_COLOR}", $author->UserGroup()->getColor(), $new);
         $new = str_replace_once("{TOPIC_AUTHOR_GROUP}", $author->UserGroup()->getName(), $new);
+        $new = str_replace_once("{TOPIC_AUTHOR_GROUP_ID}", $author->UserGroup()->getId(), $new);
         $new = str_replace_once("{TOPIC_AUTHOR_ID}", $topic->getAuthorId(), $new);
         $new = str_replace_once("{TOPIC_AUTHOR_LAST_ONLINE}", ((\Engine\Engine::GetSiteTime() > $author->getLastTime() + 15 * 60) ? "заходил" . (($author->getSex() == 2) ? "а" : "")
             . " в " . \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s", $author->getLastTime())) : "<span style=\"color: #00dd00;\">онлайн</span>"), $new);
@@ -171,6 +172,7 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
         $currentComment = str_replace_once("{COMMENT_AUTHOR_NICKNAME}", $comment->author()->getNickname(), $currentComment);
         $currentComment = str_replace_once("{COMMENT_AUTHOR_ID}", $comment->author()->getId(), $currentComment);
         $currentComment = str_replace_once("{COMMENT_AUTHOR_GROUP_NAME}", $comment->author()->UserGroup()->getName(), $currentComment);
+        $currentComment = str_replace_once("{COMMENT_AUTHOR_GROUP_ID}", $comment->author()->UserGroup()->getId(), $currentComment);
         $currentComment = str_replace_once("{COMMENT_AUTHOR_GROUP_COLOR}", $comment->author()->UserGroup()->getColor(), $currentComment);
         switch ($comment->author()->getSex()){
             case 1:

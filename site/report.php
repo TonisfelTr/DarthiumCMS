@@ -174,6 +174,7 @@ if (empty($_GET["preg"])) {
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:CREATE_DATE}", \Engine\Engine::DateFormatToRead($report->getCreateDate()), $reportSeeBlock);
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_AVATAR}", $report->ReportAuthor()->getAvatar(), $reportSeeBlock);
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_NICKNAME}", $report->ReportAuthor()->getNickname(), $reportSeeBlock);
+            $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_GROUP_ID}", $report->ReportAuthor()->UserGroup()->getId(), $reportSeeBlock);
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_GROUP_COLOR}", $report->ReportAuthor()->UserGroup()->getColor(), $reportSeeBlock);
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_GROUP_NAME}", $report->ReportAuthor()->UserGroup()->getName(), $reportSeeBlock);
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_REALNAME}", ($report->ReportAuthor()->getRealName() != '') ? "Имя: " . htmlentities($report->ReportAuthor()->getRealName()) . "<br>" : "", $reportSeeBlock);
@@ -240,6 +241,7 @@ if (empty($_GET["preg"])) {
 
                     $reportAnswer = str_replace_once("{REPORT_PAGE:AO_AVATAR}", $answer->getAuthor()->getAvatar() ,$reportAnswer);
                     $reportAnswer = str_replace_once("{REPORT_PAGE:AO_NICKNAME}", $answer->getAuthor()->getNickname() ,$reportAnswer);
+                    $reportAnswer = str_replace_once("{REPORT_PAGE:AO_GROUP_ID}", $answer->getAuthor()->UserGroup()->getId(), $reportAnswer);
                     $reportAnswer = str_replace_once("{REPORT_PAGE:AO_GROUP_COLOR}", $answer->getAuthor()->UserGroup()->getColor() ,$reportAnswer);
                     $reportAnswer = str_replace_once("{REPORT_PAGE:AO_GROUP_NAME}", $answer->getAuthor()->UserGroup()->getName() ,$reportAnswer);
                     $reportAnswer = str_replace_once("{REPORT_PAGE:AO_REALNAME}", ($answer->getAuthor()->getRealName() != '') ? "Имя: " . htmlentities($answer->getAuthor()->getRealName()) . "<br>" : "" ,$reportAnswer);

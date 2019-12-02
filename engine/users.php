@@ -1917,28 +1917,6 @@ namespace Users {
     }
     class GroupAgent{
 
-        private static function IsGroupExists($id){
-
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf(mysqli_connect_error() . "<br />");
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            $stmt = $mysqli->prepare("SELECT count(*) FROM `tt_groups` WHERE id=?");
-            $stmt->bind_param("i", $id);
-            $stmt->execute();
-            $stmt->bind_result($result);
-            $stmt->fetch();
-
-            if ($result != 0) return True;
-            elseif (mysqli_stmt_errno($stmt)) ErrorManager::GenerateError(9);
-            else return False;
-
-            return False;
-        }
         private static function CheckNameValid($name){
             if (strlen($name) <= 4){
                 ErrorManager::GenerateError(15);
@@ -1978,6 +1956,28 @@ namespace Users {
 
         }
 
+        public static function IsGroupExists($id){
+
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+
+            if (mysqli_connect_errno()) {
+                printf(mysqli_connect_error() . "<br />");
+                ErrorManager::GenerateError(2);
+                return ErrorManager::GetError();
+            }
+
+            $stmt = $mysqli->prepare("SELECT count(*) FROM `tt_groups` WHERE id=?");
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            $stmt->bind_result($result);
+            $stmt->fetch();
+
+            if ($result != 0) return True;
+            elseif (mysqli_stmt_errno($stmt)) ErrorManager::GenerateError(9);
+            else return False;
+
+            return False;
+        }
         public static function AddGroup($name, $color, $descript){
 
             if (!self::CheckNameValid($name) == True) return ErrorManager::GetError();
@@ -2177,6 +2177,30 @@ namespace Users {
             $stmt->close();
             $mysqli->close();
             return $result1;
+        }
+        public static function GetGroupUsers($id, int $page = 1){
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+
+            if (mysqli_connect_errno()) {
+                printf(mysqli_connect_error() . "<br />");
+                ErrorManager::GenerateError(2);
+                return ErrorManager::GetError();
+            }
+
+            $lowBorder = $page * 15 - 15;
+            $highBorder = 15;
+
+            if ($stmt = $mysqli->prepare("SELECT id FROM tt_users WHERE `group` = ? ORDER BY id DESC LIMIT $lowBorder, $highBorder")){
+                $stmt->bind_param("i", $id);
+                $stmt->execute();
+                $stmt->bind_result($id);
+                $result = [];
+                while ($stmt->fetch()){
+                    array_push($result, $id);
+                }
+                return $result;
+            }
+            return false;
         }
         public static function IsHavePerm($id, $perm){
             $nonPerms = array(0=>'id', 1=>'name', 2=>'color', 3=>'descript');
