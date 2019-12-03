@@ -1555,7 +1555,7 @@ namespace Users {
                 return ErrorManager::GetError();
             }
 
-            $lowBorder = ($page-1)*50;
+            $lowBorder = $page * 50 - 50;
             $highBorder = $page*50;
 
             if ($paramsArray == 0)
