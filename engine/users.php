@@ -6,6 +6,7 @@ namespace Users {
     use Engine\ErrorManager;
     use Engine\Mailer;
     use Engine\Uploader;
+    use Forum\ForumAgent;
     use Guards\SocietyGuard;
 
     class Group{
@@ -1456,7 +1457,74 @@ namespace Users {
 
         }
         public static function DeleteUser($id){
+            function GetTopics(int $userId){
+                $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+
+                if (mysqli_connect_errno()) {
+                    printf("Не удалось подключиться: %s\n", mysqli_connect_error());
+                    return False;
+                }
+
+                if ($stmt = $mysqli->prepare("SELECT id FROM tt_topics WHERE authorId = ?")){
+                    $stmt->bind_param("i", $userId);
+                    $stmt->execute();
+                    $stmt->bind_result($id);
+                    $result = [];
+                    while($stmt->fetch()){
+                        array_push($result, $id);
+                    }
+                    return $result;
+                    $stmt = null;
+                }
+            }
+            function IsWithQuize(int $topicId){
+                $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+
+                if (mysqli_connect_errno()) {
+                    printf("Не удалось подключиться: %s\n", mysqli_connect_error());
+                    return False;
+                }
+
+                if ($stmt = $mysqli->prepare("SELECT id FROM tt_quizes WHERE topicId = ?")){
+                    $stmt->bind_param("i", $topicId);
+                    $stmt->execute();
+                    $stmt->bind_result($id);
+                    $stmt->fetch();
+                    return $id;
+                }
+            }
+
             DataKeeper::Delete("tt_users", ["id" => $id]);
+            /* These things must be deleted:
+             * 1. Notifications
+            */
+            DataKeeper::Delete("tt_notifications", ["type" => 20, "subject" => $id]);
+            DataKeeper::Delete("tt_notifications", ["fromUid" => $id]);
+            DataKeeper::Delete("tt_notifications", ["toUid" => $id]);
+             /* 2. Topics */
+            $topics = GetTopics($id);
+            for ($i = 0; $i < count($topics); $i++){
+               if (IsWithQuize($topics[$i]) > 0)
+                   ForumAgent::DeleteQuize(IsWithQuize($topics[$i]));
+            }
+            DataKeeper::Delete("tt_topics", ["authorId" => $id]);
+             /* 3. Comments */
+            DataKeeper::Delete("tt_topiccomments", ["authorId" => $id]);
+             /* 4. Reports */
+            DataKeeper::Delete("tt_reports", ["author" => $id]);
+             /* 5. Answers in reports. */
+            DataKeeper::Delete("tt_reportda", ["addedUID" => $id]);
+            DataKeeper::Delete("tt_reportanswers", ["authorId" => $id]);
+             /* 6. Friend */
+            DataKeeper::Delete("tt_friends", ["fhost" => $id]);
+            DataKeeper::Delete("tt_friends", ["friendId" => $id]);
+             /* 7. PMs */
+            DataKeeper::Delete("tt_pmessages", ["senderUID" => $id]);
+            DataKeeper::Delete("tt_pmessages", ["receiverUID" => $id]);
+            /* 8. Blacklisted. */
+            DataKeeper::Delete("tt_blacklisted", ["authorId" => $id]);
+            DataKeeper::Delete("tt_blacklisted", ["blockId" => $id]);
+
         }
         public static function GetAllUsers(){
             $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));

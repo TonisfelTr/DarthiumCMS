@@ -709,42 +709,6 @@ namespace Forum {
             }
             return false;
         }
-
-        public static function SearchByTopicName($topicName){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-            if ($stmt = $mysqli->prepare("SELECT authorId, name FROM tt_topics WHERE name LIKE ?")){
-                $topicSubstrName = iconv("UTF-8", "windows-1251", "%$topicName%");
-                $stmt->bind_param("s", $topicSubstrName);
-                $stmt->execute();
-                $result = [];
-                $stmt->bind_result($authorId, $name);
-                while($stmt->fetch()){
-                    array_push($result, [$authorId, $name]);
-                }
-                return $result;
-            }
-            return false;
-        }
-
-        public static function GetQuizeByTopic(int $topicId){
-            //return DataKeeper::Get("tt_quizes", ["count(*)"], ["id" => $quizId]);
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-            if ($stmt = $mysqli->prepare("SELECT id FROM tt_quizes WHERE topicId = ?")){
-                $stmt->bind_param("i", $topicId);
-                $stmt->execute();
-                $stmt->bind_result($id);
-                $stmt->fetch();
-                return $id;
-            }
-        }
         public static function IsExistQuizeInTopic(int $topicId){
             $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
             if ($mysqli->errno){
@@ -785,6 +749,96 @@ namespace Forum {
 
             return false;
         }
+
+        public static function SearchByTopicName($topicName, int $page = 1){
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            if ($mysqli->errno){
+                ErrorManager::GenerateError(2);
+                return ErrorManager::GetError();
+            }
+            $lowBorder = $page * 15 - 15;
+            $highBorder = 15;
+
+            if ($stmt = $mysqli->prepare("SELECT authorId, name FROM tt_topics WHERE name LIKE ? ORDER BY id DESC LIMIT $lowBorder,$highBorder")){
+                $topicSubstrName = "%$topicName%";
+                $stmt->bind_param("s", $topicSubstrName);
+                $stmt->execute();
+                $result = [];
+                $stmt->bind_result($authorId, $name);
+                while($stmt->fetch()){
+                    array_push($result, [$authorId, $name]);
+                }
+                return $result;
+            }
+            return false;
+        }
+        public static function SearchByQuizeQuestion($quizeQuest, int $page = 1){
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            if ($mysqli->errno){
+                ErrorManager::GenerateError(2);
+                return ErrorManager::GetError();
+            }
+            $lowBorder = $page * 15 - 15;
+            $highBorder = 15;
+            $needle = "%".$quizeQuest."%";
+            if ($stmt = $mysqli->prepare("SELECT authorId, name FROM tt_topics WHERE id = 
+                                           (SELECT topicId FROM tt_quizes WHERE quest LIKE ?) 
+                                            ORDER BY id DESC LIMIT $lowBorder,$highBorder")){
+                $stmt->bind_param("s", $needle);
+                $stmt->execute();
+                $result = [];
+                $stmt->bind_result($authorId, $name);
+                while($stmt->fetch()){
+                    array_push($result, [$authorId, $name]);
+                }
+                return $result;
+            }
+            return false;
+        }
+        public static function SearchByTopicAuthorNickname($nickName, int $page = 1){
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            if ($mysqli->errno){
+                ErrorManager::GenerateError(2);
+                return ErrorManager::GetError();
+            }
+            $lowBorder = $page * 15 - 15;
+            $highBorder = 15;
+
+            if ($stmt = $mysqli->prepare("SELECT id FROM tt_users WHERE nickname LIKE ?")){
+                $authorNickname = "%$nickName%";
+                $stmt->bind_param("s", $authorNickname);
+                $stmt->execute();
+                $result = [];
+                $stmt->bind_result($id);
+                while($stmt->fetch()){
+                    array_push($result, $id);
+                }
+                $stmt = null;
+            }
+
+            $userIdQueryPart = "";
+            for ($i = 0; $i < count($result); $i++){
+                $userIdQueryPart .= "id=?,";
+            }
+
+            return false;
+        }
+
+        public static function GetQuizeByTopic(int $topicId){
+            //return DataKeeper::Get("tt_quizes", ["count(*)"], ["id" => $quizId]);
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            if ($mysqli->errno){
+                ErrorManager::GenerateError(2);
+                return ErrorManager::GetError();
+            }
+            if ($stmt = $mysqli->prepare("SELECT id FROM tt_quizes WHERE topicId = ?")){
+                $stmt->bind_param("i", $topicId);
+                $stmt->execute();
+                $stmt->bind_result($id);
+                $stmt->fetch();
+                return $id;
+            }
+        }
         public static function CreateQuize(int $topicId, string $quest, array $answers){
             if ($lastId = DataKeeper::InsertTo("tt_quizes", ["topicId" => $topicId,"quest" => $quest])){
                 foreach ($answers as $answer){
@@ -800,6 +854,11 @@ namespace Forum {
                 return true;
             else
                 return false;
+        }
+        public static function DeleteQuize(int $quizeId){
+            DataKeeper::Delete("tt_quizes", ["id" => $quizeId]);
+            DataKeeper::Delete("tt_quizeanswers", ["quizId" => $quizeId]);
+            DataKeeper::Delete("tt_quizevars", ["quizId" => $quizeId]);
         }
 
         public static function CreateCategory($name, $descript, $public = true, $no_comments = false, $no_new_topics = false){
