@@ -1524,7 +1524,7 @@ namespace Users {
             /* 8. Blacklisted. */
             DataKeeper::Delete("tt_blacklisted", ["authorId" => $id]);
             DataKeeper::Delete("tt_blacklisted", ["blockId" => $id]);
-
+            DataKeeper::Delete("tt_topicsmarks", ["userId" => $id]);
         }
         public static function GetAllUsers(){
             $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
