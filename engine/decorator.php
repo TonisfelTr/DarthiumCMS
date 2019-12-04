@@ -6,7 +6,7 @@ namespace SiteBuilders {
     use Engine\ErrorManager;
 
     const SB_TABLE = "tt_staticcomponents";
-    const SB_RIGHTSIDE = 1;
+    const SB_RIGHTSIDE = 3;
     const SB_LEFTSIDE = 2;
 
     interface HTMLEntityInterface {

@@ -54,7 +54,7 @@ if (\Users\UserAgent::SessionContinue() === true) {
             exit;
         }
         if (isset($_POST["editpanel"])){
-            $toChange = array();
+            $toChange = [];
             if (isset($_POST["panel-name"])) $toChange["name"] = $_POST["panel-name"];
             if (isset($_POST["panel-content"])) $toChange["content"] = $_POST["panel-content"];
             if (isset($_POST["panel-visibility"])) $toChange["isVisible"] = $_POST["panel-visibility"];

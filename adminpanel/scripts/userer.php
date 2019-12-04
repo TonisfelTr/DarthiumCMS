@@ -314,7 +314,7 @@ if (isset ($_POST["user-edit-save"])){
         if ($user->UserGroup()->getPermission("change_user_group")) {
             if ($eUser->getGroupId() != $_POST["user-edit-group"]) {
                 $groupFromName = $eUser->UserGroup()->getName();
-                $groupToName = \Forum\ForumAgent::GetCategoryParam($_POST["user-edit-group"], "name");
+                $groupToName = \Users\GroupAgent::GetGroupNameById($_POST["user-edit-group"]);
                 \Guards\Logger::LogAction($user->getId(), " изменил(а) группу пользователя " . $eUser->getNickname() .
                 " [$groupFromName -> $groupToName]" );
                 $eUser->groupChange($_POST["user-edit-group"]);

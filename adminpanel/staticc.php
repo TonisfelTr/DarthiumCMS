@@ -51,7 +51,7 @@ if ($editSContentPerm){
         $bannerId = $bigbanner["id"];
         $bannerName = $bigbanner["name"];
         $class = ($bigbanner["isVisible"] == 1) ? "btn-success" : "btn-danger";
-        $buttons[] = "<button class=\"btn $class\" type=\"button\" data-banner-id=\"$bannerId\">$bannerName</button>";
+        array_push($buttons, "<button class=\"btn $class\" type=\"button\" data-banner-id=\"$bannerId\">$bannerName</button>");
     }
     $panels = \SiteBuilders\SidePanelsAgent::GetPanelsList();
     $panelsList = [];
@@ -857,7 +857,6 @@ if ($editSContentPerm){
        }
     });
     $("button#staticc-panel-editor-send-btn").on("click", function() {
-        var side = ($("select#staticc-panel-editor-side").val() == "right") ? "Правая" : "Левая";
         if ($("select#staticc-panels-selector").val() !== "none"){
             $.ajax({
                 type: "POST",
