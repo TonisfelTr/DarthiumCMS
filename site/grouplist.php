@@ -15,7 +15,7 @@ include_once "./site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/grou
 $groupPage = getBrick();
 $groupPage = str_replace_once("{GROUP_COLOR}", $group->getColor(), $groupPage);
 $groupPage = str_replace_once("{GROUP_NAME}", $group->getName(), $groupPage);
-
+$groupPage = str_replace_once("{GROUP_DESCRIPTION}", $group->getDescript(), $groupPage);
 $usersInGroup = \Users\GroupAgent::GetGroupUsers($group->getId(), (isset($_GET["p"])) ? $_GET["p"] : 1);
 $tableUnit = "";
 for ($i = 0; $i < count($usersInGroup); $i++){
