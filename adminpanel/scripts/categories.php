@@ -45,8 +45,8 @@ if (isset($_POST["category-add-btn"])){
 
 if (isset($_POST["category_edit_btn"])){
     if ($user->UserGroup()->getPermission("category_edit")){
-        if (!empty($_POST["cid"])) {
-            header("Location: ../../adminpanel.php?p=categories&reqtype=2&cid=" . $_POST["cid"]);
+        if (!empty($_GET["cid"])) {
+            header("Location: ../../adminpanel.php?p=categories&reqtype=2&cid=" . $_GET["cid"]);
             exit;
         } else {
             header("Location: ../../adminpanel.php?p=categories&res=6ncid");
@@ -60,12 +60,12 @@ if (isset($_POST["category_edit_btn"])){
 
 if (isset($_POST["category_edit_save"])){
     if ($user->UserGroup()->getPermission("category_edit")){
-        if (empty($_POST["cid"])){
+        if (empty($_GET["cid"])){
             header("Location: ../../adminpanel.php?p=categories&res=6ncid");
             exit;
         }
 
-        $category = new \Forum\Category($_POST["cid"]);
+        $category = new \Forum\Category($_GET["cid"]);
         if ($category == 32){
             header("Location: ../../adminpanel.php?p=categories&res=6nct");
             exit;
@@ -90,25 +90,25 @@ if (isset($_POST["category_edit_save"])){
 
         if ($category->getName() != $_POST["category-edit-name"]) {
             \Guards\Logger::LogAction($user->getId(), "переименовала(а) категорию " . $category->getName() . " -> " . $_POST["category-edit-name"]);
-            \Forum\ForumAgent::ChangeCategoryParams($_POST["cid"], "name", $_POST["category_edit_name"]);
+            \Forum\ForumAgent::ChangeCategoryParams($_GET["cid"], "name", $_POST["category_edit_name"]);
         }
         if ($category->getDescription() != $_POST["category-edit-descript"]) {
             \Guards\Logger::LogAction($user->getId(), "изменил(а) описание категории " . $category->getName() . " " . $category->getDescription() . " -> " . $_POST["category-edit-descript"]);
-            \Forum\ForumAgent::ChangeCategoryParams($_POST["cid"], "descript", $_POST["category_edit_descript"]);
+            \Forum\ForumAgent::ChangeCategoryParams($_GET["cid"], "descript", $_POST["category_edit_descript"]);
         }
         if ($category->isPublic() != $_POST["category_edit_public_checker"]) {
             \Guards\Logger::LogAction($user->getId(), "изменил(а) публичность категории " . $category->getName() . " " . $category->isPublic() . " -> " . $_POST["category_edit_public_checker"]);
-            \Forum\ForumAgent::ChangeCategoryParams($_POST["cid"], "public", (isset($_POST["category_edit_public_checker"])) ? "1" : "0");
+            \Forum\ForumAgent::ChangeCategoryParams($_GET["cid"], "public", (isset($_POST["category_edit_public_checker"])) ? "1" : "0");
         }
         if ($category->CanCreateComments() != $_POST["category_edit_nocomments_checker"]) {
             \Guards\Logger::LogAction($user->getId(), "изменил(а) право на создание комментариев в категории " . $category->getName() . " "
                 . $category->CanCreateComments() . " -> " . $_POST["category_edit_nocomments_checker"]);
-            \Forum\ForumAgent::ChangeCategoryParams($_POST["cid"], "no_comment", (isset($_POST["category_edit_nocomments_checker"])) ? "1" : "0");
+            \Forum\ForumAgent::ChangeCategoryParams($_GET["cid"], "no_comment", (isset($_POST["category_edit_nocomments_checker"])) ? "1" : "0");
         }
         if ($category->CanCreateTopic() != $_POST["category_edit_notopics_checker"]) {
             \Guards\Logger::LogAction($user->getId(), "изменил(а) право на создание комментариев в категории " . $category->getName() . " "
                 . $category->CanCreateTopic() . " -> " . $_POST["category_edit_notopics_checker"]);
-            \Forum\ForumAgent::ChangeCategoryParams($_POST["cid"], "no_new_topics", (isset($_POST["category_edit_notopics_checker"])) ? "1" : "0");
+            \Forum\ForumAgent::ChangeCategoryParams($_GET["cid"], "no_new_topics", (isset($_POST["category_edit_notopics_checker"])) ? "1" : "0");
         }
 
         header("Location: ../../adminpanel.php?p=categories&res=6sce");
@@ -121,25 +121,25 @@ if (isset($_POST["category_edit_save"])){
 
 if (isset($_POST["category_edit_delete"])){
     if ($user->UserGroup()->getPermission("category_delete")){
-        if (empty($_POST["cid"])){
+        if (empty($_GET["cid"])){
             header("Location: ../../adminpanel.php?p=categories&res=6ncid");
             exit;
         }
-        $categoryName = \Forum\ForumAgent::GetCategoryParam($_POST["cid"], "name");
-        $result = \Forum\ForumAgent::DeleteCategory($_POST["cid"]);
+        $categoryName = \Forum\ForumAgent::GetCategoryParam($_GET["cid"], "name");
+        $result = \Forum\ForumAgent::DeleteCategory($_GET["cid"]);
         if ($result === TRUE){
             \Guards\Logger::LogAction($user->getId(), "удалил(а) категорию $categoryName.");
             header("Location: ../../adminpanel.php?p=categories&res=6scdt");
             exit;
         }
         elseif ($result == 32) {
-            if (empty($_POST["cid"])){
+            if (empty($_GET["cid"])){
                 header("Location: ../../adminpanel.php?p=categories&res=6ntc");
                 exit;
             }
         } else {
-            if (empty($_POST["cid"])){
-                header("Location: ../../adminpanel.php?p=categories&res=6ncdt&reqtype=2&cid=" . $_POST["cid"]);
+            if (empty($_GET["cid"])){
+                header("Location: ../../adminpanel.php?p=categories&res=6ncdt&reqtype=2&cid=" . $_GET["cid"]);
                 exit;
             }
         }
@@ -152,27 +152,27 @@ if (isset($_POST["category_edit_delete"])){
 
 if (isset($_POST["categories-table-delete"])){
     if ($user->UserGroup()->getPermission("category_delete")){
-        if (empty($_POST["cid"])){
+        if (empty($_GET["cid"])){
             header("Location: ../../adminpanel.php?p=categories&res=6ncid");
             exit;
         }
 
-        $cids = explode(",", $_POST["cid"]);
+        $cids = explode(",", $_GET["cid"]);
         for ($y = 0; $y <= count($cids)-1; $y++){
-            $categoryName = \Forum\ForumAgent::GetCategoryParam($_POST["cid"], "name");
-            $result = \Forum\ForumAgent::DeleteCategory($_POST["cid"]);
+            $categoryName = \Forum\ForumAgent::GetCategoryParam($_GET["cid"], "name");
+            $result = \Forum\ForumAgent::DeleteCategory($_GET["cid"]);
             if ($result === TRUE){
                 \Guards\Logger::LogAction($user->getId(), "удалил(а) категорию $categoryName.");
                 continue;
             }
             elseif ($result == 32) {
-                if (empty($_POST["cid"])){
+                if (empty($_GET["cid"])){
                     header("Location: ../../adminpanel.php?p=categories&res=6ntc");
                     exit;
                 }
             } else {
-                if (empty($_POST["cid"])){
-                    header("Location: ../../adminpanel.php?p=categories&res=6ncdt&reqtype=2&cid=" . $_POST["cid"]);
+                if (empty($_GET["cid"])){
+                    header("Location: ../../adminpanel.php?p=categories&res=6ncdt&reqtype=2&cid=" . $_GET["cid"]);
                     exit;
                 }
             }

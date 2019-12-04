@@ -82,7 +82,7 @@ else {
                                     <td><?php echo \Engine\Engine::BooleanToWords($category->CanCreateComments()); ?></td>
                                     <td><?php echo \Engine\Engine::BooleanToWords($category->CanCreateTopic()); ?></td>
                                     <td><?php echo $category->getTopicsCount(); ?></td>
-                                    <td><button type="submit" class="btn btn-default" name="category_edit_btn" formaction="adminpanel/scripts/categories.php?cid=<?php echo $category->getId(); ?>" style="width:100%;">Редактировать</button></td>
+                                    <td><button type="submit" class="btn btn-default" name="category_edit_btn" formmethod="post" formaction="adminpanel/scripts/categories.php?cid=<?php echo $category->getId(); ?>" style="width:100%;">Редактировать</button></td>
                                 </tr>
                         <?php } } ?>
                     </tbody>
