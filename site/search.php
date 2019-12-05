@@ -4,11 +4,15 @@ $pageName = "Поиск";
 
 if ($_GET["param"] == "author") {
     $results = \Forum\ForumAgent::SearchByTopicAuthorNickname($_GET["search"], (!empty($_GET["p"])) ? $_GET["p"] : 1);
+    $count = \Forum\ForumAgent::GetCountTopicsOfAuthor($_GET["search"]);
 }
-elseif ($_POST["param"] == "quize")
+elseif ($_GET["param"] == "quize") {
     $results = \Forum\ForumAgent::SearchByQuizeQuestion($_GET["search"], (!empty($_GET["p"])) ? $_GET["p"] : 1);
+    $count = \Forum\ForumAgent::GetCountQuizesByQuestion($_GET["search"]);
+}
 else{
     $results = \Forum\ForumAgent::SearchByTopicName($_GET["search"], (!empty($_GET["p"])) ? $_GET["p"] : 1);
+    $count = \Forum\ForumAgent::GetCountTopicsByName($_GET["search"]);
 }
 
 if (empty($results)){
@@ -29,5 +33,14 @@ if (empty($results)){
         $form = str_replace_once("{TOPIC_CATEGORY_ID}", $topic->getCategory()->getId(), $form);
         echo $form;
     }
-
+    $pagesCount = $count % 15;
+    if ($pagesCount > 1){
+        $pagination = "<div class=\"btn-group\">";
+        for ($i = 1; $i <= $pagesCount; $i++){
+            $pagination .= "<a class=\"btn btn-default\" href=\"?search=" . $_GET["search"] .
+                "&param=" . $_GET["param"] . "&p=$i\">$i</a>";
+        }
+        $pagination .= "</div>";
+        echo $pagination;
+    }
 }

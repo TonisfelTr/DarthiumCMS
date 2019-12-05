@@ -772,6 +772,23 @@ namespace Forum {
             }
             return false;
         }
+        public static function GetCountTopicsByName($topicName){
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            if ($mysqli->errno){
+                ErrorManager::GenerateError(2);
+                return ErrorManager::GetError();
+            }
+
+            if ($stmt = $mysqli->prepare("SELECT count(*) FROM tt_topics WHERE name LIKE ?")){
+                $topicNameForQuery = "%$topicName%";
+                $stmt->bind_param("s", $topicNameForQuery);
+                $stmt->execute();
+                $stmt->bind_result($count);
+                $stmt->fetch();
+                return $count;
+            }
+            return false;
+        }
         public static function SearchByQuizeQuestion($quizeQuest, int $page = 1){
             $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
             if ($mysqli->errno){
@@ -804,6 +821,23 @@ namespace Forum {
                 }
             }
             return $topics;
+        }
+        public static function GetCountQuizesByQuestion($quizeQuest){
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            if ($mysqli->errno){
+                ErrorManager::GenerateError(2);
+                return ErrorManager::GetError();
+            }
+
+            if ($stmt = $mysqli->prepare("SELECT count(*) FROM tt_quizes WHERE quest LIKE ?")){
+                $questionForQuery = "%$quizeQuest%";
+                $stmt->bind_param("s", $questionForQuery);
+                $stmt->execute();
+                $stmt->bind_result($count);
+                $stmt->fetch();
+                return $count;
+            }
+            return false;
         }
         public static function SearchByTopicAuthorNickname($nickName, int $page = 1){
             $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
@@ -839,6 +873,23 @@ namespace Forum {
             }
 
             return $topics;
+        }
+        public static function GetCountTopicsOfAuthor($nickname){
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            if ($mysqli->errno){
+                ErrorManager::GenerateError(2);
+                return ErrorManager::GetError();
+            }
+
+            if($stmt = $mysqli->prepare("SELECT count(*) FROM tt_users WHERE nickname LIKE ?")){
+                $nicknameForQuery = "%$nickname%";
+                $stmt->bind_param("s", $nicknameForQuery);
+                $stmt->execute();
+                $stmt->bind_result($count);
+                $stmt->fetch();
+                return $count;
+            }
+            return false;
         }
 
         public static function GetQuizeByTopic(int $topicId){
