@@ -5,6 +5,7 @@ include_once "../../engine/main.php";
 
 if (isset($_POST["search-start-btn"])){
     $lookingFor = $_POST["search-input"];
-    header("Location: /index.php?search=$lookingFor");
+    $searchType = $_POST["search-param"];
+    header("Location: /index.php?search=$lookingFor&param=$searchType");
     exit;
 }

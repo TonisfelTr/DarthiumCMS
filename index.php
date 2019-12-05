@@ -179,8 +179,16 @@ $main = str_replace_once("{INDEX_PAGE_NEWSPAPER}", $newsPaper, $main);
 if ($_GET["category"] == "" || isset($_GET["search"])){
     include_once "./site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/searchpanel.html";
     $searchBlock = getBrick();
-    if (isset($_GET["search"]) && $_GET["search"] != "")
+    if (isset($_GET["search"]) && $_GET["search"] != "") {
         $searchBlock = str_replace("{INDEX_SEARCHING_TEXT}", $_GET["search"], $searchBlock);
+        if (isset($_GET["param"]) && $_GET["param"] != ""){
+            if ($_GET["param"] == "author")
+                $searchBlock = str_replace_once("{INDEX_SEARCHING_TYPE}", "$(\"button#search-by-author\").click()", $searchBlock);
+            if ($_GET["param"] == "quize")
+                $searchBlock = str_replace_once("{INDEX_SEARCHING_TYPE}", "$(\"button#search-by-quize\").click()", $searchBlock);
+        }
+
+    }
     else
         $searchBlock = str_replace("{INDEX_SEARCHING_TEXT}", "", $searchBlock);
     $main = str_replace_once("{INDEX_SEARCHING}", $searchBlock, $main);

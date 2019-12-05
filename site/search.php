@@ -2,7 +2,15 @@
 if (!defined("TT_Index")){ header("index.php?page=errors/forbidden"); exit; }
 $pageName = "Поиск";
 
-$results = \Forum\ForumAgent::SearchByTopicName(iconv("windows-1251", "UTF-8". $_GET["search"]));
+if ($_GET["param"] == "author") {
+    $results = \Forum\ForumAgent::SearchByTopicAuthorNickname($_GET["search"], (!empty($_GET["p"])) ? $_GET["p"] : 1);
+}
+elseif ($_POST["param"] == "quize")
+    $results = \Forum\ForumAgent::SearchByQuizeQuestion($_GET["search"], (!empty($_GET["p"])) ? $_GET["p"] : 1);
+else{
+    $results = \Forum\ForumAgent::SearchByTopicName($_GET["search"], (!empty($_GET["p"])) ? $_GET["p"] : 1);
+}
+
 if (empty($results)){
    echo "<h3><span class=\"glyphicons glyphicons-ice-cream-no\"></span> Ничего не найдено :(</h3>";
 } else {

@@ -781,19 +781,29 @@ namespace Forum {
             $lowBorder = $page * 15 - 15;
             $highBorder = 15;
             $needle = "%".$quizeQuest."%";
-            if ($stmt = $mysqli->prepare("SELECT authorId, name FROM tt_topics WHERE id = 
-                                           (SELECT topicId FROM tt_quizes WHERE quest LIKE ?) 
-                                            ORDER BY id DESC LIMIT $lowBorder,$highBorder")){
+            $result = [];
+            $topics = [];
+            if ($stmt = $mysqli->prepare("SELECT topicId FROM tt_quizes WHERE quest LIKE ?")){
                 $stmt->bind_param("s", $needle);
                 $stmt->execute();
-                $result = [];
-                $stmt->bind_result($authorId, $name);
+                $stmt->bind_result($topicId);
                 while($stmt->fetch()){
-                    array_push($result, [$authorId, $name]);
+                    array_push($result, $topicId);
                 }
-                return $result;
+                $stmt = null;
             }
-            return false;
+
+            for ($i = 0; $i < count($result); $i++){
+                if ($stmt = $mysqli->prepare("SELECT authorId, name FROM tt_topics WHERE id=? LIMIT $lowBorder,$highBorder")){
+                    $stmt->bind_param("i", $result[$i]);
+                    $stmt->execute();
+                    $stmt->bind_result($authorId, $name);
+                    while($stmt->fetch())
+                        array_push($topics, [$authorId, $name]);
+                    $stmt = null;
+                }
+            }
+            return $topics;
         }
         public static function SearchByTopicAuthorNickname($nickName, int $page = 1){
             $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
@@ -804,11 +814,12 @@ namespace Forum {
             $lowBorder = $page * 15 - 15;
             $highBorder = 15;
 
+            $topics = [];
+            $result = [];
             if ($stmt = $mysqli->prepare("SELECT id FROM tt_users WHERE nickname LIKE ?")){
                 $authorNickname = "%$nickName%";
                 $stmt->bind_param("s", $authorNickname);
                 $stmt->execute();
-                $result = [];
                 $stmt->bind_result($id);
                 while($stmt->fetch()){
                     array_push($result, $id);
@@ -816,12 +827,18 @@ namespace Forum {
                 $stmt = null;
             }
 
-            $userIdQueryPart = "";
             for ($i = 0; $i < count($result); $i++){
-                $userIdQueryPart .= "id=?,";
+                if ($stmt = $mysqli->prepare("SELECT authorId, name FROM tt_topics WHERE authorId=? ORDER BY id DESC LIMIT $lowBorder,$highBorder")){
+                    $stmt->bind_param("i", $result[$i]);
+                    $stmt->execute();
+                    $stmt->bind_result($authorId, $name);
+                    while ($stmt->fetch())
+                        array_push($topics, [$authorId, $name]);
+                }
+                $stmt = null;
             }
 
-            return false;
+            return $topics;
         }
 
         public static function GetQuizeByTopic(int $topicId){
