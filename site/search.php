@@ -1,7 +1,7 @@
 <?php
 if (!defined("TT_Index")){ header("index.php?page=errors/forbidden"); exit; }
 $pageName = "Поиск";
-
+$count = 0;
 if ($_GET["param"] == "author") {
     $results = \Forum\ForumAgent::SearchByTopicAuthorNickname($_GET["search"], (!empty($_GET["p"])) ? $_GET["p"] : 1);
     $count = \Forum\ForumAgent::GetCountTopicsOfAuthor($_GET["search"]);
@@ -18,7 +18,7 @@ else{
 if (empty($results)){
    echo "<h3><span class=\"glyphicons glyphicons-ice-cream-no\"></span> Ничего не найдено :(</h3>";
 } else {
-    echo "Найдено результатов: " . count($results);
+    echo "Найдено результатов: " . $count;
     foreach ($results as $result){
         include "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/searchform.html";
         $form = getBrick();
