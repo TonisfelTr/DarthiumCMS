@@ -427,7 +427,8 @@
                 /*****************************************/
                 /* Errors of static content              */
                 /*****************************************/
-                35 => "This panel is not exist."
+                35 => "This panel is not exist.",
+                36 => "This IP address is registered"
             );
 
             static public function GenerateError($errorCode){

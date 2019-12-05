@@ -1171,6 +1171,24 @@ namespace Users {
             if ($result["active"] == "TRUE") return true;
             else return false;
         }
+        private static function IsIPRegistred($ipaddress){
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+
+            if (mysqli_connect_errno()) {
+                printf(mysqli_connect_error() . "<br />");
+                ErrorManager::GenerateError(2);
+                return ErrorManager::GetError();
+            }
+
+            if ($stmt = $mysqli->prepare("SELECT count(*) FROM tt_users WHERE regip = ?")){
+                $stmt->bind_param("s", $ipaddress);
+                $stmt->execute();
+                $stmt->bind_result($count);
+                $stmt->fetch();
+                return $count;
+            }
+            return false;
+        }
 
         public static function Get10OnlineUsers(){
             $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
@@ -1379,6 +1397,14 @@ namespace Users {
                     ErrorManager::GenerateError(4);
                     return ErrorManager::GetError();
                 }
+            }
+
+            if (Engine::GetEngineInfo("map") == "on"){
+                if (self::IsIPRegistred($_SERVER["REMOTE_ADDR"])){
+                    ErrorManager::GenerateError(36);
+                    return ErrorManager::GetError();
+                }
+
             }
 
             $randomWord = Engine::RandomGen(10);
