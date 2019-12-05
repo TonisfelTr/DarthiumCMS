@@ -30,7 +30,7 @@ if (isset($_POST["category-add-btn"])){
             (isset($_POST["category_add_nocomments"])) ? 1 : 0,
             (isset($_POST["category_add_notopics"])) ? 1 : 0);
         if ($result === TRUE){
-            \Guards\Logger::LogAction($user->getId(), "создал(а) новую категорию " . $_POST["category-add-name"]);
+            \Guards\Logger::LogAction($user->getId(), " создал(а) новую категорию " . $_POST["category-add-name"]);
             header("Location: ../../adminpanel.php?p=categories&res=6scc");
             exit;
         } else {
@@ -89,24 +89,24 @@ if (isset($_POST["category_edit_save"])){
         }
 
         if ($category->getName() != $_POST["category-edit-name"]) {
-            \Guards\Logger::LogAction($user->getId(), "переименовала(а) категорию " . $category->getName() . " -> " . $_POST["category-edit-name"]);
+            \Guards\Logger::LogAction($user->getId(), " переименовала(а) категорию " . $category->getName() . " -> " . $_POST["category-edit-name"]);
             \Forum\ForumAgent::ChangeCategoryParams($_GET["cid"], "name", $_POST["category_edit_name"]);
         }
         if ($category->getDescription() != $_POST["category-edit-descript"]) {
-            \Guards\Logger::LogAction($user->getId(), "изменил(а) описание категории " . $category->getName() . " " . $category->getDescription() . " -> " . $_POST["category-edit-descript"]);
+            \Guards\Logger::LogAction($user->getId(), " изменил(а) описание категории " . $category->getName() . " " . $category->getDescription() . " -> " . $_POST["category-edit-descript"]);
             \Forum\ForumAgent::ChangeCategoryParams($_GET["cid"], "descript", $_POST["category_edit_descript"]);
         }
         if ($category->isPublic() != $_POST["category_edit_public_checker"]) {
-            \Guards\Logger::LogAction($user->getId(), "изменил(а) публичность категории " . $category->getName() . " " . $category->isPublic() . " -> " . $_POST["category_edit_public_checker"]);
+            \Guards\Logger::LogAction($user->getId(), " изменил(а) публичность категории " . $category->getName() . " " . $category->isPublic() . " -> " . $_POST["category_edit_public_checker"]);
             \Forum\ForumAgent::ChangeCategoryParams($_GET["cid"], "public", (isset($_POST["category_edit_public_checker"])) ? "1" : "0");
         }
         if ($category->CanCreateComments() != $_POST["category_edit_nocomments_checker"]) {
-            \Guards\Logger::LogAction($user->getId(), "изменил(а) право на создание комментариев в категории " . $category->getName() . " "
+            \Guards\Logger::LogAction($user->getId(), " изменил(а) право на создание комментариев в категории " . $category->getName() . " "
                 . $category->CanCreateComments() . " -> " . $_POST["category_edit_nocomments_checker"]);
             \Forum\ForumAgent::ChangeCategoryParams($_GET["cid"], "no_comment", (isset($_POST["category_edit_nocomments_checker"])) ? "1" : "0");
         }
         if ($category->CanCreateTopic() != $_POST["category_edit_notopics_checker"]) {
-            \Guards\Logger::LogAction($user->getId(), "изменил(а) право на создание комментариев в категории " . $category->getName() . " "
+            \Guards\Logger::LogAction($user->getId(), " изменил(а) право на создание комментариев в категории " . $category->getName() . " "
                 . $category->CanCreateTopic() . " -> " . $_POST["category_edit_notopics_checker"]);
             \Forum\ForumAgent::ChangeCategoryParams($_GET["cid"], "no_new_topics", (isset($_POST["category_edit_notopics_checker"])) ? "1" : "0");
         }
@@ -162,7 +162,7 @@ if (isset($_POST["categories-table-delete"])){
             $categoryName = \Forum\ForumAgent::GetCategoryParam($_GET["cid"], "name");
             $result = \Forum\ForumAgent::DeleteCategory($_GET["cid"]);
             if ($result === TRUE){
-                \Guards\Logger::LogAction($user->getId(), "удалил(а) категорию $categoryName.");
+                \Guards\Logger::LogAction($user->getId(), " удалил(а) категорию $categoryName.");
                 continue;
             }
             elseif ($result == 32) {
