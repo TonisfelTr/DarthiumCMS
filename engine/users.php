@@ -1971,6 +1971,9 @@ namespace Users {
             }
             return $result;
         }
+        public static function GetAdditionalFieldContentOfUser($userId, $fieldId){
+            return DataKeeper::Get("tt_adfieldscontent", ["content"], ["userId" => $userId, "fieldId" => $fieldId]);
+        }
         public static function SetAdditionalFieldContent($userId, $fieldId, $content){
             if (DataKeeper::_isExistsIn("tt_adfieldscontent", array("fieldId" => $fieldId, "userId" => $userId)))
                 $request = DataKeeper::Update("tt_adfieldscontent", array("content" => $content), array("fieldId" => $fieldId, "userId" => $userId));

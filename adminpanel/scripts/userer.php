@@ -387,10 +387,12 @@ if (isset ($_POST["user-edit-save"])){
         }
         $adFields = \Users\UserAgent::GetAdditionalFieldsList();
         foreach ($adFields as $field){
-            if (!\Users\UserAgent::SetAdditionalFieldContent($eUser->getId(), $field["id"], @$_POST["user-edit-" . $field["id"]]))
-                $backRequest .= "&res=4ncsafc";
-            else {
-                \Guards\Logger::LogAction($user->getId(), " изменил(а) " . $field["name"] . " пользователя.");
+            if ($_POST["user-edit-" . $field["id"]] != \Users\UserAgent::GetAdditionalFieldContentOfUser($eUser->getId(), $field["id"])) {
+                if (!\Users\UserAgent::SetAdditionalFieldContent($eUser->getId(), $field["id"], $_POST["user-edit-" . $field["id"]]))
+                    $backRequest .= "&res=4ncsafc";
+                else {
+                    \Guards\Logger::LogAction($user->getId(), " изменил(а) " . $field["name"] . " пользователя.");
+                }
             }
         }
 
