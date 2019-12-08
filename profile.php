@@ -486,10 +486,15 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
                     $userNotificsTable .= " добавил своё сообщение к созданному Вами <a href=\"index.php?topic=" . $ntf[$i]["subject"] . "\">посту.</a>";
                     break;
                 case 7:
-                    $userNotificsTable .= " понравился созданный Вами <a href=\"index.php?topic=\"". $ntf[$i]["subject"] . "\">пост.</a >";
+                    $prefix = \Engine\LanguageManager::GetTranslation("like_your_post");
+                    $userNotificsTable .= " $prefix <a href=\"index.php?topic=". $ntf[$i]["subject"] . "\">". \Engine\LanguageManager::GetTranslation("topic")."</a >.";
                     break;
                 case 8:
-                    $userNotificsTable .= " перенёс Ваш <a href=\"index.php?topic=\"". $ntf[$i]["subject"] . "\">пост.</a >.";
+                    if ($userForNotification->getSex() == 2)
+                        $prefix = \Engine\LanguageManager::GetTranslation("move_your_topic_she");
+                    else
+                        $prefix = \Engine\LanguageManager::GetTranslation("move_your_topic_he");
+                    $userNotificsTable .= " $prefix <a href=\"index.php?topic=". $ntf[$i]["subject"] . "\">" . \Engine\LanguageManager::GetTranslation("topic").".</a>.";
                     break;
                 case 9:
                     $userNotificsTable .= " удалил созданный Вами пост. Напишите ему, чтобы узнать детали.";
