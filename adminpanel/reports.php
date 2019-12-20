@@ -36,7 +36,7 @@ else {
             } elseif (!empty($_GET["rid"])){
                 $report = new \Guards\Report($_GET["rid"]);
                 $message = $report->getMessage();
-                $nameBtnEdit = "report-edit-report-edit";
+                $nameBtnEdit = "reports-edit-reports-edit";
                 $suffixFormaction = "&rid=".$_GET["rid"];
             } elseif (!empty($_GET["ansid"])){
                 $answer = new \Guards\ReportAnswer($_GET["ansid"]);
@@ -283,7 +283,6 @@ else {
                         </div>
                         <div class="btn-group">
                             <button class="btn btn-default" title="Вставить разделитель" type="button" onclick="insertBBCode('hr', true, document.getElementById('report-edit-message-text'));"><span class="glyphicons glyphicons-vector-path-line"></span></button>
-                            <button class="btn btn-default" title="Спойлер" type="button" onclick="insertBBCode('spoiler', false, document.getElementById('report-edit-message-text'));"><span class="glyphicons glyphicons-note-empty"></span></button>
                             <button class="btn btn-default" title="Цитата" type="button" onclick="insertBBCode('quote', 'quote', document.getElementById('report-edit-message-text'));"><span class="glyphicons glyphicons-user-conversation"></span></button>
                         </div>
                         <textarea class="form-control" name="reports-edit-message-text" id="report-edit-message-text" style="resize: none; height: 350px;"><?php echo $message; ?></textarea>
@@ -409,7 +408,11 @@ else {
                 if (data == "User is added.") {
                     return;
                 }
-                $("#report-au-list").append("<div class=\"report-user-added-btn\"><a target=\"_blank\" href=\"/adminpanel.php?p=users&uid=" + data.substring(0, data.indexOf(" ")) + "\">"
+                if (data == "User id not set."){
+                    return;
+                }
+                alert(data);
+                $("#reports-au-list").append("<div class=\"report-user-added-btn\"><a target=\"_blank\" href=\"/adminpanel.php?p=users&uid=" + data.substring(0, data.indexOf(" ")) + "\">"
                     + data.substring(data.indexOf(" ") + 1, data.length) + "</a><span class=\"report-user-added-btn-cls\" id=\"report-user-added-btn-span-" + data.substring(0, data.indexOf(" ")) +
                     "\" onclick=\"deleteFromDiscuse('" + data.substring(0, data.indexOf(" ")) + "');\">X</span>");
             }
