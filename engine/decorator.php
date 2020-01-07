@@ -280,7 +280,7 @@ namespace SiteBuilders {
                 $result = [];
                 while ($stmt->fetch()) {
                     if ($type == "nav-btn") {
-                        array_push($result, [$type, $content, $action]);
+                        array_push($result, [$type, $content, $action, $id]);
                     } elseif ($type == "nav-list") {
                         array_push($result, [$id, $type, $content, $action]);
                     }
@@ -361,6 +361,9 @@ namespace SiteBuilders {
             return false;
         }
         public static function RemoveElement($id){
+            if ($id == 0 || empty($id) || is_null($id))
+                return false;
+
             $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
 
             if ($mysqli->errno){

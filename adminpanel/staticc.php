@@ -76,37 +76,37 @@ if ($editSContentPerm){
     <form enctype="multipart/form-data" action="adminpanel/scripts/staticc.php" method="post">
         <div class="custom-group" id="staticc-panel">
             <?php if ($editPPerm || $removePPerm) { ?>
-            <div class="div-border" id="staticc-pages-div" hidden>
-                <h2>Управление страницами</h2>
-                <p class="helper">Осуществление управления статическими страницами.</p>
-                <hr>
-                <p>Статические страницы - это страницы, вшитые в сам сайт. Они не являются топиками, в них нельзя оставлять коментарии, в чём и заключается их удобство.
-                Здесь Вы можете создавать таковые, редактировать и удалять их. Вы можете искать нужные Вам страницы по их названию и по никнейму их автора. Для переключения
-                режима поиска воспользуйтесь кнопками в конце поля ввода. Неизвестные места можно отмечать знаком звёздочки (*).</p>
-                <input type="hidden" id="staticc-search-type" name="staticc-search-type" value="name">
-                <div class="input-group">
-                    <input class="form-control" type="text" id="staticc-search-input" name="staticc-search-input" placeholder="Название страницы" value="<?php echo $value; ?>">
-                    <div class="input-group-btn" id="staticc-page-search-btns">
-                        <button class="btn btn-default active" type="button" id="staticc-search-byname-btn" title="Искать по названию страницы"><span class="glyphicons glyphicons-subtitles"></span></button>
-                        <button class="btn btn-default" type="button" id="staticc-search-byauthor-btn" title="Искать по никнейму автора"><span class="glyphicons glyphicons-nameplate"></span></button>
+                <div class="div-border" id="staticc-pages-div" hidden>
+                    <h2>Управление страницами</h2>
+                    <p class="helper">Осуществление управления статическими страницами.</p>
+                    <hr>
+                    <p>Статические страницы - это страницы, вшитые в сам сайт. Они не являются топиками, в них нельзя оставлять коментарии, в чём и заключается их удобство.
+                        Здесь Вы можете создавать таковые, редактировать и удалять их. Вы можете искать нужные Вам страницы по их названию и по никнейму их автора. Для переключения
+                        режима поиска воспользуйтесь кнопками в конце поля ввода. Неизвестные места можно отмечать знаком звёздочки (*).</p>
+                    <input type="hidden" id="staticc-search-type" name="staticc-search-type" value="name">
+                    <div class="input-group">
+                        <input class="form-control" type="text" id="staticc-search-input" name="staticc-search-input" placeholder="Название страницы" value="<?php echo $value; ?>">
+                        <div class="input-group-btn" id="staticc-page-search-btns">
+                            <button class="btn btn-default active" type="button" id="staticc-search-byname-btn" title="Искать по названию страницы"><span class="glyphicons glyphicons-subtitles"></span></button>
+                            <button class="btn btn-default" type="button" id="staticc-search-byauthor-btn" title="Искать по никнейму автора"><span class="glyphicons glyphicons-nameplate"></span></button>
+                        </div>
                     </div>
-                </div>
-                <br>
-                <div class="btn-group">
-                    <button class="btn btn-default" type="submit" name="staticc-search-btn"><span class="glyphicons glyphicons-search"></span> Искать</button>
-                    <a class="btn btn-default" href="?p=staticc" name="staticc-search-reset-btn"><span class="glyphicons glyphicons-book"></span> Сбросить фильтр</a>
-                    <?php if ($removePPerm) { ?><button class="btn btn-default alert-danger" type="submit" name="staticc-search-remove-btn" id="staticc-search-remove-btn" disabled><span class="glyphicons glyphicons-bin"></span> Удалить выделенные страницы</button><?php }?>
-                </div>
-                <h3>Список созданных статических страниц</h3>
-                <?php if (isset($_REQUEST["search-author"]) || isset($_REQUEST["search-name"])) { ?>
-                    <div class="alert alert-info">
+                    <br>
+                    <div class="btn-group">
+                        <button class="btn btn-default" type="submit" name="staticc-search-btn"><span class="glyphicons glyphicons-search"></span> Искать</button>
+                        <a class="btn btn-default" href="?p=staticc" name="staticc-search-reset-btn"><span class="glyphicons glyphicons-book"></span> Сбросить фильтр</a>
+                        <?php if ($removePPerm) { ?><button class="btn btn-default alert-danger" type="submit" name="staticc-search-remove-btn" id="staticc-search-remove-btn" disabled><span class="glyphicons glyphicons-bin"></span> Удалить выделенные страницы</button><?php }?>
+                    </div>
+                    <h3>Список созданных статических страниц</h3>
+                    <?php if (isset($_REQUEST["search-author"]) || isset($_REQUEST["search-name"])) { ?>
+                        <div class="alert alert-info">
                         Фильтры:
                         <hr>
                         <strong><?php echo $label; ?></strong> <?php echo $value; ?>
-                    </div><?php } ?>
-                <div class="alert alert-info" id="staticc-selected-div" style="display: none;"><strong>Выделено страниц:</strong> <span>0</span></div>
-                <table class="table" id="staticc-pages-table">
-                    <thead>
+                        </div><?php } ?>
+                    <div class="alert alert-info" id="staticc-selected-div" style="display: none;"><strong>Выделено страниц:</strong> <span>0</span></div>
+                    <table class="table" id="staticc-pages-table">
+                        <thead>
                         <tr class="staticc-table-header">
                             <td><input type="checkbox" id="staticc-table-select-all-checkbox"></td>
                             <td>Название страницы</td>
@@ -115,117 +115,117 @@ if ($editSContentPerm){
                             <td>Время создания</td>
                             <td><?php if ($createPPerm) { ?><button class="btn btn-default" type="button" id="staticc-page-create-btn" data-div="staticc-page-create-div" style="width: 100%;"><span class="glyphicons glyphicons-file-plus"></span> Создать страницу</button><?php } ?></td>
                         </tr>
-                    </thead>
-                    <tbody>
-                    <?php if ($tablePageCount == 0) { ?>
+                        </thead>
+                        <tbody>
+                        <?php if ($tablePageCount == 0) { ?>
 
-                        <tr>
-                            <td colspan="6" class="alert-info" style="text-align: center;"><span class="glyphicons glyphicons-info-sign"></span> Пока что не создано ни одной статической страницы.</td>
-                        </tr>
-                    <?php } else ?>
-                    <?php foreach($tablePage as $item){
-                        $p = new \Forum\StaticPage($item); ?>
-                        <tr>
-                            <td><input type="checkbox" data-spi="<?php echo $p->getPageID(); ?>"></td>
-                            <td><a href="/?sp=<?php echo $p->getPageID(); ?>"><?php echo $p->getPageName(); ?></a></td>
-                            <td><?php echo $p->getPageDescription(); ?></td>
-                            <td><?php echo \Users\UserAgent::GetUserNick($p->getPageAuthorId()); ?></td>
-                            <td><?php echo \Engine\Engine::DateFormatToRead($p->getPageCreateDate()); ?></td>
-                            <td><button class="btn btn-default alert-info" name="staticc-page-edit-btn" type="submit" formaction="adminpanel/scripts/staticc.php?id=<?php echo $p->getPageID(); ?>" style="width: 100%;">Редактировать</button></td>
-                        </tr>
-                    <?php } ?>
-
-                    </tbody>
-                </table>
-                <input type="hidden" id="staticc-page-delete" name="staticc-page-delete">
-                <?php if (\Forum\StaticPagesAgent::GetPagesCount() > 0) { ?>
-                <nav aria-label="Page navigation">
-                    <ul class="pagination">
-                        <li <?php if ($previousPage == "#") echo "class=\"disabled\""; ?>>
-                            <a href="<?php echo $previousPage; ?>" aria-label="Предыдущая страница">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        <?php for ($i = 1; $i <= \Forum\StaticPagesAgent::GetPagesCount(); $i++){ ?>
-                        <li <?php if (!isset($_REQUEST["pl"]) || $_REQUEST["pl"] == $i) echo "class=\"active\""; ?>><a href="#&pl=<?php echo $i; ?>"><?php echo $i; ?></a></li>
+                            <tr>
+                                <td colspan="6" class="alert-info" style="text-align: center;"><span class="glyphicons glyphicons-info-sign"></span> Пока что не создано ни одной статической страницы.</td>
+                            </tr>
+                        <?php } else ?>
+                        <?php foreach($tablePage as $item){
+                            $p = new \Forum\StaticPage($item); ?>
+                            <tr>
+                                <td><input type="checkbox" data-spi="<?php echo $p->getPageID(); ?>"></td>
+                                <td><a href="/?sp=<?php echo $p->getPageID(); ?>"><?php echo $p->getPageName(); ?></a></td>
+                                <td><?php echo $p->getPageDescription(); ?></td>
+                                <td><?php echo \Users\UserAgent::GetUserNick($p->getPageAuthorId()); ?></td>
+                                <td><?php echo \Engine\Engine::DateFormatToRead($p->getPageCreateDate()); ?></td>
+                                <td><button class="btn btn-default alert-info" name="staticc-page-edit-btn" type="submit" formaction="adminpanel/scripts/staticc.php?id=<?php echo $p->getPageID(); ?>" style="width: 100%;">Редактировать</button></td>
+                            </tr>
                         <?php } ?>
-                        <li <?php if ($nextPage == "#") echo "class=\"disabled\""; ?>>
-                            <a href="<?php echo $nextPage; ?>" aria-label="Следующая страница">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-                <?php } ?>
-            </div>
+
+                        </tbody>
+                    </table>
+                    <input type="hidden" id="staticc-page-delete" name="staticc-page-delete">
+                    <?php if (\Forum\StaticPagesAgent::GetPagesCount() > 0) { ?>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination">
+                                <li <?php if ($previousPage == "#") echo "class=\"disabled\""; ?>>
+                                    <a href="<?php echo $previousPage; ?>" aria-label="Предыдущая страница">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <?php for ($i = 1; $i <= \Forum\StaticPagesAgent::GetPagesCount(); $i++){ ?>
+                                    <li <?php if (!isset($_REQUEST["pl"]) || $_REQUEST["pl"] == $i) echo "class=\"active\""; ?>><a href="#&pl=<?php echo $i; ?>"><?php echo $i; ?></a></li>
+                                <?php } ?>
+                                <li <?php if ($nextPage == "#") echo "class=\"disabled\""; ?>>
+                                    <a href="<?php echo $nextPage; ?>" aria-label="Следующая страница">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    <?php } ?>
+                </div>
             <?php }
             if ($createPPerm) { ?>
-            <div class="div-border" id="staticc-page-create-div" hidden>
-                <h2>Создание статической страницы</h2>
-                <p class="helper">Редактор новой статической страницы.</p>
-                <hr>
-                <p><strong>Все поля</strong>, кроме описания, требуют заполнения. Минимальная длина названия страницы - 4 символа, а текст страницы должен быть не менее 20 символов.</p>
-                <div class="alert alert-info">
-                    <p><span class="glyphicons glyphicons-info-sign"></span> Адрес созданной Вами страницы будет следующий:</p>
+                <div class="div-border" id="staticc-page-create-div" hidden>
+                    <h2>Создание статической страницы</h2>
+                    <p class="helper">Редактор новой статической страницы.</p>
                     <hr>
-                    <input class="form-control" type="text" readonly value="http://<?php echo $_SERVER["HTTP_HOST"]; ?>/?sp=<?php echo \Forum\StaticPagesAgent::GetLastPageID()+1; ?>">
-                    <hr>
-                    <p>Этот адрес статичен, его нельзя поменять.</p>
-                </div>
-                <input class="form-control" name="staticc-page-create-name-input" type="text" maxlength="25" placeholder="Название страницы">
-                <br>
-                <input class="form-control" name="staticc-page-create-description-input" type="text" maxlength="100" placeholder="Описание страницы">
-                <br>
-                <div class="btn-group">
-                    <button class="btn btn-default" type="button" title="Жирный шрифт" name="bb_b"><strong>B</strong></button>
-                    <button class="btn btn-default" type="button" title="Курсив" name="bb_i"><i>I</i></button>
-                    <button class="btn btn-default" type="button" title="Подчёркивание" name="bb_u"><u>U</u></button>
-                    <button class="btn btn-default" type="button" title="Зачёркивание" name="bb_s"><s>S</s></button>
-                </div>
-                <div class="btn-group">
-                    <button class="btn btn-default" type="button" title="Ротация влево" name="bb_left"><span class="glyphicon glyphicon-align-left"></span></button>
-                    <button class="btn btn-default" type="button" title="Ротация по центру" name="bb_center"><span class="glyphicon glyphicon-align-center"></span></button>
-                    <button class="btn btn-default" type="button" title="Ротация вправо" name="bb_right"><span class="glyphicon glyphicon-align-right"></span></button>
-                </div>
-                <div class="btn-group">
-                    <button class="btn btn-default" type="button" title="Разделитель" name="bb_hr"><span class="glyphicon glyphicon-minus"></span></button>
-                    <button class="btn btn-default" type="button" title="Перечисление" name="bb_ol"><span class="glyphicon glyphicon-th-list"></span></button>
-                    <button class="btn btn-default" type="button" title="Элемент списка" name="bb_item" style="background: #c0ffb4;"><span class="glyphicon glyphicon-star"></span></button>
-                </div>
-                <div class="btn-group">
-                    <button class="btn btn-default" type="button" title="Ссылка" name="bb_a"><span class="glyphicon glyphicon-link"></span></button>
-                    <button class="btn btn-default" type="button" title="Вставить картинку" name="bb_img"><span class="glyphicon glyphicon-picture"></span></button>
-                    <button class="btn btn-default" type="button" title="Вставить ролик YouTube" name="bb_youtube"><span class="glyphicon glyphicon-play"></span></button>
-                </div>
-                <div class="btn-group">
-                    <select class="btn btn-default" title="Цвет шрифта" name="bb_color">
-                        <option value="black" style="color: black;">Чёрный</option>
-                        <option value="red" style="color: red;">Красный</option>
-                        <option value="green" style="color: green;">Зелёный</option>
-                        <option value="yellow" style="color: yellow;">Жёлтый</option>
-                        <option value="orange" style="color: orange;">Оранжевый</option>
-                        <option value="blue" style="color: blue;">Синий</option>
-                        <option value="grey" style="color: grey;">Серый</option>
-                        <option value="darkgrey" style="color: #545454;">Тёмносерый</option>
-                        <option value="white" style="color: white; text-shadow: 1px 1px 1px black;">Белый</option>
-                    </select>
-                    <select class="btn btn-default" title="Размер шрифта" name="bb_size">
-                        <option value="12">12</option>
-                        <option value="14">14</option>
-                        <option value="16">16</option>
-                        <option value="18">18</option>
-                        <option value="20">20</option>
-                    </select>
-                </div>
-                <hr/>
-                <textarea class="form-control" placeholder="Введите содержимое страницы." style="width: 100%; min-height: 250px; resize: vertical; " id="staticc-page-create-textarea" name="staticc-page-create-textarea"></textarea>
-                <hr/>
-                <div class="center">
+                    <p><strong>Все поля</strong>, кроме описания, требуют заполнения. Минимальная длина названия страницы - 4 символа, а текст страницы должен быть не менее 20 символов.</p>
+                    <div class="alert alert-info">
+                        <p><span class="glyphicons glyphicons-info-sign"></span> Адрес созданной Вами страницы будет следующий:</p>
+                        <hr>
+                        <input class="form-control" type="text" readonly value="http://<?php echo $_SERVER["HTTP_HOST"]; ?>/?sp=<?php echo \Forum\StaticPagesAgent::GetLastPageID()+1; ?>">
+                        <hr>
+                        <p>Этот адрес статичен, его нельзя поменять.</p>
+                    </div>
+                    <input class="form-control" name="staticc-page-create-name-input" type="text" maxlength="25" placeholder="Название страницы">
+                    <br>
+                    <input class="form-control" name="staticc-page-create-description-input" type="text" maxlength="100" placeholder="Описание страницы">
+                    <br>
                     <div class="btn-group">
-                        <button class="btn btn-default" type="submit" name="staticc-page-create-create-btn"><span class="glyphicon glyphicon-ok"></span> Опубликовать страницу</button>
+                        <button class="btn btn-default" type="button" title="Жирный шрифт" name="bb_b"><strong>B</strong></button>
+                        <button class="btn btn-default" type="button" title="Курсив" name="bb_i"><i>I</i></button>
+                        <button class="btn btn-default" type="button" title="Подчёркивание" name="bb_u"><u>U</u></button>
+                        <button class="btn btn-default" type="button" title="Зачёркивание" name="bb_s"><s>S</s></button>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-default" type="button" title="Ротация влево" name="bb_left"><span class="glyphicon glyphicon-align-left"></span></button>
+                        <button class="btn btn-default" type="button" title="Ротация по центру" name="bb_center"><span class="glyphicon glyphicon-align-center"></span></button>
+                        <button class="btn btn-default" type="button" title="Ротация вправо" name="bb_right"><span class="glyphicon glyphicon-align-right"></span></button>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-default" type="button" title="Разделитель" name="bb_hr"><span class="glyphicon glyphicon-minus"></span></button>
+                        <button class="btn btn-default" type="button" title="Перечисление" name="bb_ol"><span class="glyphicon glyphicon-th-list"></span></button>
+                        <button class="btn btn-default" type="button" title="Элемент списка" name="bb_item" style="background: #c0ffb4;"><span class="glyphicon glyphicon-star"></span></button>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-default" type="button" title="Ссылка" name="bb_a"><span class="glyphicon glyphicon-link"></span></button>
+                        <button class="btn btn-default" type="button" title="Вставить картинку" name="bb_img"><span class="glyphicon glyphicon-picture"></span></button>
+                        <button class="btn btn-default" type="button" title="Вставить ролик YouTube" name="bb_youtube"><span class="glyphicon glyphicon-play"></span></button>
+                    </div>
+                    <div class="btn-group">
+                        <select class="btn btn-default" title="Цвет шрифта" name="bb_color">
+                            <option value="black" style="color: black;">Чёрный</option>
+                            <option value="red" style="color: red;">Красный</option>
+                            <option value="green" style="color: green;">Зелёный</option>
+                            <option value="yellow" style="color: yellow;">Жёлтый</option>
+                            <option value="orange" style="color: orange;">Оранжевый</option>
+                            <option value="blue" style="color: blue;">Синий</option>
+                            <option value="grey" style="color: grey;">Серый</option>
+                            <option value="darkgrey" style="color: #545454;">Тёмносерый</option>
+                            <option value="white" style="color: white; text-shadow: 1px 1px 1px black;">Белый</option>
+                        </select>
+                        <select class="btn btn-default" title="Размер шрифта" name="bb_size">
+                            <option value="12">12</option>
+                            <option value="14">14</option>
+                            <option value="16">16</option>
+                            <option value="18">18</option>
+                            <option value="20">20</option>
+                        </select>
+                    </div>
+                    <hr/>
+                    <textarea class="form-control" placeholder="Введите содержимое страницы." style="width: 100%; min-height: 250px; resize: vertical; " id="staticc-page-create-textarea" name="staticc-page-create-textarea"></textarea>
+                    <hr/>
+                    <div class="center">
+                        <div class="btn-group">
+                            <button class="btn btn-default" type="submit" name="staticc-page-create-create-btn"><span class="glyphicon glyphicon-ok"></span> Опубликовать страницу</button>
+                        </div>
                     </div>
                 </div>
-            </div>
             <?php }
             if ($isEditMode && $editPPerm) { ?>
                 <div class="div-border" id="staticc-page-edit-div" hidden>
@@ -296,155 +296,656 @@ if ($editSContentPerm){
                 </div>
             <?php }
             if ($editSContentPerm) { ?>
-            <div class="div-border" id="staticc-content-edit-div" hidden>
-                <h2>Редактирование статических компонентов</h2>
-                <p class="helper">Изменение контента боковых панелей и баннеров.</p>
-                <hr>
-                <p>Здесь Вы можете редактировать нижние и верхний баннер, контент боковых панелей, в том числе их название.</p>
-                <div class="btn-group" id="staticc-content-btn-panel">
-                    <button class="btn btn-default active" type="button" data-subpanel-id="staticc-content-banners"><span class="glyphicons glyphicons-drop"></span> Баннеры</button>
-                    <button class="btn btn-default" type="button" data-subpanel-id="staticc-content-sidepanels"><span class="glyphicons glyphicons-more-items"></span> Боковые панели</button>
-                </div>
-                <hr>
-                <div id="staticc-content-error-div" hidden><span id="staticc-content-error-span"></span></div>
-                <div id="staticc-content-container">
-                    <div id="staticc-content-banners" hidden>
-                        <p>На сайте стандартно присутствуют четыре баннера: два размером 88х31 и два 468х60. Последние два не появляются, если нет ни одной созданной темы.
-                        Большие баннеры появляются в случайном порядке.</p>
-                        <div class="input-group">
-                            <div class="input-group-addon">Первый баннер</div>
-                            <input class="form-control" type="text" id="staticc-firstsm-html-input" placeholder="HTML-код для первого баннера 88х31" value="<?php echo $firstSmallBannerContent; ?>">
-                            <div class="input-group-addon">Размер: 88х31</div>
-                            <div class="input-group-btn">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Действия <span class="caret"></span></button>
-                                <ul class="dropdown-menu dropdown-menu-right">
-                                    <li><a id="staticc-smbanner-first-save" title="Сохранить код баннера."><span class="glyphicons glyphicons-ok"></span> Сохранить</a></li>
-                                    <li><a id="staticc-smbanner-first-remove" title="Удалить баннер. При этом отчистится поле."><span class="glyphicons glyphicons-remove"></span> Удалить</a></li>
-                                    <li><a id="staticc-smbanner-first-clear" title="Отчистить поле. Удаления баннера не произойдёт."><span class="glyphicons glyphicons-erase"></span> Отчистить</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="input-group">
-                            <div class="input-group-addon">Второй баннер</div>
-                            <input class="form-control" type="text" id="staticc-secondsm-html-input" placeholder="HTML-код для второго баннера 88х31" value="<?php echo $secondSmallBannerContent; ?>">
-                            <div class="input-group-addon">Размер: 88х31</div>
-                            <div class="input-group-btn">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Действия <span class="caret"></span></button>
-                                <ul class="dropdown-menu dropdown-menu-right">
-                                    <li><a id="staticc-smbanner-second-save" title="Сохранить код баннера."><span class="glyphicons glyphicons-ok"></span> Сохранить</a></li>
-                                    <li><a id="staticc-smbanner-second-remove" title="Удалить баннер. При этом отчистится поле."><span class="glyphicons glyphicons-remove"></span> Удалить</a></li>
-                                    <li><a id="staticc-smbanner-second-clear" title="Отчистить поле. Удаления баннера не произойдёт."><span class="glyphicons glyphicons-erase"></span> Отчистить</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="container-fluid">
-                            <div class="btn-group-vertical col-lg-3 col-md-6 col-sm-6 col-xs-12" id="staticc-banner-btns">
-                                Больших баннеров: <span id="staticc-banners-counter"><?php echo \SiteBuilders\BannerAgent::GetBigBannersCount(); ?></span>
-                                <button class="btn btn-default" type="button" id="staticc-create-banner-btn"><span class="glyphicons glyphicons-plus-sign"></span> Добавить баннер</button>
-                                <?php foreach($buttons as $b){
-                                    echo $b;
-                                } ?>
-                            </div>
-                            <div class="div-border col-lg-9 col-md-6 col-sm-6 col-xs-12" id="staticc-create-banner-div" style="display: none;">
-                                <input type="hidden" id="staticc-banner-current-id">
-                                <p>В данной форме создаются большие баннеры. Их размер должен быть точно 468х60.</p>
-                                <input class="form-control" type="text" id="staticc-create-banner-name-input" placeholder="Название баннера">
-                                <p class="alert alert-info"><span class="glyphicons glyphicons-info-sign"></span> Название нигде не будет отображаться, оно нужно для удобства Вашей координации между созданными баннерами.</p>
-                                <input class="form-control" type="text" id="staticc-create-banner-link-input" placeholder="HTML-код баннера">
-                                <br>
-                                <label for="staticc-create-banner-visibility-input">Включить баннер: </label>
-                                <input type="checkbox" id="staticc-create-banner-visibility-input">
-                                <p class="alert alert-info"><span class="glyphicons glyphicons-info-sign"></span> Если баннер отключен, то он не будет выводится.</p>
-                                <div class="btn-group">
-                                    <button class="btn btn-default" type="button" id="staticc-create-banner-send-btn"><span class="glyphicons glyphicons-ok"></span> </button>
-                                        <button class="btn btn-default" type="button" id="staticc-remove-banner-send-btn"><span class="glyphicons glyphicons-erase"></span> Удалить баннер</button>
-                                    <button class="btn btn-default" type="button" id="staticc-create-banner-cancel-btn"><span class="glyphicons glyphicons-remove"></span> Отмена</button>
-                                </div>
-                            </div>
-                        </div>
+                <div class="div-border" id="staticc-content-edit-div" hidden>
+                    <h2>Редактирование статических компонентов</h2>
+                    <p class="helper">Изменение контента боковых панеле, баннеров и навигационной панели.</p>
+                    <hr>
+                    <p>Здесь Вы можете редактировать нижний и верхний баннер, контент боковых панелей, в том числе их название и настроить панель навигации на главной странице.</p>
+                    <div class="btn-group" id="staticc-content-btn-panel">
+                        <button class="btn btn-default active" type="button" data-subpanel-id="staticc-content-banners"><span class="glyphicons glyphicons-drop"></span> Баннеры</button>
+                        <button class="btn btn-default" type="button" data-subpanel-id="staticc-content-sidepanels"><span class="glyphicons glyphicons-more-items"></span> Боковые панели</button>
+                        <button class="btn btn-default" type="button" data-subpanel-id="staticc-content-navbar"><span class="glyphicon glyphicon-option-horizontal"></span> Навигационная панель</button>
                     </div>
-                    <div id="staticc-content-sidepanels" hidden>
-                        <p>Здесь Вы можете редактировать заголовок и содержание колонок, а также их количество.</p>
-                        <div class="alert alert-info"><span class="glyphicons glyphicons-info-sign"></span> Если Вы удалите все колонки с одной стороны, блоки сайта не сдвинутся.</div>
-                        <div class="container-fluid">
-                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2" id="staticc-left-panel-div" style="display: none;">
-                                <div class="side-block">
-                                    <div class="side-block-header-left">{PANEL_TITLE}</div>
-                                    <div class="side-block-body">
-                                        {PANEL_CONTENT}
+                    <hr>
+                    <div id="staticc-content-error-div" hidden><span id="staticc-content-error-span"></span></div>
+                    <div id="staticc-content-container">
+                        <div id="staticc-content-banners" hidden>
+                            <p>На сайте стандартно присутствуют четыре баннера: два размером 88х31 и два 468х60. Последние два не появляются, если нет ни одной созданной темы.
+                                Большие баннеры появляются в случайном порядке.</p>
+                            <div class="input-group">
+                                <div class="input-group-addon">Первый баннер</div>
+                                <input class="form-control" type="text" id="staticc-firstsm-html-input" placeholder="HTML-код для первого баннера 88х31" value="<?php echo $firstSmallBannerContent; ?>">
+                                <div class="input-group-addon">Размер: 88х31</div>
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Действия <span class="caret"></span></button>
+                                    <ul class="dropdown-menu dropdown-menu-right">
+                                        <li><a id="staticc-smbanner-first-save" title="Сохранить код баннера."><span class="glyphicons glyphicons-ok"></span> Сохранить</a></li>
+                                        <li><a id="staticc-smbanner-first-remove" title="Удалить баннер. При этом отчистится поле."><span class="glyphicons glyphicons-remove"></span> Удалить</a></li>
+                                        <li><a id="staticc-smbanner-first-clear" title="Отчистить поле. Удаления баннера не произойдёт."><span class="glyphicons glyphicons-erase"></span> Отчистить</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="input-group">
+                                <div class="input-group-addon">Второй баннер</div>
+                                <input class="form-control" type="text" id="staticc-secondsm-html-input" placeholder="HTML-код для второго баннера 88х31" value="<?php echo $secondSmallBannerContent; ?>">
+                                <div class="input-group-addon">Размер: 88х31</div>
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Действия <span class="caret"></span></button>
+                                    <ul class="dropdown-menu dropdown-menu-right">
+                                        <li><a id="staticc-smbanner-second-save" title="Сохранить код баннера."><span class="glyphicons glyphicons-ok"></span> Сохранить</a></li>
+                                        <li><a id="staticc-smbanner-second-remove" title="Удалить баннер. При этом отчистится поле."><span class="glyphicons glyphicons-remove"></span> Удалить</a></li>
+                                        <li><a id="staticc-smbanner-second-clear" title="Отчистить поле. Удаления баннера не произойдёт."><span class="glyphicons glyphicons-erase"></span> Отчистить</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="container-fluid">
+                                <div class="btn-group-vertical col-lg-3 col-md-6 col-sm-6 col-xs-12" id="staticc-banner-btns">
+                                    Больших баннеров: <span id="staticc-banners-counter"><?php echo \SiteBuilders\BannerAgent::GetBigBannersCount(); ?></span>
+                                    <button class="btn btn-default" type="button" id="staticc-create-banner-btn"><span class="glyphicons glyphicons-plus-sign"></span> Добавить баннер</button>
+                                    <?php foreach($buttons as $b){
+                                        echo $b;
+                                    } ?>
+                                </div>
+                                <div class="div-border col-lg-9 col-md-6 col-sm-6 col-xs-12" id="staticc-create-banner-div" style="display: none;">
+                                    <input type="hidden" id="staticc-banner-current-id">
+                                    <p>В данной форме создаются большие баннеры. Их размер должен быть точно 468х60.</p>
+                                    <input class="form-control" type="text" id="staticc-create-banner-name-input" placeholder="Название баннера">
+                                    <p class="alert alert-info"><span class="glyphicons glyphicons-info-sign"></span> Название нигде не будет отображаться, оно нужно для удобства Вашей координации между созданными баннерами.</p>
+                                    <input class="form-control" type="text" id="staticc-create-banner-link-input" placeholder="HTML-код баннера">
+                                    <br>
+                                    <label for="staticc-create-banner-visibility-input">Включить баннер: </label>
+                                    <input type="checkbox" id="staticc-create-banner-visibility-input">
+                                    <p class="alert alert-info"><span class="glyphicons glyphicons-info-sign"></span> Если баннер отключен, то он не будет выводится.</p>
+                                    <div class="btn-group">
+                                        <button class="btn btn-default" type="button" id="staticc-create-banner-send-btn"><span class="glyphicons glyphicons-ok"></span> </button>
+                                        <button class="btn btn-default" type="button" id="staticc-remove-banner-send-btn"><span class="glyphicons glyphicons-erase"></span> Удалить баннер</button>
+                                        <button class="btn btn-default" type="button" id="staticc-create-banner-cancel-btn"><span class="glyphicons glyphicons-remove"></span> Отмена</button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
-                                <div class="input-group">
-                                    <select class="form-control" id="staticc-panels-selector">
-                                        <option value="none" selected>Не выбрано...</option>
-                                        <?php foreach ($panelsList as $panel){
-                                            echo $panel;
-                                        } ?>
-                                    </select>
-                                    <div class="input-group-btn">
-                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Действия <span class="caret"></span></button>
-                                        <ul class="dropdown-menu dropdown-menu-right">
-                                            <li><a id="staticc-panels-add" title="Добавить панель."><span class="glyphicons glyphicons-plus"></span> Добавить панель</a></li>
-                                            <li><a id="staticc-panels-remove" title="Удалить панель."><span class="glyphicons glyphicons-erase"></span> Удалить</a></li>
-                                        </ul>
+                        </div>
+                        <div id="staticc-content-sidepanels" hidden>
+                            <p>Здесь Вы можете редактировать заголовок и содержание колонок, а также их количество.</p>
+                            <div class="alert alert-info"><span class="glyphicons glyphicons-info-sign"></span> Если Вы удалите все колонки с одной стороны, блоки сайта не сдвинутся.</div>
+                            <div class="container-fluid">
+                                <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2" id="staticc-left-panel-div" style="display: none;">
+                                    <div class="side-block">
+                                        <div class="side-block-header-left">{PANEL_TITLE}</div>
+                                        <div class="side-block-body">
+                                            {PANEL_CONTENT}
+                                        </div>
                                     </div>
                                 </div>
-                                <br>
-                                <div id="staticc-panel-editor-div" class="div-border">
+                                <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
                                     <div class="input-group">
-                                        <div class="input-group-addon">Заголовок блока</div>
-                                        <input type="text" class="form-control" id="staticc-panel-editor-title" maxlength="150">
-                                    </div>
-                                    <br>
-                                    <div class="alert alert-info">
-                                        <span class="glyphicons glyphicons-info-sign"></span> В заголовке нельзя использовать код.
-                                    </div>
-                                    <div class="input-group">
-                                        <div class="input-group-addon">Содержимое</div>
-                                        <textarea class="form-control non-resize" id="staticc-panel-editor-content"></textarea>
-                                    </div>
-                                    <br>
-                                    <div class="alert alert-info">
-                                        <span class="glyphicons glyphicons-info-sign"></span> При написании содержимого колонки, можно использовать любой код.
-                                    </div>
-                                    <label for="staticc-panel-editor-visibility">Показывать панель:</label>
-                                    <input type="checkbox" id="staticc-panel-editor-visibility">
-                                    <div class="input-group">
-                                        <div class="input-group-addon">Отображение панели</div>
-                                        <select class="form-control" id="staticc-panel-editor-side">
-                                            <option value="left">Слева</option>
-                                            <option value="right">Справа</option>
+                                        <select class="form-control" id="staticc-panels-selector">
+                                            <option value="none" selected>Не выбрано...</option>
+                                            <?php foreach ($panelsList as $panel){
+                                                echo $panel;
+                                            } ?>
                                         </select>
+                                        <div class="input-group-btn">
+                                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Действия <span class="caret"></span></button>
+                                            <ul class="dropdown-menu dropdown-menu-right">
+                                                <li><a id="staticc-panels-add" title="Добавить панель."><span class="glyphicons glyphicons-plus"></span> Добавить панель</a></li>
+                                                <li><a id="staticc-panels-remove" title="Удалить панель."><span class="glyphicons glyphicons-erase"></span> Удалить</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div id="staticc-panel-editor-div" class="div-border">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">Заголовок блока</div>
+                                            <input type="text" class="form-control" id="staticc-panel-editor-title" maxlength="150">
+                                        </div>
+                                        <br>
+                                        <div class="alert alert-info">
+                                            <span class="glyphicons glyphicons-info-sign"></span> В заголовке нельзя использовать код.
+                                        </div>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">Содержимое</div>
+                                            <textarea class="form-control non-resize" id="staticc-panel-editor-content"></textarea>
+                                        </div>
+                                        <br>
+                                        <div class="alert alert-info">
+                                            <span class="glyphicons glyphicons-info-sign"></span> При написании содержимого колонки, можно использовать любой код.
+                                        </div>
+                                        <label for="staticc-panel-editor-visibility">Показывать панель:</label>
+                                        <input type="checkbox" id="staticc-panel-editor-visibility">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">Отображение панели</div>
+                                            <select class="form-control" id="staticc-panel-editor-side">
+                                                <option value="left">Слева</option>
+                                                <option value="right">Справа</option>
+                                            </select>
+                                        </div>
+                                        <br>
+                                        <div class="btn-group">
+                                            <button class="btn btn-default" id="staticc-panel-editor-send-btn" type="button"><span class="glyphicons glyphicons-ok"></span> <span id="staticc-panel-editor-send-btn-content"></span></button>
+                                            <button class="btn btn-default" id="staticc-panel-editor-remove-btn" type="button" style="display: none;"><span class="glyphicons glyphicons-delete"></span> Удалить панель</button>
+                                            <button class="btn btn-default" id="staticc-panel-editor-erase-btn" type="button"><span class="glyphicons glyphicons-erase"></span> Отмена</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2" id="staticc-right-panel-div" style="display: none;">
+                                    <div class="side-block">
+                                        <div class="side-block-header-right"></div>
+                                        <div class="side-block-body">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="staticc-content-navbar" hidden>
+                            <p>Здесь Вы можете настроить внутренности панели навигации на главной странице.</p>
+                            <div class="alert alert-info"><span class="glyphicons glyphicons-info-sign"></span> Всего корневых элементов может быть 7, но лист может содержать до 10 элементов.</div>
+                            <div class="btn-group" id="btn-manager-div">
+                                <button class="btn btn-default" id="navbar-add-btn" type="button"><span class="glyphicons glyphicons-plus"></span> Создать кнопку</button>
+                                <button class="btn btn-default" id="navbar-add-list-btn" type="button"><span class="glyphicons glyphicons-list"></span> Создать лист</button>
+                                <button class="btn btn-default" id="navbar-edit-btn" type="button"><span class="glyphicons glyphicons-edit"></span> Редактировать кнопку</button>
+                                <button class="btn btn-default" id="navbar-remove-btn" type="button"><span class="glyphicon glyphicon-trash"></span> Удалить кнопку</button>
+                            </div>
+                            <hr>
+                            <div id="btn-operation-container">
+                                <p>Выберите кнопку...</p>
+                                <div class="div-border" id="create-btn-bar">
+                                    <p>Создание кнопки</p>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">Текст кнопки</div>
+                                        <input class="form-control" type="text" id="name-create-input">
+                                    </div>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">Ссылка</div>
+                                        <input class="form-control" type="text" id="link-create-input">
                                     </div>
                                     <br>
                                     <div class="btn-group">
-                                        <button class="btn btn-default" id="staticc-panel-editor-send-btn" type="button"><span class="glyphicons glyphicons-ok"></span> <span id="staticc-panel-editor-send-btn-content"></span></button>
-                                        <button class="btn btn-default" id="staticc-panel-editor-remove-btn" type="button" style="display: none;"><span class="glyphicons glyphicons-delete"></span> Удалить панель</button>
-                                        <button class="btn btn-default" id="staticc-panel-editor-erase-btn" type="button"><span class="glyphicons glyphicons-erase"></span> Отмена</button>
+                                        <button class="btn btn-default" id="create-btn-btn" type="button">Сохранить</button>
+                                    </div>
+                                </div>
+                                <div class="div-border" id="create-list-bar">
+                                    <p>Создание листа</p>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">Заголовок листа</div>
+                                        <input class="form-control" type="text" id="list-name-create-input">
+                                    </div>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">Текст листа</div>
+                                        <input class="form-control" id="list-text-create-input" type="text">
+                                        <div class="form-control alert-info"><span class="glyphicons glyphicons-info-sign"></span> Если Вы хотите, чтобы содержание списка определял
+                                        сайт, вставьте кодовое слово сюда.</div>
+                                    </div>
+                                    <div class="btn-group">
+                                        <button class="btn btn-default" id="create-list-btn-btn" type="button">Сохранить</button>
+                                    </div>
+                                </div>
+                                <div class="div-border" id="edit-btn-bar">
+                                    <p>Редактирование кнопки</p>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">Текст кнопки</div>
+                                        <input class="form-control" type="text" id="name-edit-input">
+                                    </div>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">Ссылка</div>
+                                        <input class="form-control" type="text" id="link-edit-input">
+                                    </div>
+                                    <div class="btn-group">
+                                        <button class="btn btn-default" id="edit-btn-btn" type="button">Сохранить</button>
+                                    </div>
+                                </div>
+                                <div class="div-border" id="edit-list-bar">
+                                    <p>Редактирование листа</p>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">Заголовок листа</div>
+                                        <input class="form-control" type="text" id="list-name-edit-input">
+                                    </div>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">Текст листа</div>
+                                        <input class="form-control" id="list-text-edit-input" type="text">
+                                        <div class="form-control alert-info"><span class="glyphicons glyphicons-info-sign"></span> Если Вы хотите, чтобы содержание списка определял
+                                            сайт, вставьте кодовое слово сюда.</div>
+                                    </div>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">Кнопки листа</div>
+                                        <select class="form-control" id="list-edit-btns-selected">
+                                            <option>Не указано</option>
+                                        </select>
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" type="button" id="create-new-li-btn" title="Добавить кнопку в лист"><span class="glyphicons glyphicons-plus"></span></button>
+                                            <button class="btn btn-default" type="button" id="remove-li-btn" title="Удалить кнопку из листа"><span class="glyphicons glyphicons-minus"></span></button>
+                                        </span>
+                                    </div>
+                                    <div id="li-div-creator" hidden>
+                                        <hr>
+                                        <div class="alert alert-info"><span class="glyphicons glyphicons-info-sign"></span> Оба поля обязательны к заполнению.</div>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">Текст кнопки</div>
+                                            <input class="form-control" type="text" id="li-text-input">
+                                        </div>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">Ссылка</div>
+                                            <input class="form-control" type="text" id="li-link-input">
+                                        </div>
+                                        <button class="btn btn-default" type="button" id="edit-li">Сохранить элемент</button>
+                                        <hr>
+                                    </div>
+                                    <div id="li-div-editor" hidden>
+                                        <hr>
+                                        <div class="alert alert-info"><span class="glyphicons glyphicons-info-sign"></span> Оба поля обязательны к заполнению.</div>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">Текст кнопки</div>
+                                            <input class="form-control" type="text" id="li-edit-text-input">
+                                        </div>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">Ссылка</div>
+                                            <input class="form-control" type="text" id="li-edit-link-input">
+                                        </div>
+                                        <button class="btn btn-default" type="button" id="save-changes-btn">Сохранить элемент</button>
+                                        <hr>
+                                    </div>
+                                    <div class="btn-group">
+                                        <button class="btn btn-default" id="edit-list-btn-btn" type="button">Сохранить</button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2" id="staticc-right-panel-div" style="display: none;">
-                                <div class="side-block">
-                                    <div class="side-block-header-right"></div>
-                                    <div class="side-block-body">
+                            <hr>
+                            <div class="navbar-group-box" id="navbar-group-box">
+                                <div class="btn-group">
+                                    <?php
+                                    $navbarbtns = \SiteBuilders\NavbarAgent::GetElements();
+                                    for ($i = 0; $i < count($navbarbtns); $i++){
+                                        if ($navbarbtns[$i][0] == "nav-btn"){
+                                            $data_href = $navbarbtns[$i][2];
+                                            $content = $navbarbtns[$i][1];
+                                            $id = $navbarbtns[$i][3];
+                                            echo "<button class=\"btn btn-default\" type=\"button\" data-href=\"$data_href\" data-id=\"$id\">$content</button>";
+                                        }
+                                        if ($navbarbtns[$i][1] == "nav-list"){
+                                            $children = \SiteBuilders\NavbarAgent::GetElementsOfList($navbarbtns[$i][0]);
+                                            $data_content = $navbarbtns[$i][3];
+                                            $content = $navbarbtns[$i][2];
+                                            $id = $navbarbtns[$i][0]; ?>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-default" data-id="<?=$id?>" data-content="<?=$data_content?>"><?=$content?></button>
+                                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <span class="caret"></span>
+                                                    <span class="sr-only">Toggle Dropdown</span>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <?php
+                                                    foreach ($children as $kid){
+                                                        $id = $kid[0];
+                                                        $data_href = $kid[2];
+                                                        $content = $kid[1];?>
+                                                        <li data-href="<?=$data_href?>" data-id="<?=$id?>"><?=$content?></li>
+                                                    <?php } ?>
+                                                </ul>
+                                            </div>
 
-                                    </div>
+                                       <?php }
+                                    } ?>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
             <?php } ?>
         </div>
     </form>
 </div>
 <script type="text/javascript">
+    $(document).ready(function (){
+       $("#btn-operation-container > p").hide();
+    });
+
+    $("#btn-manager-div > button").on("click", function () {
+        $("#btn-manager-div > button").removeClass("active");
+        $(this).addClass("active");
+        $("#navbar-group-box").css("background", "white");
+    });
+
+    if ($("#navbar-group-box > div").children().length > 1)
+        $("#navbar-group-box > div > span").hide();
+// Creation default button ///////////////////////////////////////////////////
+    $("#link-create-input").on("click", function() {
+        $("#link-create-input").removeClass("alert alert-danger");
+        $("#link-create-input").attr("placeholder", "");
+    });
+
+    $("#name-create-input").on("click", function() {
+        $("#name-create-input").removeClass("alert alert-danger");
+        $("#name-create-input").attr("placeholder", "");
+    });
+
+    $("#create-btn-btn").on("click", function() {
+        if ($("#name-create-input").val() == ""){
+            $("#name-create-input").addClass("alert alert-danger");
+            $("#name-create-input").attr("placeholder", "Введите текст кнопки.");
+            return;
+        }
+        if ($("#link-create-input").val() == ""){
+            $("#link-create-input").addClass("alert alert-danger");
+            $("#link-create-input").attr("placeholder", "Введите ссылку.");
+            return;
+        }
+        if ($("#navbar-group-box > div").children().length == 7){
+            ShowSCErrorBox("error", "Нельзя создать больше 7 кнопок.");
+            return;
+        }
+        var btn = document.createElement("button");
+        $(btn).addClass("btn");
+        $(btn).addClass("btn-default");
+        $(btn).attr("type", "button");
+        $(btn).attr("data-href", $("#link-create-input").val());
+        $(btn).append($("#name-create-input").val());
+        $("#navbar-group-box > div").append(btn);
+        $.ajax({
+            url: "adminpanel/scripts/ajax/navbarajax.php",
+            type: "POST",
+            data: "create_btn&text=" + $("#name-create-input").val() +
+                  "&link=" + $("#link-create-input").val(),
+            success: function(data){
+                if (data === "okey")
+                    ShowSCErrorBox("okey", "Кнопка была успешно создана.");
+            }
+        });
+    });
+/////////////////////////////////////////////////////////////////////////////////////////
+/// Create list /////////////////////////////////////////////////////////////////////////
+    $("#list-name-create-input").on("click", function() {
+        $("#list-name-create-input").removeClass("alert alert-danger");
+        $("#list-name-create-input").attr("placeholder", "");
+    });
+
+    $("#create-list-btn-btn").on("click", function () {
+       if ($("#list-name-create-input").val() == ""){
+           $("#list-name-create-input").addClass("alert alert-danger");
+           $("#list-name-create-input").attr("placeholder", "Введите название списка.");
+           return;
+       }
+        if ($("#navbar-group-box > div > span").is(":hidden") == false)
+            $("#navbar-group-box > div > span").hide();
+       var div_group = document.createElement("div");
+       var div_btn = document.createElement("button");
+       var div_btn_dropdown = document.createElement("button");
+       var span = document.createElement("span");
+       var span_sr = document.createElement("span");
+       var ul = document.createElement("ul");
+       $(span).addClass("caret");
+       $(span_sr).addClass("sr-only");
+       $(span_sr).append("Toggle Dropdown");
+       $(div_group).addClass("btn-group");
+       $(div_btn).addClass("btn btn-default");
+       if ($("#list-text-create-input").val() != "")
+           $(div_btn).attr("data-content", $("#list-text-create-input").val());
+       $(div_btn).attr("type", "button");
+       $(div_btn_dropdown).addClass("btn btn-default dropdown-toggle");
+       $(div_btn_dropdown).attr("data-toggle", "dropdown");
+       $(ul).addClass("dropdown-menu");
+       $(div_btn_dropdown).append(span);
+       $(div_btn_dropdown).append(span_sr);
+       $(div_btn).append($("#list-name-create-input").val());
+       $(div_group).append(div_btn);
+       $(div_group).append(div_btn_dropdown);
+       $(div_group).append(ul);
+       $("#navbar-group-box > div").append(div_group);
+        $.ajax({
+        url: "adminpanel/scripts/ajax/navbarajax.php",
+        type: "POST",
+        data: "create_list&text=" + $("#list-name-create-input").val() +
+            "&action=" + $("#list-text-create-input").val(),
+        success: function(data){
+            if (data === "okey")
+                ShowSCErrorBox("okey", "Лист был успешно создан.");
+        }
+        });
+    });
+/////////////////////////////////////////////////////////////////////////////////////////
+/// Create editor ///////////////////////////////////////////////////////////////////////
+    $("#navbar-edit-btn").on("click", function() {
+        if ($(this).hasClass("active")) {
+            $("#btn-operation-container > div").hide();
+            $("#btn-operation-container > p").show();
+            $("#navbar-group-box").css("background", "darkgrey");
+            $("#navbar-group-box > div > button").on("click", function() {
+                if (!$("#navbar-edit-btn").hasClass("active"))
+                    return;
+
+                $("#edit-list-bar").hide();
+                $("#edit-btn-bar").show();
+                $("#name-edit-input").val($(this).text());
+                $("#link-edit-input").val($(this).attr("data-href"));
+                $("#btn-operation-container > p").hide();
+                var btn = $(this);
+                $("#edit-btn-btn").on("click", function() {
+                    btn.text($("#name-edit-input").val());
+                    btn.attr("data-href", $("#link-edit-input").val());
+                });
+            });
+            $("#navbar-group-box > div > div.btn-group > :first-child").on("click", function() {
+                if (!$("#navbar-edit-btn").hasClass("active"))
+                    return;
+
+                $("#edit-btn-bar").hide();
+                $("#edit-list-bar").show();
+                $("#list-name-edit-input").val($(this).text());
+                $("#list-text-edit-input").val($(this).attr("data-content"));
+                //Clear selector
+                $("#list-edit-btns-selected").find("option").remove();
+                var std_option = document.createElement("option");
+                $(std_option).append("Не указано");
+                //Add standart option to selector
+                $("#list-edit-btns-selected").append(std_option);
+
+                var ul = $(this).parent("div").children("ul");
+                $(ul).children("li").each(function() {
+                   var option = document.createElement("option");
+                   $(option).attr("data-href", $(this).attr("data-href"));
+                   $(option).append($(this).text());
+                   $("#list-edit-btns-selected").append(option);
+                });
+
+                var edit_btn = $(this);
+                $("#edit-list-btn-btn").on("click", function() {
+                    $(edit_btn).text($("#list-name-edit-input").val());
+                    $(edit_btn).attr("data-content", $("#list-text-edit-input").val());
+                    $.ajax({
+                        url: "adminpanel/scripts/ajax/navbarajax.php",
+                        type: "POST",
+                        data: "change_list_param&content=" + $("#list-name-edit-input").val() +
+                            "&action=" + $("#list-text-edit-input").val() +
+                            "&id=" + $(edit_btn).attr("data-id"),
+                        success: function(data){
+                            $(li).attr("data-id", data);
+                        }
+                    });
+                });
+
+                $("#edit-li").on("click", function() {
+                    if ($("#li-text-input").val() == ""){
+                        $("#li-text-input").attr("placeholder", "Введите имя кнопки");
+                        return;
+                    }
+                    if ($("#li-link-input").val() == ""){
+                        $("#li-link-input").attr("placeholder", "Введите ссылку");
+                        return;
+                    }
+                    var li = document.createElement("li");
+                    var option = document.createElement("option");
+                    $.ajax({
+                        url: "adminpanel/scripts/ajax/navbarajax.php",
+                        type: "POST",
+                        data: "create_list_element&text=" + $("#li-text-input").val() +
+                            "&action=" + $("#li-link-input").val() +
+                            "&id=" + $(edit_btn).attr("data-id"),
+                        success: function(data){
+                            $(li).attr("data-id", data);
+                        }
+                    });
+                    $(li).append($("#li-text-input").val());
+                    $(option).append($("#li-text-input").val());
+                    $(option).attr("data-href", $("#li-link-input").val());
+                    $(li).attr("data-href", $("#li-link-input").val());
+                    $(ul).append(li);
+                    $("#list-edit-btns-selected").append(option);
+                    $("#li-text-input").val("");
+                    $("#li-link-input").val("");
+                    $("#li-div-creator").hide();
+                });
+
+                $("#list-edit-btns-selected").on("change", function() {
+                    if ($("#list-edit-btns-selected option:selected").text() == "Не указано"){
+                        $("#li-div-editor").hide();
+                        return;
+                    }
+                    $("#li-div-editor").show();
+                    $("#li-div-creator").hide();
+                    $("#li-edit-text-input").val($(this).val());
+                    $("#li-edit-link-input").val($("#list-edit-btns-selected option:selected").attr("data-href"));
+                });
+
+                $("#save-changes-btn").on("click", function () {
+                    if ($("#li-edit-text-input").val() == ""){
+                        $("#li-edit-text-input").attr("placeholder", "Введите имя кнопки");
+                        return;
+                    }
+                    if ($("#li-edit-link-input").val() == ""){
+                        $("#li-edit-link-input").attr("placeholder", "Введите ссылку");
+                        return;
+                    }
+                    //Change text
+                    var id_link = 0;
+                    $(ul).children("li").each(function() {
+                       if ($(this).text() == $("#list-edit-btns-selected").val()) {
+                           id_link = $(this).attr("data-id");
+                       }
+                    });
+                    $.ajax({
+                        url: "adminpanel/scripts/ajax/navbarajax.php",
+                        type: "POST",
+                        data: "change_list_element&content=" + $("#li-edit-text-input").val() +
+                            "&action=" + $("#li-edit-link-input").val() +
+                            "&id=" + id_link,
+                        success: function(data){
+                            if (data === "okey")
+                                ShowSCErrorBox("okey", "Лист был успешно обновлён.");
+                        }
+                    });
+                    //End change text.
+                    $("#li-div-editor").hide();
+                    $("#list-edit-btns-selected option:selected").text($("#li-edit-text-input").val());
+                    $("#list-edit-btns-selected option:selected").attr("data-href", $("#li-edit-link-input").val());
+                    $("#li-edit-text-input").val("");
+                    $("#li-edit-link-input").val("");
+                    $("#list-edit-btns-selected").val("Не указано");
+                });
+
+                $("#create-new-li-btn").on("click", function() {
+                    if ($(ul).children("li").length == 10){
+                        ShowSCErrorBox("error", "Нельзя создать меню с более чем 10 кнопками.");
+                        return;
+                    }
+                    $("#li-div-creator").show();
+                    $("#li-text-input").val("");
+                    $("#li-link-input").val("");
+                    $("#li-div-editor").hide();
+                });
+
+                $("#remove-li-btn").on("click", function() {
+                    if ($("#list-edit-btns-selected").val() != "Не указано"){
+                        var id_link = 0;
+                        $(ul).children("li").each(function() {
+                            if ($(this).text() == $("#list-edit-btns-selected").val()) {
+                                id_link = $(this).attr("data-id");
+                            }
+                        });
+                        $.ajax({
+                            url: "adminpanel/scripts/ajax/navbarajax.php",
+                            type: "POST",
+                            data: "remove_list_element&id=" + id_link,
+                            success: function(data){
+                                if (data === "okey")
+                                    ShowSCErrorBox("okey", "Элемент листа был успешно удалён.");
+                            }
+                        });
+                        $(ul).children("li").each(function() {
+                           if ($(this).text() == $("#list-edit-btns-selected").val())
+                               $(this).remove();
+                        });
+                        $("#list-edit-btns-selected option:selected").remove();
+                        $("#li-div-editor").hide();
+                        $("#li-div-creator").hide();
+                    }
+                });
+            });
+
+        }
+        else {
+            $("#btn-operation-container > div").hide();
+            $("#btn-operation-container > p").hide();
+            $("#navbar-group-box").css("background", "white");
+        }
+    });
+////////////////////////////////////////////////////////////////////////////////////////
+/// Create removing.
+    $("#navbar-remove-btn").on("click", function (){
+        $("#btn-operation-container > p").show();
+        $("#btn-operation-container > div").hide();
+        $("#navbar-group-box").css("background", "gray");
+        $("#btn-manager-div > button").removeClass("active");
+        $(this).addClass("active");
+        $("#navbar-group-box > div > button").on("click", function() {
+           if ($("#navbar-remove-btn").hasClass("active")) {
+               var id_link = $(this).attr("data-id");
+               $.ajax({
+                   url: "adminpanel/scripts/ajax/navbarajax.php",
+                   type: "POST",
+                   data: "remove_list_element&id=" + id_link,
+                   success: function(data){
+                       if (data === "okey")
+                           ShowSCErrorBox("okey", "Кнопка была успешно удалена!");
+                   }
+               });
+               $(this).remove();
+           }
+        });
+        $("#navbar-group-box > div > div > button").on("click", function() {
+            if ($("#navbar-remove-btn").hasClass("active")) {
+                var id_link = $(this).attr("data-id");
+                $.ajax({
+                    url: "adminpanel/scripts/ajax/navbarajax.php",
+                    type: "POST",
+                    data: "remove_list_element&id=" + id_link,
+                    success: function(data){
+                        if (data === "okey")
+                            ShowSCErrorBox("okey", "Кнопка была успешно удалена!");
+                    }
+                });
+                $(this).parent().remove();
+            }
+        });
+    });
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+    $("#btn-operation-container > div").hide();
+
+    $("#navbar-add-btn").on("click", function() {
+        $("#btn-operation-container > div").hide();
+        $("#btn-operation-container > p").hide();
+        $("#create-btn-bar").show();
+    });
+
+    $("#navbar-add-list-btn").on("click", function(){
+        $("#btn-operation-container > div").hide();
+        $("#btn-operation-container > p").hide();
+        $("#create-list-bar").show();
+    });
+
     $("#staticc-panel :first-child").show();
     $("#staticc-btn-panel :first-child").addClass("active");
 
@@ -532,21 +1033,21 @@ if ($editSContentPerm){
     //First small banner actions
     $("a#staticc-smbanner-first-save").on("click", function(){
         var dataInfo = "savefsb&link=" + $("input#staticc-firstsm-html-input").val();
-       $.ajax({
-           url: "adminpanel/scripts/ajax/bannersajax.php",
-           type: "POST",
-           data: dataInfo,
-           success: function(data){
-               if ($.isNumeric(data) || data === "okey") {
-                   ShowSCErrorBox("okey", "Первый баннер был успешно сохранён!");
-                   $("input#staticc-firstsm-html-input").data("fsbid", data);
-               }
-               else if (data === "failed")
-                   ShowSCErrorBox("fail", "Не удалось сохранить первый баннер.");
-               else
-                   ShowSCErrorBox("fail", "Не был отослан HTML код первого баннера.");
-           }
-       });
+        $.ajax({
+            url: "adminpanel/scripts/ajax/bannersajax.php",
+            type: "POST",
+            data: dataInfo,
+            success: function(data){
+                if ($.isNumeric(data) || data === "okey") {
+                    ShowSCErrorBox("okey", "Первый баннер был успешно сохранён!");
+                    $("input#staticc-firstsm-html-input").data("fsbid", data);
+                }
+                else if (data === "failed")
+                    ShowSCErrorBox("fail", "Не удалось сохранить первый баннер.");
+                else
+                    ShowSCErrorBox("fail", "Не был отослан HTML код первого баннера.");
+            }
+        });
     });
     $("a#staticc-smbanner-first-remove").on("click", function(){
         var dataInfo = "removefsb&id=" + $("input#staticc-firstsm-html-input").data("fsbid");
@@ -610,8 +1111,8 @@ if ($editSContentPerm){
                 type: "POST",
                 url : "adminpanel/scripts/ajax/bannersajax.php",
                 data: "addbbaner&banner-name=" + $("input#staticc-create-banner-name-input").val() +
-                        "&banner-content=" + $("input#staticc-create-banner-link-input").val() +
-                        "&banner-visibility=" + (($("input#staticc-create-banner-visibility-input").is(":checked")) ? 1 : 0),
+                    "&banner-content=" + $("input#staticc-create-banner-link-input").val() +
+                    "&banner-visibility=" + (($("input#staticc-create-banner-visibility-input").is(":checked")) ? 1 : 0),
                 success: function (data){
                     if (data === "failed")
                         ShowSCErrorBox("error", "Не удалось создать баннер.");
@@ -712,25 +1213,25 @@ if ($editSContentPerm){
     });
 
     $("button#staticc-remove-banner-send-btn").on("click", function() {
-       $.ajax({
-           type: "POST",
-           url: "adminpanel/scripts/ajax/bannersajax.php",
-           data: "removebbanner&banner-id=" + $("input#staticc-banner-current-id").val(),
-           success: function (data){
-               if (data === "okey"){
-                   ShowSCErrorBox("okey", "Баннер \"" + $("input#staticc-create-banner-name-input").val() + "\" был успешно удалён.");
-                   $("div#staticc-banner-btns > button[data-banner-id=" + $("input#staticc-banner-current-id").val() + "]").remove();
-                   $("span#staticc-banners-counter").val($("span#staticc-banners-counter").val()-1);
-                   $("button#staticc-create-banner-cancel-btn").click();
-               }
-               else if (data === "failed"){
-                   ShowSCErrorBox("failed", "Не удалось удалить баннер.");
-               }
-               else if (data === "bne"){
-                   ShowSCErrorBox("failed", "Такого баннера не существует.");
-               }
-           }
-       });
+        $.ajax({
+            type: "POST",
+            url: "adminpanel/scripts/ajax/bannersajax.php",
+            data: "removebbanner&banner-id=" + $("input#staticc-banner-current-id").val(),
+            success: function (data){
+                if (data === "okey"){
+                    ShowSCErrorBox("okey", "Баннер \"" + $("input#staticc-create-banner-name-input").val() + "\" был успешно удалён.");
+                    $("div#staticc-banner-btns > button[data-banner-id=" + $("input#staticc-banner-current-id").val() + "]").remove();
+                    $("span#staticc-banners-counter").val($("span#staticc-banners-counter").val()-1);
+                    $("button#staticc-create-banner-cancel-btn").click();
+                }
+                else if (data === "failed"){
+                    ShowSCErrorBox("failed", "Не удалось удалить баннер.");
+                }
+                else if (data === "bne"){
+                    ShowSCErrorBox("failed", "Такого баннера не существует.");
+                }
+            }
+        });
     });
 
     ///////////////////////////////////////////////////////////////////////////
@@ -783,36 +1284,36 @@ if ($editSContentPerm){
             $("button#staticc-panel-editor-remove-btn").show("slow");
             $("div#staticc-panel-editor-div").show();
             $.ajax({
-               type: "POST",
-               url: "adminpanel/scripts/ajax/panelsajax.php",
-               data: "getpanel&panel-id=" + $("select#staticc-panels-selector").val(),
-               success: function(data) {
-                   if (data === "pne"){
+                type: "POST",
+                url: "adminpanel/scripts/ajax/panelsajax.php",
+                data: "getpanel&panel-id=" + $("select#staticc-panels-selector").val(),
+                success: function(data) {
+                    if (data === "pne"){
                         ShowSCErrorBox("failed", "Данной панели не существует. Возможно, её кто-то удалил; перезагрузите страницу.");
-                   } else if (data === "failed"){
+                    } else if (data === "failed"){
                         ShowSCErrorBox("failed", "Не удалось получить данные панели.")
-                   } else {
-                       if (data !== undefined) {
-                           $("span#staticc-panel-editor-send-btn-content").text("Сохранить изменения");
-                           data = $.parseJSON(data);
-                           var side = (data.type == "leftside") ? "left" : "right";
-                           $("div#staticc-panel-editor-div").show();
-                           $("input#staticc-panel-editor-title").val(data.name);
-                           $("div.side-block-header-" + side).html(data.name);
-                           $("div.side-block-header-" + side).parent("div").children("div:last-child").html(data.content);
-                           $("textarea#staticc-panel-editor-content").val(data.content);
-                           $("input[type=checkbox]#staticc-panel-editor-visibility").prop("checked", (data.visibility == 0) ? false : true);
-                           $("select#staticc-panel-editor-side").val(side);
-                           if (side == "left") {
-                               $("div#staticc-left-panel-div").show();
-                               $("div#staticc-right-panel-div").hide();
-                           } else {
-                               $("div#staticc-left-panel-div").hide();
-                               $("div#staticc-right-panel-div").show();
-                           }
-                       }
-                   }
-               }
+                    } else {
+                        if (data !== undefined) {
+                            $("span#staticc-panel-editor-send-btn-content").text("Сохранить изменения");
+                            data = $.parseJSON(data);
+                            var side = (data.type == "leftside") ? "left" : "right";
+                            $("div#staticc-panel-editor-div").show();
+                            $("input#staticc-panel-editor-title").val(data.name);
+                            $("div.side-block-header-" + side).html(data.name);
+                            $("div.side-block-header-" + side).parent("div").children("div:last-child").html(data.content);
+                            $("textarea#staticc-panel-editor-content").val(data.content);
+                            $("input[type=checkbox]#staticc-panel-editor-visibility").prop("checked", (data.visibility == 0) ? false : true);
+                            $("select#staticc-panel-editor-side").val(side);
+                            if (side == "left") {
+                                $("div#staticc-left-panel-div").show();
+                                $("div#staticc-right-panel-div").hide();
+                            } else {
+                                $("div#staticc-left-panel-div").hide();
+                                $("div#staticc-right-panel-div").show();
+                            }
+                        }
+                    }
+                }
             });
         }
     });
@@ -830,11 +1331,11 @@ if ($editSContentPerm){
         RemovePanel($("select#staticc-panels-selector").val());
     });
     $("input#staticc-panel-editor-title").on("keyup", function (){
-       if ($("select#staticc-panel-editor-side").val() == "left"){
-           $("div.side-block-header-left").text($(this).val());
-       } else {
-           $("div.side-block-header-right").text($(this).val());
-       }
+        if ($("select#staticc-panel-editor-side").val() == "left"){
+            $("div.side-block-header-left").text($(this).val());
+        } else {
+            $("div.side-block-header-right").text($(this).val());
+        }
     });
     $("textarea#staticc-panel-editor-content").on("keyup", function (){
         if ($("select#staticc-panel-editor-side").val() == "left"){
@@ -844,17 +1345,17 @@ if ($editSContentPerm){
         }
     });
     $("select#staticc-panel-editor-side").on("change", function(){
-       if ($(this).val() == "left") {
-           $("div#staticc-left-panel-div").show();
-           $("div.side-block-header-left").text($("input[type=text]#staticc-panel-editor-title").val());
-           $("div.side-block-header-left").parent("div").children("div:last-child").html($("textarea#staticc-panel-editor-content").val());
-           $("div#staticc-right-panel-div").hide();
-       } else {
-           $("div#staticc-left-panel-div").hide();
-           $("div#staticc-right-panel-div").show();
-           $("div.side-block-header-right").text($("input[type=text]#staticc-panel-editor-title").val());
-           $("div.side-block-header-right").parent("div").children("div:last-child").html($("textarea#staticc-panel-editor-content").val());
-       }
+        if ($(this).val() == "left") {
+            $("div#staticc-left-panel-div").show();
+            $("div.side-block-header-left").text($("input[type=text]#staticc-panel-editor-title").val());
+            $("div.side-block-header-left").parent("div").children("div:last-child").html($("textarea#staticc-panel-editor-content").val());
+            $("div#staticc-right-panel-div").hide();
+        } else {
+            $("div#staticc-left-panel-div").hide();
+            $("div#staticc-right-panel-div").show();
+            $("div.side-block-header-right").text($("input[type=text]#staticc-panel-editor-title").val());
+            $("div.side-block-header-right").parent("div").children("div:last-child").html($("textarea#staticc-panel-editor-content").val());
+        }
     });
     $("button#staticc-panel-editor-send-btn").on("click", function() {
         if ($("select#staticc-panels-selector").val() !== "none"){
@@ -862,10 +1363,10 @@ if ($editSContentPerm){
                 type: "POST",
                 url: "adminpanel/scripts/ajax/panelsajax.php",
                 data: "editpanel&panel-id=" + $("select#staticc-panels-selector").val() +
-                        "&panel-name=" + $("input#staticc-panel-editor-title").val() +
-                        "&panel-content=" + $("textarea#staticc-panel-editor-content").val() +
-                        "&panel-visibility=" + (($("input#staticc-panel-editor-visibility").is(":checked")) ? 1 : 0) +
-                        "&panel-side=" + $("select#staticc-panel-editor-side").val(),
+                    "&panel-name=" + $("input#staticc-panel-editor-title").val() +
+                    "&panel-content=" + $("textarea#staticc-panel-editor-content").val() +
+                    "&panel-visibility=" + (($("input#staticc-panel-editor-visibility").is(":checked")) ? 1 : 0) +
+                    "&panel-side=" + $("select#staticc-panel-editor-side").val(),
                 success: function(data){
                     if (data === "pne"){
                         ShowSCErrorBox("failed", "Такой панели не существует. Вероятно, её кто-то удалил...");
@@ -901,11 +1402,11 @@ if ($editSContentPerm){
         }
     });
     $("button#staticc-panel-editor-erase-btn").on("click", function(){
-       EditorClear();
-       HideSidePanels();
+        EditorClear();
+        HideSidePanels();
     });
     $("button#staticc-panel-editor-remove-btn").on("click", function() {
-       RemovePanel($("select#staticc-panels-selector").val());
+        RemovePanel($("select#staticc-panels-selector").val());
     });
     <?php } ?>
 
