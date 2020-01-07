@@ -54,7 +54,7 @@ if ($user !== false){
 # Build categories menu.
 $categoryMenu = "";
 if (count($categories) == 0){
-    $categoryMenu = "<li class=\"dropdown-header\">Список пуст :c</li>";
+    $categoryMenu = "<li class=\"dropdown-header\">" . \Engine\LanguageManager::GetTranslation("list_is_empty") . "</li>";
 }
 else {
     foreach($categories as $c){
@@ -72,7 +72,7 @@ if (count($onlineUsers) > 0) {
         $onlineUserStatistic .= "<li><a class=\"alert-link\" href=\"./profile.php?uid=" . $onlineUsers[$i] . "\">" . \Users\UserAgent::GetUserNick($onlineUsers[$i]) . "</a></li>";
     }
 } else {
-    $onlineUserStatistic .= "<li>Нет онлайн пользователей</li>";
+    $onlineUserStatistic .= "<li>" . \Engine\LanguageManager::GetTranslation("no_online_users") . "</li>";
 }
 $onlineUserStatistic .= "</ul>";
 ################################################################################
@@ -157,9 +157,40 @@ foreach ($panels as $panel){
 $info = "";
 if (isset($_GET["res"])){
     if ($_GET["res"] == "3sdt"){
-        $info = "<div class='alert alert-success'><span class='glyphicon glyphicon-ok'></span> Тема была успешно удалена!";
+        $info = "<div class='alert alert-success'><span class='glyphicon glyphicon-ok'></span> " . \Engine\LanguageManager::GetTranslation("topic_has_been_removed");
     }
 }
+
+$navbtns = \SiteBuilders\NavbarAgent::GetElements();
+$ul = "";
+for($i = 0; $i < count($navbtns); $i++){
+    if ($navbtns[$i][0] == "nav-btn") {
+        $data_href = $navbtns[$i][2];
+        $content = $navbtns[$i][1];
+        $ul .= "<li><a href=\"$data_href\">$content</a></li>";
+    }
+    if ($navbtns[$i][1] == "nav-list") {
+        $children = \SiteBuilders\NavbarAgent::GetElementsOfList($navbtns[$i][0]);
+        $data_content = $navbtns[$i][3];
+        $content = $navbtns[$i][2];
+        $id = $navbtns[$i][0];
+        $ul .= "<li class=\"dropdown\"><a aria-expanded=\"false\" aria-haspopup=\"true\" role=\"button\" data-toggle=\"dropdown\" class=\"dropdown-toggle\" href=\"#\">$content <span class=\"caret\"></span></a>";
+        if ($data_content != "")
+            $ul .= "<ul class=\"dropdown-menu\">$data_content</ul>";
+        else {
+            $ul .= "<ul class=\"dropdown-menu\">";
+            foreach($children as $kid) {
+                $text = $kid[1];
+                $href = $kid[2];
+                $ul .= "<li><a href=\"$href\">$text</a></li>";
+            }
+            $ul .= "</ul>";
+        }
+        $ul .= "</li>";
+
+    }
+}
+$navbar = str_replace_once("{INDEX_NAVBAR_BTNS}", $ul, $navbar);
 
 $main = str_replace_once("{INDEX_PAGE_NAVBAR}", $navbar, $main);
 $main = str_replace_once("{INDEX_PAGE_HEADER}", $header, $main);
@@ -169,7 +200,7 @@ $main = str_replace_once("{INDEX_PAGE_LEFT}", $leftPanels, $main);
 
 if (isset($_GET["category"]) && $_GET["category"] != "")
     $main = str_replace_once("{INDEX_CATEGORY_HINT}", "<div class=\"alert alert-info\">
-                    <span class=\"glyphicons glyphicons-info-sign\"></span> <strong>Категория:</strong> " .
+                    <span class=\"glyphicons glyphicons-info-sign\"></span> <strong>" . \Engine\LanguageManager::GetTranslation("category") . ":</strong> " .
                     \Forum\ForumAgent::GetCategoryParam($_GET["category"], "name") . "</div>", $main);
 else
     $main = str_replace_once("{INDEX_CATEGORY_HINT}", "", $main);
@@ -215,7 +246,7 @@ if ($user !== false) {
 
 $lastTopics = \Forum\ForumAgent::GetTopicList(1, true);
 if (empty($lastTopics)){
-    $ltText = "Ещё не создано не одной темы. Вы будете первым!";
+    $ltText = \Engine\LanguageManager::GetTranslation("empty_news_list");
 } else {
     $lastAuthorsTopicsText = "<ol>";
     foreach ($lastTopics as $topicId){
