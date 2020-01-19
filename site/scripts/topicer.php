@@ -179,7 +179,6 @@ if ($session === TRUE) {
             header("Location: index.php?topic=" . $topic->getId());
             exit;
         }
-        $topic = new \Forum\Topic($_POST["topic-edit-id"]);
         $id = $topic->getId();
         if (!isset($_POST["comment-content-textarea"])){
             header("Location: ../../index.php?topic=$id&res=3ntc");
