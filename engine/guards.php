@@ -4,6 +4,7 @@ namespace Guards {
 
     use Engine\Engine;
     use Engine\ErrorManager;
+    use Engine\LanguageManager;
     use Users\User;
     use Users\UserAgent;
 
@@ -372,7 +373,6 @@ namespace Guards {
         private $reportAuthorId;
         private $reportCreateDate;
         private $reportCloseDate;
-        private $reportMark;
         private $reportAnswerId;
         private $reportIsViewed;
         private $reportAddedInDiscuse = [];
@@ -405,7 +405,7 @@ namespace Guards {
                     return ErrorManager::GetError();
                 }
                 $stmt->bind_result($id, $status, $theme, $author, $shortMessage, $message,
-                    $answer, $mark, $createDate, $closeDate, $viewed);
+                    $answer, $createDate, $closeDate, $viewed);
                 $stmt->fetch();
                 $this->reportId = $reportId;
                 $this->reportStatus = $status;
@@ -414,7 +414,6 @@ namespace Guards {
                 $this->reportShortMessage = $shortMessage;
                 $this->reportMessage = $message;
                 $this->reportAnswerId = $answer;
-                $this->reportMark = $mark;
                 $this->reportCreateDate = $createDate;
                 $this->reportCloseDate = $closeDate;
                 $this->reportIsViewed = $viewed;
@@ -457,11 +456,11 @@ namespace Guards {
              */
             switch($this->reportStatus){
                 case 0:
-                    return "Ждёт проверки.";
+                    return LanguageManager::GetTranslation("reports_panel.discussion_page.status_wait_for_checking");
                 case 1:
-                    return "Жалоба открыта.";
+                    return LanguageManager::GetTranslation("reports_panel.discussion_page.status_report_is_open");
                 case 2:
-                    return "Жалоба закрыта.";
+                    return LanguageManager::GetTranslation("reports_panel.discussion_page.status_report_is_closed");
             }
         }
         public function isClosed(){
@@ -822,7 +821,7 @@ namespace Guards {
             }
 
             if ($stmt = $mysqli->prepare("UPDATE `tt_reportanswers` SET `message`=?, `edit_date`=?, `reason_edit`=?, `last_editorId`=? WHERE `id`=?")){
-                $date = date("Y-m-d H:m:s", time());
+                $date = date("Y-m-d H:m:s", Engine::GetSiteTime());
                 $stmt->bind_param("sssii", $newText, $date, $reasonEdit, $editorId, $answerId);
                 $stmt->execute();
                 if ($stmt->errno){

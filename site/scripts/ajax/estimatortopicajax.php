@@ -17,7 +17,7 @@ if (isset($_POST["topicId"]) && isset($_POST["mark"])){
         if ($_POST["mark"] == 1) {
             $topic = new \Forum\Topic($_POST["topicId"]);
             $author = new \Users\User($topic->getAuthorId());
-            $author->Notifications()->createNotify(7, $user->getId(), $_POST["topicId"]);
+            $author->Notifications()->createNotify(7, $user->getId(), $topic->getId());
         }
         echo "okey";
         exit;

@@ -125,7 +125,7 @@ if (isset($_POST["reports-report-edit"])){
 }
 
 # Удаление жалобы
-if (isset($_POST["reports-reports-delete"])){
+if (isset($_POST["reports-report-delete"])){
     if (empty($_GET["rid"])){
         header("Location: ../../adminpanel.php?p=reports&res=5nrid");
         exit;

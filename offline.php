@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <?php
 include_once "./engine/main.php";
 \Engine\Engine::LoadEngine();
@@ -16,12 +16,13 @@ if(\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Locat
     <title><?php echo \Engine\Engine::GetEngineInfo("sn");?></title>
 </head>
 <body class="offline_screen_body" style="font-family: 'PT Sans', sans-serif;">
-    <h2>:( Сайт выключен</h2>
-    <h4>Сейчас сайт находится на технических работах. Администрация сайта приносит извинения за технические неудобства.<br>
-    Не волнуйтесь и не грустите! Скоро он снова будет работать и лучше прежнего! :)</h4>
+    <h2><?php echo \Engine\LanguageManager::GetTranslation("site_is_off");?></h2>
+    <h4><?php echo \Engine\LanguageManager::GetTranslation("maintenance"); ?></h4>
 
     <?php if (isset($user) && $user->UserGroup()->getPermission("offline_visiter") == 1){ ?>
-    <p>На самом деле, у Вас есть доступ на сайт, даже если он выключен. Тыкните <a href="index.php">сюда</a>, чтобы перейти.</p>
-    <?php } ?>
+    <p><?php echo \Engine\LanguageManager::GetTranslation("go_to_site") .
+        "<a href=\"index.php\">". \Engine\LanguageManager::GetTranslation("go_to_site_link") . "</a>"
+        . \Engine\LanguageManager::GetTranslation("to_redirect") . ".</p>";
+     } ?>
 </body>
 </html>

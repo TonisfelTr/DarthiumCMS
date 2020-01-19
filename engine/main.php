@@ -63,18 +63,18 @@
             }
             public static function DateFormatToRead($string){
                 $month = array(
-                    '01' => 'Января',
-                    '02' => 'Февраля',
-                    '03' => 'Марта',
-                    '04' => 'Апреля',
-                    '05' => 'Мая',
-                    '06' => 'Июня',
-                    '07' => 'Июля',
-                    '08' => 'Августа',
-                    '09' => 'Сентября',
-                    '10' => 'Октября',
-                    '11' => 'Ноября',
-                    '12' => 'Декабря'
+                    '01' => LanguageManager::GetTranslation("january_month"),
+                    '02' => LanguageManager::GetTranslation("febrary_month"),
+                    '03' => LanguageManager::GetTranslation("march_month"),
+                    '04' => LanguageManager::GetTranslation("april_month"),
+                    '05' => LanguageManager::GetTranslation("may_month"),
+                    '06' => LanguageManager::GetTranslation("june_month"),
+                    '07' => LanguageManager::GetTranslation("july_month"),
+                    '08' => LanguageManager::GetTranslation("august_month"),
+                    '09' => LanguageManager::GetTranslation("september_month"),
+                    '10' => LanguageManager::GetTranslation("october_month"),
+                    '11' => LanguageManager::GetTranslation("november_month"),
+                    '12' => LanguageManager::GetTranslation("december_month"),
                 );
 
                 $exploded = explode("-",$string);
@@ -84,18 +84,18 @@
             public static function DatetimeFormatToRead($string){
                 //Format: Y-m-d H:i:s
                 $month = array(
-                    '01' => 'Января',
-                    '02' => 'Февраля',
-                    '03' => 'Марта',
-                    '04' => 'Апреля',
-                    '05' => 'Мая',
-                    '06' => 'Июня',
-                    '07' => 'Июля',
-                    '08' => 'Августа',
-                    '09' => 'Сентября',
-                    '10' => 'Октября',
-                    '11' => 'Ноября',
-                    '12' => 'Декабря'
+                    '01' => LanguageManager::GetTranslation("january_month"),
+                    '02' => LanguageManager::GetTranslation("febrary_month"),
+                    '03' => LanguageManager::GetTranslation("march_month"),
+                    '04' => LanguageManager::GetTranslation("april_month"),
+                    '05' => LanguageManager::GetTranslation("may_month"),
+                    '06' => LanguageManager::GetTranslation("june_month"),
+                    '07' => LanguageManager::GetTranslation("july_month"),
+                    '08' => LanguageManager::GetTranslation("august_month"),
+                    '09' => LanguageManager::GetTranslation("september_month"),
+                    '10' => LanguageManager::GetTranslation("october_month"),
+                    '11' => LanguageManager::GetTranslation("november_month"),
+                    '12' => LanguageManager::GetTranslation("december_month"),
                 );
 
                 $parts = explode(" ", $string);
@@ -146,9 +146,7 @@
 
                 self::$SiteMetricType = $a["metricType"];
                 self::$SiteMetricStatus = $a["metricStatus"];
-                if (Engine::$SiteLang != (null||0)){
-                    LanguageManager::load();
-                }
+                LanguageManager::load();
 
                 include "guards.php";
                 include "users.php";
@@ -616,22 +614,43 @@
                 $languageFile = $_SERVER["DOCUMENT_ROOT"] . "/languages/" . Engine::GetEngineInfo("sl") . ".php";
                 if (!file_exists($languageFile))
                     throw new \Error("Language file is not exist.");
-                self::$languageArray = require_once($_SERVER["DOCUMENT_ROOT"] . "/languages/" . Engine::GetEngineInfo("sl") . ".php");
-            }
-            /**
-             * *
-             * This function return a string with $desc description from $LanguageFilePath file.
-             * You need use load() function before it.
-             * @param $translations array Loaded by load() function array.
-             * @param $desc string Description of phrase.
-             */
-            public static function getTranslate($translations, $desc){
-                return $translations[$desc];
+                require $languageFile;
+                self::$languageArray = $languagePack;
             }
 
-            public static function translate($desc){
-                return self::$languageArray[$desc];
+
+            /** Return translated value from language dictionary by path.
+             * @param string $path
+             * @return string
+             */
+            public static function GetTranslation(string $path){
+                if (isset(self::$languageArray[$path]) && !is_array(self::$languageArray[$path]))
+                    return self::$languageArray[$path];
+
+                $exploded = explode(".", $path);
+
+                if (end($exploded) == "")
+                    return $path;
+
+                $think = null;
+                for ($i = 0; $i < count($exploded); $i++){
+                    if (empty($think)){
+                        //If $think is empty set it into var.
+                        $think = self::$languageArray[$exploded[$i]];
+                    } else {
+                        if (is_array($think)){
+                            $think = $think[$exploded[$i]];
+                        } else {
+                            return $think;
+                        }
+                    }
+                }
+                if (!empty($think))
+                    return $think;
+                else
+                    return $path;
             }
+
         }
 
         class Mailer{

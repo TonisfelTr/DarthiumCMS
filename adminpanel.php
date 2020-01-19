@@ -28,7 +28,7 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?php echo "Администраторская панель - " . \Engine\Engine::GetEngineInfo("sn");?></title>
+    <title><?php echo \Engine\LanguageManager::GetTranslation("header") . " - " . \Engine\Engine::GetEngineInfo("sn");?></title>
     <script src="libs/js/ie-emulator.js"></script>
     <script src="libs/js/jquery-3.1.0.min.js"></script>
     <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -53,18 +53,18 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
         <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <span class="navbar-brand">Навигация</span>
+                    <span class="navbar-brand"><?php echo \Engine\LanguageManager::GetTranslation("navigation"); ?></span>
                 </div>
                 <div class="navbar-collapse collapse" id="navbar">
                     <ul class="nav navbar-nav">
-                        <li <?php if (!isset($_GET["p"])) echo "class='active'"; ?>><a href="adminpanel.php">Главная</a></li>
-                        <li <?php if (isset($_GET["p"])) if ($_GET["p"] == 'settings') echo "class='active'"; ?>><a href="?p=settings">Настройки</a></li>
-                        <li <?php if (isset($_GET["p"])) if ($_GET["p"] == 'reports') echo "class='active'"; ?>><a href="?p=reports">Жалобы
+                        <li <?php if (!isset($_GET["p"])) echo "class='active'"; ?>><a href="adminpanel.php"><?php echo \Engine\LanguageManager::GetTranslation("home");?></a></li>
+                        <li <?php if (isset($_GET["p"])) if ($_GET["p"] == 'settings') echo "class='active'"; ?>><a href="?p=settings"><?php echo \Engine\LanguageManager::GetTranslation("settings");?></a></li>
+                        <li <?php if (isset($_GET["p"])) if ($_GET["p"] == 'reports') echo "class='active'"; ?>><a href="?p=reports"><?php echo \Engine\LanguageManager::GetTranslation("reports");?>
                                 <?php if (($rc = \Guards\ReportAgent::GetUnreadedReportsCount()) > 0) { ?><span class="adminpanel-reports-inc"><span class="glyphicons glyphicons-bell"></span> <?php echo $rc; ?></span><?php } ?></a></li>
-                        <li <?php if (isset($_GET["p"])) if ($_GET["p"] == 'logs') echo "class='active'"; ?>><a href="?p=logs">История</a></li>
+                        <li <?php if (isset($_GET["p"])) if ($_GET["p"] == 'logs') echo "class='active'"; ?>><a href="?p=logs"><?php echo \Engine\LanguageManager::GetTranslation("logs");?></a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="index.php">На сайт</a></li>
+                        <li><a href="index.php"><?php echo \Engine\LanguageManager::GetTranslation("to_site_home");?></a></li>
                         <li><a href="profile.php"><?php echo $user->getNickname(); ?></a></li>
                     </ul>
                 </div><!--/.nav-collapse -->
@@ -72,8 +72,8 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
         </nav>
         <!-- Main component for a primary marketing message or call to action -->
         <div class="jumbotron" id="jumbotron">
-            <h1>Административная панель</h1>
-            <p>Здесь вы можете управлять сайтом.</p>
+            <h1><?php echo \Engine\LanguageManager::GetTranslation("header");?></h1>
+            <p><?php echo \Engine\LanguageManager::GetTranslation("header_info");?></p>
         </div>
     </div> <!-- /container -->
     <div class="divider_header">
@@ -84,392 +84,425 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
     /* Раздел с ошибками. Здесь находится div, внутри которого форма для вывода ошибок. */
     #####################################################################################
     if (isset($_GET["res"])){ ?> <div class="container-fluid"><?php
-        if ($_GET["res"] == "1"){ ?><div class="alert alert-danger"><span class="glyphicon glyphicon-alert"></span> У вас недостаточно прав для совершенния данного действия.</div><?php }
-        if ($_GET["res"] == "2"){ ?><div class="alert alert-danger"><span class="glyphicon glyphicon-alert"></span> Указанной подстраницы нет в данном модуле.</div><?php }
+        if ($_GET["res"] == "1"){ ?><div class="alert alert-danger"><span class="glyphicon glyphicon-alert"></span> <?php echo \Engine\LanguageManager::GetTranslation("not_permited");?></div><?php }
+        if ($_GET["res"] == "2"){ ?><div class="alert alert-danger"><span class="glyphicon glyphicon-alert"></span> <?php echo \Engine\LanguageManager::GetTranslation("no_page_in_module");?></div><?php }
         if (isset($_GET["p"])) {
             if ($_GET["p"] == "settings") {
                 if ($_GET["res"] == "2s") { ?>
-                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span> Настройки были
-                        успешно сохранены!
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_save");?>
                     </div><?php }
                 if ($_GET["res"] == "2n") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-alert"></span> Не получилось
-                        сохранить настройки полностью. Проверьте доступ к файлам на сервере, возможно, они
-                        отсутствуют или доступ к ним закрыт.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-alert"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_not_save");?>
                     </div><?php }
             }
             if ($_GET["p"] == "groups") {
                 if ($_GET["res"] == "3se") { ?>
-                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span> Итендефицирующая
-                        информация группы сохранена!
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span> <?php echo \Engine\LanguageManager::GetTranslation("custom_info_group"); ?>
                     </div><?php }
                 if ($_GET["res"] == "3spc") { ?>
-                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span> Права группы
-                        успешно
-                        изменены и сохранены!
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span> <?php echo \Engine\LanguageManager::GetTranslation("permissions_change_and_set_success "); ?>
                     </div><?php }
                 if ($_GET["res"] == "3sgc") { ?>
-                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span> Группа успешно
-                        создана!
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span> <?php echo \Engine\LanguageManager::GetTranslation("group_create_success"); ?>
                     </div><?php }
                 if ($_GET["res"] == "3sgd") { ?>
-                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span> Группа успешно
-                        удалена!
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span> <?php echo \Engine\LanguageManager::GetTranslation("group_remove_success"); ?>
                     </div><?php }
                 if ($_GET["res"] == "3nlfs") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-alert"></span> Имя группы
-                        должно
-                        содержать более 4 символов и меньше 50.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-alert"></span> <?php echo \Engine\LanguageManager::GetTranslation("invalid_group_name"); ?>
                     </div><?php }
                 if ($_GET["res"] == "3nmfts") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-alert"></span> Имя группы
-                        должно
-                        содержать более 4 символов и меньше 50.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-alert"></span> <?php echo \Engine\LanguageManager::GetTranslation("invalid_group_name"); ?>
                     </div><?php }
                 if ($_GET["res"] == "3ne") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-alert"></span> У вас
-                        недостаточно прав
-                        для изменения итендефицирующей информации группы.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-alert"></span> <?php echo \Engine\LanguageManager::GetTranslation("not_permited_change_custom_info_group"); ?>
                     </div><?php }
                 if ($_GET["res"] == "3npc") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-alert"></span> У вас
-                        недостаточно прав
-                        для изменения прав группы.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-alert"></span> <?php echo \Engine\LanguageManager::GetTranslation("not_permited_change_perms_group"); ?>
                     </div><?php }
                 if ($_GET["res"] == "3ngc") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-alert"></span> Не получилось
-                        создать
-                        группу.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-alert"></span> <?php echo \Engine\LanguageManager::GetTranslation("group_create_error"); ?>
                     </div><?php }
                 if ($_GET["res"] == "3ngd") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-alert"></span> Не получилось
-                        удалить
-                        группу.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-alert"></span> <?php echo \Engine\LanguageManager::GetTranslation("group_remove_error"); ?>
                     </div><?php }
                 if ($_GET["res"] == "3ndd") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-alert"></span> Эту группу
-                        нельзя удалить: она важна для работы сайта!
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-alert"></span> <?php echo \Engine\LanguageManager::GetTranslation("special_group_remove_denied"); ?>
                     </div><?php }
                 if ($_GET["res"] == "3ngs") { ?>
-                    <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> Вы не выбрали
-                        группу.
+                    <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("not_choice_group"); ?>
                     </div><?php }
                 if ($_GET["res"] == "3ngmm") { ?>
-                    <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> Не получилось
-                        переместить членов удаляемой группы. Группа не была удалена.
+                    <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("failed_to_move_users_group"); ?>
                     </div><?php }
                 if ($_GET["res"] == "3ngsd") { ?>
-                    <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> Нельзя удалить
-                        начальную группу.
+                    <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("not_permited_remove_custom_group"); ?>
                     </div><?php }
             }
             if ($_GET["p"] == "users"){
                 if ($_GET["res"] == "4ncdu") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span> Вы не можете удалить сами себя или профиль главного администратора.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("cannot_remove_yourself_or_main_admin"); ?>
                     </div><?php }
                 if ($_GET["res"] == "4sdu") { ?>
-                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span> Пользователи были успешно удалены!
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span> <?php echo \Engine\LanguageManager::GetTranslation("users_have_been_successfully_deleted"); ?>
                     </div><?php }
                 if ($_GET["res"] == "4ndu") { ?>
-                    <div class="alert alert-success"><span class="glyphicon glyphicon-alert"></span> Пользователи не были удалены...
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-alert"></span> <?php echo \Engine\LanguageManager::GetTranslation("users_have_not_been_deleted"); ?>
                     </div><?php }
                 if ($_GET["res"] == "4ndus") { ?>
-                    <div class="alert alert-success"><span class="glyphicon glyphicon-alert"></span> Пользователи не были удалены:
-                        не получено ни одного пользователя для удаления.
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-alert"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("users_were_not_deleted:_no_users_were_received_for_deletion"); ?>
                     </div><?php }
                 if ($_REQUEST["res"] == "4nbu") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span> Не удалось заблокировать данного пользователя.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("failed_to_block_this_user"); ?>
                     </div> <?php }
                 if ($_REQUEST["res"] == "4sbu") { ?><div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span>
-                    Данный пользователь был успешно заблокирован.
+                    <?php echo \Engine\LanguageManager::GetTranslation("this_user_has_been_successfully_blocked"); ?>
                     </div> <?php }
                 if ($_REQUEST["res"] == "4sbus") { ?><div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span>
-                    Данные пользователи были успешно заблокированы.
+                    <?php echo \Engine\LanguageManager::GetTranslation("these_users_have_been_successfully_blocked"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4nbus") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span>
-                    Не удалось заблокировать пользователей по шаблону "<?php echo htmlentities($_REQUEST["bnns"]); ?>".
+                    <?php echo \Engine\LanguageManager::GetTranslation("failed_to_block_users_by_template"); ?> "<?php echo htmlentities($_REQUEST["bnns"]); ?>".
                 </div> <?php }
                 if ($_REQUEST["res"] == "4nuu") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span>
-                    Не удалось разблокировать данный(-ые) аккаунт(-ы).</div> <?php }
+                    <?php echo \Engine\LanguageManager::GetTranslation("failed_to_unlock_this_account");?>
+                </div> <?php }
                 if ($_REQUEST["res"] == "4suu") { ?><div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span>
-                    Данный(-ые) аккаунт(-ы) были успешно разблокирован(-ы).
+                    <?php echo \Engine\LanguageManager::GetTranslation("this_account_have_been_successfully_unblocked"); ?>
                     </div> <?php }
                 if ($_REQUEST["res"] == "4nbeu") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    Данный(-ые) аккаунт(-ы) не существует(-ют).
+                    <?php echo \Engine\LanguageManager::GetTranslation("this_account_does_not_exist"); ?>
                     </div> <?php }
                 if ($_REQUEST["res"] == "4nibu") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    Данный(-ые) аккаунт(-ы) уже заблокирован(-ы).
+                    <?php echo \Engine\LanguageManager::GetTranslation("this_account_is_already_blocked"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4nihs") { ?><div class="alert alert-info"><span class="glyphicon glyphicon-warning-sign"></span>
-                    Вы не заполнили строку IP-адреса.
+                    <?php echo \Engine\LanguageManager::GetTranslation("you_did_not_fill_in_the_IP_address_string"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4sib") { ?><div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span>
-                    IP-адрес был успешно заблокирован.
+                    <?php echo \Engine\LanguageManager::GetTranslation("the_IP_address_was_successfully_blocked"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4nib") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span>
-                    Не удалось заблокировать IP-адрес.
+                    <?php echo \Engine\LanguageManager::GetTranslation("failed_to_block_IP_address"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4niab") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    Данный IP-адрес уже заблокирован.
+                   <?php echo \Engine\LanguageManager::GetTranslation("this_IP_address_is_already_blocked"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4nibe") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    Внутренняя ошибка исполнения. Запрос в базу данных не удался.
+                    <?php echo \Engine\LanguageManager::GetTranslation("internal_execution_error_the_request_to_the_database_failed");?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4niub") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span>
-                    Не удалось разблокировать IP-адрес.
+                    <?php echo \Engine\LanguageManager::GetTranslation("failed_to_unlock_IP_address");?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4siub") { ?><div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span>
-                    Данный IP-адрес был разблокирован.
+                    <?php echo \Engine\LanguageManager::GetTranslation("this_IP_address_has_been_unblocked"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4nrnn") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    Никнейм не может быть пустым.
+                    <?php echo \Engine\LanguageManager::GetTranslation("nickname_cannot_be_empty"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4nre") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    У пользователя должен быть Email.
+                    <?php echo \Engine\LanguageManager::GetTranslation("user_must_have_email"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4nrp") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    У пользователя должен быть пароль.
+                    <?php echo \Engine\LanguageManager::GetTranslation("user_must_have_password"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4nru") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span>
-                    Не удалось зарегистрировать пользователя.
+                    <?php echo \Engine\LanguageManager::GetTranslation("failed_to_register_user"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4sru") { ?><div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span>
-                    Пользователь "<?php echo $_REQUEST["nunn"]; ?>" был зарегистрирован!
+                    <?php echo \Engine\LanguageManager::GetTranslation("user"); ?> "<?php echo $_REQUEST["nunn"]; ?>" <?php \Engine\LanguageManager::GetTranslation("has_been_registered"); ?>
                 </div> <?php }
                 if (($_REQUEST["res"] == "4nvnn") || ($_REQUEST["res"] == "4nenvn")) { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    В выбранном никнейме есть запрещённые символы. Вы можете использовать только цифры, буквы латинского алфавита и точку.
+                    <?php echo \Engine\LanguageManager::GetTranslation("nickname_has_forbidden_symbols"); ?>
                     </div> <?php }
                 if (($_REQUEST["res"] == "4nve") || ($_REQUEST["res"] == "4neve")) { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    Вы ввели неверный адрес электронной почты.
+                    <?php echo \Engine\LanguageManager::GetTranslation("you_entered_an_invalid_email_address"); ?>
                     </div> <?php }
                 if (($_REQUEST["res"] == "4nnee") || ($_REQUEST["res"] == "4neee")) { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    Пользователь с такими никнеймом или email уже есть.
+                    <?php echo \Engine\LanguageManager::GetTranslation("a_user_with_such_nickname_or_email_is_already_there"); ?>
                     </div> <?php }
                 if (($_REQUEST["res"] == "4nne") || ($_REQUEST["res"] == "4neenn")) { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    Пользователь таким никнеймом уже есть.
+                    <?php echo \Engine\LanguageManager::GetTranslation("user_already_has_such_a_nickname");?>
                     </div> <?php }
                 if ($_REQUEST["res"] == "4ncsafc") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    Не удалось поменять содержимое дополнительных полей.
+                    <?php echo \Engine\LanguageManager::GetTranslation("failed_to_change_the_contents_of_additional_fields"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4nep") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    Не удалось поменять пароль данного пользователя.
+                    <?php echo \Engine\LanguageManager::GetTranslation("failed_to_change_the_password_for_this_user"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4nef") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    Не удалось изменить графу "Откуда".
+                    <?php echo \Engine\LanguageManager::GetTranslation("failed_to_change_the_from_column"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4nev") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    Не удалось изменить VK ID пользователя.
+                    <?php echo \Engine\LanguageManager::GetTranslation("failed_to_change_vk_user_id"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4nes") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    Не удалось изменить Skype пользователя.
+                    <?php echo \Engine\LanguageManager::GetTranslation("failed_to_change_skype_user"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4nesx") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    Не удалось изменить графу "Пол" пользователя.
+                    <?php echo \Engine\LanguageManager::GetTranslation("failed_to_change_the_gender_field_of_the_user"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4nern") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    Не удалось изменить графу "Настоящее имя" пользователя.
+                    <?php echo \Engine\LanguageManager::GetTranslation("failed_to change_the_real name_column_of_the_user"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4nebd") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    Не удалось изменить графу "Дата рождения" пользователя.
+                    <?php echo \Engine\LanguageManager::GetTranslation("failed_to_change_the_column_date_of_birth_of_the_user"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4nehs") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    Не удалось изменить список хобби пользователя.
+                    <?php echo \Engine\LanguageManager::GetTranslation("failed_to_change_user_hobby_list"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4nea") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    Не удалось изменить графу "Обо мне" пользователя.
+                   <?php echo \Engine\LanguageManager::GetTranslation("failed_to_change_the_column_about_me_user"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4nesg") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    Не удалось изменить подпись пользователя.
+                    <?php echo \Engine\LanguageManager::GetTranslation("failed_to_change_user_signature"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4neav") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    Не удалось изменить аватарку пользователя.
+                    <?php echo \Engine\LanguageManager::GetTranslation("failed_to_change_user_avatar"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4neavvf") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    Этот файл не может быть аватаркой.
+                    <?php echo \Engine\LanguageManager::GetTranslation("this_file_cannot_be_an_avatar"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4neavvs") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    Аватарка имеет неправильные размеры. Убедитесь, что она удовлетворяет требованиям.
+                    <?php echo \Engine\LanguageManager::GetTranslation("avatar_has_the_wrong_size_make_sure_it_meets_the_requirements"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4neavvb") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    Аватарка весит больше 6 мегабайт.
+                    <?php echo \Engine\LanguageManager::GetTranslation("an_avatar_weighs_more_than_6megabytes"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4seu") { ?><div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span>
-                    Изменения были сохранены!
+                    <?php echo \Engine\LanguageManager::GetTranslation("changes_have_been_saved"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4sua") { ?><div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span>
-                    Аккаунт пользователя "<?php echo \Users\UserAgent::GetUserNick($_REQUEST["uid"]); ?>" был активирован.
+                    <?php echo \Engine\LanguageManager::GetTranslation("user_account"); ?> "<?php echo \Users\UserAgent::GetUserNick($_REQUEST["uid"]); ?>"
+                    <?php echo \Engine\LanguageManager::GetTranslation("has_been_activated"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4nua") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span>
-                    Не удалось активировать данного пользователя.
+                    <?php echo \Engine\LanguageManager::GetTranslation("failed_to_activate_this_user"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4neu") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span>
-                    Такого пользователя не существует.
+                    <?php echo \Engine\LanguageManager::GetTranslation("this_user_does_not_exist"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4neae") { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span>
-                    Такой Email уже зарегистрирован.
+                    <?php echo \Engine\LanguageManager::GetTranslation("such_email_is_already_registered"); ?>
                 </div> <?php }
             }
             if ($_GET["p"] == "report"){
                 if ($_GET["res"] == "5nrid") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Не указан уникальный номер жалобы для совершения данного действия.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("not_setted_id_report_for_action"); ?>
                     </div><?php }
                 if ($_GET["res"] == "5nnas") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Не указан уникальный номер ответа для совершения данного действия.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("not_setted_id_report_answer_for_action"); ?>
                     </div><?php }
                 if ($_GET["res"] == "5ncr") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span> Не получилось назначить данный ответ как решение проблемы жалобы.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("not_setted_answer_as_solve"); ?>
                     </div><?php }
                 if ($_GET["res"] == "5nmt") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Вы не указали текст Вашего ответа.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("not_setted_answer_text"); ?>
                     </div><?php }
                 if ($_GET["res"] == "5ntsm") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Текст Вашего ответа слишком короткий. Он должен быть больше 4 символов в длину.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("too_small_answer_text"); ?>
                     </div><?php }
                 if ($_GET["res"] == "5nad") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Не удалось опубликовать Ваш ответ.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("failed_public_answer"); ?>
                     </div><?php }
                 if ($_GET["res"] == "5ntr") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Жалобы, для которой Вы хотите совершить данное действие, не существует.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("report_does_not_exist_to_answer_action"); ?>
                     </div><?php }
                 if ($_GET["res"] == "5nta") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Ответ, для которого Вы хотите совершить данное действие, не существует.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("answer_does_not_exist_action"); ?>
                     </div><?php }
                 if ($_GET["res"] == "5ncds") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Нельзя удалить ответ, который является решением жалобы!
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("denied_remove_answer_as_solve"); ?>
                     </div><?php }
                 if ($_GET["res"] == "5sda") { ?>
-                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span> Ответ был успешно удалён!
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("answer_has_been_removed_successfuly"); ?>
                     </div><?php }
                 if ($_GET["res"] == "5nda") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span> Не удалось удалить ответ.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("failed_to_remove_answer"); ?>
                     </div><?php }
                 if ($_GET["res"] == "5naacr") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span> Нельзя совершать данное действие с закрытой жалобой.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("denied_to_do_this_action_with_closed_report"); ?>
                     </div><?php }
                 if ($_GET["res"] == "5nroai") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span> Не указан уникальный номер ответа или жалобы для редактирования.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("no_id_answer_or_report_for_edit"); ?>
                     </div><?php }
                 if ($_GET["res"] == "5sad") { ?>
-                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span> Ваш ответ был успешно опубликован.
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("your_answer_has_been_published"); ?>
                     </div><?php }
                 if ($_GET["res"] == "5scr") { ?>
-                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span> Данный ответ был помечен, как решение данной проблемы. Жалоба была закрыта.
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("this_answer_marked_as_solve_report_has_been_closed"); ?>
                     </div><?php }
                 if ($_GET["res"] == "5sea") { ?>
-                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span> Данный ответ был успешно отредактирован.
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("answer_has_been_edited_successfuly"); ?>
                     </div><?php }
                 if ($_GET["res"] == "5ser") { ?>
-                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span> Текст данной жалобы был успешно отредактирован.
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("report_text_has_been_edited_successfuly"); ?>
                     </div><?php }
                 if ($_GET["res"] == "5sdr") { ?>
-                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span> Жалоба успешно удалена.
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("report_has_been_removed"); ?>
                     </div><?php }
                 if ($_GET["res"] == "5ndr") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span> Не удалось удалить жалобу.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("failed_report_removing"); ?>
                     </div><?php }
                 if ($_GET["res"] == "5nea") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Не удалось отредактировать ответ.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("failed_answer_edit"); ?>
                     </div><?php }
                 if ($_GET["res"] == "5ner") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Не удалось изменить текст жалобы.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("failed_report_edit_text"); ?>
                     </div><?php }
                 if ($_GET["res"] == "5ne") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Жалобы с таким номером нет в системе.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("no_report_with_this_id"); ?>
                     </div><?php }
                 if ($_GET["res"] == "5nsrd") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Не выделены жалобы для удаления.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("no_selected_reports_to_remove"); ?>
                     </div><?php }
                 if ($_GET["res"] == "5ndsr") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Не удалось удалить какую-то жалобу.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("failed_to_remove_some_report"); ?>
                     </div><?php }
                 if ($_GET["res"] == "5sdsr") { ?>
-                    <div class="alert alert-success"><span class="glyphicon glyphicon-info-sign"></span> Выделенные жалобы были удалены.
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-info-sign"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("selected_reports_have_been_removed"); ?>
                     </div><?php }
             }
             if ($_GET["p"] == "categories") {
                 if ($_GET["res"] == "6ncid") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Не указан уникальный номер категории для совершения данного действия.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("no_category_id_for_this_action"); ?>
                     </div><?php }
                 if ($_GET["res"] == "6nct") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Категории с таким уникальным номером не существует.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("no_category_with_that_id"); ?>
                     </div><?php }
                 if ($_GET["res"] == "6ncc") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span> Не удалось создать категорию.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("failed_create_category"); ?>
                     </div><?php }
                 if ($_GET["res"] == "6nct") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Категории с таким уникальным номером не существует.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("no_category_with_that_id"); ?>
                     </div><?php }
                 if ($_GET["res"] == "6scc") { ?>
-                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span> Категория была успешно создана.
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("category_has_been_created_successfuly"); ?>
                     </div><?php }
                 if ($_GET["res"] == "6nvcn") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Имя категории не может быть больше 50 символов и короче 4.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("category_wrong_name"); ?>
                     </div><?php }
                 if ($_GET["res"] == "6ncn") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Вы не ввели название категории.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("not_setted_category_name"); ?>
                     </div><?php }
                 if ($_GET["res"] == "6ncd") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Вы не ввели описание категории.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("not_setted_category_description"); ?>
                     </div><?php }
                 if ($_GET["res"] == "6sce") { ?>
-                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span> Категория была успешно отредактирована.
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("category_has_been_edited_successfuly"); ?>
                     </div><?php }
                 if ($_GET["res"] == "6scdt") { ?>
-                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span> Категория(-и) была(-и) успешно удалена(-ы).
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("category_has_been_removed_successfuly"); ?>
                     </div><?php }
                 if ($_GET["res"] == "6ncdt") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span> Не удалось удалить категорию(-и).
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-remove"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("cannot_remove_category"); ?>
                     </div><?php }
 
             }
             if ($_GET["p"] == "staticc") {
                 if ($_GET["res"] == "7nsn") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Вы не ввели название страницы.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                        <?php echo \Engine\LanguageManager::GetTranslation("no_page_name"); ?>
                     </div><?php }
                 if ($_GET["res"] == "7nbn") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Название страницы слишком маленькое. Оно должно быть больше 4 символов в длину.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("page_name_too_small"); ?>
                     </div><?php }
                 if ($_GET["res"] == "7nst") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Не указан уникальный номер категории для совершения данного действия.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                    <?php echo \Engine\LanguageManager::GetTranslation("no_id_for_this_action"); ?>
                     </div><?php }
                 if ($_GET["res"] == "7nbt") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Не указан уникальный номер категории для совершения данного действия.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                    <?php echo \Engine\LanguageManager::GetTranslation("no_id_for_this_action"); ?>
                     </div><?php }
                 if ($_GET["res"] == "7ntbd") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-remove-sign"></span> Описание страницы слишком длинное. Оно не должно превышать 100 символов.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-remove-sign"></span>
+                    <?php echo \Engine\LanguageManager::GetTranslation("description_is_too_long"); ?>
                     </div><?php }
                 if ($_GET["res"] == "7ncp") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Не удалось создать статическую страницу...
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                    <?php echo \Engine\LanguageManager::GetTranslation("failed_to_create_static_page"); ?>
                     </div><?php }
                 if ($_GET["res"] == "7npe") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Такой страницы не существует.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                    <?php echo \Engine\LanguageManager::GetTranslation("this_page_does_not_exist"); ?>
                     </div><?php }
                 if ($_GET["res"] == "7ndsp") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Не получилось удалить некоторые страницы. Попробуйте ещё раз.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                    <?php echo \Engine\LanguageManager::GetTranslation("failed_to_remove_some_pages"); ?>
                     </div><?php }
                 if ($_GET["res"] == "7npse") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Не удалось сохранить изменения статической страницы...
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                    <?php echo \Engine\LanguageManager::GetTranslation("failed_to_save_page_settings"); ?>
                     </div><?php }
                 if ($_GET["res"] == "7nspe") { ?>
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Какой-то из выбранных для удаления страниц уже не существует. Обновите страницу и попробуйте ещё раз.
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                    <?php echo \Engine\LanguageManager::GetTranslation("some_page_does_not_exist"); ?>
                     </div><?php }
                 if ($_GET["res"] == "7nssan") { ?>
-                    <div class="alert alert-warning"><span class="glyphicon glyphicon-warning-sign"></span> Вы не ввели никнейм автора.
+                    <div class="alert alert-warning"><span class="glyphicon glyphicon-warning-sign"></span>
+                    <?php echo \Engine\LanguageManager::GetTranslation("author_nickname_does_not_setted"); ?>
                     </div><?php }
                 if ($_GET["res"] == "7nssn") { ?>
-                    <div class="alert alert-warning"><span class="glyphicon glyphicon-warning-sign"></span> Вы не ввели название статической страницы.
+                    <div class="alert alert-warning"><span class="glyphicon glyphicon-warning-sign"></span>
+                    <?php echo \Engine\LanguageManager::GetTranslation("static_page_name_is_not_setted"); ?>
                     </div><?php }
                 if ($_GET["res"] == "7scp") { ?>
-                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign"></span> Статическая страница была успешно создана!
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign"></span>
+                    <?php echo \Engine\LanguageManager::GetTranslation("static_page_has_been_created"); ?>
                     </div><?php }
                 if ($_GET["res"] == "7sphbe") { ?>
-                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign"></span> Статическая страница успешно отредактирована.
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign"></span>
+                    <?php echo \Engine\LanguageManager::GetTranslation("static_page_has_been_edited"); ?>
                     </div><?php }
                 if ($_GET["res"] == "7srsp") { ?>
-                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign"></span> Выделенные статические страницы были успешно удалены!
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign"></span>
+                    <?php echo \Engine\LanguageManager::GetTranslation("selected_static_page_have_been_removed"); ?>
                     </div><?php }
+            }
+            if ($_GET["p"] == "emailsender" || $_GET["p"] == "pmsender"){
                 if ($_GET["res"] == "8ses") { ?>
-                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign"></span> Письма были разосланы!
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign"></span>
+                    <?php echo \Engine\LanguageManager::GetTranslation("mails_have_been_sended"); ?>
                     </div><?php }
             }
         }
@@ -479,60 +512,67 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
     ################################################
     if (!isset($_GET["p"])) { ?>
     <div class="container-fluid">
-        <div class="center">Настройки сайта и движка</div>
+        <div class="center"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.settings_site_and_engine"); ?></div>
         <hr />
         <div class="col-lg-6">
             <?php if ($user->UserGroup()->getPermission("change_engine_settings")) {?>
             <div class="linker">
-                <a class="linkin" href="?p=settings"><span class="glyphicon glyphicon-cog"></span> Настройки</a>
-                <p class="helper">Настройки сайта и движка.</p>
+                <a class="linkin" href="?p=settings"><span class="glyphicon glyphicon-cog"></span> <?php echo \Engine\LanguageManager::GetTranslation("adminpanel.settings"); ?></a>
+                <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.settings_description"); ?></p>
             </div>
             <?php } ?>
         </div>
         <div class="col-lg-6">
             <?php if ($user->UserGroup()->getPermission("logs_see")) { ?>
             <div class="linker">
-                <a class="linkin" href="?p=logs"><span class="glyphicon glyphicon-transfer"></span> История событий</a>
-                <p class="helper">Просмотр истории действий в админпанели.</p>
+                <a class="linkin" href="?p=logs"><span class="glyphicon glyphicon-transfer"></span> <?php echo \Engine\LanguageManager::GetTranslation("adminpanel.logs");?></a>
+                <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.logs_description");?></p>
             </div>
             <?php } ?>
         </div>
     </div><br />
     <div class="container-fluid">
-        <div class="center">Управление пользователями</div>
+        <div class="center"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.users_managment");?></div>
         <hr />
+        <?php if ($user->UserGroup()->getPermission("user_add") ||
+                  $user->UserGroup()->getPermission("user_remove") ||
+                  $user->UserGroup()->getPermission("user_ban") ||
+                  $user->UserGroup()->getPermission("user_unban") ||
+                  $user->UserGroup()->getPermission("user_banip") ||
+                  $user->UserGroup()->getPermission("user_unbanip")) { ?>
         <div class="col-lg-6">
             <div class="linker">
-                <a class="linkin" href="?p=users"><span class="glyphicon glyphicon-user"></span> Пользователи</a>
-                <p class="helper">Создание, удаление, редактирование и блокировка пользователей сайта.</p>
+                <a class="linkin" href="?p=users"><span class="glyphicon glyphicon-user"></span> <?php echo \Engine\LanguageManager::GetTranslation("adminpanel.users");?></a>
+                <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.users_description");?></p>
             </div>
         </div>
+        <?php } ?>
         <?php if ($user->UserGroup()->getPermission("group_change") ||
                   $user->UserGroup()->getPermission("group_create") ||
                   $user->UserGroup()->getPermission("group_delete") ||
                   $user->UserGroup()->getPermission("change_perms")) {?>
         <div class="col-lg-6">
             <div class="linker">
-                <a class="linkin" href="?p=groups"><span class="glyphicons glyphicons-group"></span> Группы</a>
-                <p class="helper">Управление привилегиями групп и их списком.</p>
+                <a class="linkin" href="?p=groups"><span class="glyphicons glyphicons-group"></span> <?php echo \Engine\LanguageManager::GetTranslation("adminpanel.groups");?></a>
+                <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.groups_description");?></p>
             </div>
         </div>
         <?php } ?>
     </div><br/>
     <div class="container-fluid">
-        <div class="center">Управление контентом</div>
+        <div class="center"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.content_managment");?></div>
         <hr />
         <div class="col-lg-6">
             <?php if ($user->UserGroup()->getPermission("rules_edit")) {?>
             <div class="linker">
-                <a class="linkin" href="?p=rules"><span class="glyphicons glyphicons-list"></span> Правила</a>
-                <p class="helper">Редактирование правил сайта. Они будут показаны при регистрации.</p>
+                <a class="linkin" href="?p=rules"><span class="glyphicons glyphicons-list"></span> <?php echo \Engine\LanguageManager::GetTranslation("adminpanel.rules");?></a>
+                <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.rules_description");?></p>
             </div> <?php } if ($user->UserGroup()->getPermission("category_create") ||
             $user->UserGroup()->getPermission("category_edit") ||
             $user->UserGroup()->getPermission("category_delete")){?>
             <div class="linker">
-                <a class="linkin" href="?p=categories"><span class="glyphicons glyphicons-show-thumbnails"></span> Категории</a>
-                <p class="helper">Управление категориями сайта: их создание, удаление и манипуляции.</p>
+                <a class="linkin" href="?p=categories"><span class="glyphicons glyphicons-show-thumbnails"></span> <?php echo \Engine\LanguageManager::GetTranslation("adminpanel.categories");?></a>
+                <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.categories_description");?></p>
             </div>
             <?php } ?>
         </div>
@@ -542,8 +582,8 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
                         $user->UserGroup()->getPermission("sc_remove_pages") ||
                         $user->UserGroup()->getPermission("sc_design_edit")) { ?>
             <div class="linker">
-                <a class="linkin" href="?p=staticc"><span class="glyphicons glyphicons-pen"></span> Управление статическим контентом</a>
-                <p class="helper">Добавление, удаление и редактирование статического контента сайта.</p>
+                <a class="linkin" href="?p=staticc"><span class="glyphicons glyphicons-pen"></span> <?php echo \Engine\LanguageManager::GetTranslation("adminpanel.static_content_managment");?></a>
+                <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.static_content_managment_description");?></p>
             </div>
             <?php }
              if ($user->UserGroup()->getPermission("report_talking") &&
@@ -552,8 +592,8 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
             $user->UserGroup()->getPermission("report_close")
             ) { ?>
             <div class="linker">
-                <a class="linkin" href="?p=reports"><span class="glyphicon glyphicon-fire"></span> Жалобы</a>
-                <p class="helper">Управление жалобами игроков.</p>
+                <a class="linkin" href="?p=reports"><span class="glyphicon glyphicon-fire"></span> <?php echo \Engine\LanguageManager::GetTranslation("adminpanel.reports");?></a>
+                <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.reports_description");?></p>
             </div> <?php } ?>
         </div>
     </div>
@@ -561,21 +601,21 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
     <?php if ($user->UserGroup()->getPermission("bmail_sende") ||
               $user->UserGroup()->getPermission("bmail_sends") ) { ?>
     <div class="container-fluid">
-        <div class="center">Рассылка сообщений</div>
+        <div class="center"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.mail_sending");?></div>
         <hr>
         <div class="col-lg-6">
             <?php if ($user->UserGroup()->getPermission("bmail_sende")) { ?>
             <div class="linker">
-                <a class="linkin" href="?p=emailsender"><span class="glyphicons glyphicons-file"></span> Электроннный почтальон</a>
-                <p class="helper">Отправка email сообщений всем пользователям.</p>
+                <a class="linkin" href="?p=emailsender"><span class="glyphicons glyphicons-file"></span> <?php echo \Engine\LanguageManager::GetTranslation("adminpanel.email_sender");?></a>
+                <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.email_sender_description");?></p>
             </div>
             <?php } ?>
         </div>
         <div class="col-lg-6">
             <?php if ($user->UserGroup()->getPermission("bmail_sends")) { ?>
             <div class="linker">
-                <a class="linkin" href="?p=pmsender"><span class="glyphicons glyphicons-file-cloud"></span> Почтовик сайта</a>
-                <p class="helper">Отправка личных сообщений каждому зарегистрированному пользователю.</p>
+                <a class="linkin" href="?p=pmsender"><span class="glyphicons glyphicons-file-cloud"></span> <?php echo \Engine\LanguageManager::GetTranslation("adminpanel.pm_sender");?></a>
+                <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.pm_sender_description");?></p>
             </div>
             <?php } ?>
         </div>
@@ -591,12 +631,7 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
 </div>
 <div class="footer">
     <p class="footer">
-        Tonisfel Tavern CMS.<br>
-        Администраторская панель.<br>
-        Разработчик НЕ поддерживает изменение исходного кода частей данной панели.<br>
-        Все дополнения для админ-панели являются неофициальными.<br>
-        Разработчик - Багданов Илья.<br>
-        Все права защищены ©.<br>
+        <?php echo \Engine\LanguageManager::GetTranslation("adminpanel.footer");?>
     </p>
 </div>
 </body>

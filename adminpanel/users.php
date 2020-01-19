@@ -27,7 +27,7 @@ function constructDiv($id, $name, $content, $link = null){
     if ($link != null){
         $link = str_replace("{{1}}", $content, $link);
         $linkButton = "<span class=\"input-group-btn\">
-                        <button class=\"btn btn-default\" type=\"button\" title=\"Открыть\" onclick=\"window.open('$link');\">
+                        <button class=\"btn btn-default\" type=\"button\" title=\"". \Engine\LanguageManager::GetTranslation("users_panel.open") . "\" onclick=\"window.open('$link');\">
                             <span class=\"glyphicons glyphicons-new-window\"></span>
                         </button>
                     </span>";
@@ -155,21 +155,21 @@ if ($canIPBan || $canIPUnban){
 
 ?>
 <div class="inner cover">
-    <h1 class="cover-heading">Пользователи</h1>
-    <p class="lead">Создание, удаление, редактирование и блокировка пользователей сайта.</p>
+    <h1 class="cover-heading"><?=\Engine\LanguageManager::GetTranslation("users_panel.panel_name")?></h1>
+    <p class="lead"><?=\Engine\LanguageManager::GetTranslation("users_panel.panel_description")?></p>
     <div class="btn-group" id="btn-show-panel">
         <?php
         #Поверка на возможность просматривать чужие профили. Если да, то можно и исктаь пользователей.
         if ($canSeeProfiles){ ?>
-        <button type="button" class="btn btn-default<?php echo (!isset($_REQUEST["reqtype"]) && empty($_GET["uid"])) ? " active" : ""; ?>" id="find" onclick="showToBelow('user-finder', 'find')"><span class="glyphicons glyphicons-vcard"></span> Поиск пользователей</button>
+        <button type="button" class="btn btn-default<?php echo (!isset($_REQUEST["reqtype"]) && empty($_GET["uid"])) ? " active" : ""; ?>" id="find" onclick="showToBelow('user-finder', 'find')"><span class="glyphicons glyphicons-vcard"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.search_user")?></button>
         <?php } if ($canSigns) { ?>
-        <button type="button" class="btn btn-default<?php echo (isset($_REQUEST["reqtype"]) && $_REQUEST["reqtype"] == 3) ? " active" : ""; ?>" id="add" onclick="showToBelow('user-signup', 'add')"><span class="glyphicons glyphicons-user-vr-add"></span> Регистрация пользователей</button>
+        <button type="button" class="btn btn-default<?php echo (isset($_REQUEST["reqtype"]) && $_REQUEST["reqtype"] == 3) ? " active" : ""; ?>" id="add" onclick="showToBelow('user-signup', 'add')"><span class="glyphicons glyphicons-user-vr-add"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.register_user")?></button>
         <?php } if ($canUserBan || $canUserUnban) { ?>
-        <button type="button" class="btn btn-default<?php echo (isset($_REQUEST["reqtype"]) && $_REQUEST["reqtype"] == 1) ? " active" : ""; ?>" id="banning" onclick="showToBelow('user-banned', 'banning')"><span class="glyphicons glyphicons-user-ban"></span> Блокировка пользователей</button>
+        <button type="button" class="btn btn-default<?php echo (isset($_REQUEST["reqtype"]) && $_REQUEST["reqtype"] == 1) ? " active" : ""; ?>" id="banning" onclick="showToBelow('user-banned', 'banning')"><span class="glyphicons glyphicons-user-ban"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.ban_users")?></button>
         <?php } if ($canIPBan || $canIPUnban) {?>
-        <button type="button" class="btn btn-default<?php echo (isset($_REQUEST["reqtype"]) && $_REQUEST["reqtype"] == 2) ? " active" : ""; ?>" id="banningip" onclick="showToBelow('user-bannedip', 'banningip')"><span class="glyphicons glyphicons-ban-circle"></span> Блокировка IP адресов</button>
+        <button type="button" class="btn btn-default<?php echo (isset($_REQUEST["reqtype"]) && $_REQUEST["reqtype"] == 2) ? " active" : ""; ?>" id="banningip" onclick="showToBelow('user-bannedip', 'banningip')"><span class="glyphicons glyphicons-ban-circle"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.banip_users")?></button>
         <?php } if ($canSeeProfiles && $canChangeProfiles && $userExists) { ?>
-        <button type="button" class="btn btn-default alert-info active" id="user-edit" onclick="showToBelow('user-editor', 'user-edit')"><span class="glyphicon glyphicon-user"></span> <?php echo $USER->getNickname(); ?> - Редактирование</button>
+        <button type="button" class="btn btn-default alert-info active" id="user-edit" onclick="showToBelow('user-editor', 'user-edit')"><span class="glyphicon glyphicon-user"></span> <?php echo $USER->getNickname(); ?> - <?=\Engine\LanguageManager::GetTranslation("users_panel.editing")?></button>
         <?php } ?>
     </div>
     <form enctype="multipart/form-data" method="post" action="adminpanel/scripts/userer.php" name="user-form" id="user-form">
@@ -178,36 +178,34 @@ if ($canIPBan || $canIPUnban){
             #Поверка на возможность просматривать чужие профили. Если да, то можно и искать пользователей.
             if ($canSeeProfiles){ ?>
             <div class="div-border" id="user-finder" <?php if ((isset($_REQUEST["reqtype"]) && $_REQUEST["reqtype"] != 0) || !empty($_GET["uid"])) echo setVisible(false);?>>
-                <h2>Поиск пользователей</h2>
-                <p class="helper">Осуществление поиска пользователей по их нику, email, рефереру и IP адресу.</p>
+                <h2><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user")?></h2>
+                <p class="helper"><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.panel_description")?></p>
                 <hr>
                 <div class="alert alert-info" <?php if (!isset($_REQUEST["fnn"]) && !isset($_REQUEST["frid"]) && !isset($_REQUEST["fgroup"]) &&
                                                         !isset($_REQUEST["flip"]) && !isset($_REQUEST["femail"])) echo "hidden";?>>
-                    <span class="glyphicons glyphicons-search"></span> Применённые фильтры:
+                    <span class="glyphicons glyphicons-search"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.filters")?>
                     <hr>
-                    <?php if (isset($_REQUEST["fnn"])) echo "<strong>Никнейм:</strong> " . htmlentities($_REQUEST["fnn"]) . "<br>";
-                          if (isset($_REQUEST["frid"])) echo "<strong>Реферер:</strong> " . htmlentities($_REQUEST["frid"]) . "<br>";
-                          if (isset($_REQUEST["fgroup"])) echo "<strong>Группа:</strong> " . \Users\GroupAgent::GetGroupNameById($_REQUEST["fgroup"]) . "<br>";
-                          if (isset($_REQUEST["flip"])) echo "<strong>Последний IP:</strong> " . htmlentities($_REQUEST["flip"]) . "<br>";
-                          if (isset($_REQUEST["femail"])) echo "<strong>Email:</strong> " . htmlentities($_REQUEST["femail"]) . "<br>";?>
+                    <?php if (isset($_REQUEST["fnn"])) echo "<strong>" . \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.nickname") ."</strong> " . htmlentities($_REQUEST["fnn"]) . "<br>";
+                          if (isset($_REQUEST["frid"])) echo "<strong>" . \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.referer") . "</strong> " . htmlentities($_REQUEST["frid"]) . "<br>";
+                          if (isset($_REQUEST["fgroup"])) echo "<strong>" . \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.group") .  "</strong> " . \Users\GroupAgent::GetGroupNameById($_REQUEST["fgroup"]) . "<br>";
+                          if (isset($_REQUEST["flip"])) echo "<strong>" . \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.last_ip") . "</strong> " . htmlentities($_REQUEST["flip"]) . "<br>";
+                          if (isset($_REQUEST["femail"])) echo "<strong>" . \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.email") . "</strong> " . htmlentities($_REQUEST["femail"]) . "<br>";?>
                 </div>
                 <div class="input-group">
-                    <input type="text" class="form-control" name="user-data-input" id="user-data-input" placeholder="Никнейм">
+                    <input type="text" class="form-control" name="user-data-input" id="user-data-input" placeholder="<?=\Engine\LanguageManager::GetTranslation("users_panel.js.nickname")?>">
                     <div class="input-group-btn" id="user-data-typer">
-                        <button class="btn btn-default active" type="button" onclick="findByNickname();" id="data-nickname" title="Никнейм"><span class="glyphicon glyphicon-tags"></span></button>
-                        <button class="btn btn-default" type="button" onclick="findByEmail();" id="data-email" title="Адрес электронной почты"><span class="glyphicon glyphicon-envelope"></span></button>
-                        <button class="btn btn-default" type="button" onclick="findByReferer();" id="data-referer" title="Никнейм реферера"><span class="glyphicons glyphicons-old-man"></span></button>
-                        <button class="btn btn-default" type="button" onclick="findByIP();" id="data-ip" title="IP адрес"><span class="glyphicons glyphicons-globe-af"></span></button>
+                        <button class="btn btn-default active" type="button" onclick="findByNickname();" id="data-nickname" title="<?=\Engine\LanguageManager::GetTranslation("users_panel.js.nickname")?>"><span class="glyphicon glyphicon-tags"></span></button>
+                        <button class="btn btn-default" type="button" onclick="findByEmail();" id="data-email" title="<?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.email_title")?>"><span class="glyphicon glyphicon-envelope"></span></button>
+                        <button class="btn btn-default" type="button" onclick="findByReferer();" id="data-referer" title="<?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.referer_title")?>"><span class="glyphicons glyphicons-old-man"></span></button>
+                        <button class="btn btn-default" type="button" onclick="findByIP();" id="data-ip" title="<?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.last_ip_title")?>"><span class="glyphicons glyphicons-globe-af"></span></button>
                     </div>
                 </div><br>
-                <p>Введите в поле для ввода соответствующие данные. Переключение данных осуществляется с помощью кнопок, расположенных в правом краю поля для ввода.
-                Вы можете заменять неизвестные места знаком звёздочки (*), тогда система выдаст Вам все результаты, подходящие под оставшуюся часть.
-                Например, при поиске по адресу электронной почты, на запрос "*@gmail.com" будут выданы <strong>все</strong> пользователи, что имеют электронный ящик в Gmail.com.</p>
+                <p><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.panel_tip")?></p>
                 <div class="alert alert-info"><span class="glyphicon glyphicon-warning-sign"></span> При вводе реферера, нельзя использовать знак звёздочки.</div>
                 <div class="input-group">
-                    <div class="input-group-addon">Искать в группе:</div>
+                    <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.search_in_group")?></div>
                     <select class="form-control" name="fgroup" id="user-group-selector">
-                        <option value="0">Не выбрано...</option>
+                        <option value="0"><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.not_selected")?></option>
                         <?php for ($i = 0; $i <= $groupCount; $i++){
                                 print("<option value='" . $groupList[$i] . "'");
                                 if (isset($_REQUEST["fgroup"])) if ($groupList[$i] == $_REQUEST["fgroup"]) print(" selected");
@@ -217,26 +215,26 @@ if ($canIPBan || $canIPUnban){
                 </div>
                 <br>
                 <div class="btn-group">
-                    <button class="btn btn-default" type="submit" name="users-find-button">Найти пользователей</button>
-                    <?php if ($user->UserGroup()->getPermission("user_remove")) {?><button class="btn btn-default alert-danger" type="button" name="users-delete-button" id="users-delete-button" disabled>Удалить пользователей</button><?php } ?>
-                    <a class="btn btn-default" href="adminpanel.php?p=users" name="users-reset-button">Отчистить фильтры</a>
+                    <button class="btn btn-default" type="submit" name="users-find-button"><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.search_users")?></button>
+                    <?php if ($user->UserGroup()->getPermission("user_remove")) {?><button class="btn btn-default alert-danger" type="button" name="users-delete-button" id="users-delete-button" disabled><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.remove_users")?></button><?php } ?>
+                    <a class="btn btn-default" href="adminpanel.php?p=users" name="users-reset-button"><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.clear_filters")?></a>
                 </div>
                 <hr>
-                <h2>Результаты поиска</h2>
-                <p id="users-selected-counter" class="alert alert-info" hidden><strong>Выделенно пользователей:</strong> <span id="users-selected-counter-span"></span>.</p>
+                <h2><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.search_result")?></h2>
+                <p id="users-selected-counter" class="alert alert-info" hidden><strong><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.selected_users_count")?></strong> <span id="users-selected-counter-span"></span>.</p>
                 <table id="users-find-results" class="table">
                     <thead style="background: radial-gradient(at right center, #874c15, #cc8c53); color: white; text-shadow: 2px 2px 3px black;">
                         <tr>
                             <td><input type="checkbox" id="users-select-all" name="allselectorcheck" title="Выбрать всех"></td>
                             <td>ID</td>
-                            <td>Никнейм</td>
-                            <td>Группа</td>
-                            <td>Email</td>
-                            <td>Последний IP</td>
-                            <td>IP при регистрации</td>
-                            <td>Последний вход</td>
-                            <td>Рейтинг</td>
-                            <td>Забанен</td>
+                            <td><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_nickname")?></td>
+                            <td><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_group")?></td>
+                            <td><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_email")?></td>
+                            <td><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_last_ip")?></td>
+                            <td><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_reg_ip")?></td>
+                            <td><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_last_sign_in")?></td>
+                            <td><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_rate")?></td>
+                            <td><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_banned")?></td>
                             <?php if ($user->UserGroup()->getPermission("change_another_profiles")) echo "<td></td>"; ?>
                         </tr>
                     </thead>
@@ -245,27 +243,27 @@ if ($canIPBan || $canIPUnban){
                         # Создание таблицы при отсутствии пользователей.
                         if ($userCount == 0){?>
                             <tr>
-                                <td colspan="11" class="center alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> Не найдено ни одного пользователя, удовлетворяющего всем параметрам поиска.</td>
+                                <td colspan="11" class="center alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.no_found_users")?></td>
                             </tr>
                         <?php }
                         # Создание таблицы при наличии в списке хотя бы одного пользователя.
                         for ($i = 0; $i < $userCount; $i++){
                             $selUser = new \Users\User($userList[$i]);
                             if ($selUser->isBanned() === true) $selUserBan = \Engine\Engine::DateFormatToRead(date("Y-m-d", \Guards\SocietyGuard::GetBanUserParam($userList[$i], "banned_time")));
-                            else $selUserBan = "Не забанен"; ?>
+                            else $selUserBan = \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.not_banned"); ?>
                             <tr>
-                                <td><input type="checkbox" data-uid-selected="<?php print(htmlentities($userList[$i])); ?>" title="Выбрать"></td>
+                                <td><input type="checkbox" data-uid-selected="<?php print(htmlentities($userList[$i])); ?>" title="<?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.select")?>"></td>
                                 <td><?php print(htmlentities($userList[$i]));?></td>
                                 <td><?php print(htmlentities($selUser->getNickname()));?></td>
                                 <td><?php print("<span style=\"color: " . htmlentities($selUser->UserGroup()->getColor()) . ";\">" . htmlentities($selUser->UserGroup()->getName()) . "</span>");?></td>
                                 <td><?php print(htmlentities($selUser->getEmail())); ?></td>
-                                <td><?php print(htmlentities(($selUser->getLastIp() != "null") ? $selUser->getLastIp() : "Не заходил" . (($selUser->getSex() == 2) ? "а" : ""))); ?></td>
+                                <td><?php print(htmlentities(($selUser->getLastIp() != "null") ? $selUser->getLastIp() : \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.not_sign_in_he") . (($selUser->getSex() == 2) ? \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.not_sign_in_she") : ""))); ?></td>
                                 <td><?php print(htmlentities($selUser->getRegIp())); ?></td>
                                 <td><?php print($selUser->getLastDate() == "1970-01-01") ? ("Не заходил") : (htmlentities(\Engine\Engine::DateFormatToRead(($selUser->getLastDate())))); ?></td>
-                                <td><?php print(htmlentities($selUser->getReputation()->getReputationPoints()) . " балл."); ?></td>
+                                <td><?php print(htmlentities($selUser->getReputation()->getReputationPoints()) . " ". \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.point")); ?></td>
                                 <td><?php print(htmlentities($selUserBan)); ?></td>
                                 <?php if ($canSeeProfiles){ ?>
-                                <td class="alert-info"><button class="btn btn-default alert-info" style="width: 100%;" type="submit" formaction="adminpanel/scripts/userer.php?uide=<?php print(htmlentities($userList[$i])); ?>">Редактировать</button></td>
+                                <td class="alert-info"><button class="btn btn-default alert-info" style="width: 100%;" type="submit" formaction="adminpanel/scripts/userer.php?uide=<?php print(htmlentities($userList[$i])); ?>"><?=\Engine\LanguageManager::GetTranslation("edit")?></button></td>
                                 <?php } ?>
                             </tr>
                         <?php } ?>
@@ -282,67 +280,64 @@ if ($canIPBan || $canIPUnban){
             <?php }
             if ($canUserBan || $canUserUnban) { ?>
                 <div class="div-border" id="user-banned" <?php if (isset($_REQUEST["reqtype"]) && $_REQUEST["reqtype"] == 1) echo setVisible(true); else echo setVisible(false);?>>
-                    <h2>Блокировка пользователей</h2>
-                    <p class="helper">Управление доступом пользователей к сайту и его материалам.</p>
+                    <h2><?=\Engine\LanguageManager::GetTranslation("users_panel.ban_users")?></h2>
+                    <p class="helper"><?=\Engine\LanguageManager::GetTranslation("users_panel.ban_panel.panel_description")?></p>
                     <hr>
                     <?php
                     if ($banSearchActive){ ?>
                         <div class="alert alert-info">
-                            <span class="glyphicon glyphicon-search"></span> Применённые фильтры:
+                            <span class="glyphicon glyphicon-search"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.ban_panel.filters")?>
                             <hr>
                             <?php if (!empty($_REQUEST["fbnn"])) { ?> <strong>Никнейм:</strong> <?php echo htmlentities($_REQUEST["fbnn"]); } ?>
                             <?php if (!empty($_REQUEST["fbr"])) { ?> <strong>Причина:</strong> <?php echo htmlentities($_REQUEST["fbr"]); } ?>
                         </div>
                     <?php } ?>
-                    <p>Система позволяет блокировать аккаунты с определённым никнеймом, после чего их доступ к сайту будет заблокирован.
-                    Блокировка может быть как ограничена по времени, так и может быть перманентна. Здесь же вы можете разблокировать пользователей.</p>
-                    <input type="text" class="form-control" placeholder="Никнейм" id="user_ban_input" name="user_ban_input">
-                    <input type="text" class="form-control" placeholder="Причина" id="user_ban_reason" name="user_ban_reason">
+                    <p><?=\Engine\LanguageManager::GetTranslation("users_panel.ban_panel.panel_tip")?></p>
+                    <input type="text" class="form-control" placeholder="<?=\Engine\LanguageManager::GetTranslation("users_panel.ban_panel.nickname")?>" id="user_ban_input" name="user_ban_input">
+                    <input type="text" class="form-control" placeholder="<?=\Engine\LanguageManager::GetTranslation("users_panel.ban_panel.reason")?>" id="user_ban_reason" name="user_ban_reason">
                     <div class="input-group">
-                        <input type="number" class="form-control" placeholder="Время (в секундах)" id="user_ban_time" name="user_ban_time">
+                        <input type="number" class="form-control" placeholder="<?=\Engine\LanguageManager::GetTranslation("users_panel.ban_panel.time_in_seconds")?>" id="user_ban_time" name="user_ban_time">
                         <div class="input-group-btn">
-                            <button class="btn btn-default" type="button" onclick="secToDate();" id="data-ban-time" title="Перевести в дату"><span class="glyphicon glyphicon-time"></span></button>
+                            <button class="btn btn-default" type="button" onclick="secToDate();" id="data-ban-time" title="<?=\Engine\LanguageManager::GetTranslation("users_panel.ban_panel.translate_to_date")?>"><span class="glyphicon glyphicon-time"></span></button>
                         </div>
                     </div>
                     <br>
 
-                    <p>Введите нужный никнейм в соответствующее поле для ввода. Вы можете искать пользователей, опять же вписав в нужные поля
-                    нужные данные и нажав кнопку "Поиск". Исключение: нельзя искать по времени блокировки. Здесь при поиске действует
-                    то же правило, что и поиске пользователей: значок звёздочки (*) выполняет функцию любого символа, строки или пробела.</p>
-                    <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> Заблокировать пользователей при использовании звёздочки тоже можно.</div>
-                    <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> Для <em>перманентной</em> блокировки укажите в строке "Время" ноль.</div>
+                    <p><?=\Engine\LanguageManager::GetTranslation("users_panel.ban_panel.panel_tip_2")?></p>
+                    <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.ban_panel.panel_tip_3")?></div>
+                    <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.ban_panel.panel_tip_4")?></div>
                     <div class="btn-group">
-                        <?php if ($canUserBan) { ?> <button class="btn btn-default" type="submit" name="user_ban_ban" id="user_ban_ban">Заблокировать</button> <?php } ?>
-                        <?php if ($canUserUnban) { ?> <button class="btn btn-default alert-warning" type="button" name="user_ban_unban" id="user_ban_unban" disabled>Разблокировать</button> <?php } ?>
-                        <button class="btn btn-default" type="submit" name="user_ban_find" id="user_ban_find">Поиск</button>
+                        <?php if ($canUserBan) { ?> <button class="btn btn-default" type="submit" name="user_ban_ban" id="user_ban_ban"><?=\Engine\LanguageManager::GetTranslation("users_panel.ban_panel.ban")?></button> <?php } ?>
+                        <?php if ($canUserUnban) { ?> <button class="btn btn-default alert-warning" type="button" name="user_ban_unban" id="user_ban_unban" disabled><?=\Engine\LanguageManager::GetTranslation("users_panel.ban_panel.unban")?></button> <?php } ?>
+                        <button class="btn btn-default" type="submit" name="user_ban_find" id="user_ban_find"><?=\Engine\LanguageManager::GetTranslation("users_panel.ban_panel.search")?></button>
                     </div>
                     <hr>
-                    <h2>Результаты поиска</h2>
+                    <h2><?=\Engine\LanguageManager::GetTranslation("users_panel.ban_panel.search_results")?></h2>
                     <div class="alert alert-info" id="users-ban-selected-counter" hidden>
-                        <strong>Выделенно строк:</strong> <span id="users-ban-selected-counter-span"></span>
+                        <strong><?=\Engine\LanguageManager::GetTranslation("users_panel.ban_panel.selected_count")?></strong> <span id="users-ban-selected-counter-span"></span>
                     </div>
                     <table id="users-banfind-results" class="table">
                         <thead style="background: radial-gradient(at right center, #66070a, #eb2b2c); color: white; text-shadow: 2px 4px 3px black;">
                             <tr>
                                 <td><input type="checkbox" id="users-ban-select-all" name="users-ban-select-all" title="Выделить всех"></td>
-                                <td>Никнейм</td>
-                                <td>Забанен</td>
-                                <td>До</td>
-                                <td>Забанил</td>
-                                <td>Причина</td>
+                                <td><?=\Engine\LanguageManager::GetTranslation("users_panel.ban_panel.nickname")?></td>
+                                <td><?=\Engine\LanguageManager::GetTranslation("users_panel.ban_panel.table_banned")?></td>
+                                <td><?=\Engine\LanguageManager::GetTranslation("users_panel.ban_panel.table_to")?></td>
+                                <td><?=\Engine\LanguageManager::GetTranslation("users_panel.ban_panel.table_banned_by")?></td>
+                                <td><?=\Engine\LanguageManager::GetTranslation("users_panel.ban_panel.table_reason")?></td>
                                 <?php if ($canUserUnban) { ?><td></td><?php } ?>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if ($bannedCount == 0 && !$banSearchActive) print("<tr><td colspan=\"7\" class=\"center alert alert-info\">Нет ни одного заблокированного пользователя.</td></tr>");
-                            elseif ($bannedCount == 0 && $banSearchActive) print("<tr><td colspan=\"7\" class=\"center alert alert-info\">Не найденно ни одного заблокированного пользователя по данным критериям.</td></tr>");
+                            <?php if ($bannedCount == 0 && !$banSearchActive) print("<tr><td colspan=\"7\" class=\"center alert alert-info\">" . \Engine\LanguageManager::GetTranslation("users_panel.ban_panel.no_banned_users") . "</td></tr>");
+                            elseif ($bannedCount == 0 && $banSearchActive) print("<tr><td colspan=\"7\" class=\"center alert alert-info\">" . \Engine\LanguageManager::GetTranslation("users_panel.ban_panel.no_banned_users_found") . "</td></tr>");
                             else {
                                 for ($i = 0; $i < $bannedCount; $i++) { ?>
                                     <tr>
                                         <td><input type="checkbox" data-bid-selected="<?php echo $bannedList[$i]; ?>"></td>
                                         <td><?php echo \Users\UserAgent::GetUserNick($bannedList[$i]); ?></td>
                                         <td><?php echo Engine\Engine::DateFormatToRead(date("Y-m-d", \Guards\SocietyGuard::GetBanUserParam($bannedList[$i], "banned_time"))); ?></td>
-                                        <td><?php echo (\Guards\SocietyGuard::GetBanUserParam($bannedList[$i], "unban_time") == 0) ? "Перманентно" :
+                                        <td><?php echo (\Guards\SocietyGuard::GetBanUserParam($bannedList[$i], "unban_time") == 0) ? \Engine\LanguageManager::GetTranslation("users_panel.ban_panel.permanently") :
                                                 Engine\Engine::DateFormatToRead(date("Y-m-d", \Guards\SocietyGuard::GetBanUserParam($bannedList[$i], "unban_time"))); ?></td>
                                         <td><?php echo \Users\UserAgent::GetUserNick(\Guards\SocietyGuard::GetBanUserParam($bannedList[$i], "author")); ?></td>
                                         <td><?php echo htmlentities(\Guards\SocietyGuard::GetBanUserParam($bannedList[$i], "reason")); ?></td>
@@ -366,46 +361,44 @@ if ($canIPBan || $canIPUnban){
             <?php }
             if ($canIPBan || $canIPUnban){ ?>
             <div class="div-border" id="user-bannedip" <?php if (isset($_REQUEST["reqtype"]) && $_REQUEST["reqtype"] == 2) echo setVisible(true); else echo setVisible(false);?>>
-                <h2>Блокировка IP адрессов</h2>
-                    <p class="helper">Запрет доступа всем пользователям с определёнными IP адресами.</p>
+                <h2><?=\Engine\LanguageManager::GetTranslation("users_panel.banip_users")?></h2>
+                    <p class="helper"><?=\Engine\LanguageManager::GetTranslation("users_panel.banip_panel.panel_description")?></p>
                     <hr>
-                    <p>Система позволяет блокировать IP адреса. После этого, пользователи с заблокированными адресами не смогут пользоваться
-                    сайтом и материалами портала.</p>
-                    <input class="form-control" type="text" id="user-banip-input" name="user-banip-input" placeholder="IP-адрес">
-                    <input class="form-control" type="text" id="user-banip-reason" name="user-banip-reason" placeholder="Причина">
-                    <input class="form-control" type="number" id="user-banip-time" name="user-banip-time" placeholder="Время">
+                    <p><?=\Engine\LanguageManager::GetTranslation("users_panel.banip_panel.panel_tip")?></p>
+                    <input class="form-control" type="text" id="user-banip-input" name="user-banip-input" placeholder="<?=\Engine\LanguageManager::GetTranslation("users_panel.banip_panel.placeholder_ip")?>">
+                    <input class="form-control" type="text" id="user-banip-reason" name="user-banip-reason" placeholder="<?=\Engine\LanguageManager::GetTranslation("users_panel.banip_panel.placeholder_reason")?>">
+                    <input class="form-control" type="number" id="user-banip-time" name="user-banip-time" placeholder="<?=\Engine\LanguageManager::GetTranslation("users_panel.banip_panel.placeholder_time")?>">
                 <hr>
-                <p>Вы также можете заменять неизвестные участки знаком звёздочки (*). В таком случае, все подходящие
-                IP-адреса будут заблокированы.</p>
-                <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span>  Для <em>перманентной</em> блокировки укажите в строке "Время" ноль.</div>
+                <p><?=\Engine\LanguageManager::GetTranslation("users_panel.banip_panel.search_tip")?></p>
+                <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span>  <?=\Engine\LanguageManager::GetTranslation("users_panel.banip_panel.time_tip")?></div>
                 <div class="btn-group">
-                    <button class="btn btn-default" id="user_bip_ban" name="user_bip_ban">Заблокировать</button>
-                    <button class="btn btn-default alert-warning" id="user_bip_unban" name="user_bip_unban" disabled>Разблокировать</button>
-                    <button class="btn btn-default" id="user_bip_search" name="user_bip_search">Поиск</button>
+                    <button class="btn btn-default" id="user_bip_ban" name="user_bip_ban"><?=\Engine\LanguageManager::GetTranslation("users_panel.banip_panel.ban")?></button>
+                    <button class="btn btn-default alert-warning" id="user_bip_unban" name="user_bip_unban" disabled><?=\Engine\LanguageManager::GetTranslation("users_panel.banip_panel.unban")?></button>
+                    <button class="btn btn-default" id="user_bip_search" name="user_bip_search"><?=\Engine\LanguageManager::GetTranslation("users_panel.banip_panel.search")?></button>
                 </div>
-                <h2>Результаты поиска</h2>
-                <div class="alert alert-info" id="users-bip-selected-counter" hidden><strong>Выделенно IP-адресов: </strong><span id="users-bip-selected-counter-span"></span></div>
+                <h2><?=\Engine\LanguageManager::GetTranslation("users_panel.banip_panel.search_results")?></h2>
+                <div class="alert alert-info" id="users-bip-selected-counter" hidden><strong><?=\Engine\LanguageManager::GetTranslation("users_panel.banip_panel.selected_ips")?> </strong><span id="users-bip-selected-counter-span"></span></div>
                 <table class="table">
                     <thead style="background: radial-gradient(at right, #003eff, #10e4ff); color: white; text-shadow: 2px 2px 4px black;">
                         <tr>
-                            <td><input type="checkbox" id="user-bip-select-all" title="Выделить всех"></td>
-                            <td>IP-адрес</td>
-                            <td>Забанен</td>
-                            <td>Время разбана</td>
-                            <td>Забанил</td>
-                            <td>Причина</td>
+                            <td><input type="checkbox" id="user-bip-select-all" title="<?=\Engine\LanguageManager::GetTranslation("users_panel.banip_panel.select_all")?>"></td>
+                            <td><?=\Engine\LanguageManager::GetTranslation("users_panel.banip_panel.table_ip")?></td>
+                            <td><?=\Engine\LanguageManager::GetTranslation("users_panel.banip_panel.table_banned")?></td>
+                            <td><?=\Engine\LanguageManager::GetTranslation("users_panel.banip_panel.table_time_unban")?></td>
+                            <td><?=\Engine\LanguageManager::GetTranslation("users_panel.banip_panel.table_banned_by")?></td>
+                            <td><?=\Engine\LanguageManager::GetTranslation("users_panel.banip_panel.table_reason")?></td>
                             <?php if ($canIPUnban) { ?><td></td><?php } ?>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                        if ($banipCount == 0){ ?><tr><td class="alert-info" colspan="7" style="text-align: center;"><span class="glyphicon glyphicon-info-sign"></span> Нет ни одного заблокированного IP-адреса.</td></tr> <?php }
+                        if ($banipCount == 0){ ?><tr><td class="alert-info" colspan="7" style="text-align: center;"><span class="glyphicon glyphicon-info-sign"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.banip_panel.no_banned_ips")?></td></tr> <?php }
                         else for ($h = 0; $h <= $banipCount-1; $h++) { ?>
                             <tr>
                                 <td><input type="checkbox" data-bip-selected="<?php echo htmlentities($banipList[$h]); ?>"></td>
                                 <td><?php print htmlentities($banipList[$h]); ?></td>
                                 <td><?php print \Engine\Engine::DateFormatToRead(date("Y-m-d", \Guards\SocietyGuard::GetIPBanParam($banipList[$h], "banned_time"))); ?></td>
-                                <td><?php print (\Guards\SocietyGuard::GetIPBanParam($banipList[$h], "unban_time") == 0) ? "Перманентно" : \Engine\Engine::DateFormatToRead(date("Y-m-d",\Guards\SocietyGuard::GetIPBanParam($banipList[$h], "unban_time"))); ?></td>
+                                <td><?php print (\Guards\SocietyGuard::GetIPBanParam($banipList[$h], "unban_time") == 0) ? \Engine\LanguageManager::GetTranslation("users_panel.banip_panel.permanently") : \Engine\Engine::DateFormatToRead(date("Y-m-d",\Guards\SocietyGuard::GetIPBanParam($banipList[$h], "unban_time"))); ?></td>
                                 <td><?php print \Users\UserAgent::GetUserNick(\Guards\SocietyGuard::GetIPBanParam($banipList[$h], "author")); ?></td>
                                 <td><?php print htmlentities(\Guards\SocietyGuard::GetIPBanParam($banipList[$h], "reason")); ?></td>
                                 <?php if ($canIPUnban) { ?> <td><button style="width: 100%;" class="btn btn-default" type="submit" formaction="adminpanel/scripts/userer.php?ipuban=<?php print htmlentities($banipList[$h]); ?>">Разблокировать</button></td> <?php } ?>
@@ -423,18 +416,16 @@ if ($canIPBan || $canIPUnban){
             </div><?php }
             if ($canSigns) { ?>
             <div class="div-border" id="user-signup" <?php if (isset($_REQUEST["reqtype"]) && $_REQUEST["reqtype"] == 3) echo setVisible(true); else echo setVisible(false);?>>
-                <h2>Регистрация пользователей</h2>
-                <p class="helper">Добавление новых аккаунтов в базу данных.</p>
+                <h2><?=\Engine\LanguageManager::GetTranslation("users_panel.register_user")?></h2>
+                <p class="helper"><?=\Engine\LanguageManager::GetTranslation("users_panel.register_panel.panel_description")?></p>
                 <hr>
-                <p>Через данную форму, Вы можете зарегистрировать пользователя без последующей необходимости в активации учётной записи.
-                Однако, здесь действуют те же правила, что и на обычной странице регистрации. Здесь вы также можете сразу определить, какие
-                права будет иметь новозарегистрированный пользователь.</p>
-                <input class="form-control" type="text" placeholder="Никнейм" id="user-add-nickname" name="user-add-nickname" autocomplete="new-password" maxlength="16">
-                <input class="form-control" type="password" placeholder="Пароль" id="user-add-password" name="user-add-password" autocomplete="new-password" maxlength="16">
-                <input class="form-control" type="email" placeholder="Email" id="user-add-email" name="user-add-email" autocomplete="off">
+                <p><?=\Engine\LanguageManager::GetTranslation("users_panel.register_panel.panel_tip")?></p>
+                <input class="form-control" type="text" placeholder="<?=\Engine\LanguageManager::GetTranslation("users_panel.register_panel.placeholder_nickname")?>" id="user-add-nickname" name="user-add-nickname" autocomplete="new-password" maxlength="16">
+                <input class="form-control" type="password" placeholder="<?=\Engine\LanguageManager::GetTranslation("users_panel.register_panel.placeholder_password")?>" id="user-add-password" name="user-add-password" autocomplete="new-password" maxlength="16">
+                <input class="form-control" type="email" placeholder="<?=\Engine\LanguageManager::GetTranslation("users_panel.register_panel.placeholder_email")?>" id="user-add-email" name="user-add-email" autocomplete="off">
                 <?php if ($user->UserGroup()->getPermission("change_user_group")) { ?>
                 <select class="form-control" name="user-add-group" id="user-add-group">
-                    <option value="0">Выберите группу...</option>
+                    <option value="0"><?=\Engine\LanguageManager::GetTranslation("users_panel.register_panel.select_group")?></option>
                     <?php for($i = 0; $i < count($groupList = \Users\GroupAgent::GetGroupList()); $i++){
                         echo "<option value='".$groupList[$i]."'";
                         if (isset($_REQUEST["group"])) if ($_REQUEST["group"] != 0 && $_REQUEST["group"] == $groupList[$i]) echo "selected";
@@ -443,78 +434,75 @@ if ($canIPBan || $canIPUnban){
                 </select>
                 <?php } ?>
                 <br>
-                Все поля <ins>обязательны</ins>.
+                <?=\Engine\LanguageManager::GetTranslation("users_panel.register_panel.panel_fields_required_tip")?>
                 <hr>
-                <div class="alert alert-info"><span class="glyphicon glyphicon-warning-sign"></span> Никнейм не может быть короче 4 символов и длиннее 16. Те же требования и к паролю. </div>
-                <div class="alert alert-info"><span class="glyphicon glyphicon-warning-sign"></span> Если Вы не укажете группу,
-                    в которую нужно зачислить нового пользователя, он будет зачислен в стандартную при регистрации. </div>
-                <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> Если Вы в настройках требуете активации аккаунтов, стандартное сообщение об активации всё равно будет отправлено. </div>
+                <div class="alert alert-info"><span class="glyphicon glyphicon-warning-sign"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.register_panel.nickname_tip")?> </div>
+                <div class="alert alert-info"><span class="glyphicon glyphicon-warning-sign"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.register_panel.group_tip")?> </div>
+                <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.register_panel.activation_tip")?> </div>
                 <hr>
                 <div class="btn-group">
-                    <button class="btn btn-default" type="submit" id="user-add-add" name="user-add-add"><span class="glyphicon glyphicon-ok"></span> Зарегистрировать</button>
-                    <button class="btn btn-default" type="reset" id="user-add-reset" name="user-add-reset"><span class="glyphicon glyphicon-erase"></span> Отчистить форму</button>
+                    <button class="btn btn-default" type="submit" id="user-add-add" name="user-add-add"><span class="glyphicon glyphicon-ok"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.register_panel.register")?></button>
+                    <button class="btn btn-default" type="reset" id="user-add-reset" name="user-add-reset"><span class="glyphicon glyphicon-erase"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.register_panel.clear_form")?></button>
                 </div>
             </div>
             <?php }
             if ($canSeeProfiles && $canChangeProfiles && $userExists) { ?>
             <div class="div-border" id="user-editor" <?php if ($userExists) echo setVisible(true); else echo setVisible(false); ?>>
                 <h2><?php print $USER->getNickname(); ?></h2>
-                <p class="helper">Редактирование данных пользователя.</p>
+                <p class="helper"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.panel_description")?></p>
                 <hr>
-                <p>Здесь Вы можете получить полный доступ к информации о пользователе, а так же, можете её редактировать.
-                Однако, здесь же Вы можете получить и системную информацию о пользователе, её изменять с помощью панели управления нельзя и мы
-                <em>настоятельно рекомендуем НЕ делать</em> этого способами, которыми это возможно.</p>
+                <p><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.panel_tip")?></p>
                 <div class="input-group">
                     <div class="input-group-addon">ID:</div>
                     <input type="text" readonly class="form-control alert-info" value="<?php echo $USER->getId();?>" name="user-edit-id">
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">Статус:</div>
+                    <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.status")?></div>
                     <div class="form-control">
                     <?php $lastOnline = 0;
                     if ($user->getLastTime() == 0){
-                    $lastOnline = "не заходил" . ($USER->getSex() == 2) ? "а" : "";
+                    $lastOnline = ($USER->getSex() == 2) ? \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.she_not_signed_in") : \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.he_not_signed_in");
                     } else
-                    $lastOnline = (\Engine\Engine::GetSiteTime() > $USER->getLastTime()+15*60) ? "Заходил" . (($USER->getSex() == 2) ? "а" : "")
-                    . " в " . \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s",$USER->getLastTime())) : "<span style=\"color: #00dd00;\">онлайн</span>";
+                    $lastOnline = (\Engine\Engine::GetSiteTime() > $USER->getLastTime()+15*60) ? (($USER->getSex() == 2) ? \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.she_signed_in") : \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.he_signed_in"))
+                    . " в " . \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s",$USER->getLastTime())) : "<span style=\"color: #00dd00;\">" . \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.online") . "</span>";
                     echo $lastOnline; ?>
                     </div>
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">Активация:</div>
-                    <div class="form-control alert-info"><?php echo ($USER->getActiveStatus() === true) ? "Активен" : $USER->getActivationCode();?></div>
+                    <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.activation")?></div>
+                    <div class="form-control alert-info"><?php echo ($USER->getActiveStatus() === true) ? \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.active") : $USER->getActivationCode();?></div>
                     <?php if ($USER->getActiveStatus() != true) { ?>
                     <span class="input-group-btn">
-                        <button class="btn btn-default" type="submit" title="Активировать" name="user-edit-activate">
+                        <button class="btn btn-default" type="submit" title="<?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.to_active")?>" name="user-edit-activate">
                             <span class="glyphicons glyphicons-ok"></span>
                         </button>
                     </span>
                     <?php } ?>
                 </div>
                 <hr>
-                <h4>Основная информация:</h4>
+                <h4><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.custom_info")?></h4>
                 <div class="input-group">
-                    <div class="input-group-addon">Никнейм:</div>
+                    <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.nickname")?></div>
                     <input class="form-control" type="text" value="<?php echo $USER->getNickname();?>" maxlength="16" name="user-edit-nickname">
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">Сменить пароль:</div>
-                    <input class="form-control" type="password" placeholder="Если здесь пусто, то пароль не изменится." maxlength="16" name="user-edit-password">
+                    <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.change_password")?></div>
+                    <input class="form-control" type="password" placeholder="<?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.change_password_tip")?>" maxlength="16" name="user-edit-password">
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">Email:</div>
+                    <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.email")?></div>
                     <input class="form-control" value="<?php echo $USER->getEmail();?>" type="email" name="user-edit-email">
                     <span class="input-group-btn">
-                        <button class="btn btn-default" type="button" title="Написать письмо" onclick="window.open('mailto:<?php echo $USER->getEmail();?>');">
+                        <button class="btn btn-default" type="button" title="<?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.send_a_mail")?>" onclick="window.open('mailto:<?php echo $USER->getEmail();?>');">
                             <span class="glyphicons glyphicons-message-full"></span>
                         </button>
                     </span>
                 </div>
                 <?php if ($user->UserGroup()->getPermission("change_user_group")){ ?>
                 <div class="input-group">
-                    <div class="input-group-addon">Группа:</div>
+                    <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.group")?></div>
                     <select class="form-control" name="user-edit-group">
-                        <option value="0">Выберите группу...</option>
+                        <option value="0"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.select_group")?></option>
                         <?php for($i = 0; $i < count($groupList = \Users\GroupAgent::GetGroupList()); $i++){
                             echo "<option value=\"".$groupList[$i]."\"";
                             if ($USER->getGroupId() == $groupList[$i]) echo "selected";
@@ -524,41 +512,42 @@ if ($canIPBan || $canIPUnban){
                 </div>
                 <?php } ?>
                 <br>
-                <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> Здесь действуют те же правила, что и при регистрации: пароль и никнейм не длиннее
-                16 символов, и не короче 4; использовать можно только буквы латиницы, цифры и точки.</div>
+                <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.custom_info_tip")?></div>
                 <hr>
-                <h4>История:</h4>
+                <h4><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.history")?></h4>
                 <div class="input-group">
-                    <div class="input-group-addon">Реферер:</div>
-                    <div class="form-control alert-info"><?php echo ($USER->getReferer() == 0) ? "Никто" : $USER->getReferer()->getNickname();?></div>
+                    <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.referer")?></div>
+                    <div class="form-control alert-info"><?php echo ($USER->getReferer() == 0) ? \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.nobody") : $USER->getReferer()->getNickname();?></div>
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">Дата регистрации:</div>
+                    <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.reg_date")?></div>
                     <div class="form-control alert-info"><?php echo \Engine\Engine::DateFormatToRead($USER->getRegDate());?></div>
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">Последний вход:</div>
-                    <div class="form-control alert-info"><?php echo ($USER->getLastDate() != "1970-01-01") ? \Engine\Engine::DateFormatToRead($USER->getLastDate()) : "не заходил" . (($USER->getSex() == 2) ? "а" : "");?></div>
+                    <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.last_date")?></div>
+                    <div class="form-control alert-info"><?php echo ($USER->getLastDate() != "1970-01-01") ? \Engine\Engine::DateFormatToRead($USER->getLastDate()) : (($USER->getSex() == 2) ?
+                        \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.she_not_signed_in") : \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.he_not_signed_in"));?></div>
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">IP при регистрации:</div>
+                    <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.reg_ip")?></div>
                     <div class="form-control alert-info"><?php echo $USER->getRegIp();?></div>
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">Последний IP:</div>
-                    <div class="form-control alert-info"><?php echo ($USER->getLastIp() != "null") ? $USER->getLastIp() : "не заходил" . (($USER->getSex() == 2) ? "а" : "");?></div>
+                    <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.last_ip")?></div>
+                    <div class="form-control alert-info"><?php echo ($USER->getLastIp() != "null") ? $USER->getLastIp() : (($USER->getSex() == 2) ? \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.she_not_signed_in") :
+                        \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.he_not_signed_in"));?></div>
                 </div>
                 <hr>
-                <h4>Социальная информация:</h4>
+                <h4><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.social_info")?></h4>
                 <div class="input-group">
-                    <div class="input-group-addon">Рейтинг:</div>
-                    <div class="form-control"><?php echo $USER->getReputation()->getReputationPoints(); ?> балл(ов).</div>
+                    <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.rate")?></div>
+                    <div class="form-control"><?php echo $USER->getReputation()->getReputationPoints(); ?> <?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.point")?></div>
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">Откуда:</div>
+                    <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.from")?></div>
                     <input class="form-control" type="text" value="<?php echo $USER->getFrom();?>" name="user-edit-from">
                     <span class="input-group-btn">
-                        <button class="btn btn-default" type="button" title="Найти" onclick="window.open('https://www.google.ru/search?q=<?php echo $USER->getFrom();?>');">
+                        <button class="btn btn-default" type="button" title="<?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.from_search")?>" onclick="window.open('https://www.google.ru/search?q=<?php echo $USER->getFrom();?>');">
                             <span class="glyphicons glyphicons-nearby-circle"></span>
                         </button>
                     </span>
@@ -568,7 +557,7 @@ if ($canIPBan || $canIPUnban){
                     <div class="input-group-addon">VK:</div>
                     <input class="form-control" type="text" value="<?php echo $USER->getVK();?>" name="user-edit-vk">
                     <span class="input-group-btn">
-                        <button class="btn btn-default" type="button" title="Перейти" onclick="window.open('http://vk.com/<?php echo $USER->getVK();?>');">
+                        <button class="btn btn-default" type="button" title="<?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.go_to")?>" onclick="window.open('http://vk.com/<?php echo $USER->getVK();?>');">
                             <strong>VK</strong>
                         </button>
                     </span>
@@ -577,55 +566,55 @@ if ($canIPBan || $canIPUnban){
                     <div class="input-group-addon">Skype:</div>
                     <input class="form-control" type="text" value="<?php echo $USER->getSkype();?>" name="user-edit-skype">
                     <span class="input-group-btn">
-                        <button class="btn btn-default" type="button" title="Связаться" onclick="window.open('skype:<?php echo $USER->getSkype();?>?chat');">
+                        <button class="btn btn-default" type="button" title="<?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.contact")?>" onclick="window.open('skype:<?php echo $USER->getSkype();?>?chat');">
                             <span class="glyphicons glyphicons-chat"></span>
                         </button>
                     </span>
                 </div>
                 <?php echo $contactAFJoined; ?>
                 <div class="input-group">
-                    <div class="input-group-addon">Настоящее имя:</div>
+                    <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.real_name")?></div>
                     <input class="form-control" type="text" value="<?php echo $USER->getRealName();?>" name="user-edit-realname">
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">День рождения:</div>
+                    <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.birthday")?></div>
                     <input class="form-control" type="text" value="<?php echo $USER->getBirth();?>" name="user-edit-birthday">
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">Пол:</div>
+                    <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.sex")?></div>
                     <select class="form-control" name="user-edit-sex">
-                        <option value="0">Не выбрано...</option>
-                        <option value="1" <?php if ($USER->getSex() == 1) echo "selected";?>>Парень</option>
-                        <option value="2" <?php if ($USER->getSex() == 2) echo "selected";?>>Девушка</option>
+                        <option value="0"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.not_selected")?></option>
+                        <option value="1" <?php if ($USER->getSex() == 1) echo "selected";?>><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.male")?></option>
+                        <option value="2" <?php if ($USER->getSex() == 2) echo "selected";?>><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.female")?></option>
                     </select>
                 </div>
                 <?php echo $infoAFJoined; ?>
                 <hr>
                 <div class="input-group">
-                    <div class="input-group-addon">Хобби</div>
+                    <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.hobbies")?></div>
                     <input class="form-control" type="text" value="<?php echo $USER->getHobbies();?>" name="user-edit-hobbies">
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">О себе</div>
+                    <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.about")?></div>
                     <textarea class="form-control" style="resize: vertical; max-height: 500px; min-height: 90px;" name="user-edit-about"><?php echo $USER->getAbout();?></textarea>
                 </div>
                 <br>
-                <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> В подписи Вы можете использовать BB-code.</div>
+                <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.signature_tip")?></div>
                 <div class="input-group">
-                    <div class="input-group-addon">Подпись</div>
+                    <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.signature")?></div>
                     <textarea class="form-control" style="resize: vertical; max-height: 500px; min-height: 90px;" name="user-edit-signature"><?php echo $USER->getSignature();?></textarea>
                 </div>
                 <hr>
-                <h4>Аватарка</h4>
+                <h4><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.avatar")?></h4>
                 <img src="<?php echo $USER->getAvatar();?>" style="float: left; padding-right: 5px;">
-                <p>Вы можете загрузить другую аватарку.</p>
-                <p class="alert alert-warning"><span class="glyphicon glyphicon-warning-sign"></span> Аватарка должна быть по размерам <?php echo \Engine\Engine::GetEngineInfo("aw") . "x" . \Engine\Engine::GetEngineInfo("ah");?> и не больше 6 МБ</p>
+                <p><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.avatar_tip")?></p>
+                <p class="alert alert-warning"><span class="glyphicon glyphicon-warning-sign"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.avatar_size_tip")?></p>
                 <input type="hidden" name="MAX_FILE_SIZE" value="6291456" />
                 <input class="form-control" type="file" accept="image/jpeg,image/jpg,image/png,image/gif,image/tif" name="user-edit-avatar">
                 <hr>
                 <div class="btn-group">
-                    <button class="btn btn-default" type="submit" name="user-edit-save"><span class="glyphicon glyphicon-ok"></span> Сохранить изменения</button>
-                    <button class="btn btn-default" type="button" name="user-edit-profile-see" onclick="window.location = 'profile.php?uid=<?php echo $USER->getId(); ?>';"><span class="glyphicon glyphicon-eye-open"></span> Просмотреть на сайте</button>
+                    <button class="btn btn-default" type="submit" name="user-edit-save"><span class="glyphicon glyphicon-ok"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.save_changes")?></button>
+                    <button class="btn btn-default" type="button" name="user-edit-profile-see" onclick="window.location = 'profile.php?uid=<?php echo $USER->getId(); ?>';"><span class="glyphicon glyphicon-eye-open"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.to_profile")?></button>
                 </div>
             </div>
             <?php } ?>
@@ -712,25 +701,25 @@ if ($canIPBan || $canIPUnban){
         });
 
         function findByNickname(){
-            $("#user-data-input").attr("placeholder", "Никнейм");
+            $("#user-data-input").attr("placeholder", "<?=\Engine\LanguageManager::GetTranslation("users_panel.js.nickname")?>");
             $("#paramType-input").attr("value", "nickname");
             activateButton("data-nickname");
         }
 
         function findByEmail(){
-            $("#user-data-input").attr("placeholder", "Адрес электронной почты");
+            $("#user-data-input").attr("placeholder", "<?=\Engine\LanguageManager::GetTranslation("users_panel.js.email")?>");
             $("#paramType-input").attr("value", "email");
             activateButton("data-email");
         }
 
         function findByReferer(){
-            $("#user-data-input").attr("placeholder", "Никнейм реферера");
+            $("#user-data-input").attr("placeholder", "<?=\Engine\LanguageManager::GetTranslation("users_panel.js.referer_nickname")?>");
             $("#paramType-input").attr("value", "referer");
             activateButton("data-referer");
         }
 
         function findByIP(){
-            $("#user-data-input").attr("placeholder", "Последний IP адрес");
+            $("#user-data-input").attr("placeholder", "<?=\Engine\LanguageManager::GetTranslation("users_panel.js.last_ip")?>");
             $("#paramType-input").attr("value", "ip");
             activateButton("data-ip");
         }

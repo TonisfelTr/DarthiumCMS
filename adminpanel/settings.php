@@ -14,7 +14,7 @@ else {
    $langs = \Engine\Engine::GetLanguagePacks();
    $additionalFields = \Users\UserAgent::GetAdditionalFieldsList();
    $additionalFieldsOptions = [];
-   $additionalFieldsOptions[] = "<option value=\"0\">Не выбрано</option>";
+   $additionalFieldsOptions[] = "<option value=\"0\">". \Engine\LanguageManager::GetTranslation("settings_panel.not_selected"). "</option>";
    foreach ($additionalFields as $field) {
        $additionalFieldsOptions[] = "<option value=\"" . $field["id"] . "\">" . $field["name"] . "</option>";
    }
@@ -22,58 +22,57 @@ else {
 
    ?>
 <div class="inner cover">
-    <h1 class="cover-heading">Настройки</h1>
-    <p class="lead">Настройки работы сайта.</p>
+    <h1 class="cover-heading"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.page_name");?></h1>
+    <p class="lead"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.page_description");?></p>
     <div id="btn-show-panel" class="btn-group">
-        <button type="button" class="btn btn-default active" data-div-number="1"><span class="glyphicon glyphicon-cog"></span> Конфигурация</button>
-        <button type="button" class="btn btn-default" data-div-number="2"><span class="glyphicon glyphicon-envelope"></span> Бот-рассылка</button>
-        <button type="button" class="btn btn-default" data-div-number="3"><span class="glyphicon glyphicon-pencil"></span> Регистрация</button>
-        <button type="button" class="btn btn-default" data-div-number="4"><span class="glyphicon glyphicon-user"></span> Пользователи</button>
-        <button type="button" class="btn btn-default" data-div-number="5"><span class="glyphicons glyphicons-pie-chart"></span> Статистика</button>
+        <button type="button" class="btn btn-default active" data-div-number="1"><span class="glyphicon glyphicon-cog"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.configuration");?></button>
+        <button type="button" class="btn btn-default" data-div-number="2"><span class="glyphicon glyphicon-envelope"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman");?></button>
+        <button type="button" class="btn btn-default" data-div-number="3"><span class="glyphicon glyphicon-pencil"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration");?></button>
+        <button type="button" class="btn btn-default" data-div-number="4"><span class="glyphicon glyphicon-user"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users");?></button>
+        <button type="button" class="btn btn-default" data-div-number="5"><span class="glyphicons glyphicons-pie-chart"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.statistic");?></button>
     </div>
     </div>
     <form name="settings" method="post" action="adminpanel/scripts/replacer.php">
         <div class="custom-group">
             <div class="div-border" id="custom_sets" data-number="1">
-                <h3><span class="glyphicon glyphicon-cog"></span> Конфигурация</h3>
-                <p class="helper">Здесь находятся основные настройки сайта: описание, язык, региональные настройки.</p>
+                <h3><span class="glyphicon glyphicon-cog"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.panel_name");?></h3>
+                <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.panel_description");?></p>
                 <hr>
                 <div class="input-group">
-                    <div class="input-group-addon">Название сайта</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_name");?></div>
                     <input type="text" class="form-control"  name="sitename" value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("sn"));?>">
-                    <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> Это название будет отображаться в шапке сайта, а так же в имени вкладок.</div>
+                    <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_name_tip");?></div>
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">Слоган</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.tagline");?></div>
                     <input type="text" class="form-control" name="sitetagline" value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("stl"));?>">
-                    <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> Слоган будет отображаться под названием сайта на главной странице.</div>
+                    <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.tagline_tip");?></div>
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">Домен</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.domain");?></div>
                     <input type="text" class="form-control"  name="domain" value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("dm"));?>">
-                    <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> Этот домен будет добавляться в письма при рассылке.</div>
+                    <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.domain_tip");?></div>
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">Описание сайта</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_description");?></div>
                     <input type="text" class="form-control"  name="sitesubscribe" value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("ssc"));?>">
-                    <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> Этот текст будет выводится при поиске этого сайта в поисковых системах.</div>
+                    <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_description_tip");?></div>
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">Хештеги</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.hashtags");?></div>
                     <input type="text" class="form-control"  name="sitehashtags" value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("sh"));?>">
-                    <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> Перечислите через запятую теги, по которым сайт можно будет найти в Интернете.</div>
+                    <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.hashtags_tip");?></div>
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">Статус сайта</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.status");?></div>
                     <select class="form-control" name="sitestatus">
-                        <option value="1" <?php if (\Engine\Engine::GetEngineInfo("ss") == 1) echo "selected"; ?>>Включен</option>
-                        <option value="0" <?php if (\Engine\Engine::GetEngineInfo("ss") == 0) echo "selected"; ?>>Выключен</option>
+                        <option value="1" <?php if (\Engine\Engine::GetEngineInfo("ss") == 1) echo "selected"; ?>><?php echo \Engine\LanguageManager::GetTranslation("on");?></option>
+                        <option value="0" <?php if (\Engine\Engine::GetEngineInfo("ss") == 0) echo "selected"; ?>><?php echo \Engine\LanguageManager::GetTranslation("off");?></option>
                     </select>
-                    <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> Если сайт выключен, то доступ к нему будут иметь только группы пользователей,
-                    что имеют соответствующие права.</div>
+                    <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.status_tip");?></div>
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">Используемый шаблон</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.template");?></div>
                     <select class="form-control" name="sitetemplate">
                         <?php foreach(\Engine\Engine::GetTemplatesPacks() as $f){
                             if ($f == \Engine\Engine::GetEngineInfo("stp"))
@@ -82,130 +81,124 @@ else {
                                 echo "<option value=\"$f\">$f</option>";}
                         ?>
                     </select>
-                    <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> Шаблон - это правила для Вашего сайта, а именно правила
-                        дизайна профиля и главной страницы. Все шаблоны находятся в папке "/site/templates/" корня ресурса.</div>
+                    <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.template_tip");?></div>
                 </div>
                 <hr>
-                <p>Ниже располагаются настройки локали: язык и региональное время.</p>
+                <p><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.locale_tip");?></p>
                 <div class="input-group">
-                    <div class="input-group-addon">Язык</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.lang");?></div>
                     <select class="form-control" name="sitelang">
                         <?php if (\Engine\Engine::GetEngineInfo("sl") === 0){ ?><option value="0" selected>&lt;пусто&gt;</option><?php }
                         /*Перебрать названия языков...*/  for ($i = 0; $i <= count($langs)-1; $i++){ ?>
                             <option value="<?php echo $langs[$i];?>" <?php if (\Engine\Engine::GetEngineInfo("sl") == $langs[$i]) echo " selected";?>><?php echo $langs[$i];?></option>
                         <?php }  ?>
                     </select>
-                    <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> Все переводы находятся в папке "languages" корня сайта.</div>
+                    <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.lang_tip");?></div>
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">Часовой пояс</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezone");?></div>
                     <select class="form-control" name="siteregiontime">
-                        <option value="-12" <?php if (\Engine\Engine::GetEngineInfo("srt") == -12) echo "selected";?>>UTC -12:00</option>
-                        <option value="-11" <?php if (\Engine\Engine::GetEngineInfo("srt") == -11) echo "selected";?>>UTC -11:00</option>
-                        <option value="-10" <?php if (\Engine\Engine::GetEngineInfo("srt") == -10) echo "selected";?>>UTC -10:00 Алеутские острова, Гаваи...</option>
-                        <option value="-9.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == -9.5) echo "selected";?>>UTC -9:30 Маркизские острова...</option>
-                        <option value="-9" <?php if (\Engine\Engine::GetEngineInfo("srt") == -9) echo "selected";?>>UTC -9:00 Аляска...</option>
-                        <option value="-8" <?php if (\Engine\Engine::GetEngineInfo("srt") == -8) echo "selected";?>>UTC -8:00 Нижняя Калифорния, Тихоокеанское время (США и Канада)...</option>
-                        <option value="-7" <?php if (\Engine\Engine::GetEngineInfo("srt") == -7) echo "selected";?>>UTC -7:00 Аризона, Горное время (США и Канада), Ла-Пас, Мазатлан, Чихуахуа...</option>
-                        <option value="-6" <?php if (\Engine\Engine::GetEngineInfo("srt") == -6) echo "selected";?>>UTC -6:00 Гвадалахара, Мехико, Монтеррей, остров Пасхи, Саскачеван, Центральное время (США и Канада), Центральная Америка...</option>
-                        <option value="-5" <?php if (\Engine\Engine::GetEngineInfo("srt") == -5) echo "selected";?>>UTC -5:00 Богота, Кито, Лима, Рио-Бранко, Восточное время (США и Канада), Гавана, Гаити...</option>
-                        <option value="-4" <?php if (\Engine\Engine::GetEngineInfo("srt") == -4) echo "selected";?>>UTC -4:00 Асунсьон, Атлантическое время (Канада), Джорджтаун, Ла-Пас, Манаус...</option>
-                        <option value="-3.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == -3.5) echo "selected";?>>UTC -3:30 Ньюфаундленд</option>
-                        <option value="-3" <?php if (\Engine\Engine::GetEngineInfo("srt") == -3) echo "selected";?>>UTC -3:00 Арагуаяна, Бразилия, Буэнос-Айрес, Гренландия...</option>
-                        <option value="-2" <?php if (\Engine\Engine::GetEngineInfo("srt") == -2) echo "selected";?>>UTC -2:00</option>
-                        <option value="-1" <?php if (\Engine\Engine::GetEngineInfo("srt") == -1) echo "selected";?>>UTC -1:00 Азорские острова, Кабо-Верде...</option>
-                        <option value="0" <?php if (\Engine\Engine::GetEngineInfo("srt") == 0) echo "selected";?>>UTC Лондон, Эдинбург, Лиссабон, Дублин, Рейкьявик...</option>
-                        <option value="1" <?php if (\Engine\Engine::GetEngineInfo("srt") == 1) echo "selected";?>>UTC +1:00 Амсетрдам, Берлин, Берн, Вена, Рим, Стокгольм...</option>
-                        <option value="2" <?php if (\Engine\Engine::GetEngineInfo("srt") == 2) echo "selected";?>>UTC +2:00 Амман, Афины, Бухарест, Бейрут, Вильнюс, Рига, Киев, Таллин...</option>
-                        <option value="3" <?php if (\Engine\Engine::GetEngineInfo("srt") == 3) echo "selected";?>>UTC +3:00 Москва, Минск, Санкт-Петербург, Багдад, Кувейт...</option>
-                        <option value="3.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == 3.5) echo "selected";?>>UTC +3:30 Тегеран...</option>
-                        <option value="4" <?php if (\Engine\Engine::GetEngineInfo("srt") == 4) echo "selected";?>>UTC +4:00 Астрахань, Ульяновск, Баку, Ереван, Ижевск, Самара, Тбилиси...</option>
-                        <option value="4.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == 4.5) echo "selected";?>>UTC +4:30 Кабул...</option>
-                        <option value="5" <?php if (\Engine\Engine::GetEngineInfo("srt") == 5) echo "selected";?>>UTC +5:00 Екатеринбург, Ташкент, Ашхабад, Карачи...</option>
-                        <option value="5.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == 5.5) echo "selected";?>>UTC +5:30 Колката, Мумбаи, Нью-Дели...</option>
-                        <option value="5.75" <?php if (\Engine\Engine::GetEngineInfo("srt") == 5.75) echo "selected";?>>UTC +5:45 Катманду...</option>
-                        <option value="6" <?php if (\Engine\Engine::GetEngineInfo("srt") == 6) echo "selected";?>>UTC +6:00 Омск, Астана, Дакка...</option>
-                        <option value="6.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == 6.5) echo "selected";?>>UTC +6:30 Янгон...</option>
-                        <option value="7" <?php if (\Engine\Engine::GetEngineInfo("srt") == 7) echo "selected";?>>UTC +7:00 Красноярск, Новосибирск, Томск, Барнаул, Горно-Алтайск,Банкок, Джакарта, Ханой...</option>
-                        <option value="8" <?php if (\Engine\Engine::GetEngineInfo("srt") == 8) echo "selected";?>>UTC +8:00 Иркутск, Гонконг, Пекин, Сингапур...</option>
-                        <option value="8.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == 8.5) echo "selected";?>>UTC +8:30 Пхеньян...</option>
-                        <option value="8.75" <?php if (\Engine\Engine::GetEngineInfo("srt") == 8.75) echo "selected";?>>UTC +8:45 Юкла...</option>
-                        <option value="9" <?php if (\Engine\Engine::GetEngineInfo("srt") == 9) echo "selected";?>>UTC +9:00 Чита, Якутск, Осака, Сеул, Токио, Саппоро...</option>
-                        <option value="9.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == 9.5) echo "selected";?>>UTC +9:30 Аделаида, Дарвин...</option>
-                        <option value="10" <?php if (\Engine\Engine::GetEngineInfo("srt") == 10) echo "selected";?>>UTC +10:00 Брисбен, Владивосток, Гуам, Каннабера, Сидней...</option>
-                        <option value="10.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == 10.5) echo "selected";?>>UTC +10:30 Лорд-Хау...</option>
-                        <option value="11" <?php if (\Engine\Engine::GetEngineInfo("srt") == 11) echo "selected";?>>UTC +11:00 Магадан, остров Бугенвиль, остров Норфолк, Сахалин...</option>
-                        <option value="12" <?php if (\Engine\Engine::GetEngineInfo("srt") == 12) echo "selected";?>>UTC +12:00 Петропавловск-Камчатский, Анадырь, Веллингтон, Окленд, Фиджи...</option>
-                        <option value="12.75" <?php if (\Engine\Engine::GetEngineInfo("srt") == 12.75) echo "selected";?>>UTC +12:45 Чатем...</option>
-                        <option value="13" <?php if (\Engine\Engine::GetEngineInfo("srt") == 13) echo "selected";?>>UTC +13:00 Нукуалофа, Самоа...</option>
-                        <option value="14" <?php if (\Engine\Engine::GetEngineInfo("srt") == 14) echo "selected";?>>UTC +14:00 остров Киритимати</option>
+                        <option value="-12" <?php if (\Engine\Engine::GetEngineInfo("srt") == -12) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-12");?></option>
+                        <option value="-11" <?php if (\Engine\Engine::GetEngineInfo("srt") == -11) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-11");?></option>
+                        <option value="-10" <?php if (\Engine\Engine::GetEngineInfo("srt") == -10) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-10");?></option>
+                        <option value="-9.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == -9.5) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-9:30");?></option>
+                        <option value="-9" <?php if (\Engine\Engine::GetEngineInfo("srt") == -9) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-9");?></option>
+                        <option value="-8" <?php if (\Engine\Engine::GetEngineInfo("srt") == -8) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-8");?></option>
+                        <option value="-7" <?php if (\Engine\Engine::GetEngineInfo("srt") == -7) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-7");?></option>
+                        <option value="-6" <?php if (\Engine\Engine::GetEngineInfo("srt") == -6) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-6");?></option>
+                        <option value="-5" <?php if (\Engine\Engine::GetEngineInfo("srt") == -5) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-5");?></option>
+                        <option value="-4" <?php if (\Engine\Engine::GetEngineInfo("srt") == -4) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-4");?></option>
+                        <option value="-3.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == -3.5) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-3:30");?></option>
+                        <option value="-3" <?php if (\Engine\Engine::GetEngineInfo("srt") == -3) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-3");?></option>
+                        <option value="-2" <?php if (\Engine\Engine::GetEngineInfo("srt") == -2) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-2");?></option>
+                        <option value="-1" <?php if (\Engine\Engine::GetEngineInfo("srt") == -1) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-1");?></option>
+                        <option value="0" <?php if (\Engine\Engine::GetEngineInfo("srt") == 0) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc");?></option>
+                        <option value="1" <?php if (\Engine\Engine::GetEngineInfo("srt") == 1) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+1");?></option>
+                        <option value="2" <?php if (\Engine\Engine::GetEngineInfo("srt") == 2) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+2");?></option>
+                        <option value="3" <?php if (\Engine\Engine::GetEngineInfo("srt") == 3) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+3");?></option>
+                        <option value="3.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == 3.5) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+3:30");?></option>
+                        <option value="4" <?php if (\Engine\Engine::GetEngineInfo("srt") == 4) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+4");?></option>
+                        <option value="4.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == 4.5) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+4:30");?></option>
+                        <option value="5" <?php if (\Engine\Engine::GetEngineInfo("srt") == 5) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+5");?></option>
+                        <option value="5.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == 5.5) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+5:30");?></option>
+                        <option value="5.75" <?php if (\Engine\Engine::GetEngineInfo("srt") == 5.75) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+5:45");?></option>
+                        <option value="6" <?php if (\Engine\Engine::GetEngineInfo("srt") == 6) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+6");?></option>
+                        <option value="6.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == 6.5) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+6:30");?></option>
+                        <option value="7" <?php if (\Engine\Engine::GetEngineInfo("srt") == 7) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+7");?></option>
+                        <option value="8" <?php if (\Engine\Engine::GetEngineInfo("srt") == 8) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+8");?></option>
+                        <option value="8.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == 8.5) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+8:30");?></option>
+                        <option value="8.75" <?php if (\Engine\Engine::GetEngineInfo("srt") == 8.75) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+8:45");?></option>
+                        <option value="9" <?php if (\Engine\Engine::GetEngineInfo("srt") == 9) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+9");?></option>
+                        <option value="9.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == 9.5) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+9:30");?></option>
+                        <option value="10" <?php if (\Engine\Engine::GetEngineInfo("srt") == 10) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+10");?></option>
+                        <option value="10.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == 10.5) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+10:30");?></option>
+                        <option value="11" <?php if (\Engine\Engine::GetEngineInfo("srt") == 11) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+11");?></option>
+                        <option value="12" <?php if (\Engine\Engine::GetEngineInfo("srt") == 12) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+12");?></option>
+                        <option value="12.75" <?php if (\Engine\Engine::GetEngineInfo("srt") == 12.75) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+12:45");?></option>
+                        <option value="13" <?php if (\Engine\Engine::GetEngineInfo("srt") == 13) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+13");?></option>
+                        <option value="14" <?php if (\Engine\Engine::GetEngineInfo("srt") == 14) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+14");?></option>
                     </select>
-                    <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> Выберите часовой пояс, удобный Вам. Это нужно для корректирования времени сайта.</div>
+                    <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezone_tip");?></div>
                 </div>
             </div>
             <div class="div-border" id="email_sets" data-number="2" hidden>
-                <h3><span class="glyphicon glyphicon-envelope"></span> Бот-рассылка</h3>
-                <p class="helper">Параметры почты для рассылки писем при регистрации и прочем.</p>
+                <h3><span class="glyphicon glyphicon-envelope"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.panel_name");?></h3>
+                <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.panel_description");?></p>
                 <hr>
-                <p>Для рассылки писем на электронную почту Вам нужен отдельный аккаунт, который будет связан с сайтом. Настоятельно советуем использовать <a href="http://gmail.com">Gmail</a>,
-                так как он наиболее практичен и популярен, по сравнению с другими аналогами (в России это Yandex, Mail.ru, например). Все настройки и параметры для подключения Вы можете найти в интернете.
-                Также, не забудьте включить доступ к "недоверенным" приложениям - у Google (то есть, у Gmail) он есть.</p>
+                <p><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.hint");?></p>
                 <div class="input-group">
-                    <div class="input-group-addon">Email логин</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.email_login");?></div>
                     <input type="text" class="form-control" name="emaillogin" value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("el"));?>">
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">Email пароль</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.email_password");?></div>
                     <input type="password" class="form-control" name="emailpassword" value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("ep"));?>">
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">Тип соединения</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.email_protocol");?></div>
                     <select class="form-control" name="emailconnecttype">
                         <option value="tsl" <?php if (\Engine\Engine::GetEngineInfo("ecp") == "tsl") echo "selected"; ?>>TSL</option>
                         <option value="ssl" <?php if (\Engine\Engine::GetEngineInfo("ecp") == "ssl") echo "selected"; ?>>SSL</option>
                     </select>
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">Email сервер</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.email_server");?></div>
                     <input type="text" class="form-control"  name="emailhost" value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("eh"));?>">
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">Email порт</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.email_port");?></div>
                     <input type="text" class="form-control"  name="emailport" value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("ept"));?>">
                 </div>
                 <br>
-                <div class="alert alert-warning">Ваш почтовый ящик используется ТОЛЬКО для рассылки писем посредством административной панели сайта и соответствующих писем при регистрации. Сайт не
-                следит за Вашими сообщениями и так же не учавствует в поддержании чистоты на предоставленном для рассылки аккаунте электронной почты.</div>
-                <div class="alert alert-warning">Чтобы протестировать правильность введённых данных и доступ к аккаунту, Вам нужно сначала сохранить настройки почты и только потом нажать на кнопку.</div>
-                <button class="btn btn-default" id="mail-test-ajax-btn" type="button" style="width: 100%;"><span class="glyphicons glyphicons-message-out"></span> Протестировать правильность</button>
+                <div class="alert alert-warning"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.warning_first");?></div>
+                <div class="alert alert-warning"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.warning_second");?></div>
+                <button class="btn btn-default" id="mail-test-ajax-btn" type="button" style="width: 100%;"><span class="glyphicons glyphicons-message-out"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.email_check_validity");?></button>
             </div>
             <div class="div-border" id="reg_sets"  data-number="3" hidden>
-                <h3><span class="glyphicon glyphicon-pencil"></span> Регистрация</h3>
-                <p class="helper">Конфигурация регистрации и авторизации на сайте.</p>
+                <h3><span class="glyphicon glyphicon-pencil"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.panel_name");?></h3>
+                <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.panel_description");?></p>
                 <hr>
-                <p>Дубликаты плохи тем, что они засоряют базы данных, некоторые нарочно создаются для жульничества, некоторые создаются ботами и под ботов и прочее. Чтобы избежать всего перечисленного,
-                лучше требовать активацию email ящиков, что позволит исключить хотя бы какую-то часть злонамеренных пользователей.</p>
+                <p><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.panel_tip");?></p>
                 <div class="input-group">
-                    <div class="input-group-addon">Активация</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.activation");?></div>
                     <select class="form-control" name="needactivate">
-                        <option value="1" <?php if (\Engine\Engine::GetEngineInfo("na") == "1") echo "selected"; ?>>Нужна</option>
-                        <option value="0" <?php if (\Engine\Engine::GetEngineInfo("na") == "0") echo "selected"; ?>>Не нужна</option>
+                        <option value="1" <?php if (\Engine\Engine::GetEngineInfo("na") == "1") echo "selected"; ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.activation_on");?></option>
+                        <option value="0" <?php if (\Engine\Engine::GetEngineInfo("na") == "0") echo "selected"; ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.activation_off");?></option>
                     </select>
-                    <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> Если активация будет включена, то при регистрации нужно будет
-                        подтверждать свой Email. Также, это позволяет обеспечить некую защиту от наличия у одного хозяина нескольких аккаунтов.</div>
+                    <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.activation_tip");?></div>
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">Запрет мультиаккаунта</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.multiacc");?></div>
                     <select name="multiacc" class="form-control">
-                        <option value="0" <?php if (\Engine\Engine::GetEngineInfo("map") == "0") echo "selected"; ?>>Выключен</option>
-                        <option value="1" <?php if (\Engine\Engine::GetEngineInfo("map") == "1") echo "selected"; ?>>Включен</option>
+                        <option value="0" <?php if (\Engine\Engine::GetEngineInfo("map") == "0") echo "selected"; ?>><?php echo \Engine\LanguageManager::GetTranslation("off");?></option>
+                        <option value="1" <?php if (\Engine\Engine::GetEngineInfo("map") == "1") echo "selected"; ?>><?php echo \Engine\LanguageManager::GetTranslation("on");?></option>
                     </select>
-                    <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> Запретить регистрацию аккаунтов с одиннаковых IP адресов.</div>
+                    <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.multiacc_tip");?></div>
                 </div>
                 <hr>
                 <div class="input-group">
                     <?php $r = \Users\GroupAgent::GetGroupList(); ?>
-                    <div class="input-group-addon">Группа при регистрации</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.reggroup");?></div>
                     <select class="form-control" name="standartgroup">
                         <?php for($i = 0; $i <= count($r)-1; $i++){
                                 echo "<option value='".$r[$i]."'";
@@ -213,158 +206,155 @@ else {
                                 echo ">" . \Users\GroupAgent::GetGroupNameById($r[$i]) . "</option>";
                         } ?>
                     </select>
-                    <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> Новички будут зачисляться в эту группу.</div>
+                    <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.reggroup_tip");?></div>
                 </div>
             </div>
             <div class="div-border" id="users_sets" data-number="4" hidden>
-                <h3><span class="glyphicon glyphicon-user"></span> Пользователи</h3>
-                <p class="helper">Здесь меняются настройки общие для всех пользователей.</p>
+                <h3><span class="glyphicon glyphicon-user"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.panel_name");?></h3>
+                <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.panel_description");?></p>
                 <hr>
                 <div class="alert hidden" id="add-fields-info-div"><span></span></div>
-                <h4>Дополнительные поля</h4>
-                <p>Здесь Вы можете создать свои поля, которые Вы считаете нужными. Можно настроить их отображение в профиле, приватность и логику; например, если Вы хотите
-                сделать поле, по клику на которое в профиле будет происходить какое-либо действие.</p>
+                <h4><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.additive_field_header");?></h4>
+                <p><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.additive_field_tip");?></p>
                 <div class="input-group">
-                    <div class="input-group-addon">Дополнительные поля</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.additive_field_select");?></div>
                     <select class="form-control" name="user-additional-fields" id="user-add-fields">
                         <?php foreach($additionalFieldsOptions as $option) echo $option; ?>
                     </select>
                     <div class="input-group-btn">
-                        <button class="btn btn-default" type="button" id="field-add-btn" title="Добавить поле"><span class="glyphicons glyphicons-plus"></span></button>
-                        <button class="btn btn-default" type="button" id="field-remove-btn" title="Удалить поле" disabled><span class="glyphicons glyphicons-minus"></span></button>
+                        <button class="btn btn-default" type="button" id="field-add-btn" title="<?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.additive_field_plus_btn_title");?>"><span class="glyphicons glyphicons-plus"></span></button>
+                        <button class="btn btn-default" type="button" id="field-remove-btn" title="<?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.additive_field_minus_btn_title");?>" disabled><span class="glyphicons glyphicons-minus"></span></button>
                     </div>
                 </div>
                 <div id="field-panel-manage" class="div-border" style="display: none; margin-top: 15px;">
                     <div class="input-group">
-                        <div class="input-group-addon">Название поля</div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_name");?></div>
                         <input class="form-control" name="field-name-input" id="field-name-input" maxlength="16">
-                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> Максимальная длина - 16 букв.</div>
+                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_name_tip");?></div>
                     </div>
                     <br>
                     <div class="input-group">
-                        <div class="input-group-addon">Описание</div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_description");?></div>
                         <input class="form-control" type="text" name="field-description" id="field-description">
-                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> Данный текст будет показываться как подсказка при наведении на соответствующее поле.</div>
+                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_description_tip");?></div>
                     </div>
                     <br>
                     <div class="input-group">
-                        <div class="input-group-addon">Тип</div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_type.name");?></div>
                         <select class="form-control" id="field-type-selector">
-                            <option value="1">Сведение</option>
-                            <option value="2">Контакт</option>
-                            <option value="3">Общее</option>
+                            <option value="1"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_type.mixin");?></option>
+                            <option value="2"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_type.contact");?></option>
+                            <option value="3"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_type.custom");?></option>
                         </select>
-                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> Здесь Вы можете выбрать, где будет отображаться поле.</div>
+                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_type.tip");?></div>
                     </div>
                     <br>
                     <div class="input-group">
-                        <div class="input-group-addon">Обязательное поле</div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_requied");?></div>
                         <div class="form-control">
                             <input type="checkbox" name="field-requied" id="field-requied">
                         </div>
-                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> Если данное поле обязательное, его нужно будет заполнить при регистрации.</div>
+                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_requied_tip");?></div>
                     </div>
                     <br>
                     <div class="input-group">
-                        <div class="input-group-addon">Показывать при регистрации</div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_visible_in_registration");?></div>
                         <div class="form-control">
                             <input type="checkbox" name="field-reg-show" id="field-reg-show">
                         </div>
-                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> Показывать поле при регистрации нового пользователя.</div>
+                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_visible_in_registration_tip");?></div>
                     </div>
                     <br>
                     <div class="input-group">
-                        <div class="input-group-addon">Может быть частным</div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_can_be_private");?></div>
                         <div class="form-control">
                             <input type="checkbox" name="field-private" id="field-private">
                         </div>
-                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> Добавляет настройку приватности поля в профиль.</div>
+                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_can_be_private_tip");?></div>
                     </div>
                     <br>
                     <div class="input-group">
-                        <div class="input-group-addon">Ссылка</div>
-                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> Введите ссылку, на которую нужно переходить по клику на неё. Значение поля можно получить
-                            написав в нужном месте "<a href="#" id="field-add-to-textarea"><strong>{{1}}</strong></a>". Система сама заменит данную конструкцию на значение поля.</div>
-                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> Это необязательный параметр. Если Вы не укажете ссылку, то поле
-                        будет чисто текстовым, а не представлять из себя ссылку.</div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_link");?></div>
+                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_link_tip_first");?></div>
+                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_link_tip_second");?></div>
                         <textarea class="form-control" name="field-link-textarea" style="resize: vertical; min-height: 100px;" id="field-link-textarea"></textarea>
                     </div>
                     <br>
                     <div class="btn-group">
-                        <button class="btn btn-default" type="button" id="field-add-ajax-btn"><span class="glyphicons glyphicons-ok"></span> Применить</button>
-                        <button class="btn btn-default" type="button" id="field-cancel-btn"><span class="glyphicons glyphicons-erase"></span> Отменить</button>
+                        <button class="btn btn-default" type="button" id="field-add-ajax-btn"><span class="glyphicons glyphicons-ok"></span> <?php echo \Engine\LanguageManager::GetTranslation("apply");?></button>
+                        <button class="btn btn-default" type="button" id="field-cancel-btn"><span class="glyphicons glyphicons-erase"></span> <?php echo \Engine\LanguageManager::GetTranslation("cancel");?></button>
                     </div>
                 </div>
                 <hr>
-                <h4>Цензура</h4>
-                <p>На сайте работает система цензурирования тем, комментариев и подписи.</p>
+                <h4><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.censore");?></h4>
+                <p><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.censore_tip");?></p>
                 <div class="input-group">
-                    <div class="input-group-addon">Слова для цензурирования</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.words_for_censore");?></div>
                     <input class="form-control" type="text" name="chat-filter-words" value="<?php echo \Engine\Engine::GetCensoredWords(); ?>">
                 </div>
-                <div class="alert alert-info"><span class="glyphicons glyphicons-info-sign"></span> Перечисляйте нужные для цензурирования слова через запятую, без пробелов.</div>
+                <div class="alert alert-info"><span class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.words_for_censore_tip");?></div>
                 <hr>
-                <h4>Жалобы</h4>
+                <h4><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.reports");?></h4>
                 <div class="input-group">
-                    <div class="input-group-addon">Возможные причины жалоб</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.reports_reason");?></div>
                     <textarea class="form-control" style="resize: vertical; min-height: 100px;" name="reports-reasons"><?php echo \Engine\Engine::GetReportReasons(); ?></textarea>
                 </div>
-                <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> Перечислите все возможные причины жалоб пользователей. Каждая
-                    новая причина должна быть на новой строке.</div>
+                <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.reports_tip");?></div>
                 <hr>
-                <h4>Настройки аватарок</h4>
+                <h4><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.avatar_settings");?></h4>
                 <div class="input-group">
-                    <div class="input-group-addon">Максимальная ширина аватарки</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.max_avatar_width");?></div>
                     <input type="number" class="form-control"  name="avatarmaxwidth" value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("aw"));?>">
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">Максимальная длина аватарки</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.max_avatar_height");?></div>
                     <input type="number" class="form-control"  name="avatarmaxheight" value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("ah"));?>">
                 </div>
                 <hr>
-                <h4>Настройки загрузки файлов</h4>
+                <h4><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.upload_settings");?></h4>
                 <div class="input-group">
-                    <div class="input-group-addon">Разрешённые к загрузке форматы</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.valid_formats");?></div>
                     <input type="text" class="form-control"  name="uploadformats" value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("upf"));?>">
                 </div>
-                <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> Перечисляйте форматы через запятую <em>без</em> пробелов.</div>
+                <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.valid_formats_tip");?></div>
                 <div class="input-group">
-                    <div class="input-group-addon">Максимальный размер файла</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.max_file_size");?></div>
                     <input type="number" class="form-control"  name="maxfilesize" id="maxfilesize" value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("ups"));?>">
                 </div>
-                <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> Размер указывается в байтах. Введённый размер: <span id="file-max-size-inmb"><?php echo \Engine\Engine::GetEngineInfo("ups") /1024 /1024; ?></span> МБ.</div>
+                <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.max_file_size_tip.first_part");
+                ?> <span id="file-max-size-inmb"><?php echo \Engine\Engine::GetEngineInfo("ups") /1024 /1024; ?></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.max_file_size_tip.second_part");?></div>
+                <hr>
+                <h4><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.guests");?></h4>
                 <div class="input-group">
-                    <div class="input-group-addon">Разрешить гостям просматривать профили</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.guest_see_profile");?></div>
                     <div class="form-control">
                         <input type="checkbox" name="guest_see_profiles" <?php if (\Engine\Engine::GetEngineInfo("gsp")) echo "checked"; ?>>
                     </div>
                 </div>
-                <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> Под гостями подразумеваются незарегистрированные пользователи.</div>
+                <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.guest_see_profile_tip");?></div>
             </div>
             <div class="div-border" id="metric_sets" data-number="5" hidden>
-                <h3><span class="glyphicons glyphicons-pie-chart"></span> Статистика</h3>
-                <p class="helper">Здесь меняются настройки статистики сайта.</p>
+                <h3><span class="glyphicons glyphicons-pie-chart"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.statistic_panel.panel_name");?></h3>
+                <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.statistic_panel.panel_description");?></p>
                 <hr>
-                <p>Здесь настраиваются параметры статистики Вашего сайта. Они будут добавлены в конец каждой страницы, просматриваемой
-                на данном портале.</p>
+                <p><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.statistic_panel.statistic_tip");?></p>
                 <div class="input-group">
-                    <div class="input-group-addon">Записывать статистику:</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.statistic_panel.write_statistic");?></div>
                     <div class="form-control">
                         <input type="checkbox" name="metric-lever-btn" id="metric-level-btn" <?php if (\Engine\Engine::GetEngineInfo("smt")) echo "checked"; ?>>
                     </div>
                 </div>
                 <div class="input-group" id="metric-code-div">
-                    <div class="input-group-addon">Текст для встраивания:</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.statistic_panel.text_to_insert");?></div>
                     <textarea class="form-control" style="height: 300px; resize: none;" name="metric-script-text"><?php echo \Engine\Engine::GetAnalyticScript(); ?></textarea>
-                    <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> Здесь должен быть код, который предоставляется сервисом.
-                        В инструкции Вас попросят разместить этот код на всех страницах Вашего портала, именно данный текст Вам нужно вставить сюда.</div>
+                    <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.statistic_panel.text_to_insert_tip");?></div>
                 </div>
             </div>
         </div>
         <hr />
         <div class="btn-group" role="group">
-            <button type="submit" class="btn btn-default" name="save_cfg_button">Сохранить</button>
-            <button type="button" class="btn btn-default" name="restart_cfg_button">Вернуть</button>
+            <button type="submit" class="btn btn-default" name="save_cfg_button"><?php echo \Engine\LanguageManager::GetTranslation("apply");?></button>
+            <button type="button" class="btn btn-default" name="restart_cfg_button"><?php echo \Engine\LanguageManager::GetTranslation("cancel");?></button>
         </div>
     </form>
 </div>
@@ -462,10 +452,11 @@ else {
                 if (action === "add"){
                     if ($.isNumeric(data)){
                         $("#user-add-fields").append("<option value=\"" + data + "\">" + $("#field-name-input").val() + "</option>");
-                        ShowAnswerForm(1, "Поле \"" + $("#field-name-input").val() + "\" было успешно создано!");
+                        ShowAnswerForm(1, "<?php echo \Engine\LanguageManager::GetTranslation("settings_panel.js.field"); ?> " + $("#field-name-input").val() +
+                            "\" <?php  echo \Engine\LanguageManager::GetTranslation("settings_panel.js.has_been_created_successfuly"); ?>");
                         $("#field-cancel-btn").click();
                     } else if (data == "in") {
-                        ShowAnswerForm("error", "Название не отвечает требованиям: название поля должно быть меньше 16 и больше 4 символов.");
+                        ShowAnswerForm("error", "<?php  echo \Engine\LanguageManager::GetTranslation("settings_panel.js.invalid_name"); ?>");
                     }
                 }
                 if (action === "edit") {
@@ -473,13 +464,13 @@ else {
                         $("#field-cancel-btn").click();
                         $("#user-add-fields").val(0);
                         $("#field-panel-manage").hide();
-                        ShowAnswerForm("okey", "Параметры поля успешно изменены!");
+                        ShowAnswerForm("okey", "<?php  echo \Engine\LanguageManager::GetTranslation("settings_panel.js.field_settings_changed");  ?>");
                     } else if (data == "fef") {
-                        ShowAnswerForm("error", "Не удалось отредактировать поле.");
+                        ShowAnswerForm("error", "<?php  echo \Engine\LanguageManager::GetTranslation("settings_panel.js.failed_edit_field"); ?>");
                     } else if (data == "fne") {
-                        ShowAnswerForm("error", "Такого поля не существует. Вероятно, его кто-то удалил, обновите страницу.");
+                        ShowAnswerForm("error", "<?php  echo \Engine\LanguageManager::GetTranslation("settings_panel.js.field_does_not_exist");  ?>");
                     } else if (data == "in") {
-                        ShowAnswerForm("error", "Название не отвечает требованиям: название поля должно быть меньше 16 и больше 4 символов.");
+                        ShowAnswerForm("error", "<?php   echo \Engine\LanguageManager::GetTranslation("settings_panel.js.invalid_name");  ?>");
                     }
                 }
            },
@@ -487,7 +478,7 @@ else {
                $("#add-fields-info-div").removeClass("hidden");
                $("#add-fields-info-div").addClass("alert-error");
                $("#add-fields-info-div > span").addClass("glyphicons glyphicons-remove");
-               $("#add-fields-info-div > span").after(" Не удалось сохранить дополнительное поле.")
+               $("#add-fields-info-div > span").after(" <?php   echo \Engine\LanguageManager::GetTranslation("settings_panel.js.field_has_not_been_saved");  ?>")
            }
        });
     });
@@ -534,15 +525,15 @@ else {
                 data: "action=delete&field-id=" + id,
                 success: function (data){
                     if (data == "sdf"){
-                        ShowAnswerForm("okey", "Дополнительное поле успешно удалено.");
+                        ShowAnswerForm("okey", "<?php   echo \Engine\LanguageManager::GetTranslation("settings_panel.js.field_has_been_removed");  ?>");
                         $("#user-add-fields").children("option[value=" + id + "]").remove();
                         $("#user-add-fields").val(0);
                         $("#field-cancel-btn").click();
                     } else if (data == "fdf"){
                         //Failed deleting.
-                        ShowAnswerForm("fail", "Не удалось удалить дополнительное поле.");
+                        ShowAnswerForm("fail", "<?php    echo \Engine\LanguageManager::GetTranslation("settings_panel.js.failed_to_remove_field");  ?>");
                     } else if (data == "fne"){
-                        ShowAnswerForm("fail", "Такого поля не существует. Возможно его уже кто-то удалил, обновите страницу и попробуйте ещё раз.");
+                        ShowAnswerForm("fail", "<?php    echo \Engine\LanguageManager::GetTranslation("settings_panel.js.field_does_not_exist");  ?>");
                     }
                 }
             });
@@ -558,9 +549,9 @@ else {
            data: "test=1",
            success: function (data){
                if (data == "okey")
-                   alert("Тестовое письмо было успешно отправлено.");
+                   alert("<?php    echo \Engine\LanguageManager::GetTranslation("settings_panel.js.test_mail_has_been_sended_successfuly");  ?>");
                else if (data == "false")
-                   alert("Не удалось отправить тестовое сообщение. Проверьте правильность введённых данных.");
+                   alert("<?php    echo \Engine\LanguageManager::GetTranslation("settings_panel.js.test_mail_has_not_been_sended");  ?>");
            }
        });
     });

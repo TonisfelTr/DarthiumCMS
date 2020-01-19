@@ -173,6 +173,7 @@ if ($session === TRUE) {
     }
 
     if (isset($_POST["topic-add-comment-btn"])){
+
         $topic = new \Forum\Topic($_POST["topic-id"]);
         if ($topic->getStatus() == 0) {
             header("Location: index.php?topic=" . $topic->getId());

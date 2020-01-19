@@ -184,6 +184,7 @@ if (empty($_GET["preg"])) {
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_SIGNATURE}", nl2br(\Engine\Engine::CompileBBCode($report->ReportAuthor()->getSignature())), $reportSeeBlock);
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:REPORT_STATUS}", $report->getStatus(), $reportSeeBlock);
             $reportSeeBlock = str_replace_once("{REPORT_ID}", $report->getId(), $reportSeeBlock);
+            $reportSeeBlock = str_replace_once("{REPORT_PAGE:BTNS_PANEL}", "", $reportSeeBlock);
             if (($report->ReportAuthor() == $user || $user->UserGroup()->getPermission("report_foreign_edit")) && !$report->isClosed()) {
                 include_once \Engine\Engine::ConstructTemplatePath("panelbtn", "report", "html");
                 $reportBtnBlock = getBrick();

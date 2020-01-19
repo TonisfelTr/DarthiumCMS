@@ -6,11 +6,11 @@ if (!$user->UserGroup()->getPermission("logs_see")) { header("Location: ../admin
 ?>
 
 <div class="inner cover">
-    <h1 class="cover-heading"><span class="glyphicon glyphicon-transfer"></span> История событий</h1>
-    <p class="lead">Просмотр истории действий в админпанели.</p>
+    <h1 class="cover-heading"><span class="glyphicon glyphicon-transfer"></span> <?php echo \Engine\LanguageManager::GetTranslation("logs_panel.panel_name"); ?></h1>
+    <p class="lead"><?php echo \Engine\LanguageManager::GetTranslation("logs_panel.panel_description"); ?></p>
     <div class="alert alert-info">
         <span class="glyphicons glyphicons-question-sign"></span>
-        Здесь записаны все действия, совершённые в администраторской панели.
+        <?php echo \Engine\LanguageManager::GetTranslation("logs_panel.panel_tip"); ?>
     </div>
     <textarea class="form-control logger" style="resize: vertical; height: 500px;" readonly><?php
             $logger = \Guards\Logger::GetLogged();
@@ -23,6 +23,6 @@ if (!$user->UserGroup()->getPermission("logs_see")) { header("Location: ../admin
     </textarea>
     <hr>
     <div class="btn-group">
-        <a class="btn btn-default" href="../adminpanel.php"><span class="glyphicons glyphicons-arrow-left"></span> Назад</a>
+        <a class="btn btn-default" href="../adminpanel.php"><span class="glyphicons glyphicons-arrow-left"></span> <?php echo \Engine\LanguageManager::GetTranslation("logs_panel.back_btn"); ?></a>
     </div>
 </div>

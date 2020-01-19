@@ -4,7 +4,7 @@
  */
 if (!defined("TT_Index")){ header("index.php?page=errors/forbidden"); exit; }
 if (empty($_GET["category"])) {
-    $pageName = "Главная";
+    $pageName = \Engine\LanguageManager::GetTranslation("home");
     $_GET["category"] = null;
 }
 else

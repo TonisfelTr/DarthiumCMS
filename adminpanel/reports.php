@@ -53,27 +53,25 @@ else {
     }?>
 <script src="adminpanel/scripts/UserFinderParser.js"></script>
 <div class="inner cover">
-    <h1 class="cover-heading">Жалобы</h1>
-    <p class="lead">Управление и просмотр жалоб пользователей.</p>
+    <h1 class="cover-heading"><?= \Engine\LanguageManager::GetTranslation("reports_panel.page_name"); ?></h1>
+    <p class="lead"><?= \Engine\LanguageManager::GetTranslation("reports_panel.page_description"); ?></p>
     <form method="post" action="adminpanel/scripts/reports.php">
         <div class="custom-group">
             <div class="div-border">
                 <?php if (!isset($_GET["reqtype"])){ ?>
                 <div class="report-table">
-                    <h2>Таблица жалоб</h2>
-                    <p class="helper">Здесь Вы можете управлять жалобами пользователей.</p>
+                    <h2><?= \Engine\LanguageManager::GetTranslation("reports_panel.table_page.panel_name"); ?></h2>
+                    <p class="helper"><?= \Engine\LanguageManager::GetTranslation("reports_panel.table_page.panel_description"); ?></p>
                     <hr>
-                    <p>Здесь находится таблица жалоб пользователей по той или иной причине. Вы можете помочь в решении проблем,
-                    которые появляются у пользователей Вашего портала.</p>
+                    <p><?= \Engine\LanguageManager::GetTranslation("reports_panel.table_page.panel_tip"); ?></p>
                     <div class="alert alert-info">
-                        <span class="glyphicons glyphicons-info-sign"></span> Для удаления жалоб из таблицы необходимо, чтобы у Вас были права на удаление <strong>чужих</strong> жалоб.
-                        Если у Вас есть право на удаление только своих, то система не выполнит удаление. Для этого воспользуйтесь таблицей жалоб на <a class="alert-link" href="index.php?page=reports">сайте</a>.
+                        <span class="glyphicons glyphicons-info-sign"></span> <?= \Engine\LanguageManager::GetTranslation("reports_panel.table_page.panel_remove_tip"); ?>
                     </div>
                     <div class="alert alert-info" id="report-counter-div" hidden>
-                        <strong>Выделенно</strong>: <span id="report-counter-span">0</span>
+                        <strong><?= \Engine\LanguageManager::GetTranslation("reports_panel.table_page.selected"); ?></strong>: <span id="report-counter-span">0</span>
                     </div>
                     <div class="btn-group">
-                        <button class="btn btn-danger" type="submit" id="report-table-delete-selected-btn" name="reports-table-delete-btn" disabled><span class="glyphicons glyphicons-delete"></span> Удалить выделенные</button>
+                        <button class="btn btn-danger" type="submit" id="report-table-delete-selected-btn" name="reports-table-delete-btn" disabled><span class="glyphicons glyphicons-delete"></span> <?= \Engine\LanguageManager::GetTranslation("reports_panel.table_page.remove_selected"); ?></button>
                     </div>
                     <input type="hidden" id="report-ids-for-delete" name="reports-ids-for-delete">
                     <hr>
@@ -81,17 +79,17 @@ else {
                         <thead style="background: radial-gradient(at center, #b40000, #351822); color: white;">
                             <tr>
                                 <td><input type="checkbox" id="reports-table-select-all"></td>
-                                <td>Дата создания</td>
-                                <td>Автор жалобы</td>
-                                <td>Предмет жалобы</td>
-                                <td>Краткое описание</td>
-                                <td>Оценка</td>
-                                <td>Ответил</td>
+                                <td><?= \Engine\LanguageManager::GetTranslation("reports_panel.table_page.table_creation"); ?></td>
+                                <td><?= \Engine\LanguageManager::GetTranslation("reports_panel.table_page.table_author"); ?></td>
+                                <td><?= \Engine\LanguageManager::GetTranslation("reports_panel.table_page.table_subject"); ?></td>
+                                <td><?= \Engine\LanguageManager::GetTranslation("reports_panel.table_page.table_description"); ?></td>
+                                <td><?= \Engine\LanguageManager::GetTranslation("reports_panel.table_page.table_mark"); ?></td>
+                                <td><?= \Engine\LanguageManager::GetTranslation("reports_panel.table_page.table_answered"); ?></td>
                                 <td></td>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if ($reportCount == 0) { ?><tr><td class="alert-success" style="text-align: center;" colspan="8"><span class="glyphicon glyphicon-info-sign"></span> Нет ни одной жалобы.</td></tr> <?php }
+                            <?php if ($reportCount == 0) { ?><tr><td class="alert-success" style="text-align: center;" colspan="8"><span class="glyphicon glyphicon-info-sign"></span> <?= \Engine\LanguageManager::GetTranslation("reports_panel.table_page.empty_table"); ?></td></tr> <?php }
                             else {
                                 for ($i = 0; $i <= $reportCount-1; $i++){
                                     $report = new \Guards\Report($reportList[$i]); ?>
@@ -103,7 +101,7 @@ else {
                                         <td><?php echo htmlentities($report->getShortMessage()); ?></td>
                                         <td><?php echo $report->getMark(); ?></td>
                                         <td><?php echo $report->ReportAnswerAuthor()->getNickname(); ?></td>
-                                        <td><button class="btn btn-default" style="width:100%;" type="submit" name="reports-see-btn" formaction="adminpanel/scripts/reports.php?rid=<?php echo $report->getId(); ?>">Просмотреть</button></td>
+                                        <td><button class="btn btn-default" style="width:100%;" type="submit" name="reports-see-btn" formaction="adminpanel/scripts/reports.php?rid=<?php echo $report->getId(); ?>"><?= \Engine\LanguageManager::GetTranslation("reports_panel.table_page.see_btn"); ?></button></td>
                                     </tr>
                                 <?php }} ?>
                         </tbody>
@@ -122,14 +120,14 @@ else {
                 <?php } elseif (isset($_GET["reqtype"]) && $_GET["reqtype"] == "discusion") { ?>
                 <div class="report-discusion">
                     <h3><?php echo htmlentities($report->getShortMessage()); ?></h3>
-                    <p class="helper">Обсуждение жалобы пользователя.</p>
+                    <p class="helper"><?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.panel_description");?></p>
                     <hr>
                     <div class="report-header">
                         <div class="report-header-head">
-                            <span class="report-author-info">Автор: <?php echo $report->ReportAuthor()->getNickname(); ?></span>
+                            <span class="report-author-info"><?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.author");?> <?php echo $report->ReportAuthor()->getNickname(); ?></span>
                             <img src="<?php echo $report->ReportAuthor()->getAvatar(); ?>" class="report-author-avatar">
-                            <span class="report-report-info">Дата создания: <?php echo \Engine\Engine::DateFormatToRead($report->getCreateDate()); ?>
-                               | Категория: <?php echo htmlentities($report->getTheme()); ?></span>
+                            <span class="report-report-info"><?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.create_date");?> <?php echo \Engine\Engine::DateFormatToRead($report->getCreateDate()); ?>
+                               | <?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.category")?> <?php echo htmlentities($report->getTheme()); ?></span>
                         </div>
                         <div class="report-header-body">
                             <?php echo trim(\Engine\Engine::CompileBBCode(htmlentities($report->getMessage()))); ?>
@@ -137,8 +135,8 @@ else {
                         <div class="report-header-footer">
                             Статус: <?php echo $report->getStatus(); ?>
                             <div class="btn-group" style="float: right;">
-                                <button class="btn btn-default" type="submit" name="reports-report-edit" formaction="adminpanel/scripts/reports.php?rid=<?php echo $report->getId(); ?>" title="Отредактировать жалобу"><span class="glyphicons glyphicons-pen"></span></button>
-                                <button class="btn btn-danger" type="submit" name="reports-report-delete" formaction="adminpanel/scripts/reports.php?rid=<?php echo $report->getId(); ?>" title="Удалить жалобу"><span class="glyphicons glyphicons-erase"></span></button>
+                                <button class="btn btn-default" type="submit" name="reports-report-edit" formaction="adminpanel/scripts/reports.php?rid=<?php echo $report->getId(); ?>" title="<?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.edit_report_btn");?>"><span class="glyphicons glyphicons-pen"></span></button>
+                                <button class="btn btn-danger" type="submit" name="reports-report-delete" formaction="adminpanel/scripts/reports.php?rid=<?php echo $report->getId(); ?>" title="<?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.remove_report_btn");?>"><span class="glyphicons glyphicons-erase"></span></button>
                             </div>
                         </div>
                     </div>
@@ -148,72 +146,72 @@ else {
                     if (!$report->isClosed()){ ?>
                     <div class="report-answer-block">
                         <div class="btn-group">
-                            <button class="btn btn-default" title="Выделить жирным" type="button"
+                            <button class="btn btn-default" title="<?= \Engine\LanguageManager::GetTranslation("editor_functions.bold")?>" type="button"
                                     onclick="insertBBCode('b', false, document.getElementById('report-answer-text'));">
                                 <strong>B</strong></button>
-                            <button class="btn btn-default" title="Курсив" type="button"
+                            <button class="btn btn-default" title="<?= \Engine\LanguageManager::GetTranslation("editor_functions.italic")?>" type="button"
                                     onclick="insertBBCode('i', false, document.getElementById('report-answer-text'));"><em>I</em>
                             </button>
-                            <button class="btn btn-default" title="Подчёркивание" type="button"
+                            <button class="btn btn-default" title="<?= \Engine\LanguageManager::GetTranslation("editor_functions.underline")?>" type="button"
                                     onclick="insertBBCode('u', false, document.getElementById('report-answer-text'));">
                                 <ins>U</ins>
                             </button>
-                            <button class="btn btn-default" title="Перечеркнуть" type="button"
+                            <button class="btn btn-default" title="<?= \Engine\LanguageManager::GetTranslation("editor_functions.strike")?>" type="button"
                                     onclick="insertBBCode('s', false, document.getElementById('report-answer-text'));"><s>S</s></button>
                         </div>
                         <div class="btn-group">
-                            <button class="btn btn-default" title="Выровнять влево" type="button"
+                            <button class="btn btn-default" title="<?= \Engine\LanguageManager::GetTranslation("editor_functions.align_left")?>" type="button"
                                     onclick="insertBBCode('align=left', 'align', document.getElementById('report-answer-text'));"><span
                                     class="glyphicon glyphicon-align-left"></span></button>
-                            <button class="btn btn-default" title="Выровнять по центру" type="button"
+                            <button class="btn btn-default" title="<?= \Engine\LanguageManager::GetTranslation("editor_functions.align_center")?>" type="button"
                                     onclick="insertBBCode('align=center', 'align', document.getElementById('report-answer-text'));">
                                 <span class="glyphicon glyphicon-align-center"></span></button>
-                            <button class="btn btn-default" title="Выровнять вправо" type="button"
+                            <button class="btn btn-default" title="<?= \Engine\LanguageManager::GetTranslation("editor_functions.align_right")?>" type="button"
                                     onclick="insertBBCode('align=right', 'align', document.getElementById('report-answer-text'));"><span
                                     class="glyphicon glyphicon-align-right"></span></button>
                         </div>
                         <div class="btn-group">
-                            <button class="btn btn-default" title="Вставить ролик YouTube" type="button"
+                            <button class="btn btn-default" title="<?= \Engine\LanguageManager::GetTranslation("editor_functions.youtube")?>" type="button"
                                     onclick="insertBBCode('youtube=', true, document.getElementById('report-answer-text'));"><span
                                     class="glyphicon glyphicon-play btn-youtube"></span></button>
-                            <button class="btn btn-default" title="Вставить картинку" type="button"
+                            <button class="btn btn-default" title="<?= \Engine\LanguageManager::GetTranslation("editor_functions.image")?>" type="button"
                                     onclick="insertBBCode('img=', true, document.getElementById('report-answer-text'));"><span
                                     class="glyphicon glyphicon-picture"></span></button>
-                            <button class="btn btn-default" title="Загрузить файл" type="button" onclick="$('#uploader-form').show();">
+                            <button class="btn btn-default" title="<?= \Engine\LanguageManager::GetTranslation("editor_functions.upload_file")?>" type="button" onclick="$('#uploader-form').show();">
                                 <span class="glyphicon glyphicon-upload"></span> Загрузить файл
                             </button>
                         </div>
                         <div class="btn-group">
-                            <button class="btn btn-default" title="Вставить разделитель" type="button"
+                            <button class="btn btn-default" title="<?= \Engine\LanguageManager::GetTranslation("editor_functions.insert_hr")?>" type="button"
                                     onclick="insertBBCode('hr', true, document.getElementById('report-answer-text'));"><span
                                     class="glyphicons glyphicons-vector-path-line"></span></button>
-                            <button class="btn btn-default" title="Цитата" type="button"
+                            <button class="btn btn-default" title="<?= \Engine\LanguageManager::GetTranslation("editor_functions.quote")?>" type="button"
                                     onclick="insertBBCode('quote', 'quote', document.getElementById('report-answer-text'));"><span
                                     class="glyphicons glyphicons-user-conversation"></span></button>
                         </div>
                          <textarea class="form-control" id="report-answer-text" name="reports-answer-text"
                           style="resize: none; height: 300px;"
-                          placeholder="Здесь Вы можете ответить на жалобу."></textarea>
+                          placeholder="<?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.placeholder_answer");?>"></textarea>
 
                         <div class="btn-group">
-                            <button class="btn btn-default" type="submit" name="reports-answer-send" formaction="adminpanel/scripts/reports.php?rid=<?php echo $report->getId(); ?>">Опубликовать ответ</button>
-                            <button class="btn btn-default" type="reset">Очистить форму</button>
+                            <button class="btn btn-default" type="submit" name="reports-answer-send" formaction="adminpanel/scripts/reports.php?rid=<?php echo $report->getId(); ?>"><?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.public_answer");?></button>
+                            <button class="btn btn-default" type="reset"><?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.clear_form");?></button>
                         </div>
                     </div>
                     <?php } else {
                         $repAnswer = new \Guards\ReportAnswer($report->getAnswerId()); ?>
-                    <h3>Ответ</h3>
+                    <h3><?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.answer");?></h3>
                     <div class="report-answer">
                         <div class="report-solve-head">
-                            <span class="report-author-info">Автор: <?php echo $repAnswer->getAuthor()->getNickname();?></span>
+                            <span class="report-author-info"><?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.author");?> <?php echo $repAnswer->getAuthor()->getNickname();?></span>
                             <img class="report-author-avatar" src="<?php echo $repAnswer->getAuthor()->getAvatar(); ?>">
-                            <span class="report-report-info">Дата создания: <?php echo \Engine\Engine::DateFormatToRead($repAnswer->getCreateDate()); ?></span>
+                            <span class="report-report-info"><?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.create_date");?> <?php echo \Engine\Engine::DateFormatToRead($repAnswer->getCreateDate()); ?></span>
                         </div>
                         <div class="report-solve-body">
                             <?php echo nl2br(trim(\Engine\Engine::CompileBBCode($repAnswer->getMessage()))); ?>
                         </div>
                         <div class="report-solve-footer">
-                            Дата закрытия: <?php echo \Engine\Engine::DateFormatToRead($report->getCloseDate()); ?>
+                            <?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.date_closed");?> <?php echo \Engine\Engine::DateFormatToRead($report->getCloseDate()); ?>
                         </div>
                     </div>
                     <?php }
@@ -222,25 +220,27 @@ else {
                     <hr>
                     <div class="report-answer">
                         <div class="report-answer-head">
-                            <span class="report-author-info">Автор: <?php echo $answer->getAuthor()->getNickname();?></span>
+                            <span class="report-author-info"><?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.author")?> <?php echo $answer->getAuthor()->getNickname();?></span>
                             <img class="report-author-avatar" src="<?php echo $answer->getAuthor()->getAvatar(); ?>">
-                            <span class="report-report-info">Дата создания: <?php echo \Engine\Engine::DateFormatToRead($answer->getCreateDate()); ?></span>
+                            <span class="report-report-info"><?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.create_date")?> <?php echo \Engine\Engine::DateFormatToRead($answer->getCreateDate()); ?></span>
                         </div>
                         <div class="report-answer-body">
                             <?php echo \Engine\Engine::CompileBBCode(trim($answer->getMessage())); ?>
                             <?php if ($answer->getEditDate() != ''){
-                                $editInfo =  "<span class=\"report-answer-edit-info\">Последнее редактирование by " . $answer->getLastEditor()->getNickname() . " в " . \Engine\Engine::DatetimeFormatToRead($answer->getEditDate());
-                                if ($answer->getEditReason()) $editInfo .= " по причине: " . htmlentities($answer->getEditReason());
+                                $editInfo =  "<span class=\"report-answer-edit-info\">" . \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.last_edit") . " " . $answer->getLastEditor()->getNickname() .
+
+                                   " " . \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.in") . " " .  \Engine\Engine::DatetimeFormatToRead($answer->getEditDate());
+                                if ($answer->getEditReason()) $editInfo .= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.reason") . " " . htmlentities($answer->getEditReason());
                                 echo $editInfo .= "</span>";
                             }
                                 ?>
                         </div>
                         <div class="report-answer-footer">
-                            <?php if (!$report->isClosed()) { ?>Действия:
+                            <?php if (!$report->isClosed()) { ?><?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.actions")?>
                             <div class="btn-group" style="float: right;">
-                                <button class="btn btn-default" type="submit" name="reports-answer-accept" title="Отметить решением проблемы" formaction="adminpanel/scripts/reports.php?rid=<?php echo $answer->getParentReportID(); ?>&ansid=<?php echo $answer->getAnswerId(); ?>"><span class="glyphicon glyphicon-ok"></span></button>
-                                <button class="btn btn-default" type="submit" name="reports-answer-edit" title="Редактировать" formaction="adminpanel/scripts/reports.php?rid=<?php echo $answer->getParentReportID(); ?>&ansid=<?php echo $answer->getAnswerId(); ?>"><span class="glyphicons glyphicons-pen"></span></button>
-                                <button class="btn btn-danger" type="submit" name="reports-answer-delete" title="Удалить" formaction="adminpanel/scripts/reports.php?rid=<?php echo $answer->getParentReportID(); ?>&ansid=<?php echo $answer->getAnswerId(); ?>"><span class="glyphicons glyphicons-delete"></span></button>
+                                <button class="btn btn-default" type="submit" name="reports-answer-accept" title="<?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.check_for_solve")?>" formaction="adminpanel/scripts/reports.php?rid=<?php echo $answer->getParentReportID(); ?>&ansid=<?php echo $answer->getAnswerId(); ?>"><span class="glyphicon glyphicon-ok"></span></button>
+                                <button class="btn btn-default" type="submit" name="reports-answer-edit" title="<?= \Engine\LanguageManager::GetTranslation("edit")?>" formaction="adminpanel/scripts/reports.php?rid=<?php echo $answer->getParentReportID(); ?>&ansid=<?php echo $answer->getAnswerId(); ?>"><span class="glyphicons glyphicons-pen"></span></button>
+                                <button class="btn btn-danger" type="submit" name="reports-answer-delete" title="<?= \Engine\LanguageManager::GetTranslation("remove")?>" formaction="adminpanel/scripts/reports.php?rid=<?php echo $answer->getParentReportID(); ?>&ansid=<?php echo $answer->getAnswerId(); ?>"><span class="glyphicons glyphicons-delete"></span></button>
                             </div>
                             <?php } ?>
                         </div>
@@ -250,61 +250,61 @@ else {
                 <?php }
                 elseif (isset($_GET["reqtype"]) && $_GET["reqtype"] == "edit"){ ?>
                 <div class="report-edit">
-                    <h3>Редактирование <?php echo (!empty($_GET["rid"])) ? "жалобы" : "ответа"; ?></h3>
+                    <h3><?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.edit")?> <?php echo (!empty($_GET["rid"])) ? \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.of_report") : \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.of_answer"); ?></h3>
                     <hr>
                     <?php if (!empty($_GET["rid"])) { ?>
                         <div class="input-group">
-                            <div class="input-group-addon">Название:</div>
+                            <div class="input-group-addon"><?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.name")?>:</div>
                             <input name="reports-edit-shortmessage" class="form-control" type="text" value="<?php echo $report->getShortMessage(); ?>">
                         </div>
                     <?php } else { ?>
                         <div class="input-group">
-                            <div class="input-group-addon">Причина редактирования:</div>
+                            <div class="input-group-addon"><?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.edit_reason")?></div>
                             <input type="text" name="reports-edit-reason" class="form-control">
                         </div>
                     <?php } ?>
                     <hr>
                     <div class="report-edit-message-form">
                         <div class="btn-group">
-                            <button class="btn btn-default" title="Выделить жирным" type="button" onclick="insertBBCode('b', false, document.getElementById('report-edit-message-text'));"><strong>B</strong></button>
-                            <button class="btn btn-default" title="Курсив" type="button" onclick="insertBBCode('i', false, document.getElementById('report-edit-message-text'));"><em>I</em></button>
-                            <button class="btn btn-default" title="Подчёркивание" type="button" onclick="insertBBCode('u', false, document.getElementById('report-edit-message-text'));"><ins>U</ins></button>
-                            <button class="btn btn-default" title="Перечеркнуть" type="button" onclick="insertBBCode('s', false, document.getElementById('report-edit-message-text'));"><s>S</s></button>
+                            <button class="btn btn-default" title="<?= \Engine\LanguageManager::GetTranslation("editor_functions.bold")?>" type="button" onclick="insertBBCode('b', false, document.getElementById('report-edit-message-text'));"><strong>B</strong></button>
+                            <button class="btn btn-default" title="<?= \Engine\LanguageManager::GetTranslation("editor_functions.italic")?>" type="button" onclick="insertBBCode('i', false, document.getElementById('report-edit-message-text'));"><em>I</em></button>
+                            <button class="btn btn-default" title="<?= \Engine\LanguageManager::GetTranslation("editor_functions.underline")?>" type="button" onclick="insertBBCode('u', false, document.getElementById('report-edit-message-text'));"><ins>U</ins></button>
+                            <button class="btn btn-default" title="<?= \Engine\LanguageManager::GetTranslation("editor_functions.strike")?>" type="button" onclick="insertBBCode('s', false, document.getElementById('report-edit-message-text'));"><s>S</s></button>
                         </div>
                         <div class="btn-group">
-                            <button class="btn btn-default" title="Выровнять влево" type="button" onclick="insertBBCode('align=left', 'align', document.getElementById('report-edit-message-text'));"><span class="glyphicon glyphicon-align-left"></span></button>
-                            <button class="btn btn-default" title="Выровнять по центру" type="button" onclick="insertBBCode('align=center', 'align', document.getElementById('report-edit-message-text'));"><span class="glyphicon glyphicon-align-center"></span></button>
-                            <button class="btn btn-default" title="Выровнять вправо" type="button" onclick="insertBBCode('align=right', 'align', document.getElementById('report-edit-message-text'));"><span class="glyphicon glyphicon-align-right"></span></button>
+                            <button class="btn btn-default" title="<?= \Engine\LanguageManager::GetTranslation("editor_functions.align_left")?>" type="button" onclick="insertBBCode('align=left', 'align', document.getElementById('report-edit-message-text'));"><span class="glyphicon glyphicon-align-left"></span></button>
+                            <button class="btn btn-default" title="<?= \Engine\LanguageManager::GetTranslation("editor_functions.align_center")?>" type="button" onclick="insertBBCode('align=center', 'align', document.getElementById('report-edit-message-text'));"><span class="glyphicon glyphicon-align-center"></span></button>
+                            <button class="btn btn-default" title="<?= \Engine\LanguageManager::GetTranslation("editor_functions.align_right")?>" type="button" onclick="insertBBCode('align=right', 'align', document.getElementById('report-edit-message-text'));"><span class="glyphicon glyphicon-align-right"></span></button>
                         </div>
                         <div class="btn-group">
-                            <button class="btn btn-default" title="Вставить ролик YouTube" type="button" onclick="insertBBCode('youtube=', true, document.getElementById('report-edit-message-text'));"><span class="glyphicon glyphicon-play btn-youtube"></span></button>
-                            <button class="btn btn-default" title="Вставить картинку" type="button" onclick="insertBBCode('img=', true, document.getElementById('report-edit-message-text'));"><span class="glyphicon glyphicon-picture"></span></button>
-                            <button class="btn btn-default" title="Загрузить файл" type="button" onclick="$('#uploader-form').show();"><span class="glyphicon glyphicon-upload"></span> Загрузить файл</button>
+                            <button class="btn btn-default" title="<?= \Engine\LanguageManager::GetTranslation("editor_functions.youtube")?>" type="button" onclick="insertBBCode('youtube=', true, document.getElementById('report-edit-message-text'));"><span class="glyphicon glyphicon-play btn-youtube"></span></button>
+                            <button class="btn btn-default" title="<?= \Engine\LanguageManager::GetTranslation("editor_functions.image")?>" type="button" onclick="insertBBCode('img=', true, document.getElementById('report-edit-message-text'));"><span class="glyphicon glyphicon-picture"></span></button>
+                            <button class="btn btn-default" title="<?= \Engine\LanguageManager::GetTranslation("editor_functions.upload_file")?>" type="button" onclick="$('#uploader-form').show();"><span class="glyphicon glyphicon-upload"></span> Загрузить файл</button>
                         </div>
                         <div class="btn-group">
-                            <button class="btn btn-default" title="Вставить разделитель" type="button" onclick="insertBBCode('hr', true, document.getElementById('report-edit-message-text'));"><span class="glyphicons glyphicons-vector-path-line"></span></button>
-                            <button class="btn btn-default" title="Цитата" type="button" onclick="insertBBCode('quote', 'quote', document.getElementById('report-edit-message-text'));"><span class="glyphicons glyphicons-user-conversation"></span></button>
+                            <button class="btn btn-default" title="<?= \Engine\LanguageManager::GetTranslation("editor_functions.insert_hr")?>" type="button" onclick="insertBBCode('hr', true, document.getElementById('report-edit-message-text'));"><span class="glyphicons glyphicons-vector-path-line"></span></button>
+                            <button class="btn btn-default" title="<?= \Engine\LanguageManager::GetTranslation("editor_functions.quote")?>" type="button" onclick="insertBBCode('quote', 'quote', document.getElementById('report-edit-message-text'));"><span class="glyphicons glyphicons-user-conversation"></span></button>
                         </div>
                         <textarea class="form-control" name="reports-edit-message-text" id="report-edit-message-text" style="resize: none; height: 350px;"><?php echo $message; ?></textarea>
                         <div class="btn-group">
-                            <button type="submit" class="btn btn-default" formaction="adminpanel/scripts/reports.php?<?php echo $suffixFormaction; ?>" name="<?php echo $nameBtnEdit; ?>"><span class="glyphicons glyphicons-pencil"></span> Сохранить изменения</button>
-                            <button type="reset" class="btn btn-info" name="reports-edit-message-erase"><span class="glyphicons glyphicons-erase"></span> Отменить изменения</button>
-                            <button type="button" class="btn btn-default" onclick="window.history.back();" name="reports-edit-message-back"><span class="glyphicons glyphicons-arrow-left"></span> Вернуться назад</button>
+                            <button type="submit" class="btn btn-default" formaction="adminpanel/scripts/reports.php?<?php echo $suffixFormaction; ?>" name="<?php echo $nameBtnEdit; ?>"><span class="glyphicons glyphicons-pencil"></span> <?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.save_changes")?></button>
+                            <button type="reset" class="btn btn-info" name="reports-edit-message-erase"><span class="glyphicons glyphicons-erase"></span> <?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.cancel_changes")?></button>
+                            <button type="button" class="btn btn-default" onclick="window.history.back();" name="reports-edit-message-back"><span class="glyphicons glyphicons-arrow-left"></span> <?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.back_btn")?></button>
                         </div>
                 </div>
                 <?php if (!empty($_GET["rid"])){ ?>
                 <hr>
                 <div class="report-user-added-div">
-                    <h4>Добавление в дискуссию</h4>
+                    <h4><?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.add_to_discussion")?></h4>
                     <div class="input-group">
-                        <input class="form-control" type="text" maxlength="16" id="report-user-add-input" placeholder="Напишите сюда никнейм пользователя, которого Вы хотите добавить в дискуссию жалобы.">
+                        <input class="form-control" type="text" maxlength="16" id="report-user-add-input" placeholder="<?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.placeholder_add_to_discussion")?>">
                         <span class="input-group-btn">
                             <button class="btn btn-default" type="button" onclick="addToReportDiscusse();">
-                                <span class="glyphicons glyphicons-user-add"></span> Добавить
+                                <span class="glyphicons glyphicons-user-add"></span> <?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.add")?>
                             </button>
                         </span>
                     </div>
-                    Добавленные:
+                    <?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.added")?>
                     <div class="report-user-added-list" id="reports-au-list">
                         <?php for ($i = 0; $i < count($report->getAddedToDiscuse()); $i++){ ?>
                             <div class="report-user-added-btn">

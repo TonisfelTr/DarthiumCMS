@@ -26,50 +26,49 @@ else {
     }
     ?>
 <div class="inner cover">
-    <h1 class="cover-heading">Категории</h1>
-    <p class="lead">Управление категориями сайта: их создание, удаление и манипуляции.</p>
+    <h1 class="cover-heading"><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.page_name"); ?></h1>
+    <p class="lead"><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.page_description"); ?></p>
     <div id="btn-show-panel" class="btn-group">
-        <button id="btn-show-table" class="btn btn-default <?php echo (empty($_GET["reqtype"])) ? "active" : ""; ?>" onclick="showToBelow('category_table_div', 'btn-show-table');"><span class="glyphicons glyphicons-show-thumbnails"></span> Управление категориями</button>
+        <button id="btn-show-table" class="btn btn-default <?php echo (empty($_GET["reqtype"])) ? "active" : ""; ?>" onclick="showToBelow('category_table_div', 'btn-show-table');"><span class="glyphicons glyphicons-show-thumbnails"></span> <?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_managment.categories_managment"); ?></button>
         <?php if ($canCategoryCreate) { ?>
-        <button id="btn-show-add" class="btn btn-default <?php echo (!empty($_GET["reqtype"]) && $_GET["reqtype"] == 1) ? "active" : ""; ?>" onclick="showToBelow('category_add_div', 'btn-show-add');"><span class="glyphicons glyphicons-folder-plus"></span> Добавление категорий</button>
+        <button id="btn-show-add" class="btn btn-default <?php echo (!empty($_GET["reqtype"]) && $_GET["reqtype"] == 1) ? "active" : ""; ?>" onclick="showToBelow('category_add_div', 'btn-show-add');"><span class="glyphicons glyphicons-folder-plus"></span> <?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_add.category_add"); ?></button>
         <?php } if ($canCategoryEdit){
         if (isset($_GET["reqtype"]) && $_GET["reqtype"] == 2){ ?>
-        <button id="btn-show-edit" class="btn btn-info <?php echo (!empty($_GET["reqtype"]) && $_GET["reqtype"] == 2) ? "active" : ""; ?>" onclick="showToBelow('category_edit_div', 'btn-show-edit');"><span class="glyphicons glyphicons-folder-new"></span> <?php echo $category->getName(); ?> - Редактирование категории</button> <?php } } ?>
+        <button id="btn-show-edit" class="btn btn-info <?php echo (!empty($_GET["reqtype"]) && $_GET["reqtype"] == 2) ? "active" : ""; ?>" onclick="showToBelow('category_edit_div', 'btn-show-edit');"><span class="glyphicons glyphicons-folder-new"></span> <?php echo $category->getName(); ?> <?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_edit.edit_btn"); ?></button> <?php } } ?>
     </div>
     <form method="post" action="adminpanel/scripts/categories.php" enctype="multipart/form-data">
         <div class="custom-group">
             <div class="div-border" id="category_table_div" <?php if (!empty($_GET["reqtype"])) echo "hidden"; ?>>
-                <h3>Управление категориями</h3>
-                <p class="helper">Просмотр существующих категорий с возможностью редактирования.</p>
+                <h3><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_managment.categories_managment"); ?></h3>
+                <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_managment.categories_managment_tip"); ?></p>
                 <hr>
-                <p>Здесь Вы можете найти уже созданные категории и информацию по ним. Также, функционал позволяет изменять
-                категории, их параметры и удалять их совсем.</p>
+                <p><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_managment.panel_tip"); ?></p>
                 <?php if ($canCategoryDelete) { ?>
-                <button class="btn btn-danger" name="categories-table-delete" id="categories-table-delete" style="width: 100%;" disabled><span class="glyphicons glyphicons-erase"></span> Удалить категории</button>
+                <button class="btn btn-danger" name="categories-table-delete" id="categories-table-delete" style="width: 100%;" disabled><span class="glyphicons glyphicons-erase"></span> <?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_managment.remove_categories_btn"); ?></button>
                 <?php } ?>
                 <hr>
                 <div class="alert alert-info" id="categories-table-count-div" hidden>
-                    <span class="glyphicon glyphicon-info-sign"></span> Выделено категорий:
+                    <span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_managment.selected_count"); ?>
                     <span id="categories-table-count-span"></span>
                 </div>
-                <h3>Список категорий</h3>
+                <h3><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_managment.categories_list"); ?></h3>
                 <table class="table">
                     <thead style="background: radial-gradient(at right, #11ee11, #0b401c); color: white; text-shadow: 1px 1px 3px black;">
                         <tr>
                             <td><input type="checkbox" id="categories-all-selector"></td>
                             <td>ID</td>
-                            <td>Название</td>
-                            <td>Описание</td>
-                            <td>Публичность</td>
-                            <td>Без коментариев</td>
-                            <td>Без тем</td>
-                            <td>Кол-во тем</td>
+                            <td><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_managment.category_name"); ?></td>
+                            <td><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_managment.category_description"); ?></td>
+                            <td><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_managment.category_public"); ?></td>
+                            <td><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_managment.category_no_comment"); ?></td>
+                            <td><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_managment.category_no_topics"); ?></td>
+                            <td><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_managment.topics_count"); ?></td>
                             <td></td>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if ($categoryCount == 0) { ?>
-                            <tr><td class="alert-info" colspan="9" style="text-align: center;"><span class="glyphicon glyphicon-info-sign"></span> Не создано ни одной категории.</td></tr>
+                            <tr><td class="alert-info" colspan="9" style="text-align: center;"><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_managment.no_categories"); ?></td></tr>
                         <?php } else {
                                 for ($i = 0; $i <= $categoryCount-1; $i++){
                                     $category = new \Forum\Category($categoryList[$i]); ?>
@@ -82,7 +81,7 @@ else {
                                     <td><?php echo \Engine\Engine::BooleanToWords($category->CanCreateComments()); ?></td>
                                     <td><?php echo \Engine\Engine::BooleanToWords($category->CanCreateTopic()); ?></td>
                                     <td><?php echo $category->getTopicsCount(); ?></td>
-                                    <td><button type="submit" class="btn btn-default" name="category_edit_btn" formmethod="post" formaction="adminpanel/scripts/categories.php?cid=<?php echo $category->getId(); ?>" style="width:100%;">Редактировать</button></td>
+                                    <td><button type="submit" class="btn btn-default" name="category_edit_btn" formmethod="post" formaction="adminpanel/scripts/categories.php?cid=<?php echo $category->getId(); ?>" style="width:100%;"><?php echo \Engine\LanguageManager::GetTranslation("edit"); ?></button></td>
                                 </tr>
                         <?php } } ?>
                     </tbody>
@@ -90,35 +89,34 @@ else {
             </div>
             <?php if ($canCategoryCreate) { ?>
             <div class="div-border" id="category_add_div" <?php if (!isset($_GET["reqtype"]) || $_GET["reqtype"] != 1) echo "hidden"; ?>>
-                <h3>Добавление категорий</h3>
-                <p class="h-helper">Добавление категорий для тем.</p>
+                <h3><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_add.category_add"); ?></h3>
+                <p class="h-helper"><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_add.category_add_tip"); ?></p>
                 <hr>
-                <p>Здесь Вы можете создать новую категорию и сразу, здесь же, настроить для неё параметры. Название и описание категории
-                может иметь любые символы, однако, не поддерживает BB-code или HTML.</p>
-                <input class="form-control" type="text" maxlength="50" name="category-add-name" placeholder="Введите имя новой категории.">
-                <textarea class="form-control" maxlength="350" name="category-add-description" style="resize: vertical; max-height: 350px;" placeholder="Введите описание категории. Здесь Вы можете пояснить, какие именно темы должны создаваться."></textarea>
+                <p><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_add.panel_tip"); ?></p>
+                <input class="form-control" type="text" maxlength="50" name="category-add-name" placeholder="<?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_add.placeholder_new_category_name"); ?>">
+                <textarea class="form-control" maxlength="350" name="category-add-description" style="resize: vertical; max-height: 350px;" placeholder="<?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_add.placeholder_new_category_description"); ?>"></textarea>
                 <br>
-                <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> Длина названия категории и её описания не может быть короче 4 символов и длиннее 50 и 350 символов соответственно.</div>
-                <div class="alert alert-warning"><span class="glyphicon glyphicon-warning-sign"></span> Заполнение данных полей обязательно.</div>
+                <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_add.data_tip"); ?></div>
+                <div class="alert alert-warning"><span class="glyphicon glyphicon-warning-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_add.warning"); ?></div>
                 <hr>
-                <h4>Дополнительные параметры</h4>
-                <p>Вы можете управлять правилами категории, путём постановки определённых параметров.</p>
+                <h4><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_add.additive_params"); ?></h4>
+                <p><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_add.additive_params_tip"); ?></p>
                 <label for="category_public_checker">
-                    <input type="checkbox" id="category_public_checker" name="category_add_public" title="Если эта категория не публичная, то взаимодействовать с ней смогут лишь те, у кого есть специфические права доступа." checked>
+                    <input type="checkbox" id="category_public_checker" name="category_add_public" title="<?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_add.public_tip"); ?>" checked>
                     Публичная категория
                 </label><br>
                 <label for="category_nocomments_checker">
-                    <input type="checkbox" id="category_nocomments_checker" name="category_add_nocomments" title="Если включено, то комментарии в темах этой категории смогут оставлять лишь те, у кого есть специфические права доступа.">
+                    <input type="checkbox" id="category_nocomments_checker" name="category_add_nocomments" title="<?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_add.comments_tip"); ?>">
                     Запретить оставлять комментарии
                 </label><br>
                 <label for="category_notopics_checker">
-                    <input type="checkbox" id="category_notopics_checker" name="category_add_notopics" title="Если включено, то создавать темы в этой категории смогут лишь те, у кого есть специфические права доступа. Не распространяется на перенос тем из одной категории в другую.">
+                    <input type="checkbox" id="category_notopics_checker" name="category_add_notopics" title="<?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_add.topics_tip"); ?>">
                     Запретить создавать темы
                 </label>
                 <hr>
                 <div class="btn-group">
-                    <button class="btn btn-default" type="submit" name="category-add-btn"><span class="glyphicons glyphicons-folder-plus"></span> Создать категорию</button>
-                    <button class="btn btn-default" type="reset" name="category-add-formreset-btn"><span class="glyphicons glyphicons-erase"></span> Отчистить форму</button>
+                    <button class="btn btn-default" type="submit" name="category-add-btn"><span class="glyphicons glyphicons-folder-plus"></span> <?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_add.create_category_btn"); ?></button>
+                    <button class="btn btn-default" type="reset" name="category-add-formreset-btn"><span class="glyphicons glyphicons-erase"></span> <?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_add.clear_form_btn"); ?></button>
                 </div>
             </div>
             <?php }
@@ -127,45 +125,45 @@ else {
                 $category = new \Forum\Category($_GET["cid"]); ?>
             <div class="div-border" id="category_edit_div">
                 <h3><?php echo $category->getName(); ?></h3>
-                <p class="h-helper">Редактирование параметров и идентификаторов категории.</p>
+                <p class="h-helper"><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_edit.page_tip"); ?></p>
                 <hr>
                 <div class="input-group">
-                    <div class="input-group-addon">ID категории:</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_edit.id_category"); ?></div>
                     <div class="form-control alert-info"><?php echo $category->getId(); ?></div>
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">Кол-во тем в категории:</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_edit.count_topics_in"); ?></div>
                     <div class="form-control alert-info"><?php echo $category->getTopicsCount(); ?></div>
                 </div>
                 <hr>
-                <p class="h-helper">Редактирование итендификационной информации.</p>
+                <p class="h-helper"><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_edit.itendefication_info"); ?>.</p>
                 <div class="input-group">
-                    <div class="input-group-addon">Название категории:</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_edit.category_name"); ?></div>
                     <input class="form-control" type="text" maxlength="50" value="<?php echo $category->getName();?>" name="category_edit_name">
                 </div>
                 <div class="input-group">
-                    <div class="input-group-addon">Описание категории:</div>
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_edit.category_description"); ?></div>
                     <textarea class="form-control" maxlength="350" style="resize: vertical; max-height: 350px;" name="category_edit_descript"><?php echo $category->getDescription(); ?></textarea>
                 </div>
-                <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> Длина названия категории и её описания не может быть короче 4 символов и длиннее 50 и 350 символов соответственно.</div>
-                <div class="alert alert-warning"><span class="glyphicon glyphicon-warning-sign"></span> Название и описание категории не может быть пустым.</div>
+                <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_edit.name_and_description_tip"); ?></div>
+                <div class="alert alert-warning"><span class="glyphicon glyphicon-warning-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_edit.warning"); ?></div>
                 <hr>
-                <p class="h-helper">Редактирование параметров.</p>
+                <p class="h-helper"><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_edit.edit_params"); ?></p>
                 <label class="label" for="category_edit_public_checker">
-                    <input type="checkbox" name="category_edit_public_checker" id="category_edit_public_checker" <?php if ($category->isPublic()) echo "checked";?> title="Если эта категория не публичная, то взаимодействовать с ней смогут лишь те, у кого есть специфические права доступа."> Публичная категория
+                    <input type="checkbox" name="category_edit_public_checker" id="category_edit_public_checker" <?php if ($category->isPublic()) echo "checked";?> title="<?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_edit.public_tip"); ?>"> <?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_edit.public_label"); ?>
                 </label><br>
                 <label class="label" for="category_edit_nocomments_checker">
-                    <input type="checkbox" name="category_edit_nocomments_checker" id="category_edit_nocomments_checker" <?php if ($category->CanCreateComments()) echo "checked";?> title="Если включено, то комментарии в темах этой категории смогут оставлять лишь те, у кого есть специфические права доступа."> Запретить оставлять комментарии
+                    <input type="checkbox" name="category_edit_nocomments_checker" id="category_edit_nocomments_checker" <?php if ($category->CanCreateComments()) echo "checked";?> title="<?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_edit.comments_tip"); ?>"> <?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_edit.comments_label"); ?>
                 </label><br>
                 <label class="label" for="category_edit_notopics_checker">
-                    <input type="checkbox" name="category_edit_notopics_checker" id="category_edit_notopics_checker" <?php if ($category->CanCreateTopic()) echo "checked";?> title="Если включено, то создавать темы в этой категории смогут лишь те, у кого есть специфические права доступа. Не распространяется на перенос тем из одной категории в другую."> Запретить создавать новые темы
+                    <input type="checkbox" name="category_edit_notopics_checker" id="category_edit_notopics_checker" <?php if ($category->CanCreateTopic()) echo "checked";?> title="<?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_edit.topics_tip"); ?>"> <?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_edit.topics_label"); ?>
                 </label><br>
                 <hr>
                 <div class="btn-group">
-                    <button class="btn btn-default" name="category_edit_save" type="submit" formaction="adminpanel/scripts/categories.php?cid=<?php echo $category->getId();?>"><span class="glyphicons glyphicons-edit"></span> Сохранить изменения</button>
-                    <button class="btn btn-default" name="category_edit_reset" type="reset"><span class="glyphicons glyphicons-unchecked"></span> Отменить изменения</button>
+                    <button class="btn btn-default" name="category_edit_save" type="submit" formaction="adminpanel/scripts/categories.php?cid=<?php echo $category->getId();?>"><span class="glyphicons glyphicons-edit"></span> <?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_edit.save_category_btn"); ?></button>
+                    <button class="btn btn-default" name="category_edit_reset" type="reset"><span class="glyphicons glyphicons-unchecked"></span> <?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_edit.clear_form_btn"); ?></button>
                     <?php if ($canCategoryDelete) { ?>
-                    <button class="btn btn-danger" name="category_edit_dalete" type="submit" formaction="adminpanel/scripts/categories.php?cid=<?php echo $category->getId();?>"><span class="glyphicons glyphicons-folder-minus"></span> Удалить категорию</button><?php } ?>
+                    <button class="btn btn-danger" name="category_edit_dalete" type="submit" formaction="adminpanel/scripts/categories.php?cid=<?php echo $category->getId();?>"><span class="glyphicons glyphicons-folder-minus"></span> <?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_edit.category_remove_btn"); ?></button><?php } ?>
                 </div>
             </div>
             <?php } } ?>
