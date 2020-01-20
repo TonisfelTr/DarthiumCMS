@@ -196,7 +196,7 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
         if ($author->getSignature() == ""){
             $signature = "не указано";
         } else {
-            $signature = nl2br(html_entity_decode(\Engine\Engine::ChatFilter(\Engine\Engine::CompileBBCode($user->getSignature()))));
+            $signature = nl2br(html_entity_decode(\Engine\Engine::ChatFilter(\Engine\Engine::CompileBBCode($author->getSignature()))));
         }
         $currentComment = str_replace_once("{COMMENT_AUTHOR_SIGNATURE}", $signature, $currentComment);
         $currentComment = str_replace_once("{COMMENT_DATETIME_CREATED}", \Engine\Engine::DatetimeFormatToRead(
