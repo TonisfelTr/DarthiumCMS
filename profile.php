@@ -727,6 +727,13 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
             $lastOnline = "<span style=\"color: #00dd00;\">". \Engine\LanguageManager::GetTranslation("online"). "</span>";
         }
     }
+    include_once \Engine\Engine::ConstructTemplatePath("main", "imager", "html");
+    $imagerMain = getBrick();
+    include_once \Engine\Engine::ConstructTemplatePath("script", "imager", "js");
+    $imagerJS = getBrick();
+    $main = str_replace_once("{IMAGER_STYLESHEET}", "<link rel=\"stylesheet\" href=\"./site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/css/imager-style.css\">", $main);
+    $main = str_replace_once("{IMAGER}", $imagerMain, $main);
+    $main = str_replace_once("{IMAGER_JS}", $imagerJS, $main);
     $main = str_replace("{PROFILE_PAGE:USER_LASTONLINE}", $lastOnline, $main);
     $main = str_replace_once("{PROFILE_PAGE_INFO}", $userInfo, $main);
     $main = str_replace_once("{PROFILE_PAGE_EDIT}", $userEdit, $main);

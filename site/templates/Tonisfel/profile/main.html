@@ -22,6 +22,7 @@
     <link href="/site/templates/Tonisfel/css/profile-style.css" rel="stylesheet">
     {PROFILE_REPUTATIONER:STYLESHEET}
     {PROFILE_UPLOADER:STYLESHEET}
+    {IMAGER_STYLESHEET}
     <script src="/site/scripts/UserFinderParser.js"></script>
     <script type="text/javascript">
         {PROFILE_PAGE_GUI_CUSTOM_SCRIPT}
@@ -29,6 +30,7 @@
 </head>
 <body>
 <div class="profile-container">
+    {IMAGER}
     {PROFILE_PAGE_HEADER}
     <div class="profile-body">
         {PROFILE_PAGE_SEE_ERRORS}
@@ -38,6 +40,7 @@
 </div>
 <script type="text/javascript">
     showFirstPanel();
+    {IMAGER_JS}
     {PROFILE_JS:SHOW_PANEL}
     {PROFILE_PAGE_GUI_SCRIPT}
     {PROFILE_REPUTATIONER:JS}
