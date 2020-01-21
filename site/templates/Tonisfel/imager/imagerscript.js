@@ -10,7 +10,3 @@ $("#imager_close").click(function (){
     $("div.imager-background").hide();
 });
 
-$("#image_save").click(function () {
-    $("#image").save
-});
-
