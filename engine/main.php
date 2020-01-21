@@ -295,7 +295,10 @@
                 $text = str_ireplace("[/spoiler]", "</div></div>", $text);
                 $text = preg_replace("/\[size\=(\d+)\]/", "<p style=\"font-size: $1px;\">",$text);
                 $text = preg_replace("/\[youtube\=https:\/\/youtu\.be\/(.+)\]/", "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/$1\" frameborder=\"0\" allowfullscreen></iframe>",$text);
-                $text = preg_replace("/\[img\=(.+)\]/", "<img src=\"$1\">",$text);
+                while (preg_match("/\[img\=(.+?)\]/", $text, $results) != false) {
+                    $sizes = getimagesize($results[1]);
+                    $text = preg_replace("/\[img\=(.+?)\]/", "<div class=\"img-container\"><img class=\"img-for-frame\" src=\"$1\"><p>$sizes[0]x$sizes[1]</p></div>", $text, 1);
+                }
                 $text = preg_replace("/\[align\=(.+)\]/", "<p style=\"text-align: $1;\">",$text);
                 $text = preg_replace("/\[color\=(.+)\]/", "<span style=\"color: $1;\">",$text);
                 $text = preg_replace("/\[\*\](.*)/", "<li>$1</li>", $text);

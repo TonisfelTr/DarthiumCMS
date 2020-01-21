@@ -804,8 +804,7 @@ div.topic-comment-body{
 }
 
 div.topic-comment-footer{
-    position: absolute;
-    bottom: 0;
+    margin: 5px;
     background: #eee;
 }
 
@@ -958,4 +957,22 @@ table.group-users-table > thead > tr
     background: #0b4b16;
     color: white;
 
+}
+
+.img-container {
+    width: 140px;
+    height: 100px;
+    font-size: 12px;
+    color: white;
+    background: radial-gradient(at left, #424242, #0e1d1b);
+    text-align: center;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px;
+}
+
+.img-for-frame {
+    width: 120px;
+    height: 70px;
+    cursor: pointer;
 }

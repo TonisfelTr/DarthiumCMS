@@ -90,8 +90,9 @@ elseif (!empty($_GET["sp"])){
         $pageName = \Forum\StaticPagesAgent::GetPage($_GET["sp"])->getPageName();
     }
 elseif (!empty($_GET["topic"])){
-        if (\Forum\ForumAgent::isTopicExists($_GET["topic"]))
+        if (\Forum\ForumAgent::isTopicExists($_GET["topic"])) {
             include_once "./site/newsviewer.php";
+        }
         else include_once "./site/errors/notfound.php";
     }
 elseif (!empty($_GET["search"])){
@@ -226,6 +227,7 @@ if ($_GET["category"] == "" || isset($_GET["search"])){
 } else {
     $main = str_replace_once("{INDEX_SEARCHING}", "", $main);
 }
+$main = str_replace_once("{INDEX_SEARCHING_TYPE}", "", $main);
 $main = str_replace_once("{INDEX_PAGE_RIGHT}", $rightPanels, $main);
 $main = str_replace_once("{INDEX_PAGE_FOOTER}", $footer, $main);
 $main = str_replace_once("{ENGINE_META:DESCRIPTION}", \Engine\Engine::GetEngineInfo("ssc"), $main);
@@ -272,6 +274,19 @@ else {
     $main = str_replace("{PROFILE_UPLOADER:STYLESHEET}", "<link rel=\"stylesheet\" href=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/css/uploader-style.css\">", $main);
     $main = str_replace("{PROFILE_UPLOADER:JS}", $uploaderBlock, $main);
 }
+
+if (isset($_GET["topic"])){
+    include_once \Engine\Engine::ConstructTemplatePath("main", "imager", "html");
+    $imagerMain = getBrick();
+    include_once \Engine\Engine::ConstructTemplatePath("script", "imager", "js");
+    $imagerJS = getBrick();
+    $main = str_replace_once("{IMAGER_STYLESHEET}", "<link rel=\"stylesheet\" href=\"./site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/css/imager-style.css\">", $main);
+    $main = str_replace_once("{IMAGER}", $imagerMain, $main);
+    $main = str_replace_once("{IMAGER_JS}", $imagerJS, $main);
+}
+$main = str_replace_once("{IMAGER}", "", $main);
+$main = str_replace_once("{IMAGER_JS}", "", $main);
+$main = str_replace_once("{IMAGER_STYLESHEET}", "", $main);
 if (\Engine\Engine::GetEngineInfo("smt")){
     if (\Engine\Engine::GetEngineInfo("sms") == 0) {
         $main = str_replace_once("{METRIC_JS}", null, $main);

@@ -250,7 +250,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
                 $closingTag = "</span>";
             }
             if ($fieldProp["description"] != ""){
-                $tag .= $title . ">" . $content . $closingTag;
+                $tag .= $title . "> " . $content . $closingTag;
             }
             if ($tag != "") {
                 $result = $fieldName . ": " . $tag . "<br>";
@@ -275,7 +275,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
                                             <input class=\"profile-input\" type=\"text\" id=\"profile-edit-" . $fieldProp["id"] . "\" name=\"profile-edit-" . $fieldProp["id"] . "\" value=\"$content\" placeholder=\"" . $fieldProp["description"] . "\">
                                         </div>";
             $contactSecurityAF[] = "<div class=\"profile-profile-edit-group\">
-                                                <label for=\"profile-public-" . $fieldProp["id"] . "\">" . \Engine\LanguageManager::GetTranslation("show"). "$fieldName</label>
+                                                <label for=\"profile-public-" . $fieldProp["id"] . "\">" . \Engine\LanguageManager::GetTranslation("show"). " $fieldName</label>
                                                 <input type=\"checkbox\" id=\"profile-public-" . $fieldProp["id"] . "\" name=\"profile-public-" . $fieldProp["id"] . "\" $isPrivate>
                                             </div>";
         } elseif ($fieldProp["type"] === "3") {

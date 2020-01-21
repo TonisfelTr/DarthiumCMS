@@ -3,6 +3,8 @@
 include_once "../../engine/main.php";
 \Engine\Engine::LoadEngine();
 
+if ($user === false) exit;
+
 if ($sessionRes = \Users\UserAgent::SessionContinue()) $user = new \Users\User($_SESSION["uid"]);
 else { header("Location: ../../index.php?page=errors/nonauth"); exit;}
 
