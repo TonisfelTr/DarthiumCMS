@@ -1,10 +1,33 @@
 .uploader-form{
     position: relative;
-    top: 200px;
     height: 550px;
-    width: 600px;
-    left: 35%;
+    top: 150px;
+    margin: auto;
     z-index: 3;
+}
+
+@media(min-width: 320px){
+    .uploader-form{
+        width: 320px;
+    }
+}
+
+@media(min-width: 375px){
+    .uploader-form{
+        width: 375px;
+    }
+}
+
+@media(min-width: 425px){
+    .uploader-form{
+        width: 425px;
+    }
+}
+
+@media(min-width: 720px){
+    .uploader-form{
+        width: 600px;
+    }
 }
 
 .uploader-background{

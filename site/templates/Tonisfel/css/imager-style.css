@@ -89,7 +89,7 @@ p.imager-header{
     div.imager-body{
         left: 0;
         top: 220px;
-        width: 45px;
+        width: 450px;
     }
 }
 
@@ -126,7 +126,7 @@ p.imager-header{
     }
 
     div.imager-body{
-        left: 9%;
+        left: 16%;
         top: 85px;
         width: 860px;
     }

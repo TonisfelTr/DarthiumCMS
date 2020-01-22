@@ -771,6 +771,7 @@ div.topic-comment-wrapper{
 
 div.topic-comment-body{
     margin-top: 7px;
+    min-height: 235px;
 }
 
 @media(max-width: 2560px) {
@@ -805,7 +806,12 @@ div.topic-comment-body{
 
 div.topic-comment-footer{
     margin: 5px;
-    background: #eee;
+    background: #646464;
+    border-top: 1px solid #000;
+    color: white;
+    padding: 5px;
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
 }
 
 div.topic-comment-btns{
