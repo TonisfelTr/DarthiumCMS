@@ -1,4 +1,3 @@
-alert($(".uploader-form").width());
 $("#uploader-close-btn").click(function() {
     $("#uploader-main").hide();
 });
