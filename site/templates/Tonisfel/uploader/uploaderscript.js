@@ -6,8 +6,10 @@ $('#uploader-select-all').change(function() {
     var checkboxes = $(this).closest('table').find(':checkbox');
     if($(this).is(':checked')) {
         checkboxes.prop('checked', true);
+        $(".uploader-body").height(620);
     } else {
         checkboxes.prop('checked', false);
+        $(".uploader-body").height(555);
     }
 });
 

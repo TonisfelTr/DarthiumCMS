@@ -6,9 +6,18 @@
     z-index: 3;
 }
 
+.table-container{
+    overflow-y: scroll;
+    max-height: 230px;
+}
+
 @media(min-width: 320px){
     .uploader-form{
         width: 320px;
+    }
+
+    .table-container{
+        max-height: 205px;
     }
 }
 
@@ -16,17 +25,29 @@
     .uploader-form{
         width: 375px;
     }
+
+    .table-container{
+        max-height: 205px;
+    }
 }
 
 @media(min-width: 425px){
     .uploader-form{
         width: 425px;
     }
+
+    .table-container{
+        max-height: 230px;
+    }
 }
 
 @media(min-width: 720px){
     .uploader-form{
         width: 600px;
+    }
+
+    .table-container{
+        max-height: 230px;
     }
 }
 

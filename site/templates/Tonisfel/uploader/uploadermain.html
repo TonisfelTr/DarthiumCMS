@@ -20,19 +20,21 @@
                 <hr>
                 <h4>История загрузок</h4>
                 <div class="alert alert-info" id="uploader-selected-count-div" hidden><strong>Выделенно файлов:</strong> <span id="uploader-selected-counter-span"></span></div>
-                <table class="table">
-                    <thead>
-                    <tr style="background: black; color: white;">
-                        <td><input type="checkbox" id="uploader-select-all" title="Выделить всё"></td>
-                        <td>Имя файла</td>
-                        <td>Ссылка</td>
-                        <td>Дата загрузки</td>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        {PROFILE_UPLOADER:FILES_TABLE}
-                    </tbody>
-                </table>
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                        <tr style="background: black; color: white;">
+                            <td><input type="checkbox" id="uploader-select-all" title="Выделить всё"></td>
+                            <td>Имя файла</td>
+                            <td>Ссылка</td>
+                            <td>Дата загрузки</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {PROFILE_UPLOADER:FILES_TABLE}
+                        </tbody>
+                    </table>
+                </div>
             </form>
         </div>
     </div>
