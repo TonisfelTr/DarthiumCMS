@@ -27,9 +27,9 @@ div.imager-body{
 p.imager-header{
     font-size: 14px;
 }
+
 div.imager-body{
     margin: auto;
-
 }
 
 @media(min-width: 320px){
