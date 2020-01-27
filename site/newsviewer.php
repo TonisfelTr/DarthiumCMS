@@ -249,75 +249,79 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
     echo $new;
 }
 elseif (isset($_GET["edit"])) {
-    $pageName = "Редактор тем";
-    include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/news/newedit.html";
-    $editor = getBrick();
+    if (($user->getId() == $author->getId() && $user->UserGroup()->getPermission("topic_edit")) || $user->UserGroup()->getPermission("topic_foreign_edit")) {
+        $pageName = "Редактор тем";
 
-    $editor = str_replace("{TOPIC_NAME}", $topic->getName(), $editor);
-    $editor = str_replace_once("{TOPIC_ID}", $topic->getId(), $editor);
+        include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/news/newedit.html";
+        $editor = getBrick();
 
-    switch($_GET["res"]){
-        case "3nsc":
-            $editorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> Вы не выбрали категорию.</div>";
-            break;
-        case "3np":
-            $editorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> У Вас недостаточно прав для взаимодействия с данной категорией.</div>";
-            break;
-        case "3ntltn":
-            $editorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> Название темы неправильной длины. Оно должно быть больше 4 символов и меньше 100.</div>";
-            break;
-        case "3ntlm":
-            $editorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> Текст темы слишком короткий. Он должен быть длиннее 15 символов и нести в себе смысловую нагрузку.</div>";
-            break;
-        case "3ncct":
-            $editorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> Не удалось создать тему. Обратитесь к Администратору.</div>";
-            break;
-        default:
-            $creatorResponse = "";
-            break;
+        $editor = str_replace("{TOPIC_NAME}", $topic->getName(), $editor);
+        $editor = str_replace_once("{TOPIC_ID}", $topic->getId(), $editor);
+
+        switch ($_GET["res"]) {
+            case "3nsc":
+                $editorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> Вы не выбрали категорию.</div>";
+                break;
+            case "3np":
+                $editorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> У Вас недостаточно прав для взаимодействия с данной категорией.</div>";
+                break;
+            case "3ntltn":
+                $editorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> Название темы неправильной длины. Оно должно быть больше 4 символов и меньше 100.</div>";
+                break;
+            case "3ntlm":
+                $editorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> Текст темы слишком короткий. Он должен быть длиннее 15 символов и нести в себе смысловую нагрузку.</div>";
+                break;
+            case "3ncct":
+                $editorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> Не удалось отредактировать тему. Обратитесь к Администратору.</div>";
+                break;
+            default:
+                $creatorResponse = "";
+                break;
+        }
+
+        $editor = str_replace_once("{TOPIC_ERRORS}", $editorResponse, $editor);
+
+        $categoriesList = "";
+        foreach ($categories as $c) {
+            $category = new \Forum\Category($c);
+            if ($topic->getCategoryId() == $category->getId())
+                $atr = " selected";
+            else
+                $atr = "";
+            if ($category->isPublic() || (!$category->isPublic() && $user->UserGroup()->getPermission("category_see_unpublic")))
+                $categoriesList .= "<option value=\"" . $category->getId() . "\"$atr>" . $category->getName() . "</option>";
+        }
+        $editor = str_replace_once("{TOPIC_PAGE:CATEGORIES_OPTION}", $categoriesList, $editor);
+        $selectorAtr = "";
+        if (!$user->UserGroup()->getPermission("topic_manage"))
+            $selectorAtr = "disabled";
+        $editor = str_replace_once("{TOPIC_DISABLED_PROPERTY}", $selectorAtr, $editor);
+        $editor = str_replace_once("{TOPIC_DISABLED_STATUS_PROPERTY}", $selectorAtr, $editor);
+        $editor = str_replace_once("{TOPIC_PREVIEW_TEXT}", $topic->getPretext(), $editor);
+        $editor = str_replace_once("{TOPIC_CONTENT_TEXT}", $topic->getText(), $editor);
+        $isNotClosed = "<option value=\"1\"" . (($topic->getStatus() == 1) ? " selected" : "") . ">Открыта</option>";
+        $isClosed = "<option value=\"0\"" . (($topic->getStatus() == 0) ? " selected" : "") . ">Закрыта</option>";
+        $editor = str_replace_once("{TOPIC_PAGE:STATUS_OPTIONS", $isNotClosed . $isClosed, $editor);
+        echo $editor;
+
     }
-
-    $editor = str_replace_once("{TOPIC_ERRORS}", $editorResponse, $editor);
-
-    $categoriesList = "";
-    foreach ($categories as $c){
-        $category = new \Forum\Category($c);
-        if ($topic->getCategoryId() == $category->getId())
-            $atr = " selected";
-        else
-            $atr = "";
-        if ($category->isPublic() || (!$category->isPublic() && $user->UserGroup()->getPermission("category_see_unpublic")))
-            $categoriesList .= "<option value=\"" . $category->getId() . "\"$atr>" . $category->getName() . "</option>";
-    }
-    $editor = str_replace_once("{TOPIC_PAGE:CATEGORIES_OPTION}", $categoriesList, $editor);
-    $selectorAtr = "";
-    if (!$user->UserGroup()->getPermission("topic_manage"))
-        $selectorAtr = "disabled";
-    $editor = str_replace_once("{TOPIC_DISABLED_PROPERTY}", $selectorAtr, $editor);
-    $editor = str_replace_once("{TOPIC_DISABLED_STATUS_PROPERTY}", $selectorAtr, $editor);
-    $editor = str_replace_once("{TOPIC_PREVIEW_TEXT}", $topic->getPretext(), $editor);
-    $editor = str_replace_once("{TOPIC_CONTENT_TEXT}", $topic->getText(), $editor);
-    $isNotClosed = "<option value=\"1\"" . (($topic->getStatus() == 1) ? " selected" : "") . ">Открыта</option>";
-    $isClosed = "<option value=\"0\"" . (($topic->getStatus() == 0) ? " selected" : "") . ">Закрыта</option>";
-    $editor = str_replace_once("{TOPIC_PAGE:STATUS_OPTIONS", $isNotClosed . $isClosed, $editor);
-    echo $editor;
-
-
 }
-elseif (isset($_GET["cedit"])){
-    $pageName = "Редактор комментария";
-    include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/news/commentedit.html";
-    $editor = getBrick();
+elseif (isset($_GET["cedit"])) {
     $comment = new \Forum\TopicComment($_GET["cedit"]);
+    if (($user->getId() == $comment->getAuthorId() && $user->UserGroup()->getPermission("comment_edit")) || $user->UserGroup()->getPermission("comment_foreign_edit")) {
+        $pageName = "Редактор комментария";
+        include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/news/commentedit.html";
+        $editor = getBrick();
 
-    $editor = str_replace_once("{COMMENT_ID}", $comment->getId(), $editor);
-    $editor = str_replace_once("{COMMENT_TEXT}", $comment->getText(), $editor);
+        $editor = str_replace_once("{COMMENT_ID}", $comment->getId(), $editor);
+        $editor = str_replace_once("{COMMENT_TEXT}", $comment->getText(), $editor);
 
-    $errors = "";
-    if ($_GET["res"] == "3ntlc"){
-        $errors = "<div class=\"alert alert-danger\"><span class='glyphicons glyphicons-remove'></span> Текст комментария не может быть меньше 4 символов.</div>";
+        $errors = "";
+        if ($_GET["res"] == "3ntlc") {
+            $errors = "<div class=\"alert alert-danger\"><span class='glyphicons glyphicons-remove'></span> Текст комментария не может быть меньше 4 символов.</div>";
+        }
+        $editor = str_replace_once("{COMMENT_ERRORS}", $errors, $editor);
+
+        echo $editor;
     }
-    $editor = str_replace_once("{COMMENT_ERRORS}", $errors, $editor);
-
-    echo $editor;
 }
