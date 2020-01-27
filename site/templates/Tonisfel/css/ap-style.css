@@ -325,6 +325,22 @@ h2{
     transition: 0.8s;
 }
 
+.bgbanner-container{
+    display: flex;
+    justify-content: center;
+}
+
+.img-bgbanner {
+    margin: 4px;
+    border: 1px solid #1b6d85;
+    border-radius: 6px;
+}
+
+.img-bgbanner:hover {
+    border: 1px solid #22e3ff;
+    transition: 0.8s;
+}
+
 .btn-youtube{
     font-size: 10px;
     background: radial-gradient(at center, #ff0000, #ff5555);

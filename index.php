@@ -123,6 +123,22 @@ if ($user === false){
     include_once "./site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/pam_auth.html";
 }
 $authMenu = getBrick();
+/******************************************************************************************************
+ * Banner constructor
+ ******************************************************************************************************/
+$bigBanners = \SiteBuilders\BannerAgent::GetBanners("banner");
+$bigBannersCount = count($bigBanners);
+if ($bigBannersCount > 0) {
+    $firstBigBanner = $bigBanners[rand(0, $bigBannersCount - 1)]["content"];
+    $secondBigBanner = $bigBanners[rand(0, $bigBannersCount - 1)]["content"];
+    $firstBigBanner = "<img class=\"img-bgbanner\" src=\"$firstBigBanner\">";
+    $secondBigBanner = "<img class=\"img-bgbanner\" src=\"$secondBigBanner\">";
+} else {
+    $firstBigBanner = "<img class=\"img-bgbanner\" src=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp").  "/bigbanner.png\" title=\"Это место свободно\">";
+    $secondBigBanner = "<img class=\"img-bgbanner\" src=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp").  "/bigbanner.png\" title=\"Это место свободно\">";
+}
+$main = str_replace_once("{MAIN_PAGE:FIRST_BIG_BANNER}", $firstBigBanner, $main);
+$footer = str_replace_once("{MAIN_PAGE:SECOND_BIG_BANNER}", $secondBigBanner, $footer);
 
 $firstBanner = \SiteBuilders\BannerAgent::GetBannersByName("firstbanner")[0]["content"];
 $secondBanner = \SiteBuilders\BannerAgent::GetBannersByName("secondbanner")[0]["content"];
@@ -250,12 +266,12 @@ $lastTopics = \Forum\ForumAgent::GetTopicList(1, true);
 if (empty($lastTopics)){
     $ltText = \Engine\LanguageManager::GetTranslation("empty_news_list");
 } else {
-    $lastAuthorsTopicsText = "<ol>";
+    $ltText = "<ul>";
     foreach ($lastTopics as $topicId){
         $topic = new \Forum\Topic($topicId);
         $ltText .= "<li><a class=\"alert-link\" href=\"?topic=$topicId\">" . $topic->getName() . "</a></li>";
     }
-    $ltText .= "</ol>";
+    $ltText .= "</ul>";
 }
 
 $main = str_replace_once("{LAST_SITE_TOPICS}", $ltText, $main);
