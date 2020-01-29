@@ -123,9 +123,21 @@ else {
             \Guards\Logger::LogAction($user->getId(), " изменил(а) видимость профилей пользователей [" .
                 $guestSeeProfileNow . " -> " . $guestSeeProfilePerm . "]");
         }
+        $multiVoteRepCond = (isset($_POST["multivote_rep"])) ? 1 : 0;
+        if (\Engine\Engine::GetEngineInfo("vmr") != $multiVoteRepCond){
+            $multiVoteRepNow = (\Engine\Engine::GetEngineInfo("vmr") == 1) ? \Engine\LanguageManager::GetTranslation("on") : \Engine\LanguageManager::GetTranslation("off");
+            $multiVoteRepPerm = (isset($_POST["multivote_rep"])) ? \Engine\LanguageManager::GetTranslation("on") : \Engine\LanguageManager::GetTranslation("off");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.site_allowed_multivote_rep_log") .
+            "[$multiVoteRepNow -> $multiVoteRepPerm]");
+        }
 
         $metricStatusPass = (isset($_POST["metric-lever-btn"])) ? 1 : 0;
         if (\Engine\Engine::GetEngineInfo("smt") != $metricStatusPass){
+            $metricStatusParam = (\Engine\Engine::GetEngineInfo("smt") == 1) ? \Engine\LanguageManager::GetTranslation("on") :
+                \Engine\LanguageManager::GetTranslation("off");
+            $metricStatusNow = ($metricStatusPass == 1) ? \Engine\LanguageManager::GetTranslation("on") :
+                \Engine\LanguageManager::GetTranslation("off");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.statistic_panel.site_metric_log") . "[" . $metricStatusParam . " -> " . $metricStatusNow . "]");
             $metricStatus = $metricStatusPass;
         }
 

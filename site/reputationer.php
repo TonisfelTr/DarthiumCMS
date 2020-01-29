@@ -40,7 +40,12 @@ if ($accessType){
     $reputationerAddBlock = str_replace_once("{PROFILE_REPUTATIONER:CAPTCHA_IMG}", $captchaImgPath, $reputationerAddBlock);
     $reputationerAddBlock = str_replace_once("{PROFILE_REPUTATIONER:CAPTCHA_ID}", $captchaId, $reputationerAddBlock);
 }
-$reputationerBlock = str_replace_once("{PROFILE_REPUTATIONER:REPUTATION_ADD}", $reputationerAddBlock, $reputationerBlock);
+if ((\Engine\Engine::GetEngineInfo("vmr") == "y" && $user->getReputation()->getPointsFromUserCount($_SESSION["uid"]) == 0)
+    || ($accessType && \Engine\Engine::GetEngineInfo("vmr") != "y")) {
+    $reputationerBlock = str_replace_once("{PROFILE_REPUTATIONER:REPUTATION_ADD}", $reputationerAddBlock, $reputationerBlock);
+} else {
+    $reputationerBlock = str_replace_once("{PROFILE_REPUTATIONER:REPUTATION_ADD}", "<div class=\"alert alert-warning\"><span class=\"glyphicons glyphicons-warning-sign\"></span> Изменить репутацию пользователя можно только один раз.</div>", $reputationerBlock);
+}
 
 //Для избежания взаимодействия пользователей с системой замены, пользовательские данные будут вставлены после операций замены.
 $reputationerList = "";
