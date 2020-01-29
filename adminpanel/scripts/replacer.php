@@ -20,15 +20,16 @@ else {
                 \Engine\Engine::GetEngineInfo("ecp") . " -> " . $_POST["emailconnecttype"] . "]");
         }
 
-        if (\Engine\Engine::GetEngineInfo("map") != $_POST["multiacc"]){
-            if ($_POST["multiacc"] == "1") {
+        if (\Engine\Engine::GetEngineInfo("map") != $_POST["multiaccount"]) {
+            if ($_POST["multiaccount"] == "1") {
                 \Guards\Logger::LogAction($user->getId(), " запретил(а) мультиаккаунт.");
-                $multiAcc = 1;
+                $multiAcc = "y";
             } else {
                 \Guards\Logger::LogAction($user->getId(), " разрешил(а) мультиаккаунт.");
-                $multiAcc = 0;
+                $multiAcc = "n";
             }
         }
+
 
         $metricType = \Engine\Engine::GetEngineInfo("smt");
         $metricStatus = \Engine\Engine::GetEngineInfo("sms");
@@ -65,7 +66,7 @@ else {
         if ($_POST["sitename"] != \Engine\Engine::GetEngineInfo("sn"))
             \Guards\Logger::LogAction($user->getId(), " изменил(а) название сайта [" . \Engine\Engine::GetEngineInfo("sn") . " -> " . $_POST["sitename"] . "]");
         if ($_POST["sitetagline"] != \Engine\Engine::GetEngineInfo("stl"))
-            \Guards\Logger::LogAction($user->getId(), " изменил(а) хештеги сайта [" . \Engine\Engine::GetEngineInfo("stl") . " -> " . $_POST["sitetagline"] . "]");
+            \Guards\Logger::LogAction($user->getId(), " изменил(а) слоган сайта [" . \Engine\Engine::GetEngineInfo("stl") . " -> " . $_POST["sitetagline"] . "]");
         if ($_POST["sitestatus"] != \Engine\Engine::GetEngineInfo("ss")) {
             $siteStatusFrom = (\Engine\Engine::GetEngineInfo("ss") == 0) ? "выключен" : "включен";
             $siteStatusTo = ($_POST["sitestatus"] == 0) ? "выключен" : "включен";
@@ -133,7 +134,7 @@ else {
             $_POST["sitehashtags"], $_POST["sitelang"], $_POST["sitetemplate"], $_POST["siteregiontime"],
             $_POST["emaillogin"], $_POST["emailpassword"], $_POST["emailhost"], $_POST["emailport"], $type,
             $_POST["needactivate"], $multiAcc, $_POST["standartgroup"],
-            $_POST["avatarmaxwidth"], $_POST["avatarmaxheight"], $_POST["maxfilesize"], $_POST["uploadformats"], (isset($_POST["guest_see_profiles"])) ? 1 : 0,
+            $_POST["avatarmaxwidth"], $_POST["avatarmaxheight"], $_POST["maxfilesize"], $_POST["uploadformats"], (isset($_POST["guest_see_profiles"])) ? 1 : 0, (isset($_POST["multivote_rep"])) ? 1 : 0,
             $metricStatus, $metricType)
         ) {
             if (\Engine\Engine::SaveCensoredWords($_POST["chat-filter-words"])) {

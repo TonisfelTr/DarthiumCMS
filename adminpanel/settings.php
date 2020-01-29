@@ -189,9 +189,9 @@ else {
                 </div>
                 <div class="input-group">
                     <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.multiacc");?></div>
-                    <select name="multiacc" class="form-control">
-                        <option value="0" <?php if (\Engine\Engine::GetEngineInfo("map") == "0") echo "selected"; ?>><?php echo \Engine\LanguageManager::GetTranslation("off");?></option>
-                        <option value="1" <?php if (\Engine\Engine::GetEngineInfo("map") == "1") echo "selected"; ?>><?php echo \Engine\LanguageManager::GetTranslation("on");?></option>
+                    <select class="form-control" name="multiaccount" id="multiaccount">
+                        <option value="1" <?php if (\Engine\Engine::GetEngineInfo("map") == "y") echo "selected"; ?>><?php echo \Engine\LanguageManager::GetTranslation("on");?></option>
+                        <option value="0" <?php if (\Engine\Engine::GetEngineInfo("map") == "n") echo "selected"; ?>><?php echo \Engine\LanguageManager::GetTranslation("off");?></option>
                     </select>
                     <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.multiacc_tip");?></div>
                 </div>
@@ -332,6 +332,13 @@ else {
                     </div>
                 </div>
                 <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.guest_see_profile_tip");?></div>
+                <div class="input-group">
+                    <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.multivote_rep");?></div>
+                    <div class="form-control">
+                        <input type="checkbox" name="multivote_rep" <?php if (\Engine\Engine::GetEngineInfo("vmr")) echo "checked"; ?>>
+                    </div>
+                    <div class="form-control alert-info"><?=\Engine\LanguageManager::GetTranslation("settings_panel.users_panel.multivote_rep_tip")?></div>
+                </div>
             </div>
             <div class="div-border" id="metric_sets" data-number="5" hidden>
                 <h3><span class="glyphicons glyphicons-pie-chart"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.statistic_panel.panel_name");?></h3>
