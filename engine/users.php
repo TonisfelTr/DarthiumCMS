@@ -747,6 +747,23 @@ namespace Users {
             $mysqli->close();
             return false;
         }
+        public function getPointsFromUserCount(int $fromUserId){
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+
+            if ($mysqli->errno){
+                ErrorManager::GenerateError(2);
+                return ErrorManager::GetError();
+            }
+
+            if ($stmt = $mysqli->prepare("SELECT count(*) FROM `tt_reputation` WHERE `authorId` = ? AND `uid` = ?")){
+                $stmt->bind_param("ii", $fromUserId, $this->userId);
+                $stmt->execute();
+                $stmt->bind_result($result);
+                $stmt->fetch();
+                return $result;
+            }
+            return false;
+        }
         //TODO Remove reputation function and avaibility.
         public function removeReputationPoint($commentId){
 
@@ -1399,7 +1416,7 @@ namespace Users {
                 }
             }
 
-            if (Engine::GetEngineInfo("map") == "on"){
+            if (Engine::GetEngineInfo("map") == "y"){
                 if (self::IsIPRegistred($_SERVER["REMOTE_ADDR"])){
                     ErrorManager::GenerateError(36);
                     return ErrorManager::GetError();
