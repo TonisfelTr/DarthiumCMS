@@ -1537,7 +1537,6 @@ namespace Users {
                 }
             }
 
-            DataKeeper::Delete("tt_users", ["id" => $id]);
             /* These things must be deleted:
              * 1. Notifications
             */
@@ -1568,6 +1567,12 @@ namespace Users {
             DataKeeper::Delete("tt_blacklisted", ["authorId" => $id]);
             DataKeeper::Delete("tt_blacklisted", ["blockId" => $id]);
             DataKeeper::Delete("tt_topicsmarks", ["userId" => $id]);
+            /* 9. Uploaded files */
+            Uploader::DeleteFilesOfUser($id);
+            if (UserAgent::GetUserParam($id, "avatar") != "no") {
+                unlink("../uploads/avatars/" . UserAgent::GetUserParam($id, "avatar"));
+            }
+            DataKeeper::Delete("tt_users", ["id" => $id]);
         }
         public static function GetAllUsers(){
             $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));

@@ -608,6 +608,44 @@
                 $mysqli->close();
                 return false;
             }
+            public static function DeleteFilesOfUser(int $userId){
+                $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+
+                if ($mysqli->errno){
+                    ErrorManager::GenerateError(2);
+                    return ErrorManager::GetError();
+                }
+
+                if ($stmt = $mysqli->prepare("SELECT file_path FROM tt_uploads WHERE authorId = ?")){
+                    $stmt->bind_param("i", $userId);
+                    $stmt->execute();
+                    if ($stmt->affected_rows == 0)
+                        exit;
+                    $stmt->bind_result($path);
+                    while ($stmt->fetch()){
+                        if (file_exists("../uploads/images/$path")) {
+                            unlink("../uploads/images/$path");
+                        }
+                        if (file_exists("../uploads/docs/$path")) {
+                            unlink("../uploads/docs/$path");
+                        }
+                        if (file_exists("../uploads/zips/$path")) {
+                            unlink("../uploads/zips/$path");
+                        }
+                        if (file_exists("../uploads/others/$path")) {
+                            unlink("../uploads/others/$path");
+                        }
+                    }
+                }
+                $stmt = null;
+
+                if ($stmt = $mysqli->prepare("DELETE FROM ttavern.tt_uploads WHERE id IN (SELECT id FROM tt_uploads WHERE authorId=?)")){
+                    $stmt->bind_param("i", $userId);
+                    $stmt->execute();
+                    return $stmt->affected_rows;
+                }
+                return false;
+            }
         }
 
         class LanguageManager{
