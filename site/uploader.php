@@ -14,42 +14,42 @@ if ($user != false) {
     if (!empty($_GET["res"])) {
         switch ($_GET["res"]) {
             case "1s":
-                $uploadResponse .= "<div class=\"alert alert-success\"><span class=\"glyphicon glyphicon-ok\"></span> Файл был успешно загружен!</div>";
+                $uploadResponse .= "<div class=\"alert alert-success\"><span class=\"glyphicon glyphicon-ok\"></span> " . \Engine\LanguageManager::GetTranslation("uploader.file_upload_success") . "</div>";
                 break;
             case "1nnf":
-                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-warning-sign\"></span> Вы не выбрали файл для загрузки!</div>";
+                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-warning-sign\"></span> " . \Engine\LanguageManager::GetTranslation("uploader.not_selected_for_update") . "</div>";
                 break;
             case "1nnvft":
-                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-remove\"></span> Нельзя загрузить файл данного типа.</div>";
+                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-remove\"></span> " . \Engine\LanguageManager::GetTranslation("uploader.invalid_file_format") . "</div>";
                 break;
             case "1nnvfs":
-                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-remove\"></span> Этот файл имеет слишком большой размер!</div>";
+                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-remove\"></span> " . \Engine\LanguageManager::GetTranslation("uploader.too_big_file_size") . "</div>";
                 break;
             case "1ndb":
-                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-warning-sign\"></span> Ошибка баз данных. Сообщите Администрации.</div>";
+                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-warning-sign\"></span> " . \Engine\LanguageManager::GetTranslation("uploader.db_error") . "</div>";
                 break;
             case "1nnp":
-                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-warning-sign\"></span> Не удалось переместить файл. Сообщите Администрации.</div>";
+                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-warning-sign\"></span> " . \Engine\LanguageManager::GetTranslation("uploader.move_file_error") . "</div>";
                 break;
             case "1n":
-                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-remove\"></span> Не удалось загрузить файл.</div>";
+                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-remove\"></span> " . \Engine\LanguageManager::GetTranslation("uploader.file_upload_failed") . "</div>";
                 break;
             case "1ndsf":
-                $uploadResponse .= "<div class=\"alert alert-success\"><span class=\"glyphicon glyphicon-ok\"></span> Выделенные файлы были удалены.</div>";
+                $uploadResponse .= "<div class=\"alert alert-success\"><span class=\"glyphicon glyphicon-ok\"></span> " . \Engine\LanguageManager::GetTranslation("uploader.selected_files_removed") . "</div>";
                 break;
             case "1ndnef":
-                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-warning-sign\"></span> Не выбраны файлы на удаление.</div>";
+                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-warning-sign\"></span> " . \Engine\LanguageManager::GetTranslation("uploader.no_selected_files_for_remove") . "</div>";
                 break;
         }
     }
 
     $uploadFormats = \Engine\Engine::GetEngineInfo("upf");
-    $uploadMaxSize = \Engine\Engine::GetEngineInfo("ups") . " байт (" . (\Engine\Engine::GetEngineInfo("ups") / 1024 / 1024) . " мегабайт)";
+    $uploadMaxSize = \Engine\Engine::GetEngineInfo("ups") . " " . \Engine\LanguageManager::GetTranslation("uploader.bytes") . " (" . (\Engine\Engine::GetEngineInfo("ups") / 1024 / 1024) . " " . \Engine\LanguageManager::GetTranslation("uploader.megabytes") . ")";
 
     $uploadFilesTable = "";
     if ($uploadCount == 0) {
         $uploadFilesTable = "<tr>
-                            <td colspan=\"4\" style=\"text-align: center;\"><span class=\"glyphicon glyphicon-info-sign\"></span> Нет ни одного загруженного Вами файла.</td>
+                            <td colspan=\"4\" style=\"text-align: center;\"><span class=\"glyphicon glyphicon-info-sign\"></span> " . \Engine\LanguageManager::GetTranslation("uploader.no_file_uploaded") . "</td>
                         </tr>";
     } else {
         for ($i = 0; $i <= $uploadCount - 1; $i++) {
@@ -61,7 +61,7 @@ if ($user != false) {
                                 <td>$uploadName</td>
                                 <td>
                                     <a href=\"$uploadFilePath\\$uploadName\">
-                                        <span class=\"glyphicons glyphicons-link\"></span> Ссылка
+                                        <span class=\"glyphicons glyphicons-link\"></span> " . \Engine\LanguageManager::GetTranslation("uploader.link") . "
                                     </a>
                                 </td>
                                 <td>$uploadDate</td>

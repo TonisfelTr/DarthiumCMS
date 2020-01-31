@@ -16,7 +16,7 @@ if (!isset($user))
     exit;
 }
 
-$pageName = "Жалобы";
+$pageName = \Engine\LanguageManager::GetTranslation("reports_site_panel.panel_name");
 include_once "site/uploader.php";
 
 function constructReasonsSelector()
@@ -38,69 +38,67 @@ $uploaderResponse = "";
 if (!empty($_GET["res"])){
     switch ($_GET["res"]) {
         case "2sda":
-            $uploaderResponse = "<div class=\"alert alert-success\"><span class=\"glyphicon glyphicon-ok\"></span> Ваш ответ к жалобе был успешно удалён.</div>";
+            $uploaderResponse = "<div class=\"alert alert-success\"><span class=\"glyphicon glyphicon-ok\"></span> " . \Engine\LanguageManager::GetTranslation("reports_site_panel.your_answer_was_removed_success") . "</div>";
             break;
         case "2nda":
-            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-remove\"></span> Не удалось удалить Ваш ответ к жалобе.</div>";
+            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-remove\"></span> " . \Engine\LanguageManager::GetTranslation("reports_site_panel.your_answer_was_removed_failed") . "</div>";
             break;
         case "2ses":
-            $uploaderResponse = "<div class=\"alert alert-success\"><span class=\"glyphicon glyphicon-ok\"></span> Ваш ответ к жалобе был отредактирован.</div>";
+            $uploaderResponse = "<div class=\"alert alert-success\"><span class=\"glyphicon glyphicon-ok\"></span> " . \Engine\LanguageManager::GetTranslation("reports_site_panel.your_answer_was_edit_success") . "</div>";
             break;
         case "2nes":
-            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-remove\"></span> Не удалось отредактировать Ваш ответ.</div>";
+            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-remove\"></span> " . \Engine\LanguageManager::GetTranslation("reports_site_panel.your_answer_was_edit_failed") . "</div>";
             break;
         case "2sap":
-            $uploaderResponse = "<div class=\"alert alert-success\"><span class=\"glyphicon glyphicon-ok\"></span> Ваш ответ к жалобе был опубликован.</div>";
+            $uploaderResponse = "<div class=\"alert alert-success\"><span class=\"glyphicon glyphicon-ok\"></span> " . \Engine\LanguageManager::GetTranslation("reports_site_panel.your_answer_was_created_success") . "</div>";
             break;
         case "2nap":
-            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-remove\"></span> Ваш ответ к жалобе опубликовать не удалось.</div>";
+            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-remove\"></span> " . \Engine\LanguageManager::GetTranslation("reports_site_panel.your_answer_was_create_failed") . "</div>";
             break;
         case "2nmts":
-            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-warning-sign\"></span> Длина ответа должна быть больше 4 символов.</div>";
+            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-warning-sign\"></span> " . \Engine\LanguageManager::GetTranslation("reports_site_panel.answer_too_short") . "</div>";
             break;
         case "2nm":
-            $uploaderResponse = "<div class=\"alert alert-warning\"><span class=\"glyphicon glyphicon-warning-sign\"></span> Вы не ввели текст Вашего ответа.</div>";
+            $uploaderResponse = "<div class=\"alert alert-warning\"><span class=\"glyphicon glyphicon-warning-sign\"></span> " . \Engine\LanguageManager::GetTranslation("reports_site_panel.not_entered_text") . "</div>";
             break;
         case "2nidfe":
-            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-warning-sign\"></span> Не указан уникальный номер ответа или жалобы для редактирования.</div>";
+            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-warning-sign\"></span> " . \Engine\LanguageManager::GetTranslation("reports_site_panel.not_setted_id") . "</div>";
             break;
         case "2nnas":
-            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-warning-sign\"></span> Не указан уникальный номер ответа для данного действия.</div>";
+            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-warning-sign\"></span> " . \Engine\LanguageManager::GetTranslation("reports_site_panel.not_setted_id_answer") . "</div>";
             break;
         case "2nmea":
-            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-remove\"></span> Нельзя использовать для редактирования жалобы и ответа одно окно одновременно.</div>";
+            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-remove\"></span> " . \Engine\LanguageManager::GetTranslation("reports_site_panel.denied_edit_answer_and_report") . "</div>";
             break;
         case "2nscm":
-            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-remove\"></span> Не получилось изменить текст жалобы.</div>";
+            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-remove\"></span> " . \Engine\LanguageManager::GetTranslation("reports_site_panel.change_report_failed") . "</div>";
             break;
         case "2sscm":
-            $uploaderResponse = "<div class=\"alert alert-success\"><span class=\"glyphicons glyphicons-info-sign\"></span> Текст жалобы был изменён! Обратите внимание, что статус вашей жалобы не изменился.
-            Администрация в любой момент может перепроверить Вашу жалобу.</div>";
+            $uploaderResponse = "<div class=\"alert alert-success\"><span class=\"glyphicons glyphicons-info-sign\"></span> " . \Engine\LanguageManager::GetTranslation("reports_site_panel.report_text_edited_success") . "</div>";
             break;
         case "2nnia":
-            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-stop-sign\"></span> У вас недостаточно привелегий для просмотра данной жалобы.</div>";
+            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-stop-sign\"></span> " . \Engine\LanguageManager::GetTranslation("reports_site_panel.not_permitted_to_view") . "</div>";
             break;
         case "2nrid":
-            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-delete\"></span> Не указан уникальный номер жалобы для данного действия.</div>";
+            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-delete\"></span> " . \Engine\LanguageManager::GetTranslation("reports_site_panel.not_setted_id_report") . "</div>";
             break;
         case "2nst":
-            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-delete\"></span> Вы не указали тему.</div>";
+            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-delete\"></span> " . \Engine\LanguageManager::GetTranslation("reports_site_panel.not_setted_category") . "</div>";
             break;
         case "2ncr":
-            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-delete\"></span> Не удалось создать жалобу.</div>";
+            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-delete\"></span> " . \Engine\LanguageManager::GetTranslation("reports_site_panel.create_report_failed") . "</div>";
             break;
         case "2nnsm":
-            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-delete\"></span> Вы не назвали жалобу.</div>";
+            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-delete\"></span> " . \Engine\LanguageManager::GetTranslation("reports_site_panel.no_name_report") . "</div>";
             break;
         case "2nnm":
-            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-delete\"></span> Вы не написали подробного содержания жалобы.</div>";
+            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-delete\"></span> " . \Engine\LanguageManager::GetTranslation("reports_site_panel.no_report_problem") . "</div>";
             break;
         case "2naacr":
-            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-delete\"></span> Вы не можете добавлять ответы к закрытой жалобе.</div>";
+            $uploaderResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-delete\"></span> " . \Engine\LanguageManager::GetTranslation("reports_site_panel.answers_create_failed_in_close") . "</div>";
             break;
         case "2scr":
-            $uploaderResponse = "<div class=\"alert alert-success\"><span class=\"glyphicon glyphicon-ok\"></span> Вы успешно создали жалобу. В течение некоторого времени, она
-            будет рассмотрена Администрацией и будет принято решение. Спасибо за Ваш отзыв!</div>";
+            $uploaderResponse = "<div class=\"alert alert-success\"><span class=\"glyphicon glyphicon-ok\"></span> " . \Engine\LanguageManager::GetTranslation("reports_site_panel.report_create_success") . "</div>";
             break;
     }
 }
@@ -113,13 +111,13 @@ if (empty($_GET["preg"])) {
     $reportsTable = "";
     if ($reportCount == 0)
         $reportsTable = "<tr>
-                            <td style=\"text-align: center;\" colspan=\"6\"><span class=\"glyphicon glyphicon-info-sign\"></span> Не найденно ни одной Вашей жалобы.</td>
+                            <td style=\"text-align: center;\" colspan=\"6\"><span class=\"glyphicon glyphicon-info-sign\"></span> " . \Engine\LanguageManager::GetTranslation("reports_site_panel.no_your_reports") . "</td>
                          </tr>";
     else {
         for ($i = 0; $i <= $reportCount-1; $i++) {
             $report = new \Guards\Report($reportList[$i]);
-            $reportSolveAnswerAuthor = $report->isClosed() ? \Users\UserAgent::GetUserNick(\Guards\ReportAgent::GetAnswerParam($report->getAnswerId(), "authorId")) : "Ответа пока не дано.";
-            $reportCloseDate = $report->isClosed() ? \Engine\Engine::DateFormatToRead($report->getCloseDate()) : "не закрыта";
+            $reportSolveAnswerAuthor = $report->isClosed() ? \Users\UserAgent::GetUserNick(\Guards\ReportAgent::GetAnswerParam($report->getAnswerId(), "authorId")) : \Engine\LanguageManager::GetTranslation("reports_site_panel.no_solve");
+            $reportCloseDate = $report->isClosed() ? \Engine\Engine::DateFormatToRead($report->getCloseDate()) : \Engine\LanguageManager::GetTranslation("reports_site_panel.not_closed");
             $reportsTable .= "<tr>";
             $reportsTable .= "<td>" . $report->getStatus() . "</td>";
             $reportsTable .= "<td>" . htmlentities($report->getTheme()) . "</td>";
@@ -177,9 +175,9 @@ if (empty($_GET["preg"])) {
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_GROUP_ID}", $report->ReportAuthor()->UserGroup()->getId(), $reportSeeBlock);
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_GROUP_COLOR}", $report->ReportAuthor()->UserGroup()->getColor(), $reportSeeBlock);
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_GROUP_NAME}", $report->ReportAuthor()->UserGroup()->getName(), $reportSeeBlock);
-            $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_REALNAME}", ($report->ReportAuthor()->getRealName() != '') ? "Имя: " . htmlentities($report->ReportAuthor()->getRealName()) . "<br>" : "", $reportSeeBlock);
-            $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_FROM}", ($report->ReportAuthor()->getFrom() != '') ? "Откуда: " . htmlentities($report->ReportAuthor()->getFrom()) . "<br>" : "", $reportSeeBlock);
-            $reportSeeBlock = str_replace_once("{REPORT_PAGE:VK}", ($report->ReportAuthor()->getVK() != '' && $report->ReportAuthor()->IsVKPublic()) ? "VK: <a href=\"http://vk.com/" . htmlentities($report->ReportAuthor()->getVK()) . "\">перейти</a><br>" : "", $reportSeeBlock);
+            $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_REALNAME}", ($report->ReportAuthor()->getRealName() != '') ? \Engine\LanguageManager::GetTranslation("reports_site_panel.name") . " " . htmlentities($report->ReportAuthor()->getRealName()) . "<br>" : "", $reportSeeBlock);
+            $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_FROM}", ($report->ReportAuthor()->getFrom() != '') ? \Engine\LanguageManager::GetTranslation("reports_site_panel.from") . " " . htmlentities($report->ReportAuthor()->getFrom()) . "<br>" : "", $reportSeeBlock);
+            $reportSeeBlock = str_replace_once("{REPORT_PAGE:VK}", ($report->ReportAuthor()->getVK() != '' && $report->ReportAuthor()->IsVKPublic()) ? "VK: <a href=\"http://vk.com/" . htmlentities($report->ReportAuthor()->getVK()) . "\"" . \Engine\LanguageManager::GetTranslation("reports_site_panel.go_to") . "</a><br>" : "", $reportSeeBlock);
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:REPORT_TEXT}", nl2br(\Engine\Engine::CompileBBCode($report->getMessage())), $reportSeeBlock);
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_SIGNATURE}", nl2br(\Engine\Engine::CompileBBCode($report->ReportAuthor()->getSignature())), $reportSeeBlock);
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:REPORT_STATUS}", $report->getStatus(), $reportSeeBlock);
@@ -209,17 +207,17 @@ if (empty($_GET["preg"])) {
                 $reportSolveAnswer = str_replace_once("{REPORT_PAGE:SA_AUTHOR_NICKNAME}", $answer->getAuthor()->getNickname(), $reportSolveAnswer);
                 $reportSolveAnswer = str_replace_once("{REPORT_PAGE:SA_AUTHOR_GROUP_COLOR}", $answer->getAuthor()->UserGroup()->getColor(), $reportSolveAnswer);
                 $reportSolveAnswer = str_replace_once("{REPORT_PAGE:SA_AUTHOR_GROUP_NAME}", $answer->getAuthor()->UserGroup()->getName(), $reportSolveAnswer);
-                $reportSolveAnswer = str_replace_once("{REPORT_PAGE:SA_AUTHOR_REALNAME}", ($answer->getAuthor()->getRealName() != '') ? "Имя: " . htmlentities($answer->getAuthor()->getRealName()) . "<br>" : "", $reportSolveAnswer);
-                $reportSolveAnswer = str_replace_once("{REPORT_PAGE:SA_AUHTOR_FROM}", ($answer->getAuthor()->getFrom() != '') ? "Откуда: " . htmlentities($answer->getAuthor()->getFrom()) . "<br>" : "", $reportSolveAnswer);
-                $reportSolveAnswer = str_replace_once("{REPORT_PAGE:SA_AUTHOR_VK}", ($answer->getAuthor()->getVK() != '' && $answer->getAuthor()->IsVKPublic()) ? "VK: <a href=\"http://vk.com/" . htmlentities($answer->getAuthor()->getVK()) . "\">перейти</a><br>" : "", $reportSolveAnswer);
+                $reportSolveAnswer = str_replace_once("{REPORT_PAGE:SA_AUTHOR_REALNAME}", ($answer->getAuthor()->getRealName() != '') ? \Engine\LanguageManager::GetTranslation("reports_site_panel.name") . " " . htmlentities($answer->getAuthor()->getRealName()) . "<br>" : "", $reportSolveAnswer);
+                $reportSolveAnswer = str_replace_once("{REPORT_PAGE:SA_AUHTOR_FROM}", ($answer->getAuthor()->getFrom() != '') ? \Engine\LanguageManager::GetTranslation("reports_site_panel.from") . " " . htmlentities($answer->getAuthor()->getFrom()) . "<br>" : "", $reportSolveAnswer);
+                $reportSolveAnswer = str_replace_once("{REPORT_PAGE:SA_AUTHOR_VK}", ($answer->getAuthor()->getVK() != '' && $answer->getAuthor()->IsVKPublic()) ? "VK: <a href=\"http://vk.com/" . htmlentities($answer->getAuthor()->getVK()) . "\">" . \Engine\LanguageManager::GetTranslation("reports_site_panel.go_to") . "</a><br>" : "", $reportSolveAnswer);
                 $reportSolveAnswer = str_replace_once("{REPORT_PAGE:SA_CREATE_DATE}", \Engine\Engine::DateFormatToRead($answer->getCreateDate()), $reportSolveAnswer);
                 $reportSolveAnswer = str_replace_once("{REPORT_PAGE:SA_TEXT}", nl2br(trim(\Engine\Engine::CompileBBCode($answer->getMessage()))), $reportSolveAnswer);
                 $reportSolveAnswer = str_replace_once("{REPORT_PAGE:SA_AUTHOR_SIGNATURE}", \Engine\Engine::CompileBBCode($answer->getAuthor()->getSignature()), $reportSolveAnswer);
                 $lastEditInfoBlock = "";
                 if ($answer->getEditDate() != '') {
-                    $lastEditInfoBlock = "<br><em>Последний раз редактировалось " . $answer->getLastEditor()->getNickname() . ", " . \Engine\Engine::DatetimeFormatToRead($answer->getEditDate());
+                    $lastEditInfoBlock = "<br><em>" . \Engine\LanguageManager::GetTranslation("reports_site_panel.last_time_edited") . " " . $answer->getLastEditor()->getNickname() . ", " . \Engine\Engine::DatetimeFormatToRead($answer->getEditDate());
                     if ($answer->getEditReason() != '')
-                        $lastEditInfoBlock .= ", по причине: " . htmlentities($answer->getEditReason());
+                        $lastEditInfoBlock .= ", " . \Engine\LanguageManager::GetTranslation("reports_site_panel.by_reason") . " " . htmlentities($answer->getEditReason());
                     else
                         $lastEditInfoBlock .= ".";
                     $lastEditInfoBlock .= "</em>";
@@ -246,17 +244,17 @@ if (empty($_GET["preg"])) {
                     $reportAnswer = str_replace_once("{REPORT_PAGE:AO_GROUP_ID}", $answer->getAuthor()->UserGroup()->getId(), $reportAnswer);
                     $reportAnswer = str_replace_once("{REPORT_PAGE:AO_GROUP_COLOR}", $answer->getAuthor()->UserGroup()->getColor() ,$reportAnswer);
                     $reportAnswer = str_replace_once("{REPORT_PAGE:AO_GROUP_NAME}", $answer->getAuthor()->UserGroup()->getName() ,$reportAnswer);
-                    $reportAnswer = str_replace_once("{REPORT_PAGE:AO_REALNAME}", ($answer->getAuthor()->getRealName() != '') ? "Имя: " . htmlentities($answer->getAuthor()->getRealName()) . "<br>" : "" ,$reportAnswer);
-                    $reportAnswer = str_replace_once("{REPORT_PAGE:AO_FROM}", ($answer->getAuthor()->getFrom() != '') ? "Откуда: " . htmlentities($answer->getAuthor()->getFrom()) . "<br>" : "" ,$reportAnswer);
-                    $reportAnswer = str_replace_once("{REPORT_PAGE:AO_VK}", ($answer->getAuthor()->getVK() != '' && $answer->getAuthor()->IsVKPublic()) ? "VK: <a href=\"http://vk.com/" . htmlentities($answer->getAuthor()->getVK()) . "\">перейти</a><br>" : "" ,$reportAnswer);
+                    $reportAnswer = str_replace_once("{REPORT_PAGE:AO_REALNAME}", ($answer->getAuthor()->getRealName() != '') ? \Engine\LanguageManager::GetTranslation("reports_site_panel.name") . " " . htmlentities($answer->getAuthor()->getRealName()) . "<br>" : "" ,$reportAnswer);
+                    $reportAnswer = str_replace_once("{REPORT_PAGE:AO_FROM}", ($answer->getAuthor()->getFrom() != '') ? \Engine\LanguageManager::GetTranslation("reports_site_panel.from") . " " . htmlentities($answer->getAuthor()->getFrom()) . "<br>" : "" ,$reportAnswer);
+                    $reportAnswer = str_replace_once("{REPORT_PAGE:AO_VK}", ($answer->getAuthor()->getVK() != '' && $answer->getAuthor()->IsVKPublic()) ? "VK: <a href=\"http://vk.com/" . htmlentities($answer->getAuthor()->getVK()) . "\">" . \Engine\LanguageManager::GetTranslation("reports_site_panel.go_to") . "</a><br>" : "" ,$reportAnswer);
                     $reportAnswer = str_replace_once("{REPORT_PAGE:ANSWER_CREATE_DATETIME}", \Engine\Engine::DateFormatToRead($answer->getCreateDate()) ,$reportAnswer);
                     $reportAnswer = str_replace_once("{REPORT_PAGE:ANSWER_TEXT}", nl2br(trim(\Engine\Engine::CompileBBCode($answer->getMessage()))) ,$reportAnswer);
                     $reportAnswer = str_replace_once("{REPORT_PAGE:AO_SIGNATURE}", nl2br(\Engine\Engine::CompileBBCode($answer->getAuthor()->getSignature())) ,$reportAnswer);
                     $lastEditInfoAnswerBlock = "";
                     if ($answer->getEditDate() != ''){
-                        $lastEditInfoAnswerBlock = "<br><em>Последний раз редактировалось " . $answer->getLastEditor()->getNickname() . ", " . \Engine\Engine::DatetimeFormatToRead($answer->getEditDate());
+                        $lastEditInfoAnswerBlock = "<br><em>" . \Engine\LanguageManager::GetTranslation("reports_site_panel.last_time_edited") . " " . $answer->getLastEditor()->getNickname() . ", " . \Engine\Engine::DatetimeFormatToRead($answer->getEditDate());
                         if ($answer->getEditReason() != '')
-                            $lastEditInfoAnswerBlock .= ", по причине: " . htmlentities($answer->getEditReason());
+                            $lastEditInfoAnswerBlock .= ", " . \Engine\LanguageManager::GetTranslation("reports_site_panel.by_reason") . " " . htmlentities($answer->getEditReason());
                         else
                             $lastEditInfoAnswerBlock .= ".";
                         $lastEditInfoAnswerBlock .= "</em>";
@@ -309,15 +307,15 @@ if (empty($_GET["preg"])) {
                 }
             }
 
-            $reportEditFormLabel = (!empty($_GET["rid"])) ? "жалобы" : "ответа";
+            $reportEditFormLabel = (!empty($_GET["rid"])) ? \Engine\LanguageManager::GetTranslation("reports_site_panel.of_report") : \Engine\LanguageManager::GetTranslation("reports_site_panel.of_answer");
             if (!empty($_GET["rid"])) {
                 $reportEditBasicInfo = "<div class=\"input-group\">
-                                            <div class=\"input-group-addon\">Название:</div>
+                                            <div class=\"input-group-addon\">" . \Engine\LanguageManager::GetTranslation("reports_site_panel.name_report") . "</div>
                                             <div class=\"form-control\">" . htmlentities($report->getShortMessage()) . "</div>
                                         </div>";
             } else {
                 $reportEditBasicInfo = "<div class=\"input-group\">
-                                            <div class=\"input-group-addon\">Причина редактирования:</div>
+                                            <div class=\"input-group-addon\">" . \Engine\LanguageManager::GetTranslation("reports_site_panel.edit_reason") . "</div>
                                             <input type=\"text\" name=\"report-edit-reason\" class=\"form-control\">
                                         </div>";
             }

@@ -30,13 +30,14 @@
 
             static private $NeedActivate = False;
             static private $StandartGroup = 1;
-            static private $MultiAccPermited;
+            static private $MultiAccPermitted;
 
             static private $AvatarHeight = 100;
             static private $AvatarWidth = 100;
             static private $UploadPermittedSize = 10*1024*1024;
             static private $UploadPermittedFormats = "gif,png,img,tif,zip,rar,txt,doc";
             static private $CanGuestsSeeProfiles = false;
+            static private $CanUsersReputationVoteManyTimes;
 
             static private $SiteMetricType;
             static private $SiteMetricStatus;
@@ -108,9 +109,9 @@
             }
             public static function LoadEngine()
             {
-
                 $file = file_get_contents("config/config.sfc", FILE_USE_INCLUDE_PATH);
-                $a = json_decode($file, true);
+                $a = unserialize($file);
+
                 $engConf = json_decode(file_get_contents("config/dbconf.sfc", FILE_USE_INCLUDE_PATH), true);
 
                 self::$EmailAcc = $a["emailAcc"];
@@ -135,7 +136,7 @@
                 self::$SiteRegionTime = $a["siteRegionTime"];
 
                 self::$NeedActivate = $a["needActivate"];
-                self::$MultiAccPermited = $a["multiAccount"];
+                self::$MultiAccPermitted = $a["multiAccount"];
                 self::$StandartGroup = $a["standartGroup"];
 
                 self::$AvatarHeight = $a["avatarHeight"];
@@ -143,6 +144,7 @@
                 self::$UploadPermittedSize = $a["uploadPermSize"];
                 self::$UploadPermittedFormats = $a["uploadPermFormats"];
                 self::$CanGuestsSeeProfiles = $a["guestsseeprofiles"];
+                self::$CanUsersReputationVoteManyTimes = $a["multivoterep"];
 
                 self::$SiteMetricType = $a["metricType"];
                 self::$SiteMetricStatus = $a["metricStatus"];
@@ -162,8 +164,8 @@
             }
             public static function SettingsSave($DomainSite, $siteName, $siteTagline, $siteStatus,
                                                 $siteSubscribe, $siteHashtags, $siteLang, $siteTemplate, $siteRegionTime,
-                                                $emailAcc, $emailPass, $emailHost, $emailPort, $emailCP, $needActivate,
-                                                $multiAccPermited, $standartGroup, $avatarHeight, $avatarWidth, $uploadPermittedSize, $uploadPermittedFormats, $canGuestsSeeProfiles,
+                                                $emailAcc, $emailPass, $emailHost, $emailPort, $emailCP, $needActivate, $multiAccPermitted, $standartGroup,
+                                                $avatarHeight, $avatarWidth, $uploadPermittedSize, $uploadPermittedFormats, $canGuestsSeeProfiles, $canMultiRepVote,
                                                 $siteMetricStatus, $siteMetricType)
             {
                 $settingsArray = array(
@@ -182,23 +184,24 @@
                     'emailPort' => $emailPort,
                     'emailCP' => $emailCP,
                     'needActivate' => $needActivate,
-                    'multiAccount' => $multiAccPermited,
+                    'multiAccount' => $multiAccPermitted,
                     'standartGroup' => $standartGroup,
                     'avatarHeight' => $avatarHeight,
                     'avatarWidth' => $avatarWidth,
                     'uploadPermSize' => $uploadPermittedSize,
                     'uploadPermFormats' => $uploadPermittedFormats,
                     'guestsseeprofiles' => $canGuestsSeeProfiles,
+                    "multivoterep" => $canMultiRepVote,
                     'metricType' => $siteMetricType,
                     'metricStatus' => $siteMetricStatus
                 );
-                if (file_put_contents($_SERVER["DOCUMENT_ROOT"]."/engine/config/config.sfc", json_encode($settingsArray))) return True;
+                if (file_put_contents($_SERVER["DOCUMENT_ROOT"]."/engine/config/config.sfc", serialize($settingsArray))) return True;
                 else { ErrorManager::GenerateError(14); return ErrorManager::GetError(); }
             }
             public static function GetEngineInfo($code){
                 switch($code){
                     case "na": return self::$NeedActivate;
-                    case "map": return self::$MultiAccPermited;
+                    case "map": return self::$MultiAccPermitted;
                     case "sg": return self::$StandartGroup;
                     case "sn": return self::$SiteName;
                     case "stl": return self::$SiteTagline;
@@ -218,6 +221,7 @@
                     case "ups": return self::$UploadPermittedSize;
                     case "upf": return self::$UploadPermittedFormats;
                     case "gsp": return self::$CanGuestsSeeProfiles;
+                    case "vmr": return self::$CanUsersReputationVoteManyTimes;
                     case "stp": return self::$SiteTemplate;
                     case "smt": return self::$SiteMetricType;
                     case "sms": return self::$SiteMetricStatus;
@@ -616,7 +620,7 @@
             public static function load(){
                 $languageFile = $_SERVER["DOCUMENT_ROOT"] . "/languages/" . Engine::GetEngineInfo("sl") . ".php";
                 if (!file_exists($languageFile))
-                    throw new \Error("Language file is not exist.");
+                    throw new \Error("Language file is not exist");
                 require $languageFile;
                 self::$languageArray = $languagePack;
             }

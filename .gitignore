@@ -1,4 +1,4 @@
-./tests
-./tests/*
-./engine/config/config.sfc
-./engine/config/dbconf.sfc
+/tests/*
+/engine/config/dbconf.sfc
+/engine/config/config.sfc
+/tests/

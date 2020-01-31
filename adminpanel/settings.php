@@ -337,7 +337,7 @@ else {
                     <div class="form-control">
                         <input type="checkbox" name="multivote_rep" <?php if (\Engine\Engine::GetEngineInfo("vmr")) echo "checked"; ?>>
                     </div>
-                    <div class="form-control alert-info"><?=\Engine\LanguageManager::GetTranslation("settings_panel.users_panel.multivote_rep_tip")?></div>
+                    <div class="form-control alert-info"><span class="glyphicons glyphicons-info-sign"></span> <?=\Engine\LanguageManager::GetTranslation("settings_panel.users_panel.multivote_rep_tip")?></div>
                 </div>
             </div>
             <div class="div-border" id="metric_sets" data-number="5" hidden>

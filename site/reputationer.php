@@ -11,16 +11,19 @@ if (!empty($_GET["res"])){
     $reputationerError = "";
     switch($_GET["res"]){
         case "yuid":
-            $reputationerError = "<span class=\"glyphicon glyphicon-remove\"></span> Вы не можете изменить репутацию самому себе.";
+            $reputationerError = "<span class=\"glyphicon glyphicon-remove\"></span> " . \Engine\LanguageManager::GetTranslation("reputationer.you_cannot_change_rep_yourself");
             break;
         case "sarp":
-            $reputationerError = "<span class=\"glyphicon glyphicon-ok\"></span> Ваша оценка была успешно добавлена!";
+            $reputationerError = "<span class=\"glyphicon glyphicon-ok\"></span> " . \Engine\LanguageManager::GetTranslation("reputationer.mark_added_success");;
             break;
         case "narp":
-            $reputationerError = "<span class=\"glyphicon glyphicon-remove\"></span> Не удалось добавить вашу оценку.";
+            $reputationerError = "<span class=\"glyphicon glyphicon-remove\"></span> " . \Engine\LanguageManager::GetTranslation("reputationer.mark_added_failed");;
             break;
         case "nvc":
-            $reputationerError = "<span class=\"glyphicon glyphicon-warning-sign\"></span> Вы ввели неверную капчу.";
+            $reputationerError = "<span class=\"glyphicon glyphicon-warning-sign\"></span> ". \Engine\LanguageManager::GetTranslation("reputationer.invalid_captcha");
+            break;
+        case "nchot":
+            $reputationerError = "<span class=\"glyphicon glyphicon-warning-sign\"></span> " . \Engine\LanguageManager::GetTranslation("reputationer.you_cannot_change_rep_more_one_time");
             break;
     }
 }
@@ -46,25 +49,25 @@ if ($accessType) {
         $reputationerBlock = str_replace_once("{PROFILE_REPUTATIONER:REPUTATION_ADD}", "<div class=\"alert alert-warning\"><span class=\"glyphicons glyphicons-warning-sign\"></span> Изменить репутацию пользователя можно только один раз.</div>", $reputationerBlock);
     }
 }
-
+$reputationerBlock = str_replace_once("{PROFILE_REPUTATIONER:REPUTATION_ADD}", "", $reputationerBlock);
 //Для избежания взаимодействия пользователей с системой замены, пользовательские данные будут вставлены после операций замены.
 $reputationerList = "";
 if (count($user->getReputation()->getReputationArray()) == 0)
-    $reputationerList = "<span class=\"glyphicon glyphicon-info-sign\"></span> " . (($accessType) ? "Репутацию " . $user->getNickname() . " " : "Вашу репутацию ") . "ещё никто не изменил.";
+    $reputationerList = "<span class=\"glyphicon glyphicon-info-sign\"></span> " . (($accessType) ? \Engine\LanguageManager::GetTranslation("reputationer.reputation") . " " . $user->getNickname() . " " : \Engine\LanguageManager::GetTranslation("reputationer.your_reputation") . " ") . \Engine\LanguageManager::GetTranslation("reputationer.nobody_change");
 else {
     for ($i = 1; $i <= count($user->getReputation()->getReputationArray()); $i++){
-        $userRCGenderEnding = \Users\UserAgent::GetUserParam($user->getReputation()->getReputationArray()[$i]["authorId"], "sex") == 2 ? "a" : "";
+        $userRCGenderEnding = \Users\UserAgent::GetUserParam($user->getReputation()->getReputationArray()[$i]["authorId"], "sex") == 2 ? \Engine\LanguageManager::GetTranslation("reputationer.she_changed") : \Engine\LanguageManager::GetTranslation("reputationer.he_changed");
         $userRCUID = $user->getReputation()->getReputationArray()[$i]["authorId"];
         $userRCNickname = \Users\UserAgent::GetUserNick($user->getReputation()->getReputationArray()[$i]["authorId"]);
-        $userRCMark = ($user->getReputation()->getReputationArray()[$i]["type"] == 1) ? "<span style=\"color: lightgreen;\">положительная</span>" : "<span style=\"color: darkred;\">отрицательная</span>";
+        $userRCMark = ($user->getReputation()->getReputationArray()[$i]["type"] == 1) ? "<span style=\"color: green;\">" . \Engine\LanguageManager::GetTranslation("reputationer.mark_positive") . "</span>" : "<span style=\"color: darkred;\">" . \Engine\LanguageManager::GetTranslation("reputationer.mark_negative") . "</span>";
         $userRCDate = \Engine\Engine::DateFormatToRead(date("Y-m-d", $user->getReputation()->getReputationArray()[$i]["createDate"]));
         $userRCComment = htmlentities($user->getReputation()->getReputationArray()[$i]["comment"]);
         $reputationerList .= "<div class=\"reputation-change-info\">";
-        $reputationerList .= "Изменил$userRCGenderEnding: ";
+        $reputationerList .= "$userRCGenderEnding: ";
         $reputationerList .= "<a href=\"profile.php?uid=$userRCUID\">$userRCNickname</a><br>";
-        $reputationerList .= "Оценка: $userRCMark<br>";
-        $reputationerList .= "Поставлена: $userRCDate<br>";
-        $reputationerList .= "Комментарий: $userRCComment";
+        $reputationerList .= \Engine\LanguageManager::GetTranslation("reputationer.mark") . ": $userRCMark<br>";
+        $reputationerList .= \Engine\LanguageManager::GetTranslation("reputationer.date_from") . ": $userRCDate<br>";
+        $reputationerList .= \Engine\LanguageManager::GetTranslation("reputationer.comment") . ": $userRCComment";
         $reputationerList .= "</div>";
     }
 }

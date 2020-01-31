@@ -5,7 +5,7 @@ if (!isset($user) || $user == false){
     exit;
 }
 define("TT_Uploader", 1);
-$pageName = "Создание новой темы";
+$pageName = \Engine\LanguageManager::GetTranslation("newtopic.panel_name");
 include_once "site/uploader.php";
 
 $categoriesList = "";
@@ -17,7 +17,7 @@ foreach ($categories as $c){
 
 $lastAuthorsTopics = \Forum\ForumAgent::GetTopicsOfAuthor($user->getId(), true);
 if (empty($lastAuthorsTopics)){
-    $lastAuthorsTopicsText = "Нет ни одной созданной Вами темы.";
+    $lastAuthorsTopicsText = \Engine\LanguageManager::GetTranslation("newtopic.no_topics_from_you");
 } else {
     $lastAuthorsTopicsText = "<ol>";
     foreach ($lastAuthorsTopics as $topicId){
@@ -29,7 +29,7 @@ if (empty($lastAuthorsTopics)){
 
 $lastTopics = \Forum\ForumAgent::GetTopicList(1, true);
 if (empty($lastTopics)){
-    $lastTopicsText = "Ещё не создано не одной темы. Вы будете первым!";
+    $lastTopicsText = \Engine\LanguageManager::GetTranslation("newtopic.no_topics_on_site");
 } else {
     $lastTopicsText = "<ol>";
     foreach ($lastTopics as $topicId){
@@ -46,25 +46,25 @@ $newtopic = getBrick();
 
 switch($_GET["res"]){
     case "3nsc":
-        $creatorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> Вы не выбрали категорию.</div>";
+        $creatorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> " .  \Engine\LanguageManager::GetTranslation("newtopic.category_not_setted") ."</div>";
         break;
     case "3np":
-        $creatorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> У Вас недостаточно прав для взаимодействия с данной категорией.</div>";
+        $creatorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> " .  \Engine\LanguageManager::GetTranslation("newtopic.category_not_permitted") ."</div>";
         break;
     case "3ntltn":
-        $creatorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> Название темы неправильной длины. Оно должно быть больше 4 символов и меньше 100.</div>";
+        $creatorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> " .  \Engine\LanguageManager::GetTranslation("newtopic.invalid_topic_name") ."</div>";
         break;
     case "3ntlm":
-        $creatorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> Текст темы слишком короткий. Он должен быть длиннее 15 символов и нести в себе смысловую нагрузку.</div>";
+        $creatorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> " .  \Engine\LanguageManager::GetTranslation("newtopic.invalid_topic_text") ."</div>";
         break;
     case "3ncct":
-        $creatorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> Не удалось создать тему. Обратитесь к Администратору.</div>";
+        $creatorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> " .  \Engine\LanguageManager::GetTranslation("newtopic.topic_create_error") ."</div>";
         break;
     case "3nqa":
-        $creatorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> Не удалось создать опрос: один из ответов пуст.</div>";
+        $creatorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> " .  \Engine\LanguageManager::GetTranslation("newtopic.quize_empty_answer") ."</div>";
         break;
     case "3nqt":
-        $creatorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> Не удалось создать опрос: вопрос опроса слишком короткий или отсутствует.</div>";
+        $creatorResponse = "<div class=\"alert alert-danger\"><span class=\"glyphicons glyphicons-remove\"></span> " .  \Engine\LanguageManager::GetTranslation("newtopic.quize_invalid_question") ."</div>";
         break;
     default:
         $creatorResponse = "";

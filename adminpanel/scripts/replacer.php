@@ -16,16 +16,16 @@ else {
             $type = "ssl";
 
         if (\Engine\Engine::GetEngineInfo("ecp") != $_POST["emailconnecttype"]){
-            \Guards\Logger::LogAction($user->getId(), " изменил(а) протокол соединения [".
-                \Engine\Engine::GetEngineInfo("ecp") . " -> " . $_POST["emailconnecttype"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.site_mail_connection_type_log")
+                . "[". \Engine\Engine::GetEngineInfo("ecp") . " -> " . $_POST["emailconnecttype"] . "]");
         }
-
-        if (\Engine\Engine::GetEngineInfo("map") != $_POST["multiaccount"]) {
+        $ma = (\Engine\Engine::GetEngineInfo("map") == "y") ? 1 : 0;
+        if ($ma != $_POST["multiaccount"]) {
             if ($_POST["multiaccount"] == "1") {
-                \Guards\Logger::LogAction($user->getId(), " запретил(а) мультиаккаунт.");
+                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.site_denied_multiacc_log"));
                 $multiAcc = "y";
             } else {
-                \Guards\Logger::LogAction($user->getId(), " разрешил(а) мультиаккаунт.");
+                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.site_allowed_multiacc_log"));
                 $multiAcc = "n";
             }
         }
@@ -62,65 +62,65 @@ else {
         case "sms": return self::$SiteMetricStatus;
          */
         if ($_POST["domain"] != \Engine\Engine::GetEngineInfo("dm"))
-            \Guards\Logger::LogAction($user->getId(), " изменил(а) домен сайта [" . \Engine\Engine::GetEngineInfo("dm") . " -> " . $_POST["domain"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.domain_site_log") . "[" . \Engine\Engine::GetEngineInfo("dm") . " -> " . $_POST["domain"] . "]");
         if ($_POST["sitename"] != \Engine\Engine::GetEngineInfo("sn"))
-            \Guards\Logger::LogAction($user->getId(), " изменил(а) название сайта [" . \Engine\Engine::GetEngineInfo("sn") . " -> " . $_POST["sitename"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.site_name_log") ."[" . \Engine\Engine::GetEngineInfo("sn") . " -> " . $_POST["sitename"] . "]");
         if ($_POST["sitetagline"] != \Engine\Engine::GetEngineInfo("stl"))
-            \Guards\Logger::LogAction($user->getId(), " изменил(а) слоган сайта [" . \Engine\Engine::GetEngineInfo("stl") . " -> " . $_POST["sitetagline"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.site_tagline_log") . "[" . \Engine\Engine::GetEngineInfo("stl") . " -> " . $_POST["sitetagline"] . "]");
         if ($_POST["sitestatus"] != \Engine\Engine::GetEngineInfo("ss")) {
-            $siteStatusFrom = (\Engine\Engine::GetEngineInfo("ss") == 0) ? "выключен" : "включен";
-            $siteStatusTo = ($_POST["sitestatus"] == 0) ? "выключен" : "включен";
-            \Guards\Logger::LogAction($user->getId(), " изменил(а) статус сайта [$siteStatusFrom -> $siteStatusTo]");
+            $siteStatusFrom = (\Engine\Engine::GetEngineInfo("ss") == 0) ? \Engine\LanguageManager::GetTranslation("off") : \Engine\LanguageManager::GetTranslation("on");
+            $siteStatusTo = ($_POST["sitestatus"] == 0) ? \Engine\LanguageManager::GetTranslation("off") : \Engine\LanguageManager::GetTranslation("on");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_status_log") ."[$siteStatusFrom -> $siteStatusTo]");
         }
         if ($_POST["sitesubscribe"] != \Engine\Engine::GetEngineInfo("ssc"))
-            \Guards\Logger::LogAction($user->getId(), " изменил(а) описание сайта [" . \Engine\Engine::GetEngineInfo("ssc") . " -> " . $_POST["sitesubscribe"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_description_log") ."[" . \Engine\Engine::GetEngineInfo("ssc") . " -> " . $_POST["sitesubscribe"] . "]");
         if ($_POST["sitehashtags"] != \Engine\Engine::GetEngineInfo("sh"))
-            \Guards\Logger::LogAction($user->getId(), " изменил(а) хештеги сайта [" . \Engine\Engine::GetEngineInfo("sh") . " -> " . $_POST["sitehashtags"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_hashtags_log") ."[" . \Engine\Engine::GetEngineInfo("sh") . " -> " . $_POST["sitehashtags"] . "]");
         if ($_POST["sitelang"] != \Engine\Engine::GetEngineInfo("sl"))
-            \Guards\Logger::LogAction($user->getId(), " изменил(а) язык сайта [" . \Engine\Engine::GetEngineInfo("sl") . " -> " . $_POST["sitelang"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_lang_log") ."[" . \Engine\Engine::GetEngineInfo("sl") . " -> " . $_POST["sitelang"] . "]");
         if ($_POST["sitetemplate"] != \Engine\Engine::GetEngineInfo("stp"))
-            \Guards\Logger::LogAction($user->getId(), " изменил(а) шаблон сайта [" . \Engine\Engine::GetEngineInfo("stp") . " -> " . $_POST["sitetemplate"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_template_log") ."[" . \Engine\Engine::GetEngineInfo("stp") . " -> " . $_POST["sitetemplate"] . "]");
         if ($_POST["siteregiontime"] != \Engine\Engine::GetEngineInfo("srt"))
-            \Guards\Logger::LogAction($user->getId(), " изменил(а) часовой пояс сайта [" . \Engine\Engine::GetEngineInfo("srt") . " -> " . $_POST["siteregiontime"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_timezone_log") ."[" . \Engine\Engine::GetEngineInfo("srt") . " -> " . $_POST["siteregiontime"] . "]");
         if ($_POST["emaillogin"] != \Engine\Engine::GetEngineInfo("el"))
-            \Guards\Logger::LogAction($user->getId(), " изменил(а) логин для бота рассылки сайта [" . \Engine\Engine::GetEngineInfo("el") . " -> " . $_POST["emaillogin"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.site_mail_login_log") ."[" . \Engine\Engine::GetEngineInfo("el") . " -> " . $_POST["emaillogin"] . "]");
         if ($_POST["emailpassword"] != \Engine\Engine::GetEngineInfo("ep"))
-            \Guards\Logger::LogAction($user->getId(), " изменил(а) пароль для бота рассылки сайта.");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.site_mail_password_log"));
         if ($_POST["emailhost"] != \Engine\Engine::GetEngineInfo("eh"))
-            \Guards\Logger::LogAction($user->getId(), " изменил(а) адрес сервера для бота рассылки сайта [" . \Engine\Engine::GetEngineInfo("eh") . " -> " . $_POST["emailhost"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.site_mail_address_log") ."[" . \Engine\Engine::GetEngineInfo("eh") . " -> " . $_POST["emailhost"] . "]");
         if ($_POST["emailport"] != \Engine\Engine::GetEngineInfo("ept"))
-            \Guards\Logger::LogAction($user->getId(), " изменил(а) порт для бота рассылки сайта [" . \Engine\Engine::GetEngineInfo("ept") . " -> " . $_POST["emailport"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.site_mail_port_log") ."[" . \Engine\Engine::GetEngineInfo("ept") . " -> " . $_POST["emailport"] . "]");
         if ($_POST["needactivate"] != \Engine\Engine::GetEngineInfo("na")) {
-            $needActivation = (\Engine\Engine::GetEngineInfo("na") == 0) ? "выключено" : "включено";
-            $needActivationTo = ($_POST["needactivate"] == 0) ? "выключено" : "включено";
-            \Guards\Logger::LogAction($user->getId(), " изменил(а) порт для бота рассылки сайта [$needActivation -> $needActivationTo]");
+            $needActivation = (\Engine\Engine::GetEngineInfo("na") == 0) ? \Engine\LanguageManager::GetTranslation("off") : \Engine\LanguageManager::GetTranslation("on");
+            $needActivationTo = ($_POST["needactivate"] == 0) ? \Engine\LanguageManager::GetTranslation("off") : \Engine\LanguageManager::GetTranslation("on");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.site_need_user_activation_log") . "[$needActivation -> $needActivationTo]");
         }
         if ($_POST["standartgroup"] != \Engine\Engine::GetEngineInfo("sg")) {
             $from = \Users\GroupAgent::GetGroupNameById(\Engine\Engine::GetEngineInfo("sg"));
             $to = \Users\GroupAgent::GetGroupNameById($_POST["standartgroup"]);
-            \Guards\Logger::LogAction($user->getId(), " изменил(а) группу для записи новичков [$from -> $to]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.site_group_for_newbies_log") ." [$from -> $to]");
         }
         if (\Engine\Engine::GetEngineInfo("aw") != $_POST["avatarmaxwidth"]){
-            \Guards\Logger::LogAction($user->getId(), " изменил(а) ширину аватарки [" .
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.site_avatar_width_log") ."[" .
                 \Engine\Engine::GetEngineInfo("aw") . " -> " . $_POST["avatarmaxwidth"] . "]");
         }
         if (\Engine\Engine::GetEngineInfo("ah") != $_POST["avatarmaxheight"]){
-            \Guards\Logger::LogAction($user->getId(), " изменил(а) высоту аватарки [" .
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.site_avatar_height_log") ."[" .
                 \Engine\Engine::GetEngineInfo("ah") . " -> " . $_POST["avatarmaxheight"] . "]");
         }
         if (\Engine\Engine::GetEngineInfo("ups") != $_POST["maxfilesize"]){
-            \Guards\Logger::LogAction($user->getId(), " изменил(а) максимальный размер загружаемого файла [" .
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.site_max_file_size_log") ."[" .
                 \Engine\Engine::GetEngineInfo("ups") . " -> " . $_POST["maxfilesize"] . "]");
         }
         if (\Engine\Engine::GetEngineInfo("upf") != $_POST["uploadformats"]){
-            \Guards\Logger::LogAction($user->getId(), " изменил(а) разрешённые к загрузке файлы [" .
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.site_allowed_file_for_upload_log") ."[" .
                 \Engine\Engine::GetEngineInfo("upf") . " -> " . $_POST["uploadformats"] . "]");
         }
-        $guestSeeProfileNow = (isset($_POST["guest_see_profiles"])) ? 1 : 0;
-        if (\Engine\Engine::GetEngineInfo("gsp") != $guestSeeProfileNow){
-            $guestSeeProfilePerm = (isset($_POST["guest_see_profiles"])) ? "включено" : "выключено";
-            $guestSeeProfileNow = (\Engine\Engine::GetEngineInfo("gsp") == 1) ? "включено" : "выключено";
-            \Guards\Logger::LogAction($user->getId(), " изменил(а) видимость профилей пользователей [" .
+        $guestSeeProfileCond = (isset($_POST["guest_see_profiles"])) ? 1 : 0;
+        if (\Engine\Engine::GetEngineInfo("gsp") != $guestSeeProfileCond){
+            $guestSeeProfilePerm = (isset($_POST["guest_see_profiles"])) ? \Engine\LanguageManager::GetTranslation("on") : \Engine\LanguageManager::GetTranslation("off");
+            $guestSeeProfileNow = (\Engine\Engine::GetEngineInfo("gsp") == 1) ? \Engine\LanguageManager::GetTranslation("on") : \Engine\LanguageManager::GetTranslation("off");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.site_allow_guest_see_users") . "[" .
                 $guestSeeProfileNow . " -> " . $guestSeeProfilePerm . "]");
         }
         $multiVoteRepCond = (isset($_POST["multivote_rep"])) ? 1 : 0;
@@ -149,12 +149,19 @@ else {
             $_POST["avatarmaxwidth"], $_POST["avatarmaxheight"], $_POST["maxfilesize"], $_POST["uploadformats"], (isset($_POST["guest_see_profiles"])) ? 1 : 0, (isset($_POST["multivote_rep"])) ? 1 : 0,
             $metricStatus, $metricType)
         ) {
-            if (\Engine\Engine::SaveCensoredWords($_POST["chat-filter-words"])) {
-                if (\Engine\Engine::SaveReportReasons($_POST["reports-reasons"])) {
-                    $engineSettings = true;
-                    if (!\Engine\Engine::SaveAnalyticScript($_POST["metric-script-text"]))
-                        $engineSettings = false;
-                } else $engineSettings = False;
+            if (\Engine\Engine::GetCensoredWords() != $_POST["chat-filter-words"]){
+                \Engine\Engine::SaveCensoredWords($_POST["chat-filter-words"]);
+                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.site_filter_change_log"));
+            }
+            if (\Engine\Engine::GetReportReasons() != $_POST["reports-reasons"]) {
+                \Engine\Engine::SaveReportReasons($_POST["reports-reasons"]);
+                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.site_reasons_report_change_log"));
+            }
+            if (\Engine\Engine::GetAnalyticScript() != $_POST["metric-script-text"]) {
+                \Engine\Engine::SaveAnalyticScript($_POST["metric-script-text"]);
+                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.statistic_panel.site_metric_text_log"));
+            }
+                $engineSettings = true;
             } else  $engineSettings = False;
         }
     }
@@ -165,7 +172,7 @@ else {
         header("Location: ../../adminpanel.php?p=settings&res=2n");
         exit;
     }
-}
+
 
 header("Location: ../../adminpanel.php?p=forbidden");
 exit;

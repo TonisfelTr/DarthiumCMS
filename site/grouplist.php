@@ -9,7 +9,7 @@ if (\Users\GroupAgent::IsGroupExists($_GET["group"])) {
     exit;
 }
 
-$pageName = "Просмотр группы \"" . $group->getName() . "\"";
+$pageName = \Engine\LanguageManager::GetTranslation("grouplist.view") . $group->getName() . "\"";
 
 include_once "./site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/grouptable.html";
 $groupPage = getBrick();
