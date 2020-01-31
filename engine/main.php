@@ -303,11 +303,11 @@
                     $sizes = getimagesize($results[1]);
                     $text = preg_replace("/\[img\=(.+?)\]/", "<div class=\"img-container\"><img class=\"img-for-frame\" src=\"$1\"><p>$sizes[0]x$sizes[1]</p></div>", $text, 1);
                 }
-                $text = preg_replace("/\[align\=(.+)\]/", "<p style=\"text-align: $1;\">",$text);
-                $text = preg_replace("/\[color\=(.+)\]/", "<span style=\"color: $1;\">",$text);
+                $text = preg_replace("/\[align\=(.+?)\]/", "<p style=\"text-align: $1;\">",$text);
+                $text = preg_replace("/\[color\=(.+?)\]/", "<span style=\"color: $1;\">",$text);
                 $text = preg_replace("/\[\*\](.*)/", "<li>$1</li>", $text);
-                $text = preg_replace("/\[quote\=(.+)\]/", "<p class=\"message-quote-author-sign\">$1 сказал(а):</p><div class=\"message-quote-block\"><span style=\"font-size: 50px; display: inline-block;\">“</span>",$text);
-                $text = preg_replace("/\[link\=(.+)\](.*)\[\/link\]/", "<a href=\"$1\" class=\"profile-link\">$2</a>", $text);
+                $text = preg_replace("/\[quote\=(.+?)\]/", "<p class=\"message-quote-author-sign\">$1 сказал(а):</p><div class=\"message-quote-block\"><span style=\"font-size: 50px; display: inline-block;\">“</span>",$text);
+                $text = preg_replace("/\[link\=(.+?)\](.*)\[\/link\]/", "<a href=\"$1\" class=\"profile-link\">$2</a>", $text);
 
 
                 return $text;
