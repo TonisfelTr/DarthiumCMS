@@ -41,12 +41,14 @@ if ($accessType) {
     $reputationerAddBlock = str_replace_once("{PROFILE_REPUTATIONER:UID}", $user->getId(), $reputationerAddBlock);
     $reputationerAddBlock = str_replace_once("{PROFILE_REPUTATIONER:CAPTCHA_IMG}", $captchaImgPath, $reputationerAddBlock);
     $reputationerAddBlock = str_replace_once("{PROFILE_REPUTATIONER:CAPTCHA_ID}", $captchaId, $reputationerAddBlock);
-    if (\Engine\Engine::GetEngineInfo("vmr") && $user->getReputation()->getPointsFromUserCount($_SESSION["uid"]) == 0) {
+    if (\Engine\Engine::GetEngineInfo("vmr") && !empty($_SESSION) && $user->getReputation()->getPointsFromUserCount($_SESSION["uid"]) == 0) {
         $reputationerBlock = str_replace_once("{PROFILE_REPUTATIONER:REPUTATION_ADD}", $reputationerAddBlock, $reputationerBlock);
     } elseif (!\Engine\Engine::GetEngineInfo("vmr")) {
         $reputationerBlock = str_replace_once("{PROFILE_REPUTATIONER:REPUTATION_ADD}", $reputationerAddBlock, $reputationerBlock);
+    } elseif (empty($_SESSION)){
+        $reputationerBlock = str_replace_once("{PROFILE_REPUTATIONER:REPUTATION_ADD}", "", $reputationerBlock);
     } else {
-        $reputationerBlock = str_replace_once("{PROFILE_REPUTATIONER:REPUTATION_ADD}", "<div class=\"alert alert-warning\"><span class=\"glyphicons glyphicons-warning-sign\"></span> Изменить репутацию пользователя можно только один раз.</div>", $reputationerBlock);
+        $reputationerBlock = str_replace_once("{PROFILE_REPUTATIONER:REPUTATION_ADD}", "<div class=\"alert alert-warning\"><span class=\"glyphicons glyphicons-warning-sign\"></span> ". \Engine\LanguageManager::GetTranslation("reputationer.change_rep_only_one_time_tip") . "</div>", $reputationerBlock);
     }
 }
 $reputationerBlock = str_replace_once("{PROFILE_REPUTATIONER:REPUTATION_ADD}", "", $reputationerBlock);

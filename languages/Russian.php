@@ -1008,6 +1008,12 @@ $languagePack = [
             ]
         ]
     ],
+    "uploaded_panel" => [
+        "panel_name" => "Загрузки",
+        "panel_description" => "Просмотр загруженных на сайт файлов.",
+        "panel_tip" => "Здесь Вы можете просмотреть список всех файлов, что были загружены на сайт и находятся в банке файлов.",
+
+    ],
     "users_panel" => [
         "open" => "Открыть",
         "panel_name" => "Пользователи",
@@ -1276,6 +1282,7 @@ $languagePack = [
         "mark_added_failed" => "Не удалось добавить вашу оценку.",
         "invalid_captcha" => "Вы ввели неверную капчу.",
         "you_cannot_change_rep_more_one_time" => "Нельзя изменить репутацию одного пользователя более одного раза.",
+        "change_rep_only_one_time_tip" => "Изменить репутацию пользователя можно только один раз.",
         "reputation" => "Репутацию",
         "your_reputation" => "Вашу репутацию",
         "nobody_change" => "ещё никто не изменил.",
@@ -1303,6 +1310,7 @@ $languagePack = [
         "file_upload_failed" => "Не удалось загрузить файл.",
         "selected_files_removed" => "Выделенные файлы были удалены.",
         "not_selected_files_for_remove" => "Не выбраны файлы на удаление.",
+        "not_permitted_delete_files" => "У Вас недостаточно прав для удаления файлов.",
         "bytes" => "байт",
         "megabytes" => "мегабайт",
         "no_file_uploaded" => "Нет ни одного загруженного Вами файла.",
