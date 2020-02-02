@@ -505,6 +505,24 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
                     <?php echo \Engine\LanguageManager::GetTranslation("mails_have_been_sended"); ?>
                     </div><?php }
             }
+            if ($_GET["p"] == "uploadedlist"){
+                if ($_GET["res"] == "9ndfs") { ?>
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-delete"></span>
+                    <?php echo \Engine\LanguageManager::GetTranslation("not_setted_files_for_deleted_error"); ?>
+                    </div><?php }
+                if ($_GET["res"] == "9ssfd") { ?>
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign"></span>
+                    <?php echo \Engine\LanguageManager::GetTranslation("files_deleted_success"); ?>
+                    </div><?php }
+                if ($_GET["res"] == "9nsfi") { ?>
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-trash"></span>
+                    <?php echo \Engine\LanguageManager::GetTranslation("not_setted_file_id"); ?>
+                    </div><?php }
+                if ($_GET["res"] == "9sfd") { ?>
+                    <div class="alert alert-success"><span class="glyphicon glyphicon"></span>
+                    <?php echo \Engine\LanguageManager::GetTranslation("file_delete_success"); ?>
+                    </div><?php }
+            }
         }
     ?></div><?php }
     ################################################
@@ -520,6 +538,12 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
                 <a class="linkin" href="?p=settings"><span class="glyphicon glyphicon-cog"></span> <?php echo \Engine\LanguageManager::GetTranslation("adminpanel.settings"); ?></a>
                 <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.settings_description"); ?></p>
             </div>
+            <?php } ?>
+            <?php if ($user->UserGroup()->getPermission("upload_see_all")) { ?>
+                <div class="linker">
+                    <a class="linkin" href="?p=uploadedlist"><span class="glyphicons glyphicons-file-cloud-upload"></span> <?=\Engine\LanguageManager::GetTranslation("adminpanel.uploader_list")?></a>
+                    <p class="helper"><?=\Engine\LanguageManager::GetTranslation("adminpanel.uploader_list_description")?></p>
+                </div>
             <?php } ?>
         </div>
         <div class="col-lg-6">

@@ -87,7 +87,7 @@ if (isset($_POST["uploader-file-delete"]) || isset($_POST["uploader-delete-files
             }
         }
     } else {
-        header("Location: ../../adminpanel.php?res=1");
+        header("Location: " . $_SESSION["LASTADDR"] . $symbol . "res=1npdof&upload");
         $_SESSION["LASTADDR"] = null;
         exit;
     }

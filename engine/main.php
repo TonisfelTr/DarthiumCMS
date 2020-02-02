@@ -563,6 +563,95 @@
                 }
                 return false;
             }
+            public static function GetUploadedFilesList(int $page){
+                $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+
+                if ($mysqli->errno){
+                    ErrorManager::GenerateError(2);
+                    return ErrorManager::GetError();
+                }
+
+                $lowBorder = $page * 50 - 50;
+                $highBorder = 50;
+
+                if ($stmt = $mysqli->prepare("SELECT * FROM tt_uploads ORDER BY id DESC LIMIT $lowBorder,$highBorder")){
+                    $stmt->execute();
+                    $files = [];
+                    $stmt->bind_result($id, $file_path, $upload_date, $name, $authorId);
+                    while($stmt->fetch()){
+                        array_push($files, ["id" => $id,
+                                   "file_path" => $file_path,
+                                   "upload_date" => $upload_date,
+                                   "name" => $name,
+                                   "author" => $authorId]);
+                    }
+                    return $files;
+                }
+
+            }
+            public static function GetUploadedFilesListByAuthor(string $nickname, int $page){
+                $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+
+                if ($mysqli->errno){
+                    ErrorManager::GenerateError(2);
+                    return ErrorManager::GetError();
+                }
+
+                $lowBorder = $page * 50 - 50;
+                $highBorder = 50;
+
+                if ($stmt = $mysqli->prepare("SELECT * FROM tt_uploads 
+                                                     WHERE author IN 
+                                                     (SELECT id FROM tt_users WHERE nickname LIKE ?)
+                                                     ORDER BY id DESC LIMIT $lowBorder,$highBorder")){
+                    $stmt->bind_param("s", $nickname);
+                    $stmt->execute();
+                    $files = [];
+                    $stmt->bind_result($id, $file_path, $upload_date, $name, $authorId);
+                    while($stmt->fetch()) {
+                        array_push($files, ["id" => $id,
+                            "file_path" => $file_path,
+                            "upload_date" => $upload_date,
+                            "name" => $name,
+                            "author" => $authorId]);
+
+                    }
+                    return $files;
+                }
+                return false;
+            }
+            public static function GetUploadedFilesListByReference(string $ref, int $page){
+                $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+
+                if ($mysqli->errno){
+                    ErrorManager::GenerateError(2);
+                    return ErrorManager::GetError();
+                }
+
+                $lowBorder = $page * 50 - 50;
+                $highBorder = 50;
+
+                if ($stmt = $mysqli->prepare("SELECT * FROM tt_uploads 
+                                                     WHERE name LIKE ?
+                                                     ORDER BY id DESC                                                       
+                                                     LIMIT $lowBorder,$highBorder")){
+                    $paramFormat = "%.$ref";
+                    $stmt->bind_param("s", $paramFormat);
+                    $stmt->execute();
+                    $files = [];
+                    $stmt->bind_result($id, $file_path, $upload_date, $name, $authorId);
+                    while($stmt->fetch()) {
+                        array_push($files, ["id" => $id,
+                            "file_path" => $file_path,
+                            "upload_date" => $upload_date,
+                            "name" => $name,
+                            "author" => $authorId]);
+
+                    }
+                    return $files;
+                }
+                return false;
+            }
             public static function GetUploadInfo($fId, $param){
                 $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
 
@@ -616,25 +705,14 @@
                     return ErrorManager::GetError();
                 }
 
-                if ($stmt = $mysqli->prepare("SELECT file_path FROM tt_uploads WHERE authorId = ?")){
+                if ($stmt = $mysqli->prepare("SELECT file_path, name FROM tt_uploads WHERE `authorId` = ?")){
                     $stmt->bind_param("i", $userId);
                     $stmt->execute();
                     if ($stmt->affected_rows == 0)
                         exit;
-                    $stmt->bind_result($path);
+                    $stmt->bind_result($path, $name);
                     while ($stmt->fetch()){
-                        if (file_exists("../uploads/images/$path")) {
-                            unlink("../uploads/images/$path");
-                        }
-                        if (file_exists("../uploads/docs/$path")) {
-                            unlink("../uploads/docs/$path");
-                        }
-                        if (file_exists("../uploads/zips/$path")) {
-                            unlink("../uploads/zips/$path");
-                        }
-                        if (file_exists("../uploads/others/$path")) {
-                            unlink("../uploads/others/$path");
-                        }
+                        unlink($_SERVER["DOCUMENT_ROOT"] . "/" . $path . "/" . $name);
                     }
                 }
                 $stmt = null;
@@ -646,6 +724,7 @@
                 }
                 return false;
             }
+
         }
 
         class LanguageManager{

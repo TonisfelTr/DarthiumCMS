@@ -70,7 +70,7 @@ if (isset($_REQUEST["uploader-delete-file"])){
             exit;
         }
     } else {
-        header("Location: ../../index.php?page=errors/notperm");
+        header("Location: " . $_SESSION["LASTADDR"] . $symbol . "res=1npdof&uploaderVisible");
         $_SESSION["LASTADDR"] = null;
         exit;
     }

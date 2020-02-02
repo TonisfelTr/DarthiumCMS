@@ -40,6 +40,9 @@ if ($user != false) {
             case "1ndnef":
                 $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-warning-sign\"></span> " . \Engine\LanguageManager::GetTranslation("uploader.no_selected_files_for_remove") . "</div>";
                 break;
+            case "1npdof":
+                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-warning-sign\"></span> " . \Engine\LanguageManager::GetTranslation("uploader.not_permitted_delete_files") . "</div>";
+                break;
         }
     }
 
