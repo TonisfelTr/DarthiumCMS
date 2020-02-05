@@ -978,6 +978,18 @@ namespace Forum {
                 return ErrorManager::GetError();
             }
 
+            if ($stmt = $mysqli->prepare("SELECT count(*), id FROM `tt_categories` WHERE public = ?")){
+                $one = 1;
+                $stmt->bind_param("i", $one);
+                $stmt->execute();
+                $stmt->bind_result($count, $id);
+                $stmt->fetch();
+                if ($count <= 1){
+                    return false;
+                }
+                $toCategoryId = $id;
+            }
+
             if ($stmt = $mysqli->prepare("DELETE FROM `tt_categories` WHERE `id`=?")){
                 $stmt->bind_param("i", $idCategory);
                 $stmt->execute();
@@ -985,7 +997,13 @@ namespace Forum {
                     ErrorManager::GenerateError(9);
                     return ErrorManager::GetError();
                 }
-                return true;
+                $stmt = null;
+            }
+
+            if ($stmt = $mysqli->prepare("UPDATE tt_topics SET categoryId = ? WHERE categoryId = ?")){
+                $stmt->bind_param("ii", $toCategoryId, $idCategory);
+                $stmt->execute();
+                return $stmt->affected_rows;
             }
 
             return false;
@@ -1078,6 +1096,8 @@ namespace Forum {
                 return false;
 
             if (DataKeeper::Delete("tt_topics", ["id" => $topicId])){
+                DataKeeper::Delete("tt_topicsmarks", ["topicId" => $topicId]);
+                DataKeeper::Delete("tt_topiccomments", ["topicId" => $topicId]);
                 $quizId = (ForumAgent::IsExistQuizeInTopic($topicId)) ? ForumAgent::GetQuizeByTopic($topicId) : "";
                 DataKeeper::Delete("tt_quizes", ["topicId" => $topicId]);
                 DataKeeper::Delete("tt_quizesanswers", ["quizId" => $quizId]);
