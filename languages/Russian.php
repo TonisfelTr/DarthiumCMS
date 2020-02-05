@@ -10,6 +10,7 @@ $languagePack = [
     "save" => "Сохранить",
     "clear" => "Очистить",
     "remove" => "Удалить",
+    "empty" => "Пусто...",
 //Monthes
 
     "january_month" => "января",

@@ -88,7 +88,7 @@ else {
                 <div class="input-group">
                     <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.lang");?></div>
                     <select class="form-control" name="sitelang">
-                        <?php if (\Engine\Engine::GetEngineInfo("sl") === 0){ ?><option value="0" selected>&lt;пусто&gt;</option><?php }
+                        <?php if (\Engine\Engine::GetEngineInfo("sl") === 0){ ?><option value="0" selected>&lt;<?=\Engine\LanguageManager::GetTranslation("empty")?>&gt;</option><?php }
                         /*Перебрать названия языков...*/  for ($i = 0; $i <= count($langs)-1; $i++){ ?>
                             <option value="<?php echo $langs[$i];?>" <?php if (\Engine\Engine::GetEngineInfo("sl") == $langs[$i]) echo " selected";?>><?php echo $langs[$i];?></option>
                         <?php }  ?>
