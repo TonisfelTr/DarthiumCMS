@@ -57,7 +57,7 @@ if (isset($_POST["staticc-page-create-create-btn"]) && $createSPPerm) {
 
     if ($e = \Forum\StaticPagesAgent::CreatePage($_POST["staticc-page-create-name-input"], $user->getId(),
         (!empty($_POST["staticc-page-create-description-input"])) ? $_POST["staticc-page-create-description-input"] : "", $_POST["staticc-page-create-textarea"])) {
-        \Guards\Logger::LogAction($user->getId(), " создал(а) статическую страницу " . $_POST["staticc-page-create-name-input"]);
+        \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("static_editor.logs.created_static_page_log") . "\"" . $_POST["staticc-page-create-name-input"] . "\"");
         header("Location: ../../adminpanel.php?p=staticc&res=7scp");
         exit;
     } else {
@@ -106,7 +106,7 @@ elseif (isset($_POST["staticc-page-edit-edit-btn"]) && $editSPPerm) {
     $result = \Forum\StaticPagesAgent::ChangePageData($pageId, "description", $_POST["staticc-page-edit-description-input"]);
     $result = \Forum\StaticPagesAgent::EditPage($pageId, $_POST["staticc-page-edit-textarea"]);
     if ($result) {
-        \Guards\Logger::LogAction($user->getId(), " отредактировал(а) статическую страницу \"" . $_POST["staticc-page-edit-name-input"] . "\".");
+        \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("static_editor.logs.edited_static_page_log") . "\"" . $_POST["staticc-page-edit-name-input"] . "\".");
         header("Location: ../../adminpanel.php?p=staticc&res=7sphbe");
         exit;
     } else {
@@ -125,7 +125,7 @@ elseif (isset($_POST["staticc-search-remove-btn"]) && $removeSPPerm){
         $result = \Forum\StaticPagesAgent::RemovePage($id);
     }
     if ($result === true){
-        \Guards\Logger::LogAction($user->getId(), " удалил(а) статическую страницу \"$pageName\".");
+        \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("static_editor.logs.remove_static_page_log") . "\"$pageName\".");
         header("Location: ../../adminpanel.php?p=staticc&res=7srsp");
         exit;
     } else {

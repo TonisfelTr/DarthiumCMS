@@ -27,9 +27,9 @@ if ($user->UserGroup()->getPermission("bmail_sende") ||
             $mail = str_replace_once("{MAIL_SITENAME}", \Engine\Engine::GetEngineInfo("sn"), $mail);
             $mail = str_replace_once("{MAIL_NICKNAME_TO}", $someUser["nickname"] . ",", $main);
             $mail = str_replace_once("{MAIL_BODY_MAIN}", $_POST["email-text-message"], $mail);
-            $mail = str_replace_once("{MAIL_FOOTER_INFORMATION}", "Это сообщение было отослано ботом. Пожалуйста не отвечайте на него.", $mail);
+            $mail = str_replace_once("{MAIL_FOOTER_INFORMATION}", \Engine\LanguageManager::GetTranslation("postman.email_panel.bot_mail_send_text"), $mail);
             \Engine\Mailer::SendMail($mail, \Users\UserAgent::GetUserParam($someUser["id"], "email"), $_POST["email-subject-input"]);
-            \Guards\Logger::LogAction($user->getId(), "отправил Email всем пользователям сайта с темой " . $_POST["email-subject-input"] . ".");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("postman.email_panel.bot_mail_send_log") . "\"" . $_POST["email-subject-input"] . "\".");
         }
         header("Location: ../../adminpanel.php?p=emailsender&res=8ses"); exit;
     }
@@ -38,7 +38,7 @@ if ($user->UserGroup()->getPermission("bmail_sende") ||
         foreach ($userList as $someUser){
             $user->MessageManager()->send($someUser["id"], $_POST["pm-subject-input"], $_POST["pmmail-text-message"]);
         }
-        \Guards\Logger::LogAction($user->getId(), "отправил личное сообщение всем пользователям сайта с темой " . $_POST["зь-subject-input"] . ".");
+        \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("postman.pm_panel.bot_mail_send_log") . "\"" . $_POST["pm-subject-input"] . "\".");
         header("Location: ../../adminpanel.php?p=emailsender&res=8ses"); exit;
     }
 } else {

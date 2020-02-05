@@ -14,7 +14,7 @@ if ($user->UserGroup()->getPermission("rules_edit") == 1) {
         fwrite($rulesFile, $_REQUEST["rules_texter"]);
         fclose($rulesFile);
         $_SESSION["result"] = True;
-        \Guards\Logger::LogAction($user->getId(), " изменил(а) правила сайта.");
+        \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("rules_panel.change_rules_log"));
         header("Location: ../../adminpanel.php?p=rules&rules_save");
         exit;
     }

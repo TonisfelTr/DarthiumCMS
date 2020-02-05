@@ -72,7 +72,7 @@ if (isset($_POST["users-delete-button"])){
                     exit;
                 }
                 if ($i+1 == count($deleteUIDs)) {
-                    \Guards\Logger::LogAction($user->getId(), " удалил(а) пользователя с никнеймом $userNickname.");
+                    \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.delete_user_log") . "$userNickname.");
                     header("Location: ../../adminpanel.php?p=users&res=4sdu");
                     exit;
                 }
@@ -97,7 +97,7 @@ if (isset($_POST["user_ban_ban"])){
                 if (\Guards\SocietyGuard::Ban(\Users\UserAgent::GetUserId($_POST["user_ban_input"]), (isset($_POST["user_ban_reason"])) ? $_POST["user_ban_reason"] : "none",
                         (isset($_POST["user_ban_time"]) && $_POST["user_ban_time"] >= 0) ? $_POST["user_ban_time"] : 0, $user->getId()) === true) {
                     $backRequest .= "&res=4sbu";
-                    \Guards\Logger::LogAction($user->getId(), " забанил(а) аккаунт " . $_POST["user_ban_input"] . ".");
+                    \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.ban_user_log") . $_POST["user_ban_input"] . ".");
                 }
                 elseif (\Engine\ErrorManager::GetError() == 5) $backRequest .= "&res=4nibu";
                 elseif (\Engine\ErrorManager::GetError() == 7) $backRequest .= "&res=4nbeu";
@@ -130,7 +130,7 @@ if (isset ($_POST["user_ban_unban"]) || isset($_POST["ufuban"]) ) {
                     exit;
                 } else {
                     $unbanAccountNickname = \Users\UserAgent::GetUserNick($unbanUsers[$i]);
-                    \Guards\Logger::LogAction($user->getId(), " разбанил(а) аккаунт $unbanAccountNickname.");
+                    \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.log.unban_user_log") . "$unbanAccountNickname.");
                 }
             }
             $backRequest .= "&res=4suu";
@@ -158,7 +158,7 @@ if (isset ($_POST["user_bip_ban"])){
         if (!empty($_POST["user-banip-input"])){
             if(\Guards\SocietyGuard::BanIP($_POST["user-banip-input"], (empty($_POST["user-banip-reason"])) ? "none" : $_POST["user-banip-reason"],
                 (empty($_POST["user-banip-time"])) ? 0 : $_POST["user-banip-time"], $user->getId()) === TRUE){
-                \Guards\Logger::LogAction($user->getId(), " забанил(а) IP адрес " . $_POST["user-banip-input"] . ".");
+                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.banip_log") . $_POST["user-banip-input"] . ".");
                 $backRequest .= "&res=4sib";
                 header($backRequest);
                 exit;
@@ -198,7 +198,7 @@ if (isset ($_POST["user_bip_unban"]) || isset($_POST["ipuban"])){
                     exit;
                 }
             }
-            \Guards\Logger::LogAction($user->getId(), " разбанил(а) IP адрес " . $unipBans[$i] . ".");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.log_unbanip_log") . $unipBans[$i] . ".");
             $backRequest .= "&res=4siub";
             header($backRequest);
             exit;
@@ -236,7 +236,7 @@ if (isset ($_POST["user-add-add"])){
                 $newUser = new \Users\User(\Users\UserAgent::GetUserId($_POST["user-add-nickname"]));
                 $newUser->groupChange($group);
                 $newUser->Activate();
-                \Guards\Logger::LogAction($user->getId(), " зарегистрировал(а) нового пользователя - " . $_POST["user-add-nickname"] . ".");
+                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.reg_new_user_log") . $_POST["user-add-nickname"] . ".");
                 $backRequest .= "&res=4sru&nunn=" . $_POST["user-add-nickname"];
                 header($backRequest);
                 exit;
@@ -280,7 +280,7 @@ if (isset ($_POST["user-edit-save"])){
         //Change nickname
         if ($eUser->getNickname() != $_POST["user-edit-nickname"]) {
             $res = \Users\UserAgent::ChangeUserParams($eUser->getId(), "nickname", $_POST["user-edit-nickname"]);
-            \Guards\Logger::LogAction($user->getId(), " изменил(а) никнейм пользователя [".
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.change_user_nickname_log") . $_POST["user-edit-nickname"] ." [".
             $eUser->getNickname() . " -> " . $_POST["user-edit-nickname"] . ".");
             if ($res === 21)
                 $backRequest .= "&res=4nenvn";
@@ -296,7 +296,7 @@ if (isset ($_POST["user-edit-save"])){
         //Change password
         if (!empty($_POST["user-edit-password"])) {
             $res = $eUser->passChange($_POST["user-edit-password"],false);
-            \Guards\Logger::LogAction($user->getId(), " сменил(а) пароль пользователя " . $eUser->getNickname() . ".");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.change_user_password_log") . $eUser->getNickname() . ".");
             if ($res === false)
                 $backRequest .= "&res=4nep";
             elseif ($res === 7)
@@ -305,7 +305,7 @@ if (isset ($_POST["user-edit-save"])){
         //Change email
         if ($eUser->getEmail() != $_POST["user-edit-email"]) {
             $res = \Users\UserAgent::ChangeUserParams($eUser->getId(), "email", $_POST["user-edit-email"]);
-            \Guards\Logger::LogAction($user->getId(), " изменил(а) адрес электронной почты пользователя " . $eUser->getNickname() .
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.change_user_email_log") . $eUser->getNickname() .
                 " [" . $eUser->getEmail() . " -> " . $_POST["user-edit-email"] . ".");
             if ($res === 22) $backRequest .= "&res=4neve";
             elseif ($res === 4) $backRequest .= "&res=4neee";
@@ -315,7 +315,7 @@ if (isset ($_POST["user-edit-save"])){
             if ($eUser->getGroupId() != $_POST["user-edit-group"]) {
                 $groupFromName = $eUser->UserGroup()->getName();
                 $groupToName = \Users\GroupAgent::GetGroupNameById($_POST["user-edit-group"]);
-                \Guards\Logger::LogAction($user->getId(), " изменил(а) группу пользователя " . $eUser->getNickname() .
+                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.change_user_group_log") . $eUser->getNickname() .
                 " [$groupFromName -> $groupToName]" );
                 $eUser->groupChange($_POST["user-edit-group"]);
             }
@@ -325,65 +325,72 @@ if (isset ($_POST["user-edit-save"])){
             if (!\Users\UserAgent::ChangeUserParams($eUser->getId(), "city", $_POST["user-edit-from"])) {
                 $backRequest .= "&res=4nef";
             } else
-                \Guards\Logger::LogAction($user->getId(), " изменил(а) аккаунт пользователя " . $eUser->getNickname()
-                . "[откуда: " . concateWithArrow($eUser->getFrom(), $_POST["user-edit-form"]) . "]");
+                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.change_user_from_log") . $eUser->getNickname()
+                . "[" . \Engine\LanguageManager::GetTranslation("users_panel.logs.from_part"). " " .  \Engine\LanguageManager::GetTranslation("users_panel.logs.from_part") . " " . concateWithArrow($eUser->getFrom(), $_POST["user-edit-form"]) . "]");
         }
         //Change VK
         if ($eUser->getVK() != $_POST["user-edit-vk"]) {
             if (!\Users\UserAgent::ChangeUserParams($eUser->getId(), "vk", $_POST["user-edit-vk"])) {
                 $backRequest .= "&res=4nev";
             } else
-                \Guards\Logger::LogAction($user->getId(), " изменил(а) VK ID пользователя [" . concateWithArrow($eUser->getVK(), $_POST["user-edit-vk"]) . "]");
+                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.change_user_vk_id_log") . $eUser->getNickname() .
+                    "[" . concateWithArrow($eUser->getVK(), $_POST["user-edit-vk"]) . "]");
         }
         //Change skype login
         if ($eUser->getSkype() != $_POST["user-edit-skype"]) {
             if (!\Users\UserAgent::ChangeUserParams($eUser->getId(), "skype", $_POST["user-edit-skype"])) {
                 $backRequest .= "&res=4nes";
             } else
-                \Guards\Logger::LogAction($user->getId(), " изменил(а) Skype ID пользователя [" . concateWithArrow($eUser->getSkype()
-                        , $_POST["user-edit-skype"]) . "]");
+                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.change_user_skype_id_log") . $eUser->getNickname()
+                    ."[" . concateWithArrow($eUser->getSkype(), $_POST["user-edit-skype"]) . "]");
         }
         //Change sex
         if ($eUser->getSex() != $_POST["user-edit-sex"]) {
             if (!\Users\UserAgent::ChangeUserParams($eUser->getId(), "sex", $_POST["user-edit-sex"])) {
                 $backRequest .= "&res=4nesx";
             } else
-                \Guards\Logger::LogAction($user->getId(), " изменил(а) пол пользователя [" . concateWithArrow($eUser->getSex(), $_POST["user-edit-sex"]) . "]");
+                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.change_user_sex_log") . $eUser->getNickname() .
+                    "[" . concateWithArrow($eUser->getSex(), $_POST["user-edit-sex"]) . "]");
         }
         //Change real name
         if ($eUser->getRealName() != $_POST["user-edit-realname"]) {
             if (!\Users\UserAgent::ChangeUserParams($eUser->getId(), "realname", $_POST["user-edit-realname"])) {
                 $backRequest .= "&res=4nern";
             } else
-                \Guards\Logger::LogAction($user->getId(), " изменил(а) реальное имя пользователя [" . concateWithArrow($eUser->getRealName(), $_POST["user-edit-realname"]) . "]");
+                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.change_user_realname_log") . $eUser->getNickname()
+                    ."[" . concateWithArrow($eUser->getRealName(), $_POST["user-edit-realname"]) . "]");
         }
         //Change birthday
         if ($eUser->getBirth() != $_POST["user-edit-birthday"]) {
             if (!\Users\UserAgent::ChangeUserParams($eUser->getId(), "birth", $_POST["user-edit-birthday"])) {
                 $backRequest .= "&res=4nebd";
             } else
-                \Guards\Logger::LogAction($user->getId(), " изменил(а) день рождения пользователя [" . concateWithArrow($eUser->getBirth(), $_POST["user-edit-birthday"]) . "]");
+                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.change_user_birthday_log") . $eUser->getNickname() .
+                    "[" . concateWithArrow($eUser->getBirth(), $_POST["user-edit-birthday"]) . "]");
         }
         //Change hobbies
         if ($eUser->getHobbies() != $_POST["user-edit-hobbies"]) {
             if (!\Users\UserAgent::ChangeUserParams($eUser->getId(), "hobbies", $_POST["user-edit-hobbies"])) {
                 $backRequest .= "&res=4nehs";
             } else
-                \Guards\Logger::LogAction($user->getId(), " изменил(а) хобби пользователя [" . concateWithArrow($eUser->getHobbies(), $_POST["user-edit-hobbies"]) . "]");
+                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.change_user_hobbies_log") . $eUser->getNickname()
+                    ."[" . concateWithArrow($eUser->getHobbies(), $_POST["user-edit-hobbies"]) . "]");
         }
         //Change about
         if ($eUser->getAbout() != $_POST["user-edit-about"]) {
             if (!\Users\UserAgent::ChangeUserParams($eUser->getId(), "about", $_POST["user-edit-about"])) {
                 $backRequest .= "&res=4nea";
             } else
-                \Guards\Logger::LogAction($user->getId(), " изменил(а) автобиографию пользователя [" . concateWithArrow($eUser->getAbout(), $_POST["user-edit-about"]) . "]");
+                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.change_user_about_log") . $eUser->getNickname() .
+                    "[" . concateWithArrow($eUser->getAbout(), $_POST["user-edit-about"]) . "]");
         }
         //Change signature
         if ($eUser->getSignature() != $_POST["user-edit-signature"]) {
             if (!\Users\UserAgent::ChangeUserParams($eUser->getId(), "signature", $_POST["user-edit-signature"])) {
                 $backRequest .= "&res=4nesg";
             } else
-                \Guards\Logger::LogAction($user->getId(), " изменил(а) подпись пользователя [" . concateWithArrow($eUser->getSignature(), $_POST["user-edit-signature"]) . "]");
+                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.change_user_signature_log") . $eUser->getNickname()
+                    ."[" . concateWithArrow($eUser->getSignature(), $_POST["user-edit-signature"]) . "]");
         }
         $adFields = \Users\UserAgent::GetAdditionalFieldsList();
         foreach ($adFields as $field){
@@ -391,7 +398,7 @@ if (isset ($_POST["user-edit-save"])){
                 if (!\Users\UserAgent::SetAdditionalFieldContent($eUser->getId(), $field["id"], $_POST["user-edit-" . $field["id"]]))
                     $backRequest .= "&res=4ncsafc";
                 else {
-                    \Guards\Logger::LogAction($user->getId(), " изменил(а) " . $field["name"] . " пользователя.");
+                    \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.change_part") . $field["name"] . \Engine\LanguageManager::GetTranslation("users_panel.logs.user_part") . $eUser->getNickname() . ".");
                 }
             }
         }
@@ -418,7 +425,7 @@ if (isset ($_POST["user-edit-activate"])){
     if ($user->UserGroup()->getPermission("change_another_profiles")){
         $eUser = new \Users\User($_POST["user-edit-id"]);
         if ($eUser->Activate()){
-            \Guards\Logger::LogAction($user->getId(), " активировал(а) аккунт " . $eUser->getNickname() . ".");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.activate_user_log") . $eUser->getNickname() . ".");
             header("Location: ../../adminpanel.php?p=users&uid=". $eUser->getId() . "&res=4sua");
             exit;
         } else {
@@ -428,3 +435,4 @@ if (isset ($_POST["user-edit-activate"])){
     }
 }
 header("Location: ../../adminpanel.php?p=forbidden");
+exit;
