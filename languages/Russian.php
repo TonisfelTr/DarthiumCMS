@@ -378,6 +378,15 @@ $languagePack = [
             "save_category_btn" => "Сохранить изменения",
             "clear_form_btn" => "Отменить изменения",
             "category_remove_btn" => "Удалить категорию"
+        ],
+        "logs" => [
+            "create_new_category_log" => " создал(а) новую категорию ",
+            "rename_category_log" => " переименовал(а) категорию ",
+            "change_description_log" => " изменил(а) описание категории ",
+            "public_category_change_log" => " изменил(а) публичность категории ",
+            "change_perm_for_comment_create_log" => "изменил(а) право на создание комментариев в категории ",
+            "change_perm_for_topic_create_log" => " изменил(а) право на создание тем в категории ",
+            "remove_category_log" => " удалил(а) категорию "
         ]
     ],
     "editor_functions" => [
@@ -540,6 +549,12 @@ $languagePack = [
             "group_color_tip" => "Этим цветом будет подсвечиваться название группы.",
             "create_btn" => "Создать",
             "clear_btn" => "Очистить"
+        ],
+        "logs" => [
+            "change_group_perm_log" => " изменил(а) права для группы ",
+            "create_group_log" => " создал(а) группу ",
+            "remove_group_log" => " удалил(а) группу ",
+            "change_custom_group_info_log" => " изменил(а) основную информацию группы "
         ]
     ],
     "logs_panel" => [
@@ -625,6 +640,14 @@ $languagePack = [
             "added" => "Добавленные"
 
         ],
+        "logs" => [
+            "report_removed_log" => " удалил(а) жалобу ",
+            "from_report_list_log" => " из списка жалоб.",
+            "mark_your_answer_as_solve_log" => " отметил(а) ответ решением пробемы ",
+            "remove_answer_to_report_log" => " удалил(а) ответ к жалобе ",
+            "change_answer_to_report_log" => " изменил(а) ответ в теме ",
+            "change_report_text_log" => " изменил(а) текст жалобы "
+        ]
     ],
     "rules_panel" => [
         "panel_name" => "Правила",

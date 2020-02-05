@@ -18,7 +18,7 @@ if (isset($_POST["reports-table-delete-btn"])){
         foreach($ids as $item){
             $report = \Guards\ReportAgent::GetReportParam($item, "theme");
             if (!\Guards\ReportAgent::DeleteReport($item)){
-                \Guards\Logger::LogAction($user->getId(), " удалил(а) жалобу \"$report\" из списка жалоб.");
+                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("reports_panel.logs.report_removed_log") . "\"$report\"" . \Engine\LanguageManager::GetTranslation("reports_panel.logs.from_report_list_log"));
                 header($backRequest . "&res=5ndsr");
                 exit;
             }
@@ -54,7 +54,7 @@ if (isset($_POST["reports-answer-accept"])){
         $result = \Guards\ReportAgent::SetAsSolveOfReportTheAnswer($_GET["rid"], $_GET["ansid"]);
         if ($result === True) {
             $reportName = \Guards\ReportAgent::GetReportParam($_GET["rid"], "theme");
-            \Guards\Logger::LogAction($user->getId(), " отметил(а) ответ решением проблемы \"$reportName\".");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("reports_panel.logs.mark_your_answer_as_solve_log") . "\"$reportName\".");
             $ntf = new \Users\UserNotificator(\Guards\ReportAgent::GetReportParam($_GET["rid"], "author"));
             $ntf->createNotify("15", $user->getId(), $_GET["rid"]);
             $list = \Guards\ReportAgent::GetReport($_GET["rid"])->getAddedToDiscuse();
@@ -142,7 +142,7 @@ if (isset($_POST["reports-report-delete"])){
                     $ntf->createNotify("11", $user->getId(), \Guards\ReportAgent::GetReportParam($_GET["rid"], "short_message"));
                 }
 
-                \Guards\Logger::LogAction($user->getId(), " удалил(а) жалобу \"$reportName\".");
+                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("reports_panel.logs.report_removed_log") . "\"$reportName\".");
                 header("Location: ../../adminpanel.php?p=reports&res=5sdr");
                 exit;
             } elseif ($result == 29){
@@ -182,7 +182,7 @@ if (isset($_POST["reports-answer-delete"])){
             $reportName = \Guards\ReportAgent::GetReportParam($user->getId(), "theme");
             $result = \Guards\ReportAgent::DeleteAnswer($_GET["ansid"]);
             if ($result === TRUE) {
-                \Guards\Logger::LogAction($user->getId(),  " удалил(а) ответ к жалобе \"$reportName\".");
+                \Guards\Logger::LogAction($user->getId(),  \Engine\LanguageManager::GetTranslation("reports_panel.logs.remove_answer_to_report_log") ."\"$reportName\".");
                 $ntf = new \Users\UserNotificator(\Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "authorId"));
                 $ntf->createNotify("16", $user->getId(), $_GET["rid"]);
                 header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_GET["rid"] . "&res=5sda");
@@ -267,7 +267,7 @@ if (isset($_POST["report-edit-answer-edit"])){
         $result = \Guards\ReportAgent::ChangeAnswerText($_GET["ansid"], $_POST["reports-edit-message-text"], $_POST["reports-edit-reason"], $user->getId());
         if ($result === TRUE){
             $reportName = \Guards\ReportAgent::GetReportParam($_GET["rid"], "theme");
-            \Guards\Logger::LogAction($user->getId(), " именил(а) ответ в теме \"$reportName\".");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("reports_panel.log.change_answer_to_report_log") . "\"$reportName\".");
             $ntf = new \Users\UserNotificator(\Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "authorId"));
             $ntf->createNotify("17", $user->getId(), $_GET["rid"]);
             header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . \Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "reportId") . "&res=5sea");
@@ -319,7 +319,7 @@ if (isset($_POST["reports-edit-reports-edit"])){
 
         if ($result === TRUE){
             $reportName = \Guards\ReportAgent::GetReportParam($_GET["rid"], "theme");
-            \Guards\Logger::LogAction($user->getId(), " изменил(а) текст жалобы \"$reportName\".");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("reports_panel.logs.change_report_text_log") . "\"$reportName\".");
             $ntf = new \Users\UserNotificator(\Guards\ReportAgent::GetReportParam($_GET["rid"], "author"));
             $ntf->createNotify("10", $user->getId(), $_GET["rid"]);
             header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=". $_GET["rid"] . "&res=5ser");

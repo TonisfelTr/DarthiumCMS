@@ -24,6 +24,9 @@ if ((!$user->UserGroup()->getPermission("group_create")) &&
     (!$user->UserGroup()->getPermission("group_change")) &&
     (!$user->UserGroup()->getPermission("group_delete")) &&
     (!$user->UserGroup()->getPermission("change_perms"))) { header("Location: ../../adminpanel.php&&res=1"); exit; } else {
+
+    $groupName = \Users\GroupAgent::GetGroupNameById($_POST["group"]);
+
     if (isset($_POST["save_perms_button"])) {
         if ($user->UserGroup()->getPermission("change_perms")) {
             //Custom engine perms
@@ -103,7 +106,7 @@ if ((!$user->UserGroup()->getPermission("group_create")) &&
 
             //Custom logs permissions
             \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "logs_see", $_POST["logs_see"]);
-            \Guards\Logger::LogAction($user->getId(), "изменил(а) права для группы " . \Users\GroupAgent::GetGroupNameById($_POST["group"]) . ".");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("group_panel.logs.change_group_perm_log") . "\"$groupName\".");
         } else { header("Location: ../../adminpanel.php?res=3npc&p=groups&visible&group=" . $_POST["group"]); exit; }
         { header("Location: ../../adminpanel.php?p=groups&res=3spc&visible&group=" . $_POST["group"]); exit; }
 
@@ -113,7 +116,11 @@ if ((!$user->UserGroup()->getPermission("group_create")) &&
         if (!$user->UserGroup()->getPermission("group_create")) { header("Location: ../../adminpanel.php?p=groups&res=1"); exit; }
         else {
             if (\Users\GroupAgent::AddGroup($_POST["groupname_create"], $_POST["groupcolor_create"], $_POST["groupsubscribe_create"]) === True)
-                { header("Location: ../../adminpanel.php?p=groups&res=3sgc"); exit; }
+                {
+                    \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("group_panel.logs.create_group_log") . "\"" . $_POST["groupname_create"] . "\"");
+                    header("Location: ../../adminpanel.php?p=groups&res=3sgc");
+                    exit;
+                }
             else { header("Location: ../../adminpanel.php?p=groups&res=3ngc"); exit; }
         }
     }
@@ -125,7 +132,11 @@ if ((!$user->UserGroup()->getPermission("group_create")) &&
             elseif ($_POST["group"] == \Engine\Engine::GetEngineInfo("sg")){ { header("Location: ../../adminpanel.php?p=groups&res=3ngsd&group=".$_POST["group"]."&visible"); exit; } }
             else {
                 if (\Users\GroupAgent::MoveGroupMembers($_POST["group"], \Engine\Engine::GetEngineInfo("sg"))) {
-                    if (\Users\GroupAgent::RemoveGroup($_POST["group"]) === True) { header("Location: ../../adminpanel.php?p=groups&res=3sgd"); exit; }
+                    if (\Users\GroupAgent::RemoveGroup($_POST["group"]) === True) {
+                        \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("group_panel.logs.remove_group_log") . "\"" . $groupName . "\"");
+                        header("Location: ../../adminpanel.php?p=groups&res=3sgd");
+                        exit;
+                    }
                     else { header("Location: ../../adminpanel.php?p=groups&res=3ngmm"); exit; }
                 }
             }
@@ -144,14 +155,21 @@ if ((!$user->UserGroup()->getPermission("group_create")) &&
                 \Users\GroupAgent::ChangeGroupData($_POST["group"], "name", $_POST["groupname"]);
                 \Users\GroupAgent::ChangeGroupData($_POST["group"], "descript", $_POST["groupsubscribe"]);
                 \Users\GroupAgent::ChangeGroupData($_POST["group"], "color", $_POST["groupcolor"]);
-                { header("Location: ../../adminpanel.php?p=groups&res=3se&visible&group=" . $_POST["group"]); exit; }
+                {
+                    \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("group_panel.logs.change_custom_group_info_log") . "\"$groupName\"");
+                    header("Location: ../../adminpanel.php?p=groups&res=3se&visible&group=" . $_POST["group"]);
+                    exit;
+                }
             }
         } else { header("Location: ../../adminpanel.php?p=groups&res=3ne&visible&group=" . $_POST["group"]); exit; }
     }
 
     if (isset($_POST["edit_group_button"])) {
         if ($_POST["group"] == 0) { header("Location: ../../adminpanel.php?p=groups&res=3ngs"); exit; }
-        else { header("Location: ../../adminpanel.php?p=groups&visible&group=" . $_POST["group"]); exit; }
+        else {
+            header("Location: ../../adminpanel.php?p=groups&visible&group=" . $_POST["group"]);
+            exit;
+        }
         //if ()
     }
 }
