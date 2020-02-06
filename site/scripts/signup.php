@@ -88,12 +88,12 @@ if (!empty($referer)){
 #-------------------------------------------------------------------------
 if ($nicknameResult.$passwordResult.$emailResult.$refererResult == ("ok,ok,ok;ok,ok,ok;ok,ok;null;" || "ok,ok,ok;ok,ok,ok;ok,ok;ok;")){
     if (empty($captcha)){
-        \Guards\CaptchaMen::RemoveCaptcha($_POST["profile-reg-captcha-id"]);
+        \Guards\CaptchaMen::RemoveCaptcha();
         header("Location: ../../profile.php?signup&res=nc");
         exit;
     }
     if (!\Guards\CaptchaMen::CheckCaptcha($captcha, $_POST["profile-reg-captcha-id"], 1)){
-        \Guards\CaptchaMen::RemoveCaptcha($_POST["profile-reg-captcha-id"]);
+        \Guards\CaptchaMen::RemoveCaptcha();
         header("Location: ../../profile.php?signup&res=ic");
         exit;
     }
