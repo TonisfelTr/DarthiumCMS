@@ -157,7 +157,7 @@ else {
                 <div class="input-group">
                     <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.email_protocol");?></div>
                     <select class="form-control" name="emailconnecttype">
-                        <option value="tsl" <?php if (\Engine\Engine::GetEngineInfo("ecp") == "tsl") echo "selected"; ?>>TSL</option>
+                        <option value="tls" <?php if (\Engine\Engine::GetEngineInfo("ecp") == "tls") echo "selected"; ?>>TLS</option>
                         <option value="ssl" <?php if (\Engine\Engine::GetEngineInfo("ecp") == "ssl") echo "selected"; ?>>SSL</option>
                     </select>
                 </div>

@@ -1133,6 +1133,42 @@ namespace Users {
             return False;
 
         }
+
+        private static function GetTopicsOfUser(int $userId){
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+
+            if (mysqli_connect_errno()) {
+                printf("Не удалось подключиться: %s\n", mysqli_connect_error());
+                return False;
+            }
+
+            if ($stmt = $mysqli->prepare("SELECT id FROM tt_topics WHERE authorId = ?")){
+                $stmt->bind_param("i", $userId);
+                $stmt->execute();
+                $stmt->bind_result($id);
+                $result = [];
+                while($stmt->fetch()){
+                    array_push($result, $id);
+                }
+                return $result;
+            }
+        }
+        private static function IsWithQuize(int $topicId){
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+
+            if (mysqli_connect_errno()) {
+                printf("Не удалось подключиться: %s\n", mysqli_connect_error());
+                return False;
+            }
+
+            if ($stmt = $mysqli->prepare("SELECT id FROM tt_quizes WHERE topicId = ?")){
+                $stmt->bind_param("i", $topicId);
+                $stmt->execute();
+                $stmt->bind_result($id);
+                $stmt->fetch();
+                return $id;
+            }
+        }
         /**
          * Try to authorize with given param and password.
          * @param $param string Email or nickname. If activation is need it's have to be a email.
@@ -1500,43 +1536,6 @@ namespace Users {
 
         }
         public static function DeleteUser($id){
-            function GetTopics(int $userId){
-                $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-                if (mysqli_connect_errno()) {
-                    printf("Не удалось подключиться: %s\n", mysqli_connect_error());
-                    return False;
-                }
-
-                if ($stmt = $mysqli->prepare("SELECT id FROM tt_topics WHERE authorId = ?")){
-                    $stmt->bind_param("i", $userId);
-                    $stmt->execute();
-                    $stmt->bind_result($id);
-                    $result = [];
-                    while($stmt->fetch()){
-                        array_push($result, $id);
-                    }
-                    return $result;
-                    $stmt = null;
-                }
-            }
-            function IsWithQuize(int $topicId){
-                $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-                if (mysqli_connect_errno()) {
-                    printf("Не удалось подключиться: %s\n", mysqli_connect_error());
-                    return False;
-                }
-
-                if ($stmt = $mysqli->prepare("SELECT id FROM tt_quizes WHERE topicId = ?")){
-                    $stmt->bind_param("i", $topicId);
-                    $stmt->execute();
-                    $stmt->bind_result($id);
-                    $stmt->fetch();
-                    return $id;
-                }
-            }
-
             /* These things must be deleted:
              * 1. Notifications
             */
@@ -1544,10 +1543,10 @@ namespace Users {
             DataKeeper::Delete("tt_notifications", ["fromUid" => $id]);
             DataKeeper::Delete("tt_notifications", ["toUid" => $id]);
              /* 2. Topics */
-            $topics = GetTopics($id);
+            $topics = self::GetTopicsOfUser($id);
             for ($i = 0; $i < count($topics); $i++){
-               if (IsWithQuize($topics[$i]) > 0)
-                   ForumAgent::DeleteQuize(IsWithQuize($topics[$i]));
+               if (self::IsWithQuize($topics[$i]) > 0)
+                   ForumAgent::DeleteQuize(self::IsWithQuize($topics[$i]));
             }
             DataKeeper::Delete("tt_topics", ["authorId" => $id]);
              /* 3. Comments */
@@ -1570,7 +1569,7 @@ namespace Users {
             /* 9. Uploaded files */
             Uploader::DeleteFilesOfUser($id);
             if (UserAgent::GetUserParam($id, "avatar") != "no") {
-                unlink("../uploads/avatars/" . UserAgent::GetUserParam($id, "avatar"));
+                unlink("../../uploads/avatars/" . UserAgent::GetUserParam($id, "avatar"));
             }
             DataKeeper::Delete("tt_users", ["id" => $id]);
         }

@@ -10,7 +10,7 @@ if (!$user->UserGroup()->getPermission("change_engine_settings")){
 }
 else {
     if (isset($_POST["save_cfg_button"])) {
-        if ($_POST["emailconnecttype"] == 1)
+        if ($_POST["emailconnecttype"] == "tls")
             $type = "tls";
         else
             $type = "ssl";

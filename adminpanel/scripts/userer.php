@@ -59,8 +59,9 @@ if (isset($_POST["users-find-button"]) || isset($_POST["fpage"])){
 
 if (isset($_POST["users-delete-button"])){
     if ($user->UserGroup()->getPermission("user_remove")) {
-        if (isset($_POST["duids"])){
-            $deleteUIDs = explode(",", $_POST["duids"]);
+        if (isset($_GET["duids"])){
+            $indexer = 0;
+            $deleteUIDs = explode(",", $_GET["duids"]);
             for ($i = 0; $i < count($deleteUIDs); $i++){
                 $userNickname = \Users\UserAgent::GetUserNick($deleteUIDs[$i]);
                 if ($user->getId() == $deleteUIDs[$i] || $deleteUIDs[$i] == 1){
@@ -68,14 +69,17 @@ if (isset($_POST["users-delete-button"])){
                     exit;
                 }
                 if (\Users\UserAgent::DeleteUser($deleteUIDs[$i]) !== True) {
-                    header("Location: ../../adminpanel.php?p=users&res=4ndu");
-                    exit;
+                    $indexer += 1;
                 }
                 if ($i+1 == count($deleteUIDs)) {
                     \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.delete_user_log") . "$userNickname.");
                     header("Location: ../../adminpanel.php?p=users&res=4sdu");
                     exit;
                 }
+            }
+            if ($indexer == count($deleteUIDs)){
+                header("Location: ../../adminpanel.php?p=users&res=4ndu");
+                exit;
             }
         } else{ header("Location: ../../adminpanel.php?p=users&res=4ndus"); exit; }
     } else { header("Location: ../../adminpanel.php?res=1"); exit; }
@@ -116,11 +120,11 @@ if (isset($_POST["user_ban_ban"])){
     } else { header("Location: ../../adminpanel.php?res=1"); exit;}
 }
 
-if (isset ($_POST["user_ban_unban"]) || isset($_POST["ufuban"]) ) {
+if (isset ($_POST["user_ban_unban"])) {
     if ($user->UserGroup()->getPermission("user_unban")){
         $backRequest = "Location: ../../adminpanel.php?p=users&reqtype=1";
-        if( isset ($_POST["ufuban"])) {
-            $unbanUsers = explode(",", $_POST["ufuban"]);
+        if( isset ($_GET["ufuban"])) {
+            $unbanUsers = explode(",", $_GET["ufuban"]);
             for ($i = 0; $i <= count($unbanUsers)-1; $i++){
                 if (\Guards\SocietyGuard::Unban($unbanUsers[$i]) !== true){
                     if (\Engine\ErrorManager::GetError() == 5) $backRequest .= "&res=4nibu";
@@ -143,7 +147,7 @@ if (isset ($_POST["user_ban_unban"]) || isset($_POST["ufuban"]) ) {
     }
 }
 
-if (isset ($_POST["user_ban_find"]) || isset($_POST["bpage"])){
+if (isset ($_POST["user_ban_find"])){
     $backRequest = "Location: ../../adminpanel.php?p=users&reqtype=1";
     if (isset($_POST["fbpage"])) $backRequest .= "&bpage=" . $_POST["bpage"];
     if (!empty($_POST["user_ban_input"])) $backRequest .= "&fbnn=" . $_POST["user_ban_input"];
@@ -186,11 +190,11 @@ if (isset ($_POST["user_bip_ban"])){
     }
 }
 
-if (isset ($_POST["user_bip_unban"]) || isset($_POST["ipuban"])){
+if (isset ($_POST["user_bip_unban"])){
     if ($user->UserGroup()->getPermission("user_unbanip")){
         $backRequest = "Location: ../../adminpanel.php?p=users&reqtype=2";
-        if (!empty($_POST["ipuban"])) {
-            $unipBans = explode(",", $_POST["ipuban"]);
+        if (!empty($_GET["ipuban"])) {
+            $unipBans = explode(",", $_GET["ipuban"]);
             for ($i = 0; $i <= count($unipBans)-1; $i++) {
                 if (\Guards\SocietyGuard::UnbanIP($unipBans[$i]) === FALSE) {
                     $backRequest .= "&res=4niub";

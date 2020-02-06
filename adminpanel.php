@@ -151,7 +151,7 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
                     <div class="alert alert-success"><span class="glyphicon glyphicon-alert"></span> <?php echo \Engine\LanguageManager::GetTranslation("users_have_not_been_deleted"); ?>
                     </div><?php }
                 if ($_GET["res"] == "4ndus") { ?>
-                    <div class="alert alert-success"><span class="glyphicon glyphicon-alert"></span>
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-alert"></span>
                         <?php echo \Engine\LanguageManager::GetTranslation("users_were_not_deleted:_no_users_were_received_for_deletion"); ?>
                     </div><?php }
                 if ($_REQUEST["res"] == "4nbu") { ?>
@@ -213,7 +213,7 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
                     <?php echo \Engine\LanguageManager::GetTranslation("failed_to_register_user"); ?>
                 </div> <?php }
                 if ($_REQUEST["res"] == "4sru") { ?><div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span>
-                    <?php echo \Engine\LanguageManager::GetTranslation("user"); ?> "<?php echo $_REQUEST["nunn"]; ?>" <?php \Engine\LanguageManager::GetTranslation("has_been_registered"); ?>
+                    <?php echo \Engine\LanguageManager::GetTranslation("user"); ?> "<?php echo $_REQUEST["nunn"]; ?>" <?=\Engine\LanguageManager::GetTranslation("has_been_registered"); ?>
                 </div> <?php }
                 if (($_REQUEST["res"] == "4nvnn") || ($_REQUEST["res"] == "4nenvn")) { ?><div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
                     <?php echo \Engine\LanguageManager::GetTranslation("nickname_has_forbidden_symbols"); ?>
