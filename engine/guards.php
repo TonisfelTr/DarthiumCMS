@@ -923,10 +923,12 @@ namespace Guards {
                 return ErrorManager::GetError();
             }
 
-            if ($stmt = $mysqli->prepare("DELETE FROM `tt_reports` WHERE `id`=?")){
+            if ($stmt = $mysqli->prepare("DELETE FROM `tt_reports` WHERE `id`=?")) {
                 $stmt->bind_param("i", $reportId);
                 $stmt->execute();
-                $stmt->prepare("DELETE FROM `tt_reportanswers` WHERE `reportId`=?");
+                $stmt->close();
+            }
+            if ($stmt = $mysqli->prepare("DELETE FROM `tt_reportanswers` WHERE `reportId`=?")){
                 $stmt->bind_param("i", $reportId);
                 $stmt->execute();
                 if ($stmt->errno){
@@ -937,6 +939,7 @@ namespace Guards {
             }
             return false;
         }
+
         public static function ChangeReportParam($idReport, $param, $newValue){
             if (in_array($param, ["create_date", "id", "close_date"])) return false;
 
@@ -1281,7 +1284,14 @@ namespace Guards {
             }
             return false;
         }
-        public static function RemoveCaptcha($id){
+        public static function Test(){
+            if (file_exists("../uploads/avatars/1.jpg"))
+                echo 1;
+            else
+                echo 0;
+        }
+
+        public static function RemoveCaptcha(){
 
             $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
             if (mysqli_connect_errno()) {
@@ -1295,7 +1305,7 @@ namespace Guards {
                 $stmt->execute();
                 $stmt->bind_result($picName);
                 while ($stmt->fetch()) {
-                    unlink("./captchas/" . $picName . ".png");
+                    unlink("../engine/captchas/" . $picName . ".png");
                 }
                 $stmt->close();
             }
@@ -1305,19 +1315,6 @@ namespace Guards {
                 $stmt->execute();
                 $stmt->close();
             }
-
-            if ($stmt = $mysqli->prepare("SELECT picName FROM 'tt_captcha' WHERE `id_hash`=?")) {
-                $stmt->bind_param("s", $id);
-                $stmt->execute();
-                $stmt->bind_result($r);
-                $stmt->fetch();
-                unlink("./captchas/" . $r . ".png");
-                $stmt->close();
-            }
-
-            $stmt = $mysqli->prepare("DELETE FROM `tt_captcha` WHERE id_hash=?");
-            $stmt->bind_param("s", $id);
-            $stmt->execute();
 
             if (mysqli_stmt_errno($stmt)){
                 $stmt->close();

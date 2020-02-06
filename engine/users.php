@@ -1569,7 +1569,7 @@ namespace Users {
             /* 9. Uploaded files */
             Uploader::DeleteFilesOfUser($id);
             if (UserAgent::GetUserParam($id, "avatar") != "no") {
-                unlink("../../uploads/avatars/" . UserAgent::GetUserParam($id, "avatar"));
+                unlink("../uploads/avatars/" . UserAgent::GetUserParam($id, "avatar"));
             }
             DataKeeper::Delete("tt_users", ["id" => $id]);
         }
