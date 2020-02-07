@@ -1344,8 +1344,8 @@ namespace Users {
                 ini_set("session.save_path", $_SERVER["DOCUMENT_ROOT"] . "/engine/sessions/");
                 session_start();
                 $authIs = self::GetUserId($param);
-                setcookie("sid", session_id(), time()+31536000, '/', $_SERVER["SERVER_NAME"]);
-                setcookie("reloadSession", true, time()+31536000, '/', $_SERVER["SERVER_NAME"]);
+                setcookie("sid", session_id(), time()+31536000, "/", $_SERVER["SERVER_NAME"]);
+                setcookie("reloadSession", true, time()+31536000, "/", $_SERVER["SERVER_NAME"]);
                 $_SESSION["uid"] = $authIs;
                 $_SESSION["nickname"] = self::GetUserNick($authIs);
                 $_SESSION["email"] = self::GetUserParam($authIs, "email");
@@ -1372,24 +1372,18 @@ namespace Users {
         }
         public static function SessionContinue()
         {
-            if (isset($_COOKIE["reloadSession"]) && isset ($_COOKIE["sid"])) {
-                session_id($_COOKIE["sid"]);
-                ini_set("session.gc_maxlifetime", 31536000);
-                ini_set("session.cookie_lifetime", 31536000);
-                ini_set("session.save_path", $_SERVER["DOCUMENT_ROOT"] . "/engine/sessions/");
-                session_start();
-                if ($_SESSION["hostip"] == $_SERVER["REMOTE_ADDR"]) {
+            if (isset($_COOKIE["PHPSESSID"])) {
+                setcookie("reloadSession", true, time() + 31536000, "/", $_SERVER["SERVER_NAME"]);
+                if (isset($_COOKIE["reloadSession"])) {
+                    session_id($_COOKIE["PHPSESSID"]);
+                    ini_set("session.gc_maxlifetime", 31536000);
+                    ini_set("session.cookie_lifetime", 31536000);
+                    ini_set("session.save_path", $_SERVER["DOCUMENT_ROOT"] . "/engine/sessions/");
+                    session_start();
                     $authResult = self::Authorization($_SESSION["email"], $_SESSION["passhash"], true);
-                    setcookie("reloadSession", true, time()+31536000, "/", $_SERVER["SERVER_NAME"]);
                     if ($authResult === True) return self::AfterAuth();
                     elseif ($authResult === False) return self::NotValidPWD();
                     else return $authResult;
-                } else {
-                    session_register_shutdown();
-                    setcookie("reloadSession", false, 0, "/", $_SERVER["SERVER_NAME"]);
-                    setcookie("sid", true, 1, "/", $_SERVER["SERVER_NAME"]);
-                    ErrorManager::GenerateError(24);
-                    return ErrorManager::GetError();
                 }
             }
             return false;

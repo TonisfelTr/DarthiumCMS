@@ -458,7 +458,7 @@ if ($canIPBan || $canIPUnban){
                 </div>
                 <div class="input-group">
                     <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.status")?></div>
-                    <div class="form-control">
+                    <div class="form-control alert-info">
                     <?php $lastOnline = 0;
                     if ($user->getLastTime() == 0){
                     $lastOnline = ($USER->getSex() == 2) ? \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.she_not_signed_in") : \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.he_not_signed_in");

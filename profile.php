@@ -14,6 +14,9 @@ function str_replace_once($search, $replace, $text){
     $pos = strpos($text, $search);
     return $pos!==false ? substr_replace($text, $replace, $pos, strlen($search)) : $text;
 }
+
+//print_r($_COOKIE);
+
 ###############################################
 # Менеджер пользователя.
 if ($session === TRUE || !empty($_GET["uid"]))
@@ -1163,9 +1166,10 @@ if (\Engine\Engine::GetEngineInfo("smt")){
 }
 
 ob_end_clean();
-$main = str_replace_once("{PROFILE_PAGE:PAGE_NAME}", \Engine\LanguageManager::GetTranslation("unsuccessfuly_authorization"), $main);
+$main = str_replace_once("{PROFILE_PAGE:PAGE_NAME}", "", $main);
 $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}", "", $main);
-$main = str_replace_once("{PROFILE_MAIN_BODY}", \Engine\LanguageManager::GetTranslation("ua_info"), $main);
+$main = str_replace_once("{PROFILE_MAIN_BODY}", $test, $main);
+//$main = str_replace_once("{PROFILE_MAIN_BODY}", \Engine\LanguageManager::GetTranslation("ua_info"), $main);
 $main = str_replace_once("{IMAGER_STYLESHEET}", "", $main);
 $main = str_replace_once("{IMAGER}", "", $main);
 $main = str_replace_once("{IMAGER_JS}", "", $main);

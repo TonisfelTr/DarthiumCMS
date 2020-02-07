@@ -747,7 +747,7 @@
              * @param string $path
              * @return string
              */
-            public static function GetTranslation(string $path){
+            public static function GetTranslation(string $path, ...$vars){
                 if (isset(self::$languageArray[$path]) && !is_array(self::$languageArray[$path]))
                     return self::$languageArray[$path];
 
@@ -769,8 +769,15 @@
                         }
                     }
                 }
-                if (!empty($think))
+                if (!empty($think)) {
+                    $time = 0;
+                    foreach($vars as $var){
+                        $time++;
+                        $param = "{" . $time . "}";
+                        $think = str_ireplace($param, $var, $think);
+                    }
                     return $think;
+                }
                 else
                     return $path;
             }
