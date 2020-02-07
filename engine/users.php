@@ -1344,7 +1344,6 @@ namespace Users {
                 ini_set("session.save_path", $_SERVER["DOCUMENT_ROOT"] . "/engine/sessions/");
                 session_start();
                 $authIs = self::GetUserId($param);
-                setcookie("sid", session_id(), time()+31536000, "/", $_SERVER["SERVER_NAME"]);
                 setcookie("reloadSession", true, time()+31536000, "/", $_SERVER["SERVER_NAME"]);
                 $_SESSION["uid"] = $authIs;
                 $_SESSION["nickname"] = self::GetUserNick($authIs);
@@ -1360,7 +1359,6 @@ namespace Users {
                 ini_set("session.save_path", $_SERVER["DOCUMENT_ROOT"] . "/engine/sessions/");
                 session_start();
                 $authIs = self::GetUserId($param);
-                setcookie("sid", session_id(), time()+3600, '/', $_SERVER["SERVER_NAME"]);
                 setcookie("reloadSession", true, time()+3600, '/', $_SERVER["SERVER_NAME"]);
                 $_SESSION["uid"] = $authIs;
                 $_SESSION["nickname"] = self::GetUserNick($authIs);
@@ -1374,17 +1372,15 @@ namespace Users {
         {
             if (isset($_COOKIE["PHPSESSID"])) {
                 setcookie("reloadSession", true, time() + 31536000, "/", $_SERVER["SERVER_NAME"]);
-                if (isset($_COOKIE["reloadSession"])) {
-                    session_id($_COOKIE["PHPSESSID"]);
-                    ini_set("session.gc_maxlifetime", 31536000);
-                    ini_set("session.cookie_lifetime", 31536000);
-                    ini_set("session.save_path", $_SERVER["DOCUMENT_ROOT"] . "/engine/sessions/");
-                    session_start();
-                    $authResult = self::Authorization($_SESSION["email"], $_SESSION["passhash"], true);
-                    if ($authResult === True) return self::AfterAuth();
-                    elseif ($authResult === False) return self::NotValidPWD();
-                    else return $authResult;
-                }
+                session_id($_COOKIE["PHPSESSID"]);
+                ini_set("session.gc_maxlifetime", 31536000);
+                ini_set("session.cookie_lifetime", 31536000);
+                ini_set("session.save_path", $_SERVER["DOCUMENT_ROOT"] . "/engine/sessions/");
+                session_start();
+                $authResult = self::Authorization($_SESSION["email"], $_SESSION["passhash"], true);
+                if ($authResult === True) return self::AfterAuth();
+                elseif ($authResult === False) return self::NotValidPWD();
+                else return $authResult;
             }
             return false;
         }
