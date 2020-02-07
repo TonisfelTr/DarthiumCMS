@@ -97,7 +97,7 @@ $languagePack = [
     "no_friends" => "У вас пока что нет ни одного друга :(",
     "friends_online" => "Друзья онлайн",
     "no_online_friends" => "Пока что нет друзей в онлайне :(",
-    "other_friends" => "Остальные друзья",
+    "other_friends" => "Список друзей",
 //Custom information
     "profile" => "Профиль",
     "not_signed_in_he" => "не заходил",
