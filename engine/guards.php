@@ -1284,12 +1284,6 @@ namespace Guards {
             }
             return false;
         }
-        public static function Test(){
-            if (file_exists("../uploads/avatars/1.jpg"))
-                echo 1;
-            else
-                echo 0;
-        }
 
         public static function RemoveCaptcha(){
 

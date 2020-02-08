@@ -979,6 +979,10 @@
                 return $preparedQuery->fetch($pdo::FETCH_ASSOC);
             }
         }
+
+        class PluginManager{
+
+        }
     }
 
 

@@ -1883,7 +1883,12 @@ namespace Users {
                 4 => "gif"
             );
 
-            if (in_array(Uploader::ExtractType(basename($_FILES[$fileFormName]['name'])), $imgtypes)) $uploaddir = $_SERVER["DOCUMENT_ROOT"] . "/uploads/avatars/";
+            echo Uploader::ExtractType($_FILES[$fileFormName]['name']) . "<br>";
+            echo $_FILES[$fileFormName]['name'];
+            if (in_array(Uploader::ExtractType($_FILES[$fileFormName]['name']), $imgtypes)) {
+                $uploaddir = $_SERVER["DOCUMENT_ROOT"] . "/uploads/avatars/";
+                echo 1;
+            }
             else{ ErrorManager::GenerateError(18); return ErrorManager::GetError(); }
 
             if (getimagesize($_FILES[$fileFormName]['tmp_name'])[0] != Engine::GetEngineInfo("aw") ||
@@ -1895,6 +1900,10 @@ namespace Users {
             if ($_FILES[$fileFormName]['size'] > 6*1024*1024){
                 ErrorManager::GenerateError(20);
                 return ErrorManager::GetError();
+            }
+
+            if (file_exists("../uploads/avatars/" . UserAgent::GetUserParam($idUser, "avatar"))){
+                unlink("../uploads/avatars/" . UserAgent::GetUserParam($idUser, "avatar"));
             }
 
             $newName = $idUser . "." . Uploader::ExtractType(basename($_FILES[$fileFormName]['name']));

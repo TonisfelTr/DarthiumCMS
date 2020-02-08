@@ -19,15 +19,15 @@ if ($user->UserGroup()->getPermission("change_profile")) {
             header("Location: ../../profile.php?page=edit&res=neav");
             exit;
         }
-        elseif ($res == 18){
+        elseif ($res === 18){
             header("Location: ../../profile.php?page=edit&res=neavvf");
             exit;
         }
-        elseif ($res == 19) {
+        elseif ($res === 19) {
             header("Location: ../../profile.php?page=edit&res=neavvs");
             exit;
         }
-        elseif ($res == 20) {
+        elseif ($res === 20) {
             header("Location: ../../profile.php?page=edit&res=neavvb");
             exit;
         }
