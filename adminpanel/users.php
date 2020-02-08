@@ -610,7 +610,7 @@ if ($canIPBan || $canIPUnban){
                 <p><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.avatar_tip")?></p>
                 <p class="alert alert-warning"><span class="glyphicon glyphicon-warning-sign"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.avatar_size_tip")?></p>
                 <input type="hidden" name="MAX_FILE_SIZE" value="6291456" />
-                <input class="form-control" type="file" accept="image/jpeg,image/jpg,image/png,image/gif,image/tif" name="user-edit-avatar">
+                <input class="form-control" type="file" id="user-edit-avatar" name="user-edit-avatar">
                 <hr>
                 <div class="btn-group">
                     <button class="btn btn-default" type="submit" name="user-edit-save"><span class="glyphicon glyphicon-ok"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.save_changes")?></button>

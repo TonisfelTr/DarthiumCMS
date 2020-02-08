@@ -1874,7 +1874,6 @@ namespace Users {
                 ErrorManager::GenerateError(11);
                 return ErrorManager::GetError();
             }
-
             $imgtypes = array(
                 0 => "jpg",
                 1 => "png",
@@ -1882,12 +1881,10 @@ namespace Users {
                 3 => "jpeg",
                 4 => "gif"
             );
-
             echo Uploader::ExtractType($_FILES[$fileFormName]['name']) . "<br>";
             echo $_FILES[$fileFormName]['name'];
             if (in_array(Uploader::ExtractType($_FILES[$fileFormName]['name']), $imgtypes)) {
                 $uploaddir = $_SERVER["DOCUMENT_ROOT"] . "/uploads/avatars/";
-                echo 1;
             }
             else{ ErrorManager::GenerateError(18); return ErrorManager::GetError(); }
 

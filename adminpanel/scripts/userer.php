@@ -407,14 +407,13 @@ if (isset ($_POST["user-edit-save"])){
                 }
             }
         }
-
-        if (!empty($_POST["user-edit-avatar"])) {
-            $res = \Users\UserAgent::UploadAvatar($eUser->getId(), "user-form");
+        if (isset($_FILES["user-edit-avatar"]) && $_FILES["user-edit-avatar"]["size"] > 0) {
+            echo 1;
+            $res = \Users\UserAgent::UploadAvatar($eUser->getId(), "user-edit-avatar");
             if ($res === False) $backRequest .= "&res=4neav";
-            elseif ($res == 18) $backRequest .= "&res=4neavvf";
-            elseif ($res == 19) $backRequest .= "&res=4neavvs";
-            elseif ($res == 20) $backRequest .= "&res=4neavvb";
-            else $backRequest .= "&res=4neav";
+            elseif ($res === 18) $backRequest .= "&res=4neavvf";
+            elseif ($res === 19) $backRequest .= "&res=4neavvs";
+            elseif ($res === 20) $backRequest .= "&res=4neavvb";
         }
         If (strpos($backRequest, "&res") === false) $backRequest .= "&res=4seu";
         if ($user->getId() != $eUser->getId() && strpos($backRequest, "4s")) $eUser->Notifications()->createNotify(3, $user->getId());
