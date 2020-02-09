@@ -100,6 +100,24 @@ if ($nicknameResult.$passwordResult.$emailResult.$refererResult == ("ok,ok,ok;ok
 
     if (\Users\UserAgent::AddUser($nickname, $password, $email, $referer,
             true, @$_POST["profile-reg-realname-input"], @$_POST["profile-reg-city-input"], @$_POST["profile-reg-sex-input"]) === TRUE) {
+        $additionalFields = \Users\UserAgent::GetAdditionalFieldsList();
+        for ($i = 0; $i < count($additionalFields); $i++){
+            $fieldProp = $additionalFields[$i];
+            if ($fieldProp["inRegister"] == 1){
+                if ($fieldProp["isRequied"] == 1) {
+                    if (empty($_POST["profile-adfield-" . $fieldProp["id"]])){
+                        header("Location: ../../profile.php?signup&res=nsnp");
+                        exit;
+                    } else {
+                        \Users\UserAgent::SetAdditionalFieldContent(\Engine\DataKeeper::getMax("tt_users", "id"), $fieldProp["id"], $_POST["profile-adfield-" . $fieldProp["id"]]);
+                    }
+                } else {
+                    \Users\UserAgent::SetAdditionalFieldContent(\Engine\DataKeeper::getMax("tt_users", "id"), $fieldProp["id"], $_POST["profile-adfield-" . $fieldProp["id"]]);
+                }
+            }
+            else
+                continue;
+        }
         header("Location: ../../profile.php?res=sr");
         exit;
     } else {

@@ -26,8 +26,9 @@ function Add(){
         "isRequied" => BoolToInt($_POST["field-isreq"]),
         "inRegister" => BoolToInt($_POST["field-inregister"]),
         "type" => $_POST["field-type"],
-        "canBePrivate" => BoolToInt($_POST["field-privatestat"])
-    ));
+        "canBePrivate" => BoolToInt($_POST["field-privatestat"]),
+        "custom" => $_POST["field-custom"])
+    );
     if ($insert){
         echo $insert;
     } else return;
@@ -46,7 +47,8 @@ function Edit(){
         "isRequied" => BoolToInt($_POST["field-isreq"]),
         "inRegister" => BoolToInt($_POST["field-inregister"]),
         "canBePrivate" => BoolToInt($_POST["field-privatestat"]),
-        "link" => $_POST["field-link"]
+        "link" => $_POST["field-link"],
+        "custom" => $_POST["field-custom"]
     );
 
     if (\Engine\DataKeeper::Update("tt_adfields", $vars, array("id" => $_POST["field-id"])))

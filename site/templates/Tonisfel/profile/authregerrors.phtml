@@ -3,7 +3,9 @@
         <span class="glyphicon glyphicon-remove" ></span> Вы ввели неверную капчу. Попробуйте ещё раз.
     <?php } if (@$_REQUEST["res"] == "nc"){ ?>
         <span class="glyphicon glyphicon-remove" ></span> Вы не ввели капчу.
-    <?php }  if (@$_REQUEST["res"] == "nr"){ ?>
+    <?php } if (@$_REQUEST["res"] == "nr"){ ?>
         <span class="glyphicon glyphicon-remove" ></span> Не получилось зарегистрировать нового пользователя. Обратитесь к Администратору.
+    <?php } if (@$_REQUEST["res"] == "nsnp"){ ?>
+        <span class="glyphicon glyphicon-remove" ></span> Не заполнены все обязательные поля.
     <?php } ?>
 </div>

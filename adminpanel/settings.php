@@ -242,14 +242,20 @@ else {
                     <div class="input-group">
                         <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_type.name");?></div>
                         <select class="form-control" id="field-type-selector">
-                            <option value="1"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_type.mixin");?></option>
+                            <option value="1"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_type.mixing");?></option>
                             <option value="2"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_type.contact");?></option>
                             <option value="3"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_type.custom");?></option>
                         </select>
                         <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_type.tip");?></div>
                     </div>
                     <br>
-                    <div class="input-group">
+                    <div class="input-group" id="custom-value-input-div" hidden>
+                        <div class="input-group-addon">Значение по-умолчанию</div>
+                        <input class="form-control" type="text" id="custom-value-input">
+                        <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> Стандартное значение поля.</div>
+                    </div>
+                    <br>
+                    <div class="input-group" id="require-input-div" hidden>
                         <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_requied");?></div>
                         <div class="form-control">
                             <input type="checkbox" name="field-requied" id="field-requied">
@@ -257,7 +263,7 @@ else {
                         <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_requied_tip");?></div>
                     </div>
                     <br>
-                    <div class="input-group">
+                    <div class="input-group" id="see-on-reg-input-div" hidden>
                         <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_visible_in_registration");?></div>
                         <div class="form-control">
                             <input type="checkbox" name="field-reg-show" id="field-reg-show">
@@ -265,7 +271,7 @@ else {
                         <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_visible_in_registration_tip");?></div>
                     </div>
                     <br>
-                    <div class="input-group">
+                    <div class="input-group" id="private-input-div" hidden>
                         <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_can_be_private");?></div>
                         <div class="form-control">
                             <input type="checkbox" name="field-private" id="field-private">
@@ -273,7 +279,7 @@ else {
                         <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_can_be_private_tip");?></div>
                     </div>
                     <br>
-                    <div class="input-group">
+                    <div class="input-group" id="link-input-div">
                         <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_link");?></div>
                         <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_link_tip_first");?></div>
                         <div class="form-control info alert-info"><span class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_link_tip_second");?></div>
@@ -423,6 +429,11 @@ else {
        $("#field-panel-manage").show();
        $("#user-add-fields").val(0);
        ClearFieldForm();
+        $("#custom-value-input-div").hide();
+        $("#require-input-div").hide();
+        $("#see-on-reg-input-div").hide();
+        $("#private-input-div").hide();
+        $("#link-input-div").hide();
     });
 
     $("#field-cancel-btn").on("click", function () {
@@ -450,6 +461,7 @@ else {
                      "&field-inregister=" + $("#field-reg-show").is(":checked") +
                      "&field-privatestat=" + $("#field-private").is(":checked") +
                      "&field-link=" + $("#field-link-textarea").val() +
+                     "&field-custom=" + $("#custom-value-input").val() +
                      "&action=" + action;
        $.ajax({
            url: "adminpanel/scripts/ajax/adfieldsajax.php",
@@ -489,7 +501,35 @@ else {
            }
        });
     });
-
+    //Change form view in dependence of type additive field.
+    $("#field-type-selector").on("change", function() {
+        var type = $("#field-type-selector").val();
+        $("#custom-value-input-div").hide();
+        $("#require-input-div").hide();
+        $("#see-on-reg-input-div").hide();
+        $("#private-input-div").hide();
+        $("#link-input-div").hide();
+        if (type == 1){
+            $("#custom-value-input-div").hide();
+            $("#require-input-div").hide();
+            $("#see-on-reg-input-div").hide();
+            $("#private-input-div").hide();
+            $("#link-input-div").hide();
+        }
+        if (type == 2){
+            $("#require-input-div").show();
+            $("#see-on-reg-input-div").show();
+            $("#private-input-div").show();
+            $("#link-input-div").show();
+        }
+        if (type == 3){
+            $("#custom-value-input-div").show();
+            $("#require-input-div").hide();
+            $("#see-on-reg-input-div").hide();
+            $("#private-input-div").hide();
+            $("#link-input-div").hide();
+        }
+    });
     //Get info about the additional field.
     $("#user-add-fields").on("change", function() {
        var id = $("#user-add-fields").val();
@@ -502,18 +542,49 @@ else {
                data: "action=get&field-id=" + id,
                success: function (data){
                    var result = $.parseJSON(data);
+                   $("#custom-value-input-div").hide();
+                   $("#require-input-div").hide();
+                   $("#see-on-reg-input-div").hide();
+                   $("#private-input-div").hide();
+                   $("#link-input-div").hide();
                    $("#field-panel-manage").show();
                    $("#field-name-input").val(result.name);
                    $("#field-description").val(result.description);
                    $("#field-type-selector").val(result.type);
-                   if (result.isRequied == "1")
-                       $("#field-requied").prop("checked", true);
-                   if (result.inRegister == "1")
-                       $("#field-reg-show").prop("checked", true);
-                   if (result.canBePrivate == "1"){
-                       $("#field-private").prop("checked", true);
+                   if ($("#field-type-selector").val() == 1) {
+                       $("#custom-value-input-div").hide();
+                       $("#require-input-div").hide();
+                       $("#see-on-reg-input-div").hide();
+                       $("#private-input-div").hide();
+                       $("#link-input-div").hide();
                    }
-                   $("#field-link-textarea").val(result.link);
+                   if ($("#field-type-selector").val() == 2) {
+                       $("#require-input-div").show();
+                       $("#see-on-reg-input-div").show();
+                       $("#private-input-div").show();
+                       $("#link-input-div").show();
+                       if (result.isRequied == "1")
+                           $("#field-requied").prop("checked", true);
+                       else
+                           $("#field-requied").prop("checked", false);
+                       if (result.inRegister == "1")
+                           $("#field-reg-show").prop("checked", true);
+                       else
+                           $("#field-reg-show").prop("checked", false);
+                       if (result.canBePrivate == "1")
+                           $("#field-private").prop("checked", true);
+                       else
+                           $("#field-private").prop("checked", false);
+                       $("#field-link-textarea").val(result.link);
+                   }
+                   if ($("#field-type-selector").val() == 3) {
+                       $("#custom-value-input-div").show();
+                       $("#require-input-div").hide();
+                       $("#see-on-reg-input-div").hide();
+                       $("#private-input-div").hide();
+                       $("#link-input-div").hide();
+                       $("#custom-value-input").val(result.custom);
+                   }
                }
            });
        } else {

@@ -32,6 +32,7 @@
                     <input class="profile-input" type="text" id="profile-reg-referer-input" name="profile-reg-referer-input" placeholder="Реферер" autocomplete="new-password">
                     <span class="helper"><span class="glyphicon glyphicon-info-sign"></span> Если Вы пришли на сайт по направлению какого-то пользователя, пожалуйста, напишите его никнейм.</span>
                 </div>
+                {AUTH_PAGE:NECESSARY_ADDITIVE_FIELDS}
                 <hr>
                 <h3>Дополнительная информация</h3>
                 <p>Данные поля не обязательны к заполнению.</p>
@@ -43,11 +44,12 @@
                 </div>
                 <div>
                     <select class="profile-input" name="profile-reg-sex-input">
-                        <option value="0">Пол не выбран</option>
-                        <option value="1">Мужской</option>
-                        <option value="2">Женский</option>
+                        <option value="1">Пол не выбран</option>
+                        <option value="2">Мужской</option>
+                        <option value="3">Женский</option>
                     </select>
                 </div>
+                {AUTH_PAGE:NOT_NECESSARY_ADDITIVE_FIELDS}
                 <hr>
                 <div>
                     <p>Введите то, что написано на картинке.</p>

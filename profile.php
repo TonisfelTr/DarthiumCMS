@@ -242,7 +242,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
         $isPrivate = $userAdFields[$id]["isPrivate"];
         if (strlen($content) > 0){
             if ($fieldProp["link"] != ""){
-                $tag = "<a href=\"" . str_replace("{{1}}", $content, $fieldProp["link"])  ."\"";
+                $tag = "<a class=\"profile-profile-link\" href=\"" . str_replace("{{1}}", $content, $fieldProp["link"])  ."\"";
                 $closingTag = "</a>";
             }
             if ($fieldProp["description"] != ""){
@@ -261,7 +261,13 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
                 $result = $fieldName . ": " . $content . "<br>";
             }
         } else {
-            $result = $fieldName . ": " . \Engine\LanguageManager::GetTranslation("not_setted"). ".<br>";
+            if ($fieldProp["type"] !== "3")
+                $result = $fieldName . ": " . \Engine\LanguageManager::GetTranslation("not_setted"). ".<br>";
+            else {
+                $value = (\Users\UserAgent::GetAdditionalFieldContentOfUser($user->getId(), $id) == null) ? $fieldProp["custom"] :
+                    \Users\UserAgent::GetAdditionalFieldContentOfUser($user->getId(), $id);
+                $result = $fieldName . ": " . $value . ".<br>";
+            }
         }
 
         $isPrivate = ($isPrivate) ? "checked" : "";
@@ -283,10 +289,6 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
                                             </div>";
         } elseif ($fieldProp["type"] === "3") {
             $customAF[] = $result;
-            $customEditAF[] = "<div class=\"profile-profile-edit-group\">
-                                            <label class=\"profile-label\" for=\"profile-edit-" . $fieldProp["id"] . "\">$fieldName</label>
-                                            <input class=\"profile-input\" type=\"text\" id=\"profile-edit-" . $fieldProp["id"] . "\" name=\"profile-edit-" . $fieldProp["id"] . "\" placeholder=\"" . $fieldProp["description"] . "\" value=\"$content\">
-                                    </div>";
         }
     }
 
@@ -296,7 +298,6 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
     $contactAFJoined = implode("", $contactAF);
     //Display on change custom profile page.
     @$infoAFEditJoined = implode("", $infoEditAF);
-    @$customAFEditJoined = implode("", $customEditAF);
     @$contactAFEditJoined = implode("", $contactEditAF);
     //Display on security profile page.
     @$contactAFSecurityJoined = implode("", $contactSecurityAF);
@@ -304,7 +305,6 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
     $userInfo = str_replace_once("{PROFILE_PAGE:CUSTOM_ADDITIONALS}", $customAFJoined, $userInfo);
     $userInfo = str_replace_once("{PROFILE_PAGE:CONTACT_ADDITIONALS}", $contactAFJoined, $userInfo);
     $userInfo = str_replace_once("{PROFILE_PAGE:INFO_ADDITIONALS}", $infoAFJoined, $userInfo);
-    $userEdit = str_replace_once("{PROFILE_PAGE:CUSTOM_ADDITIONALS_EDIT}", $customAFEditJoined, $userEdit);
     $userEdit = str_replace_once("{PROFILE_PAGE:INFO_ADDITIONALS_EDIT}", $infoAFEditJoined, $userEdit);
     $userEdit = str_replace_once("{PROFILE_PAGE:CONTACT_ADDITIONALS_EDIT}", $contactAFEditJoined, $userEdit);
     $userEdit = str_replace_once("{PROFILE_PAGE:PRIVATE_CONTACTS_EDIT}", $contactAFSecurityJoined, $userEdit);
@@ -913,7 +913,7 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
         }
         if ($content != ""){
             if ($fieldProp["link"] != ""){
-                $tag = "<a href=\"" . str_replace("{{1}}", $content, $fieldProp["link"])  ."\"";
+                $tag = "<a class=\"profile-profile-link\" href=\"" . str_replace("{{1}}", $content, $fieldProp["link"])  ."\"";
                 $closingTag = "</a>";
             }
             if ($fieldProp["description"] != ""){
@@ -931,7 +931,13 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
                 $result = $fieldName . ": " . $tag . "<br>";
             }
         } else {
-            $result = $fieldName . ": " . \Engine\LanguageManager::GetTranslation("not_setted"). ".<br>";
+            if ($fieldProp["type"] !== "3")
+                $result = $fieldName . ": " . \Engine\LanguageManager::GetTranslation("not_setted"). ".<br>";
+            else {
+                $value = (\Users\UserAgent::GetAdditionalFieldContentOfUser($user->getId(), $id) == null) ? $fieldProp["custom"] :
+                    \Users\UserAgent::GetAdditionalFieldContentOfUser($user->getId(), $id);
+                $result = $fieldName . ": " . $value . ".<br>";
+            }
         }
         switch ($fieldProp["type"]){
             case 1:
@@ -1117,6 +1123,27 @@ if (!$session || empty($user)){
     include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/authremaindpass.html";
     $authRemaind = getBrick();
 
+    //Create fields in registration form.
+    $additionalFields = \Users\UserAgent::GetAdditionalFieldsList();
+    $additionalFieldsInputString = "";
+    $additionalFieldsInputNecessaryString = "";
+    for ($i = 0; $i < count($additionalFields); $i++){
+        $fieldProp = $additionalFields[$i];
+        if ($fieldProp["type"] != "2")
+            continue;
+        else {
+            if ($fieldProp["isRequied"] == 1){
+                $additionalFieldsInputNecessaryString .= "<div><input class=\"profile-input\" type=\"text\" id=\"profile-adfield-" . $fieldProp["id"] . "\" name=\"profile-adfield-" . $fieldProp["id"] . "\"
+                                                          placeholder=\"". $fieldProp["description"] . "*\"></div>";
+            } else {
+                $additionalFieldsInputString .= "<div><input class=\"profile-input\" type=\"text\" id=\"profile-adfield-" . $fieldProp["id"] . "\" name=\"profile-adfield-" . $fieldProp["id"] . "\"
+                                                          placeholder=\"". $fieldProp["description"] . "\"></div>";
+            }
+        }
+    }
+    $authSignUpForm = str_replace_once("{AUTH_PAGE:NECESSARY_ADDITIVE_FIELDS}", $additionalFieldsInputNecessaryString, $authSignUpForm);
+    $authSignUpForm = str_replace_once("{AUTH_PAGE:NOT_NECESSARY_ADDITIVE_FIELDS}", $additionalFieldsInputString, $authSignUpForm);
+    ///////////////////////////////////////
     $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}", (!empty($_REQUEST["res"]) && !in_array($_REQUEST["res"], ["ic", "nc", "nr"])) ? $authErrors : "", $main);
     $main = str_replace_once("{PROFILE_MAIN_BODY}", $authForm, $main);
     $main = str_replace_once("{PROFILE_PAGE_GUI_SCRIPT}", "", $main);

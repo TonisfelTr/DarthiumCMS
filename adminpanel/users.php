@@ -525,7 +525,7 @@ if ($canIPBan || $canIPUnban){
                 </div>
                 <div class="input-group">
                     <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.last_date")?></div>
-                    <div class="form-control alert-info"><?php echo ($USER->getLastDate() != "1970-01-01") ? \Engine\Engine::DateFormatToRead($USER->getLastDate()) : (($USER->getSex() == 2) ?
+                    <div class="form-control alert-info"><?php echo ($USER->getLastDate() != "1970-01-01") ? \Engine\Engine::DateFormatToRead($USER->getLastDate()) : (($USER->getSex() == 3) ?
                         \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.she_not_signed_in") : \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.he_not_signed_in"));?></div>
                 </div>
                 <div class="input-group">
@@ -534,7 +534,7 @@ if ($canIPBan || $canIPUnban){
                 </div>
                 <div class="input-group">
                     <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.last_ip")?></div>
-                    <div class="form-control alert-info"><?php echo ($USER->getLastIp() != "null") ? $USER->getLastIp() : (($USER->getSex() == 2) ? \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.she_not_signed_in") :
+                    <div class="form-control alert-info"><?php echo ($USER->getLastIp() != "null") ? $USER->getLastIp() : (($USER->getSex() == 3) ? \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.she_not_signed_in") :
                         \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.he_not_signed_in"));?></div>
                 </div>
                 <hr>
@@ -583,9 +583,9 @@ if ($canIPBan || $canIPUnban){
                 <div class="input-group">
                     <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.sex")?></div>
                     <select class="form-control" name="user-edit-sex">
-                        <option value="0"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.not_selected")?></option>
-                        <option value="1" <?php if ($USER->getSex() == 1) echo "selected";?>><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.male")?></option>
-                        <option value="2" <?php if ($USER->getSex() == 2) echo "selected";?>><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.female")?></option>
+                        <option value="1"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.not_selected")?></option>
+                        <option value="2" <?php if ($USER->getSex() == 2) echo "selected";?>><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.male")?></option>
+                        <option value="3" <?php if ($USER->getSex() == 3) echo "selected";?>><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.female")?></option>
                     </select>
                 </div>
                 <?php echo $infoAFJoined; ?>
