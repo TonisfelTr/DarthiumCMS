@@ -379,3 +379,18 @@ div.navbar-group-box{
     width: 120px;
     height: 70px;
 }
+
+div.div-spoiler{
+    padding: 5px;
+    border-radius: 3px;
+    border: #222 solid 1px;
+    background: radial-gradient(at left, #b4b5c1, #858585);
+    color: black;
+}
+
+div.div-spoiler > div{
+    background: white;
+    color: #777;
+    padding: 5px;
+    margin-top: 5px;
+}

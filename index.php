@@ -303,6 +303,12 @@ if (isset($_GET["topic"])){
 $main = str_replace_once("{IMAGER}", "", $main);
 $main = str_replace_once("{IMAGER_JS}", "", $main);
 $main = str_replace_once("{IMAGER_STYLESHEET}", "", $main);
+
+include_once "./site/scripts/SpoilerController.js";
+$spoilerManager = getBrick();
+
+$main = str_replace_once("{SPOILER_CONTROLLER:JS}", $spoilerManager, $main);
+
 if (\Engine\Engine::GetEngineInfo("smt")){
     if (\Engine\Engine::GetEngineInfo("sms") == 0) {
         $main = str_replace_once("{METRIC_JS}", null, $main);

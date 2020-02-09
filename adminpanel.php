@@ -658,6 +658,9 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
         <?php echo \Engine\LanguageManager::GetTranslation("adminpanel.footer");?>
     </p>
 </div>
+<script>
+    <?php include_once "./site/scripts/SpoilerController.js"; ?>
+</script>
 </body>
 <?php ob_end_flush(); ?>
 </html>
