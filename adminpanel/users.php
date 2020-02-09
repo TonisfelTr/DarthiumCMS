@@ -59,30 +59,18 @@ if(!empty($_GET["uid"])) {
         $customAF = [];
         $contactAF = [];
         $infoAF = [];
-        for ($i = 0; $i < count($additionalFields); $i++) {
-            $fieldProp = $additionalFields[$i];
-            foreach ($userAdFields as $field) {
-                if ($fieldProp["type"] == 1) {
-                    if ($fieldProp["id"] == $field["fieldId"]){
-                        array_push($customAF, constructDiv($field["fieldId"], $fieldProp["name"], $field["content"]));
-                    } else {
-                        array_push($customAF, constructDiv($field["fieldId"], $fieldProp["name"], ""));
-                    }
-                }
-                if ($fieldProp["type"] == 2) {
-                    if ($fieldProp["id"] == $field["fieldId"]){
-                        array_push($contactAF, constructDiv($field["fieldId"], $fieldProp["name"], $field["content"]));
-                    } else {
-                        array_push($contactAF, constructDiv($field["fieldId"], $fieldProp["name"], ""));
-                    }
-                }
-                if ($fieldProp["type"] == 3) {
-                    if ($fieldProp["id"] == $field["fieldId"]){
-                        array_push($infoAF, constructDiv($field["fieldId"], $fieldProp["name"], $field["content"]));
-                    } else {
-                        array_push($infoAF, constructDiv($field["fieldId"], $fieldProp["name"], $fieldProp["custom"]));
-                    }
-                }
+        foreach($additionalFields as $field){
+            if ($field["type"] == 1){
+                array_push($infoAF, constructDiv($field["id"], $field["name"], $userAdFields[$field["id"]]["content"]));
+            }
+            if ($field["type"] == 2) {
+                array_push($contactAF, constructDiv($field["id"], $field["name"], $userAdFields[$field["id"]]["content"]));
+            }
+            if ($field["type"] == 3){
+                if ($userAdFields[$field["id"]]["content"] != "")
+                    array_push($contactAF, constructDiv($field["id"], $field["name"], $userAdFields[$field["id"]]["content"]));
+                else
+                    array_push($contactAF, constructDiv($field["id"], $field["name"], $field["custom"]));
             }
         }
 

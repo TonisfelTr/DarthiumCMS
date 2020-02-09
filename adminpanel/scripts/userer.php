@@ -400,11 +400,8 @@ if (isset ($_POST["user-edit-save"])){
         $adFields = \Users\UserAgent::GetAdditionalFieldsList();
         foreach ($adFields as $field){
             if ($_POST["user-edit-" . $field["id"]] != \Users\UserAgent::GetAdditionalFieldContentOfUser($eUser->getId(), $field["id"])) {
-                if (!\Users\UserAgent::SetAdditionalFieldContent($eUser->getId(), $field["id"], $_POST["user-edit-" . $field["id"]]))
-                    $backRequest .= "&res=4ncsafc";
-                else {
-                    \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.change_part") . $field["name"] . \Engine\LanguageManager::GetTranslation("users_panel.logs.user_part") . $eUser->getNickname() . ".");
-                }
+                \Users\UserAgent::SetAdditionalFieldContent($eUser->getId(), $field["id"], $_POST["user-edit-" . $field["id"]]);
+                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.change_part") . $field["name"] . \Engine\LanguageManager::GetTranslation("users_panel.logs.user_part") . $eUser->getNickname() . ".");
             }
         }
         if (isset($_FILES["user-edit-avatar"]) && $_FILES["user-edit-avatar"]["size"] > 0) {
