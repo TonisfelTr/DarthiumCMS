@@ -1561,6 +1561,9 @@ namespace Users {
             if (UserAgent::GetUserParam($id, "avatar") != "no") {
                 unlink("../uploads/avatars/" . UserAgent::GetUserParam($id, "avatar"));
             }
+            /* 10.Additional fields */
+            DataKeeper::Delete("tt_adfieldscontent", ["userId" => $id]);
+            ///////////////////////////////////////////////////////////////////////////////////
             DataKeeper::Delete("tt_users", ["id" => $id]);
         }
         public static function GetAllUsers(){

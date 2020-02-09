@@ -104,14 +104,17 @@ if ($nicknameResult.$passwordResult.$emailResult.$refererResult == ("ok,ok,ok;ok
         for ($i = 0; $i < count($additionalFields); $i++){
             $fieldProp = $additionalFields[$i];
             if ($fieldProp["inRegister"] == 1){
+                echo 1;
                 if ($fieldProp["isRequied"] == 1) {
                     if (empty($_POST["profile-adfield-" . $fieldProp["id"]])){
                         header("Location: ../../profile.php?signup&res=nsnp");
                         exit;
                     } else {
+                        echo 2;
                         \Users\UserAgent::SetAdditionalFieldContent(\Engine\DataKeeper::getMax("tt_users", "id"), $fieldProp["id"], $_POST["profile-adfield-" . $fieldProp["id"]]);
                     }
                 } else {
+                    echo 3;
                     \Users\UserAgent::SetAdditionalFieldContent(\Engine\DataKeeper::getMax("tt_users", "id"), $fieldProp["id"], $_POST["profile-adfield-" . $fieldProp["id"]]);
                 }
             }

@@ -23,6 +23,13 @@ function setVisible($bool){
     else return "hidden";
 }
 
+/**
+ * @param $id
+ * @param $name
+ * @param $content
+ * @param null $link
+ * @return string
+ */
 function constructDiv($id, $name, $content, $link = null){
     if ($link != null){
         $link = str_replace("{{1}}", $content, $link);
@@ -52,25 +59,31 @@ if(!empty($_GET["uid"])) {
         $customAF = [];
         $contactAF = [];
         $infoAF = [];
-        foreach($additionalFields as $fieldProp){
-            $fieldName = $fieldProp["name"];
-            foreach ($userAdFields as $adField){
-                if ($fieldProp["id"] == $adField["fieldId"]){
-                    $content = $adField["content"];
+        for ($i = 0; $i < count($additionalFields); $i++) {
+            $fieldProp = $additionalFields[$i];
+            foreach ($userAdFields as $field) {
+                if ($fieldProp["type"] == 1) {
+                    if ($fieldProp["id"] == $field["fieldId"]){
+                        array_push($customAF, constructDiv($field["fieldId"], $fieldProp["name"], $field["content"]));
+                    } else {
+                        array_push($customAF, constructDiv($field["fieldId"], $fieldProp["name"], ""));
+                    }
+                }
+                if ($fieldProp["type"] == 2) {
+                    if ($fieldProp["id"] == $field["fieldId"]){
+                        array_push($contactAF, constructDiv($field["fieldId"], $fieldProp["name"], $field["content"]));
+                    } else {
+                        array_push($contactAF, constructDiv($field["fieldId"], $fieldProp["name"], ""));
+                    }
+                }
+                if ($fieldProp["type"] == 3) {
+                    if ($fieldProp["id"] == $field["fieldId"]){
+                        array_push($infoAF, constructDiv($field["fieldId"], $fieldProp["name"], $field["content"]));
+                    } else {
+                        array_push($infoAF, constructDiv($field["fieldId"], $fieldProp["name"], $fieldProp["custom"]));
+                    }
                 }
             }
-            switch ($fieldProp["type"]){
-                case 1:
-                    $infoAF[] = constructDiv($fieldProp["id"], $fieldName, @$content);
-                    break;
-                case 2:
-                    $contactAF[] = constructDiv($fieldProp["id"], $fieldName, @$content);
-                    break;
-                case 3:
-                    $customAF[] = constructDiv($fieldProp["id"], $fieldName, @$content);
-                    break;
-            }
-
         }
 
         $infoAFJoined = implode("", $infoAF);
@@ -464,7 +477,7 @@ if ($canIPBan || $canIPUnban){
                     $lastOnline = ($USER->getSex() == 2) ? \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.she_not_signed_in") : \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.he_not_signed_in");
                     } else
                     $lastOnline = (\Engine\Engine::GetSiteTime() > $USER->getLastTime()+15*60) ? (($USER->getSex() == 2) ? \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.she_signed_in") : \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.he_signed_in"))
-                    . " в " . \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s",$USER->getLastTime())) : "<span style=\"color: #00dd00;\">" . \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.online") . "</span>";
+                    . " в " . \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s",$USER->getLastTime())) : "<span style=\"color: #009900;\">" . \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.online") . "</span>";
                     echo $lastOnline; ?>
                     </div>
                 </div>

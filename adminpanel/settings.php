@@ -509,6 +509,10 @@ else {
         $("#see-on-reg-input-div").hide();
         $("#private-input-div").hide();
         $("#link-input-div").hide();
+        $("#field-requied").prop("checked", false);
+        $("#field-reg-show").prop("checked", false);
+        $("#field-private").prop("checked", false);
+        $("#custom-value-input").val("");
         if (type == 1){
             $("#custom-value-input-div").hide();
             $("#require-input-div").hide();

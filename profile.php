@@ -1132,12 +1132,14 @@ if (!$session || empty($user)){
         if ($fieldProp["type"] != "2")
             continue;
         else {
-            if ($fieldProp["isRequied"] == 1){
-                $additionalFieldsInputNecessaryString .= "<div><input class=\"profile-input\" type=\"text\" id=\"profile-adfield-" . $fieldProp["id"] . "\" name=\"profile-adfield-" . $fieldProp["id"] . "\"
-                                                          placeholder=\"". $fieldProp["description"] . "*\"></div>";
-            } else {
-                $additionalFieldsInputString .= "<div><input class=\"profile-input\" type=\"text\" id=\"profile-adfield-" . $fieldProp["id"] . "\" name=\"profile-adfield-" . $fieldProp["id"] . "\"
-                                                          placeholder=\"". $fieldProp["description"] . "\"></div>";
+            if ($fieldProp["inRegister"] == 1) {
+                if ($fieldProp["isRequied"] == 1) {
+                    $additionalFieldsInputNecessaryString .= "<div><input class=\"profile-input\" type=\"text\" id=\"profile-adfield-" . $fieldProp["id"] . "\" name=\"profile-adfield-" . $fieldProp["id"] . "\"
+                                                          placeholder=\"" . $fieldProp["description"] . "*\"></div>";
+                } else {
+                    $additionalFieldsInputString .= "<div><input class=\"profile-input\" type=\"text\" id=\"profile-adfield-" . $fieldProp["id"] . "\" name=\"profile-adfield-" . $fieldProp["id"] . "\"
+                                                          placeholder=\"" . $fieldProp["description"] . "\"></div>";
+                }
             }
         }
     }
