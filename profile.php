@@ -37,7 +37,8 @@ if (!empty($_GET["uid"])){
     }
     else $user = false;
 }
-if (!$session) {
+
+if ($session !== true) {
     $captchaID = \Guards\CaptchaMen::GenerateCaptcha();
     $captchaImgPath = \Guards\CaptchaMen::GenerateImage(\Guards\CaptchaMen::FetchCaptcha(1));
 }
@@ -1157,6 +1158,8 @@ if (!$session || empty($user)){
         $emailTipText .= \Engine\LanguageManager::GetTranslation("activation_notify");
     $main = str_replace_once("{AUTH_PAGE:EMAIL_TIP}", $emailTipText, $main);
     $main = str_replace_once("{AUTH_PAGE:CAPTCHA_PIC}", "<img src=\"$captchaImgPath\">", $main);
+    //<img src=\"$captchaImgPath\">
+//    print_r($captchaImgPath);
     $main = str_replace_once("{AUTH_PAGE:CAPTCHA_ID}", $captchaID, $main);
     $main = str_replace("{AUTH_PAGE:UID_INPUT_PLACEHOLDER}", \Engine\Engine::GetEngineInfo("na") ?
         \Engine\LanguageManager::GetTranslation("email_or_login") : \Engine\LanguageManager::GetTranslation("nickname"), $main);

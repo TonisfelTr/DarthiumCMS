@@ -1385,7 +1385,7 @@ namespace Users {
             return false;
         }
         public static function SessionDestroy(){
-            session_id($_COOKIE["sid"]);
+            session_id($_COOKIE["PHPSESSID"]);
             ini_set("session.gc_maxlifetime", 0);
             ini_set("session.cookie_lifetime", 0);
             ini_set("session.save_path", $_SERVER["DOCUMENT_ROOT"] . "/engine/sessions/");
@@ -1394,6 +1394,7 @@ namespace Users {
             setcookie("sid", "", 0, "/", $_SERVER["SERVER_NAME"]);
             setcookie("uid", "", 0, "/", $_SERVER["SERVER_NAME"]);
             setcookie("reloadSession", "", 0, "/", $_SERVER["SERVER_NAME"]);
+            setcookie("PHPSESSID", "", 0, "/", $_SERVER["SERVER_NAME"]);
             $_SESSION = array();
             session_unset();
             session_destroy();
