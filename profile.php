@@ -1157,7 +1157,7 @@ if (!$session || empty($user)){
     if (\Engine\Engine::GetEngineInfo("na"))
         $emailTipText .= \Engine\LanguageManager::GetTranslation("activation_notify");
     $main = str_replace_once("{AUTH_PAGE:EMAIL_TIP}", $emailTipText, $main);
-    $main = str_replace_once("{AUTH_PAGE:CAPTCHA_PIC}", "<img src=\"$captchaImgPath\">", $main);
+    $main = str_replace_once("{AUTH_PAGE:CAPTCHA_PIC}", "<img src=\"$captchaImgPath\" alt=\"Captcha\">", $main);
     //<img src=\"$captchaImgPath\">
 //    print_r($captchaImgPath);
     $main = str_replace_once("{AUTH_PAGE:CAPTCHA_ID}", $captchaID, $main);

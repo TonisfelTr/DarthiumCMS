@@ -550,9 +550,13 @@ a.alert-link{
 }
 
 div.topic-wrapper{
-    border: 1px solid #191;
+    border: 1px solid black;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
     padding: 0;
     margin-bottom: 20px;
+    height: 245px;
+    margin-left: 70px;
 }
 
 div.topic-header{
@@ -562,14 +566,16 @@ div.topic-header{
     text-shadow: 2px 3px 2px #888;
     margin-bottom: 10px;
     text-decoration: underline;
+    background: green;
 }
 
 a.topic-head-link{
-    color: #000;
+    color: #fff;
 }
 
 div.topic-body{
     padding: 5px;
+    height: 146px;
 }
 
 div.topic-footer-neutral,
