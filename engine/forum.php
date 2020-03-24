@@ -16,6 +16,7 @@ namespace Forum {
         private $pageCreateDate;
         private $pageID;
         private $pageDescription;
+        private $pageKeyWords;
 
         public function __construct($idPage)
         {
@@ -33,13 +34,14 @@ namespace Forum {
                     ErrorManager::GenerateError(9);
                     return ErrorManager::GetError();
                 }
-                $stmt->bind_result($id, $name, $description, $authorId, $createDate);
+                $stmt->bind_result($id, $name, $description, $authorId, $createDate, $keywords);
                 $stmt->fetch();
                 $this->pageID = $id;
                 $this->pageName = $name;
                 $this->pageDescription = $description;
                 $this->pageAuthorId = $authorId;
                 $this->pageCreateDate = $createDate;
+                $this->pageKeyWords = $keywords;
             }
         }
         public function getPageAuthorId(){
@@ -59,6 +61,9 @@ namespace Forum {
         }
         public function getContent(){
             return file_get_contents("site/statics/$this->pageID.txt", FILE_USE_INCLUDE_PATH);
+        }
+        public function getKeyWords(){
+            return $this->pageKeyWords;
         }
     }
 
@@ -106,7 +111,7 @@ namespace Forum {
             return true;
         }
 
-        public static function CreatePage($name, $authorId, $description, $text){
+        public static function CreatePage($name, $authorId, $description, $text, $keywords = ""){
             $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
 
             if ($mysqli->errno){
@@ -114,9 +119,9 @@ namespace Forum {
                 return ErrorManager::GetError();
             }
 
-            if ($stmt = $mysqli->prepare("INSERT INTO `tt_staticpages` (`id`, `name`, `description`, `authorId`, `createDate`) VALUE (NULL,?,?,?,?)")){
+            if ($stmt = $mysqli->prepare("INSERT INTO `tt_staticpages` (`id`, `name`, `description`, `authorId`, `createDate`, `keywords`) VALUE (NULL,?,?,?,?,?)")){
                 $time = date("Y-m-d");
-                $stmt->bind_param("ssis", $name, $description, $authorId, $time);
+                $stmt->bind_param("ssiss", $name, $description, $authorId, $time, $keywords);
                 $stmt->execute();
                 if ($stmt->errno){
                     echo $stmt->error;
@@ -300,6 +305,23 @@ namespace Forum {
             }
             return false;
         }
+        public static function GetPageKeyWords($pageId){
+            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+
+            if ($mysqli->errno){
+                ErrorManager::GenerateError(2);
+                return ErrorManager::GetError();
+            }
+
+            if ($stmt = $mysqli->prepare("SELECT keywords FROM tt_staticpages WHERE id = ?")){
+                $stmt->bind_param("i", $pageId);
+                $stmt->execute();
+                $stmt->bind_result($keywords);
+                $stmt->fetch();
+                return $keywords;
+            }
+
+        }
     }
 
     class Category extends ForumAgent{
@@ -310,6 +332,7 @@ namespace Forum {
         private $categoryNoComments;
         private $categoryNoTopics;
         private $categoryAddedGroups;
+        private $categoryKeyWords;
 
         public function __construct($categoryId){
             if (!self::isCategoryExists($categoryId)){
@@ -331,7 +354,7 @@ namespace Forum {
                     ErrorManager::GenerateError(9);
                     return ErrorManager::GetError();
                 }
-                $stmt->bind_result($id, $name, $descript, $public, $no_comments, $no_new_topics, $added);
+                $stmt->bind_result($id, $name, $descript, $public, $no_comments, $no_new_topics, $added, $keywords);
                 $stmt->fetch();
                 $this->categoryId = $id;
                 $this->categoryName = $name;
@@ -340,6 +363,7 @@ namespace Forum {
                 $this->categoryNoComments = ($no_comments === 1) ? true : false;
                 $this->categoryNoTopics = ($no_new_topics === 1) ? true : false;
                 $this->categoryAddedGroups = explode(",", $added);
+                $this->categoryKeyWords = $keywords;
             }
 
         }
@@ -391,6 +415,9 @@ namespace Forum {
                 return $var;
             }
             return false;
+        }
+        public function getKeyWords(){
+            return $this->categoryKeyWords;
         }
     }
     class Topic extends ForumAgent{
@@ -929,7 +956,7 @@ namespace Forum {
             DataKeeper::Delete("tt_quizevars", ["quizId" => $quizeId]);
         }
 
-        public static function CreateCategory($name, $descript, $public = true, $no_comments = false, $no_new_topics = false){
+        public static function CreateCategory($name, $descript, $keywords, $public = true, $no_comments = false, $no_new_topics = false){
             $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
 
             if ($mysqli->errno){
@@ -937,8 +964,8 @@ namespace Forum {
                 return ErrorManager::GetError();
             }
 
-            if ($stmt = $mysqli->prepare("INSERT INTO `tt_categories` (`id`, `name`, `descript`, `public`, `no_comment`, `no_new_topics`) VALUE (NULL,?,?,?,?,?)")){
-                $stmt->bind_param("ssiii", $name, $descript, $public, $no_comments, $no_new_topics);
+            if ($stmt = $mysqli->prepare("INSERT INTO `tt_categories` (`id`, `name`, `descript`, `public`, `no_comment`, `no_new_topics`, `keywords`) VALUE (NULL,?,?,?,?,?,?)")){
+                $stmt->bind_param("ssiiis", $name, $descript, $public, $no_comments, $no_new_topics, $keywords);
                 $stmt->execute();
                 if ($stmt->errno){
                     ErrorManager::GenerateError(9);

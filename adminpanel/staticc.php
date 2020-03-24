@@ -126,11 +126,17 @@ if ($editSContentPerm){
                                 <td><input type="checkbox" data-spi="<?php echo $p->getPageID(); ?>"></td>
                                 <td><a href="/?sp=<?php echo $p->getPageID(); ?>"><?php echo $p->getPageName(); ?></a></td>
                                 <td><?php echo $p->getPageDescription(); ?></td>
-                                <td><?php echo \Users\UserAgent::GetUserNick($p->getPageAuthorId()); ?></td>
+                                <?php $nickname = "";
+                                if (!\Users\UserAgent::IsUserExist($p->getPageAuthorId())){
+                                    $nickname = "Автор удалён";
+                                }
+                                else
+                                    $nickname = \Users\UserAgent::GetUserNick($p->getPageAuthorId()); ?>
+                                <td><?=$nickname?></td>
                                 <td><?php echo \Engine\Engine::DateFormatToRead($p->getPageCreateDate()); ?></td>
                                 <td><button class="btn btn-default alert-info" name="staticc-page-edit-btn" type="submit" formaction="adminpanel/scripts/staticc.php?id=<?php echo $p->getPageID(); ?>" style="width: 100%;"><?=\Engine\LanguageManager::GetTranslation("edit")?></button></td>
                             </tr>
-                        <?php } ?>
+                            <?php } ?>
 
                         </tbody>
                     </table>
@@ -170,6 +176,8 @@ if ($editSContentPerm){
                         <p><?=\Engine\LanguageManager::GetTranslation("staticc_panel.creator_pages.address_tip")?></p>
                     </div>
                     <input class="form-control" name="staticc-page-create-name-input" type="text" maxlength="25" placeholder="<?=\Engine\LanguageManager::GetTranslation("staticc_panel.creator_pages.page_name")?>">
+                    <br>
+                    <input class="form-control" name="staticc-page-create-keywords" type="text" maxlength="255" placeholder="<?=\Engine\LanguageManager::GetTranslation("staticc_panel.create_pages.page_keyword")?>">
                     <br>
                     <input class="form-control" name="staticc-page-create-description-input" type="text" maxlength="100" placeholder="<?=\Engine\LanguageManager::GetTranslation("staticc_panel.creator_pages.page_description")?>">
                     <br>
@@ -237,6 +245,8 @@ if ($editSContentPerm){
                         <p><?=\Engine\LanguageManager::GetTranslation("staticc_panel.editor_pages.address_tip")?></p>
                     </div>
                     <input class="form-control" type="text" maxlength="25" placeholder="<?=\Engine\LanguageManager::GetTranslation("staticc_panel.editor_pages.page_name")?>" name="staticc-page-edit-name-input" value="<?php echo $page->getPageName(); ?>">
+                    <br>
+                    <input class="form-control" name="staticc-page-edit-keywords" type="text" maxlength="255" placeholder="<?=\Engine\LanguageManager::GetTranslation("staticc_panel.create_pages.page_keyword")?>" value="<?=$page->getKeyWords()?>">
                     <br>
                     <input class="form-control" type="text" maxlength="100" placeholder="<?=\Engine\LanguageManager::GetTranslation("staticc_panel.editor_pages.page_description")?>" name="staticc-page-edit-description-input" value="<?php echo $page->getPageDescription(); ?>">
                     <br>

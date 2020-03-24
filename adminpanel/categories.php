@@ -94,6 +94,7 @@ else {
                 <hr>
                 <p><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_add.panel_tip"); ?></p>
                 <input class="form-control" type="text" maxlength="50" name="category-add-name" placeholder="<?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_add.placeholder_new_category_name"); ?>">
+                <input class="form-control" type="text" maxlength="255" name="category_add_keywords" placeholder="<?=\Engine\LanguageManager::GetTranslation("categories_panel.category_edit.category_keywords")?>">
                 <textarea class="form-control" maxlength="350" name="category-add-description" style="resize: vertical; max-height: 350px;" placeholder="<?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_add.placeholder_new_category_description"); ?>"></textarea>
                 <br>
                 <div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_add.data_tip"); ?></div>
@@ -140,6 +141,10 @@ else {
                 <div class="input-group">
                     <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_edit.category_name"); ?></div>
                     <input class="form-control" type="text" maxlength="50" value="<?php echo $category->getName();?>" name="category_edit_name">
+                </div>
+                <div class="input-group">
+                    <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("categories_panel.category_edit.category_keywords")?></div>
+                    <input class="form-control" type="text" maxlength="255" name="category_edit_keywords" value="<?=$category->getKeyWords();?>">
                 </div>
                 <div class="input-group">
                     <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_edit.category_description"); ?></div>

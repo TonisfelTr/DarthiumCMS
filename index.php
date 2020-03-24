@@ -82,10 +82,15 @@ include_once "./site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/main
 $main = getBrick();
 
 if (!empty($_GET["page"])){
-    if (file_exists("./site/". $_GET["page"] . ".php"))
-        include_once "./site/".$_GET["page"] . ".php";
+    if (file_exists("./site/". $_GET["page"] . ".php")) {
+        include_once "./site/" . $_GET["page"] . ".php";
+    }
     else include_once "./site/errors/notfound.php"; }
 elseif (!empty($_GET["sp"])){
+        //Here load keywords for site
+        $keywords = \Forum\StaticPagesAgent::GetPageKeyWords($_GET["sp"]);
+        $main = str_replace_once("{ENGINE_META:KEYWORDS}", $keywords, $main);
+        /////////////////////////////
         echo nl2br(\Engine\Engine::CompileBBCode(file_get_contents("./site/statics/" . $_GET["sp"] . ".txt", FILE_USE_INCLUDE_PATH)));
         $pageName = \Forum\StaticPagesAgent::GetPage($_GET["sp"])->getPageName();
     }
@@ -215,10 +220,13 @@ $main = str_replace_once("{INDEX_PAGE_OFFLINE}", $offline, $main);
 $main = str_replace_once("{INDEX_PAGE_INFORMATOR}", $info, $main);
 $main = str_replace_once("{INDEX_PAGE_LEFT}", $leftPanels, $main);
 
-if (isset($_GET["category"]) && $_GET["category"] != "")
+if (isset($_GET["category"]) && $_GET["category"] != "") {
     $main = str_replace_once("{INDEX_CATEGORY_HINT}", "<div class=\"alert alert-info\">
                     <span class=\"glyphicons glyphicons-info-sign\"></span> <strong>" . \Engine\LanguageManager::GetTranslation("category") . ":</strong> " .
-                    \Forum\ForumAgent::GetCategoryParam($_GET["category"], "name") . "</div>", $main);
+        \Forum\ForumAgent::GetCategoryParam($_GET["category"], "name") . "</div>", $main);
+    $keywords = \Forum\ForumAgent::GetCategoryParam($_GET["category"], "keywords");
+    $main = str_replace_once("{ENGINE_META:KEYWORDS}", $keywords, $main);
+}
 else
     $main = str_replace_once("{INDEX_CATEGORY_HINT}", "", $main);
 
@@ -318,6 +326,9 @@ if (\Engine\Engine::GetEngineInfo("smt")){
 } else {
     $main = str_replace_once("{METRIC_JS}", null, $main);
 }
+
+$main = str_replace_once("{ENGINE_META:KEYWORDS}", \Engine\Engine::GetEngineInfo("sh"), $main);
+
 ob_end_clean();
 
 

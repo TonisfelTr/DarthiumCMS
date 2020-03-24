@@ -842,8 +842,12 @@
                 $preparedQuery = $pdo->prepare($query);
                 $preparedQuery->execute([$content]);
                 $result = $preparedQuery->fetch($pdo::FETCH_ASSOC);
-                if ($result["count(*)"] === "0") return false;
-                else return true;
+                if ($result["count(*)"] > 0){
+                    return true;
+                }
+                else {
+                    return false;
+                }
 
             }
 

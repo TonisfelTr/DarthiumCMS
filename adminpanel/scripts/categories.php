@@ -26,6 +26,7 @@ if (isset($_POST["category-add-btn"])){
         }
 
         $result = \Forum\ForumAgent::CreateCategory($_POST["category-add-name"], $_POST["category-add-description"],
+            $_POST["category_add_keywords"],
             (isset($_POST["category_add_public"])) ? 1 : 0,
             (isset($_POST["category_add_nocomments"])) ? 1 : 0,
             (isset($_POST["category_add_notopics"])) ? 1 : 0);
@@ -109,6 +110,11 @@ if (isset($_POST["category_edit_save"])){
             \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("categories_panel.change_perm_for_topic_create_log") ."\"" . $category->getName() . "\" "
                 . $category->CanCreateTopic() . " -> " . $_POST["category_edit_notopics_checker"]);
             \Forum\ForumAgent::ChangeCategoryParams($_GET["cid"], "no_new_topics", (isset($_POST["category_edit_notopics_checker"])) ? "1" : "0");
+        }
+        if ($category->getKeyWords() != $_POST["category_edit_keywords"]) {
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("categories_panel.change_keywords_log") ."\"" . $category->getName() . "\" "
+                . $category->CanCreateTopic() . " -> " . $_POST["category_edit_notopics_checker"]);
+            \Forum\ForumAgent::ChangeCategoryParams($_GET["cid"], "keywords", $_POST["category_edit_keywords"]);
         }
 
         header("Location: ../../adminpanel.php?p=categories&res=6sce");
