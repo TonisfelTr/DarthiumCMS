@@ -559,6 +559,39 @@ div.topic-wrapper{
     margin-left: 70px;
 }
 
+@media(max-width: 2560px){
+    div.topic-wrapper {
+        margin-left: 90px;
+    }
+}
+
+@media(max-width: 1920px){
+    div.topic-wrapper {
+        margin-left: 70px;
+    }
+}
+
+@media(max-width: 1440px){
+    div.topic-wrapper {
+        margin-left: 50px;
+    }
+}
+@media(max-width: 1024px){
+    div.topic-wrapper {
+        margin-left: 0;
+    }
+}
+@media(max-width: 768px){
+    div.topic-wrapper {
+        margin-left: 0;
+    }
+}
+@media(max-width: 375px){
+    div.topic-wrapper {
+        margin-left: 0px;
+    }
+}
+
 div.topic-header{
     padding: 10px 5px;
     border-bottom: 1px solid #119911;
