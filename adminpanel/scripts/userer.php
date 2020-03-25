@@ -190,7 +190,7 @@ if (isset ($_POST["user_bip_ban"])){
     }
 }
 
-if (isset ($_POST["user_bip_unban"])){
+if (isset ($_POST["user_bip_unban"]) || isset($_GET["ipuban"])){
     if ($user->UserGroup()->getPermission("user_unbanip")){
         $backRequest = "Location: ../../adminpanel.php?p=users&reqtype=2";
         if (!empty($_GET["ipuban"])) {
@@ -435,5 +435,6 @@ if (isset ($_POST["user-edit-activate"])){
         }
     }
 }
+
 header("Location: ../../adminpanel.php?p=forbidden");
 exit;
