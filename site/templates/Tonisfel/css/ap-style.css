@@ -597,9 +597,16 @@ div.topic-header{
     border-bottom: 1px solid #119911;
     font-size: 15px;
     text-shadow: 2px 3px 2px #888;
-    margin-bottom: 10px;
     text-decoration: underline;
     background: green;
+}
+
+div.topic-breadcrumbs {
+    color: white;
+    background: radial-gradient(at left center, #1b6d85, #1b2f54);
+    margin-bottom: 10px;
+    font-size: 11px;
+    padding: 4px;
 }
 
 a.topic-head-link{

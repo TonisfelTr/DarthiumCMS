@@ -39,6 +39,7 @@ else {
         $newBody = str_replace_once("{TOPIC_NAME}", (($topic->getStatus() == 0) ? "<span class=\"glyphicons glyphicons-lock\"></span> " : "" ) . $topic->getName(), $newBody);
         $newBody = str_replace_once("{TOPIC_BODY}", Engine\Engine::ChatFilter(\Engine\Engine::CompileMentions(html_entity_decode(\Engine\Engine::CompileBBCode($topic->getPretext())))), $newBody);
         $newBody = str_replace_once("{TOPIC_STATUS_ICON}", (\Forum\ForumAgent::IsExistQuizeInTopic($topic->getId())) ? "<span class=\"glyphicons glyphicons-equalizer\"></span>" : "", $newBody);
+        $newBody = str_replace_once("{TOPIC_CATEGORY}", $topic->getCategory()->getName(), $newBody);
         $topic = null;
         echo $newBody;
     }
