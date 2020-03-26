@@ -555,7 +555,7 @@ div.topic-wrapper{
     border-top-right-radius: 7px;
     padding: 0;
     margin-bottom: 20px;
-    height: 245px;
+    height: 282px;
     margin-left: 70px;
 }
 
@@ -589,6 +589,14 @@ div.topic-wrapper{
 @media(max-width: 375px){
     div.topic-wrapper {
         margin-left: 0px;
+        height: 303px;
+    }
+}
+
+@media(max-width: 320px){
+    div.topic-wrapper {
+        margin-left: 0px;
+        height: 325px;
     }
 }
 
@@ -599,6 +607,8 @@ div.topic-header{
     text-shadow: 2px 3px 2px #888;
     text-decoration: underline;
     background: green;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
 }
 
 div.topic-breadcrumbs {
@@ -615,7 +625,7 @@ a.topic-head-link{
 
 div.topic-body{
     padding: 5px;
-    height: 146px;
+    height: 160px;
 }
 
 div.topic-footer-neutral,
