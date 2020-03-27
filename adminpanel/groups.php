@@ -115,8 +115,17 @@ $groupList = \Users\GroupAgent::GetGroupList();
                                     <div class="input-group">
                                         <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("group_panel.group_managment.perms_to_custom.change_rules_access"); ?></div>
                                         <select class="form-control" name="rules_edit">
-                                            <option value="1"  class="success alert-success" class="success alert-success" <?php if (\Users\GroupAgent::IsHavePerm($_REQUEST["group"], "rules_edit")) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("group_panel.group_managment.allow"); ?></option>
+                                            <option value="1"  class="success alert-success" <?php if (\Users\GroupAgent::IsHavePerm($_REQUEST["group"], "rules_edit")) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("group_panel.group_managment.allow"); ?></option>
                                             <option value="0"  class="danger alert-danger" <?php if (!\Users\GroupAgent::IsHavePerm($_REQUEST["group"], "rules_edit")) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("group_panel.group_managment.denied"); ?></option>
+                                        </select>
+                                    </div>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <?=\Engine\LanguageManager::GetTranslation("group_panel.group_managment.perms_to_custom.change_template_design")?>
+                                        </div>
+                                        <select class="form-control" name="change_template_design">
+                                            <option value="1"  class="success alert-success" <?php if (\Users\GroupAgent::IsHavePerm($_REQUEST["group"], "change_template_design")) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("group_panel.group_managment.allow"); ?></option>
+                                            <option value="0"  class="danger alert-danger" <?php if (!\Users\GroupAgent::IsHavePerm($_REQUEST["group"], "change_template_design")) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("group_panel.group_managment.denied"); ?></option>
                                         </select>
                                     </div>
                                     <hr>

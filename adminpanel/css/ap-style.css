@@ -394,3 +394,9 @@ div.div-spoiler > div{
     padding: 5px;
     margin-top: 5px;
 }
+
+textarea.template-editor{
+    width: 100%;
+    height: 430px;
+    resize: none;
+}

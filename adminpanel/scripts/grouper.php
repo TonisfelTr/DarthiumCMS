@@ -32,9 +32,9 @@ if ((!$user->UserGroup()->getPermission("group_create")) &&
             //Custom engine perms
             \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "enterpanel", $_POST["permadminpanel"]);
             \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "change_engine_settings", $_POST["change_engine_settings"]);
-            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "change_design", $_POST["change_design"]);
             \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "offline_visiter", $_POST["offline_visiter"]);
             \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "rules_edit", $_POST["rules_edit"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "change_template_design", $_POST["change_template_design"]);
 
             //Custom groups perms
             \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "change_perms", $_POST["permchangeperms"]);

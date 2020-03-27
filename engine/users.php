@@ -27,7 +27,7 @@ namespace Users {
             if ($stmt = $mysqli->prepare("SELECT * FROM `tt_groups` WHERE `id`=?")){
                 $stmt->bind_param("i", $groupId);
                 $stmt->execute();
-                $stmt->bind_result($id, $name, $descript, $color, $enterpanel, $offline_visiter, $rules_edit,
+                $stmt->bind_result($id, $name, $descript, $color, $enterpanel, $change_template_design, $offline_visiter, $rules_edit,
                     $change_perms, $group_create, $group_delete, $group_change,
                     $change_another_profiles,
                     $change_user_group, $user_add, $user_remove, $user_see_foreign, $user_signs,
@@ -52,6 +52,7 @@ namespace Users {
                         'change_engine_settings' => $change_engine_settings,
                         'offline_visiter' => $offline_visiter,
                         'rules_edit' => $rules_edit,
+                        'change_template_design' => $change_template_design,
 
                         /***********************************************************
                          * Group permissions.                                      *
@@ -2150,10 +2151,10 @@ namespace Users {
                 ErrorManager::GenerateError(2);
                 return ErrorManager::GetError();
             }
-
-            if (!$stmt = $mysqli->prepare("UPDATE `tt_groups` SET $type=? WHERE `id`=?")) die($mysqli->error);
-            $stmt->bind_param("ii", $typeNew, $id);
-            $stmt->execute();
+            if ($stmt = $mysqli->prepare("UPDATE `tt_groups` SET $type=? WHERE `id`=?")) {
+                $stmt->bind_param("ii", $typeNew, $id);
+                $stmt->execute();
+            }
 
             if (mysqli_stmt_errno($stmt)){ ErrorManager::GenerateError(9); return ErrorManager::GetError(); }
 

@@ -523,6 +523,17 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
                     <?php echo \Engine\LanguageManager::GetTranslation("file_delete_success"); ?>
                     </div><?php }
             }
+            if ($_GET["p"] == "teditor"){
+                if ($_GET["res"] == "10scf") { ?>
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span> <?php echo \Engine\LanguageManager::GetTranslation("file_has_been_edited_success"); ?>
+                    </div><?php }
+                if ($_GET["res"] == "10fcf") { ?>
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-alert"></span> <?php echo \Engine\LanguageManager::GetTranslation("file_has_not_been_edited"); ?>
+                    </div><?php }
+                if ($_GET["res"] == "10fne") { ?>
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-alert"></span> <?php echo \Engine\LanguageManager::GetTranslation("file_doesnot_exist"); ?>
+                    </div><?php }
+            }
         }
     ?></div><?php }
     ################################################
@@ -538,12 +549,6 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
                 <a class="linkin" href="?p=settings"><span class="glyphicon glyphicon-cog"></span> <?php echo \Engine\LanguageManager::GetTranslation("adminpanel.settings"); ?></a>
                 <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.settings_description"); ?></p>
             </div>
-            <?php } ?>
-            <?php if ($user->UserGroup()->getPermission("upload_see_all")) { ?>
-                <div class="linker">
-                    <a class="linkin" href="?p=uploadedlist"><span class="glyphicons glyphicons-file-cloud-upload"></span> <?=\Engine\LanguageManager::GetTranslation("adminpanel.uploader_list")?></a>
-                    <p class="helper"><?=\Engine\LanguageManager::GetTranslation("adminpanel.uploader_list_description")?></p>
-                </div>
             <?php } ?>
         </div>
         <div class="col-lg-6">
@@ -599,6 +604,12 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
                 <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.categories_description");?></p>
             </div>
             <?php } ?>
+            <?php if ($user->UserGroup()->getPermission("upload_see_all")) { ?>
+                <div class="linker">
+                    <a class="linkin" href="?p=uploadedlist"><span class="glyphicons glyphicons-file-cloud-upload"></span> <?=\Engine\LanguageManager::GetTranslation("adminpanel.uploader_list")?></a>
+                    <p class="helper"><?=\Engine\LanguageManager::GetTranslation("adminpanel.uploader_list_description")?></p>
+                </div>
+            <?php } ?>
         </div>
         <div class="col-lg-6">
             <?php if ($user->UserGroup()->getPermission("sc_create_pages") ||
@@ -618,7 +629,13 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
             <div class="linker">
                 <a class="linkin" href="?p=reports"><span class="glyphicon glyphicon-fire"></span> <?php echo \Engine\LanguageManager::GetTranslation("adminpanel.reports");?></a>
                 <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.reports_description");?></p>
-            </div> <?php } ?>
+            </div> <?php }?>
+            <?php if ($user->UserGroup()->getPermission("change_template_design")) {?>
+                <div class="linker">
+                    <a class="linkin" href="?p=teditor"><span class="glyphicons glyphicons-brush"></span> <?=\Engine\LanguageManager::GetTranslation("adminpanel.site_design")?></a>
+                    <p class="helper"><?=\Engine\LanguageManager::GetTranslation("adminpanel.site_design_description")?></p>
+                </div>
+            <?php } ?>
         </div>
     </div>
     <br>
