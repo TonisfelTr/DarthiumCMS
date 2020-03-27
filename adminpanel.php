@@ -38,6 +38,13 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
     <link href="libs/bootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="libs/bootstrap/css/glyphicons-regular.css" rel="stylesheet">
+    <script src="libs/codemirror/lib/codemirror.js"></script>
+    <link rel="stylesheet" href="libs/codemirror/lib/codemirror.css">
+    <script src="libs/codemirror/mode/javascript/javascript.js"></script>
+    <script src="libs/codemirror/mode/xml/xml.js"></script>
+    <script src="libs/codemirror/mode/css/css.js"></script>
+    <script src="libs/codemirror/mode/php/php.js"></script>
+    <script src="libs/codemirror/mode/htmlembedded/htmlembedded.js"></script>
     <link href="adminpanel/css/ap-style.css" rel="stylesheet">
     <link href="adminpanel/css/uploader-style.css" rel="stylesheet">
     <link href="adminpanel/css/icon.ico" rel="icon">

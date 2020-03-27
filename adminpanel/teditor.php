@@ -40,6 +40,8 @@ for ($i = 0; $i < count($templates); $i++)
                                 echo "<option style='color: #4b65ff'> $filesIn[$i]</option>";
                             if (strstr($filesIn[$i], "js"))
                                 echo "<option style='color: #834624'> $filesIn[$i]</option>";
+                            if (strstr($filesIn[$i], "phtml"))
+                                echo "<option style='color: #40a1a1'> $filesIn[$i]</option>";
                             if (strstr($filesIn[$i], "png") || strstr($filesIn[$i], "ico")
                             || strstr($filesIn[$i], "jpeg" || strstr($filesIn[$i], "jpg")))
                                 echo "<option style='color: #833180'> $filesIn[$i]</option>";
@@ -61,6 +63,56 @@ for ($i = 0; $i < count($templates); $i++)
     <input type="hidden" id="template_file_name" name="template_file_name">
 </form>
 <script>
+    var codeMirror = CodeMirror.fromTextArea(document.getElementById("template_file_editor"), {
+        lineNumbers: true,
+        matchBrackets: true,
+        mode: 'text/html',
+        indentUnit: 4,
+        indentWithTabs: true,
+        enterMode: "keep",
+        tabMode: "shift"
+    });
+
+    $("#templates_select").on("change", function(){
+        $("#template_files_edit_selector").children().remove();
+        $("#template_path").val("");
+        $.ajax({
+            url: "adminpanel/scripts/ajax/filemanagerajax.php",
+            type: "POST",
+            data: "get_content&template_name=" + $("#templates_select").text().trim() + "&enddir=" + $("#template_path").val() + "/" + $("#template_files_edit_selector").children("option:selected").val(),
+            success: function (data) {
+                var result = $.parseJSON(data);
+                if (result === false)
+                    return;
+                result = result.toString().split(',');
+                $("#template_path").val($("#template_files_edit_selector").children("option:selected").val());
+                $("#template_files_edit_selector").children().remove();
+                for (i = 1; i < result.length; i++) {
+                    var option = document.createElement("option");
+                    if ($("#template_path").val() == "..") {
+                        $("#template_path").val("");
+                        continue;
+                    }
+                    if (result[i].indexOf(".") > 0) {
+                        if (result[i].indexOf("css") > 0)
+                            $(option).css("color", "#4b65ff");
+                        if (result[i].indexOf("html") > 0)
+                            $(option).css("color", "#2c832e");
+                        if (result[i].indexOf("js") > 0)
+                            $(option).css("color", "#834624");
+                        if (result[i].indexOf("phtml") > 0)
+                            $(option).css("color", "#40a1a1");
+                        if (result[i].indexOf("png") > 0 || result[i].indexOf("ico") > 0 || result[i].indexOf("jpg") > 0 || result[i].indexOf("jpeg") > 0)
+                            $(option).css("color", "#833180");
+                    } else {
+                        $(option).css("color", "#fba33a");
+                    }
+                    $(option).text(result[i]);
+                    $("#template_files_edit_selector").append($(option));
+                }
+            }
+        });
+    });
     $("#template_files_edit_selector").dblclick(function() {
         if ($("#template_files_edit_selector").children("option:selected").val().indexOf(".") < 0 ||
             $("#template_files_edit_selector").children("option:selected").val() == "..") {
@@ -88,6 +140,8 @@ for ($i = 0; $i < count($templates); $i++)
                                 $(option).css("color", "#2c832e");
                             if (result[i].indexOf("js") > 0)
                                 $(option).css("color", "#834624");
+                            if (result[i].indexOf("phtml") > 0)
+                                $(option).css("color", "#40a1a1");
                             if (result[i].indexOf("png") > 0 || result[i].indexOf("ico") > 0 || result[i].indexOf("jpg") > 0 || result[i].indexOf("jpeg") > 0)
                                 $(option).css("color", "#833180");
                         } else {
@@ -110,7 +164,15 @@ for ($i = 0; $i < count($templates); $i++)
                         currentFile.split('.').indexOf("jpeg") == -1 &&
                         currentFile.split('.').indexOf("jpg") == -1) {
                         $("#template_file_name").val(currentFile);
-                        $("textarea").val(data);
+                        if (currentFile.split(".")[1] == "css")
+                            codeMirror.setOption("mode", "text/css");
+                        if (currentFile.split(".")[1] == "html")
+                            codeMirror.setOption("mode", "text/html");
+                        if (currentFile.split(".")[1] == "js")
+                            codeMirror.setOption("mode", "text/javascript");
+                        if (currentFile.split(".")[1] == "phtml")
+                            codeMirror.setOption("mode", "text/php");
+                        codeMirror.setValue(data);
                     }
                 }
             })

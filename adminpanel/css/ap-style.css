@@ -397,6 +397,14 @@ div.div-spoiler > div{
 
 textarea.template-editor{
     width: 100%;
-    height: 430px;
+    height: 652px;
     resize: none;
+}
+
+select#template_files_edit_selector > option{
+    padding: 6px;
+}
+
+.CodeMirror {
+    height: 652px;
 }
