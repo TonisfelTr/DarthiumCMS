@@ -45,6 +45,8 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
     <script src="libs/codemirror/mode/css/css.js"></script>
     <script src="libs/codemirror/mode/php/php.js"></script>
     <script src="libs/codemirror/mode/htmlembedded/htmlembedded.js"></script>
+    <script src="libs/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+    <script src="libs/codemirror/mode/clike/clike.js"></script>
     <link href="adminpanel/css/ap-style.css" rel="stylesheet">
     <link href="adminpanel/css/uploader-style.css" rel="stylesheet">
     <link href="adminpanel/css/icon.ico" rel="icon">
@@ -639,8 +641,8 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
             </div> <?php }?>
             <?php if ($user->UserGroup()->getPermission("change_template_design")) {?>
                 <div class="linker">
-                    <a class="linkin" href="?p=teditor"><span class="glyphicons glyphicons-brush"></span> <?=\Engine\LanguageManager::GetTranslation("adminpanel.site_design")?></a>
-                    <p class="helper"><?=\Engine\LanguageManager::GetTranslation("adminpanel.site_design_description")?></p>
+                    <a class="linkin" href="?p=teditor"><span class="glyphicons glyphicons-brush"></span> <?=\Engine\LanguageManager::GetTranslation("site_design.panel_name")?></a>
+                    <p class="helper"><?=\Engine\LanguageManager::GetTranslation("site_design.description")?></p>
                 </div>
             <?php } ?>
         </div>

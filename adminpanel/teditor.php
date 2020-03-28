@@ -12,12 +12,12 @@ for ($i = 0; $i < count($templates); $i++)
     }
 
 ?>
-<h1 class="cover-heading"><?=\Engine\LanguageManager::GetTranslation("adminpanel.site_design")?></h1>
-<p class="lead"><?=\Engine\LanguageManager::GetTranslation("adminpanel.site_design_description")?></p>
+<h1 class="cover-heading"><?=\Engine\LanguageManager::GetTranslation("site_design.panel_name")?></h1>
+<p class="lead"><?=\Engine\LanguageManager::GetTranslation("site_design.description")?></p>
 <form method="post" action="adminpanel/scripts/design.php">
     <div class="custom-group">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
-            <label for="templates_select">Выберите шаблон:</label>
+            <label for="templates_select"><?=\Engine\LanguageManager::GetTranslation("site_design.select_file")?>:</label>
             <select id="templates_select" name="templates_select" class="form-control">
                 <?php for ($i = 0; $i < count($templatesForSelect); $i++){
                     echo "<option". ((\Engine\Engine::GetEngineInfo("stp") == $templatesForSelect[$i]) ? " selected" : "") . ">$templatesForSelect[$i]</option>";
@@ -66,7 +66,7 @@ for ($i = 0; $i < count($templates); $i++)
     var codeMirror = CodeMirror.fromTextArea(document.getElementById("template_file_editor"), {
         lineNumbers: true,
         matchBrackets: true,
-        mode: 'text/html',
+        mode: 'application/x-httpd-php',
         indentUnit: 4,
         indentWithTabs: true,
         enterMode: "keep",
@@ -164,14 +164,17 @@ for ($i = 0; $i < count($templates); $i++)
                         currentFile.split('.').indexOf("jpeg") == -1 &&
                         currentFile.split('.').indexOf("jpg") == -1) {
                         $("#template_file_name").val(currentFile);
-                        if (currentFile.split(".")[1] == "css")
+                        /*if (currentFile.split(".")[1] == "css")
                             codeMirror.setOption("mode", "text/css");
                         if (currentFile.split(".")[1] == "html")
                             codeMirror.setOption("mode", "text/html");
+
+                        if (currentFile.split(".")[1] == "phtml")
+                            codeMirror.setOption("mode", "application/x-httpd-php");*/
                         if (currentFile.split(".")[1] == "js")
                             codeMirror.setOption("mode", "text/javascript");
-                        if (currentFile.split(".")[1] == "phtml")
-                            codeMirror.setOption("mode", "text/html");
+                        else
+                            codeMirror.setOption("mode", "application/x-httpd-php");
                         codeMirror.setValue(data);
                     }
                 }
