@@ -171,7 +171,7 @@ for ($i = 0; $i < count($templates); $i++)
                         if (currentFile.split(".")[1] == "js")
                             codeMirror.setOption("mode", "text/javascript");
                         if (currentFile.split(".")[1] == "phtml")
-                            codeMirror.setOption("mode", "text/php");
+                            codeMirror.setOption("mode", "text/html");
                         codeMirror.setValue(data);
                     }
                 }
