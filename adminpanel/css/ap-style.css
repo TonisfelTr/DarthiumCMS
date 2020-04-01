@@ -405,6 +405,19 @@ select#template_files_edit_selector > option{
     padding: 6px;
 }
 
+option.templates_list_folder{
+    color: #fff;
+    background: radial-gradient(at left center, #FBA33A, #79481f);
+    margin-bottom: 3px;
+    margin-top: 3px;
+    border-radius: 3px;
+}
+
+option.templates_list_folder:checked{
+    color: #fff;
+    background: radial-gradient(at left center, #618fd8, #3b31fb);
+}
+
 .CodeMirror {
     height: 652px;
 }

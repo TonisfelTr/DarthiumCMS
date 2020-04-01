@@ -31,7 +31,7 @@ for ($i = 0; $i < count($templates); $i++)
                 for ($i = 0; $i < count($filesIn); $i++){
                     if ($filesIn[$i] != "." && $filesIn[$i] != ".."){
                         if (is_dir("site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/" . $filesIn[$i])){
-                            echo "<option style='color: #fba33a'> $filesIn[$i]</option>";
+                            echo "<option class='templates_list_folder'> $filesIn[$i]</option>";
                         }
                         else {
                             if (strstr($filesIn[$i], "html"))
@@ -105,7 +105,7 @@ for ($i = 0; $i < count($templates); $i++)
                         if (result[i].indexOf("png") > 0 || result[i].indexOf("ico") > 0 || result[i].indexOf("jpg") > 0 || result[i].indexOf("jpeg") > 0)
                             $(option).css("color", "#833180");
                     } else {
-                        $(option).css("color", "#fba33a");
+                        $(option).addClass("templates_list_folder");
                     }
                     $(option).text(result[i]);
                     $("#template_files_edit_selector").append($(option));
@@ -145,7 +145,7 @@ for ($i = 0; $i < count($templates); $i++)
                             if (result[i].indexOf("png") > 0 || result[i].indexOf("ico") > 0 || result[i].indexOf("jpg") > 0 || result[i].indexOf("jpeg") > 0)
                                 $(option).css("color", "#833180");
                         } else {
-                            $(option).css("color", "#fba33a");
+                            $(option).addClass("templates_list_folder");
                         }
                         $(option).text(result[i]);
                         $("#template_files_edit_selector").append($(option));
@@ -164,13 +164,15 @@ for ($i = 0; $i < count($templates); $i++)
                         currentFile.split('.').indexOf("jpeg") == -1 &&
                         currentFile.split('.').indexOf("jpg") == -1) {
                         $("#template_file_name").val(currentFile);
-                        /*if (currentFile.split(".")[1] == "css")
-                            codeMirror.setOption("mode", "text/css");
+                        /*
                         if (currentFile.split(".")[1] == "html")
                             codeMirror.setOption("mode", "text/html");
 
                         if (currentFile.split(".")[1] == "phtml")
                             codeMirror.setOption("mode", "application/x-httpd-php");*/
+                        if (currentFile.split(".")[1] == "css") {
+                            codeMirror.setOption("mode", "text/css");
+                        }
                         if (currentFile.split(".")[1] == "js")
                             codeMirror.setOption("mode", "text/javascript");
                         else

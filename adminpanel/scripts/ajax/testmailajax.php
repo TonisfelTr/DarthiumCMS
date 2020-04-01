@@ -9,7 +9,7 @@ if (\Users\UserAgent::SessionContinue() === true){
         exit;
     }
     if (@$_POST["test"] == 1) {
-        if (\Engine\Mailer::SendMail("Тест отсылки сообщения.", "bot.tonisfeltavern@gmail.com", "Тестирование почтового бота."))
+        if (\Engine\Mailer::SendMail("Тест отсылки сообщения.", \Engine\Engine::GetEngineInfo("el"), "Тестирование почтового бота."))
             echo "okey";
         else
             echo "false";

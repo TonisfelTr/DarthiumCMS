@@ -1408,6 +1408,6 @@ $languagePack = [
     "site_design" => [
         "panel_name" => "Дизайн сайта",
         "description" => "Редактирование шаблонов сайта.",
-        "select_file" => "Выберите файл"
+        "select_file" => "Выберите шаблон и файл"
     ]
 ];
