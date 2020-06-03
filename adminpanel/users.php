@@ -202,7 +202,7 @@ if ($canIPBan || $canIPUnban){
                     </div>
                 </div><br>
                 <p><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.panel_tip")?></p>
-                <div class="alert alert-info"><span class="glyphicon glyphicon-warning-sign"></span> При вводе реферера, нельзя использовать знак звёздочки.</div>
+                <div class="alert alert-info"><span class="glyphicon glyphicon-warning-sign"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.referer_tip")?></div>
                 <div class="input-group">
                     <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.search_in_group")?></div>
                     <select class="form-control" name="fgroup" id="user-group-selector">

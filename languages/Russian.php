@@ -26,6 +26,7 @@ $languagePack = [
     "november_month" => "ноября",
     "december_month" => "декабря",
 
+    "year" => "года",
 //PMs
     "email_or_login" => "Email или логин",
     "nickname" => "Никнейм",

@@ -79,7 +79,7 @@
                 );
 
                 $exploded = explode("-",$string);
-                $result = $exploded[2]." ".$month[$exploded[1]]. " " . $exploded[0] . " года";
+                $result = $exploded[2]." ".$month[$exploded[1]]. " " . $exploded[0] . " " . LanguageManager::GetTranslation("year");
                 return $result;
             }
             public static function DatetimeFormatToRead($string){
@@ -101,7 +101,7 @@
 
                 $parts = explode(" ", $string);
                 $date = explode("-", $parts[0]);
-                $result = $parts[1] . " " . $date[2] . " " . $month[$date[1]] . " " . $date[0] . " года";
+                $result = $parts[1] . " " . $date[2] . " " . $month[$date[1]] . " " . $date[0] . " " . LanguageManager::GetTranslation("year");
                 return $result;
             }
             public static function BooleanToWords($bool){
