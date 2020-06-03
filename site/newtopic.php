@@ -15,14 +15,14 @@ foreach ($categories as $c){
         $categoriesList .= "<option value=\"" . $category->getId() . "\">" . $category->getName() . "</option>";
 }
 
-$lastAuthorsTopics = \Forum\ForumAgent::GetTopicsOfAuthor($user->getId(), true);
+$lastAuthorsTopics = \Forum\ForumAgent::GetTopicsOfAuthor($user->getId());
 if (empty($lastAuthorsTopics)){
     $lastAuthorsTopicsText = \Engine\LanguageManager::GetTranslation("newtopic.no_topics_from_you");
 } else {
     $lastAuthorsTopicsText = "<ol>";
     foreach ($lastAuthorsTopics as $topicId){
-        $topic = new \Forum\Topic($topicId);
-        $lastAuthorsTopicsText .= "<li><a href=\"?topic=$topicId\">" . $topic->getName() . "</a></li>";
+        $topic = new \Forum\Topic($topicId["id"]);
+        $lastAuthorsTopicsText .= "<li><a href=\"?topic=$topicId[id]\">" . $topic->getName() . "</a></li>";
     }
     $lastAuthorsTopicsText .= "</ol>";
 }

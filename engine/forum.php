@@ -1212,8 +1212,11 @@ namespace Forum {
                 ErrorManager::PretendToBeDied("User with ID $userId is not exist.", new InvalidArgumentException());
             }
 
-            if (!$mini)
-                return DataKeeper::MakeQuery("SELECT `id` FROM `tt_topics` WHERE `authorId`=? LIMIT 0,5", [$userId]);
+            if (!$mini) {
+                //return DataKeeper::MakeQuery("SELECT `id` FROM `tt_topics` WHERE `authorId`=? LIMIT 0,5", [$userId]);
+                $result = DataKeeper::Get("tt_topics", ["id"], ["authorId" => $userId]);
+                return $result;
+            }
             else {
                 $start = ($page - 1) * 15;
                 $end = $start + 15;
