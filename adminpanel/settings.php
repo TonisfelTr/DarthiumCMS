@@ -513,6 +513,7 @@ else {
         $("#field-reg-show").prop("checked", false);
         $("#field-private").prop("checked", false);
         $("#custom-value-input").val("");
+        $("#field-link-textarea").val("");
         if (type == 1){
             $("#custom-value-input-div").hide();
             $("#require-input-div").hide();
