@@ -459,7 +459,8 @@ $languagePack = [
                 "adminpanel_access" => "Доступ к панели управления",
                 "offline_site_access" => "Доступ к выключенному сайту",
                 "change_settings_access" => "Разрешение на изменение настроек сайта",
-                "change_rules_access" => "Разрешение на редактирование правил сайта"
+                "change_rules_access" => "Разрешение на редактирование правил сайта",
+                "change_template_design" => "Разрешение на изменение шаблонов"
             ],
             "perms_group_managment" => [
                 "tip" => "Права управления группами",

@@ -452,7 +452,8 @@ All rights reserved 2020 year. '.<br>"
 "adminpanel_access" => "Access to the admin panel ",
 "offline_site_access" => "Access to a disabled site ",
 "change_settings_access" => "It is allowed to change site settings ",
-"change_rules_access" => "It is allowed to edit the rules of the site"
+"change_rules_access" => "It is allowed to edit the rules of the site",
+"change_template_design" => "It is allowed to edit templates"
 ],
 "perms_group_managment" => [
 "tip" => " Group management rights ",
