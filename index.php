@@ -327,7 +327,7 @@ if (\Engine\Engine::GetEngineInfo("smt")){
     $main = str_replace_once("{METRIC_JS}", null, $main);
 }
 
-$main = str_replace_once("{ENGINE_META:KEYWORDS}", \Engine\Engine::GetEngineInfo("sh"), $main);
+//$main = str_replace_once("{ENGINE_META:KEYWORDS}", \Engine\Engine::GetEngineInfo("sh"), $main);
 
 ob_end_clean();
 
