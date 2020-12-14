@@ -314,7 +314,6 @@ not available or access to them is closed.",
 "pm_sender_description" => "Sending private messages to each registered user.",
 "footer" => "Tonisfel Tavern CMS.<br>
 Administrator panel.<br>
-The developer does NOT support changing the sourcecode of parts of this panel.<br>
 All add-ins for the admin panel are unofficial.<br>
 Developer- Ilya Bagdanov.<br>
 All rights reserved 2020 year. '.<br>"
@@ -669,6 +668,7 @@ If You have only the right to delete your own data, the system will not delete i
 "bot_postman" => "Bot mailing list ",
 "registration" => "Sign-up",
 "users" => "Users ",
+"plugins" => "Plugins",
 "statistic" => "Statistic ",
 "config_panel" => [
 "panel_name" => "Configuration ",
