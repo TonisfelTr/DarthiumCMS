@@ -461,7 +461,7 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
                     </div><?php }
                 if ($_GET["res"] == "7nbt") { ?>
                     <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                    <?php echo \Engine\LanguageManager::GetTranslation("no_id_for_this_action"); ?>
+                    <?php echo \Engine\LanguageManager::GetTranslation("text_too_short"); ?>
                     </div><?php }
                 if ($_GET["res"] == "7ntbd") { ?>
                     <div class="alert alert-danger"><span class="glyphicon glyphicon-remove-sign"></span>

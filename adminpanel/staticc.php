@@ -177,7 +177,7 @@ if ($editSContentPerm){
                     </div>
                     <input class="form-control" name="staticc-page-create-name-input" type="text" maxlength="25" placeholder="<?=\Engine\LanguageManager::GetTranslation("staticc_panel.creator_pages.page_name")?>">
                     <br>
-                    <input class="form-control" name="staticc-page-create-keywords" type="text" maxlength="255" placeholder="<?=\Engine\LanguageManager::GetTranslation("staticc_panel.create_pages.page_keyword")?>">
+                    <input class="form-control" name="staticc-page-create-keywords" type="text" maxlength="255" placeholder="<?=\Engine\LanguageManager::GetTranslation("staticc_panel.creator_pages.page_keyword")?>">
                     <br>
                     <input class="form-control" name="staticc-page-create-description-input" type="text" maxlength="100" placeholder="<?=\Engine\LanguageManager::GetTranslation("staticc_panel.creator_pages.page_description")?>">
                     <br>
@@ -246,7 +246,7 @@ if ($editSContentPerm){
                     </div>
                     <input class="form-control" type="text" maxlength="25" placeholder="<?=\Engine\LanguageManager::GetTranslation("staticc_panel.editor_pages.page_name")?>" name="staticc-page-edit-name-input" value="<?php echo $page->getPageName(); ?>">
                     <br>
-                    <input class="form-control" name="staticc-page-edit-keywords" type="text" maxlength="255" placeholder="<?=\Engine\LanguageManager::GetTranslation("staticc_panel.create_pages.page_keyword")?>" value="<?=$page->getKeyWords()?>">
+                    <input class="form-control" name="staticc-page-edit-keywords" type="text" maxlength="255" placeholder="<?=\Engine\LanguageManager::GetTranslation("staticc_panel.editor_pages.page_keyword")?>" value="<?=$page->getKeyWords()?>">
                     <br>
                     <input class="form-control" type="text" maxlength="100" placeholder="<?=\Engine\LanguageManager::GetTranslation("staticc_panel.editor_pages.page_description")?>" name="staticc-page-edit-description-input" value="<?php echo $page->getPageDescription(); ?>">
                     <br>
@@ -1460,22 +1460,22 @@ if ($editSContentPerm){
     <?php if (isset($_REQUEST["reqtype"])){
     switch ($_REQUEST["reqtype"]){
     case 1:
-    ?>$("div#staticc-btn-panel > button:nth-child(2)").click();
+    ?>$("div#staticc-btn-panel > button:nth-child(1)").click();
     <?php break;
     case 2:
-    ?>$("div#staticc-btn-panel > button:nth-child(3)").click();
+    ?>$("div#staticc-btn-panel > button:nth-child(2)").click();
     <?php break;
     case 3:
-    ?>$("div#staticc-btn-panel > button:nth-child(4)").click();
+    ?>$("div#staticc-btn-panel > button:nth-child(3)").click();
     <?php break;
     }
     } ?>
 
     function insertBBCode(openTag, notNeedClose){
-        if ($("#staticc-page-create-div").css("display") !== "none") {
+        if ($("#staticc-page-create-div").css("display") == "block") {
             var texter = document.getElementById("staticc-page-create-textarea");
         }
-        if ($("#staticc-page-edit-div").css("display") !== "none") {
+        if ($("#staticc-page-edit-div").css("display") == "block") {
             var texter = document.getElementById("staticc-page-edit-textarea");
         }
 
