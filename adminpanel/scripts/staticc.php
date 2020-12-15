@@ -58,7 +58,7 @@ if (isset($_POST["staticc-page-create-create-btn"]) && $createSPPerm) {
     if ($e = \Forum\StaticPagesAgent::CreatePage($_POST["staticc-page-create-name-input"], $user->getId(),
         (!empty($_POST["staticc-page-create-description-input"])) ? $_POST["staticc-page-create-description-input"] : "", $_POST["staticc-page-create-textarea"], $_POST["staticc-page-create-keywords"])) {
         \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("static_editor.logs.created_static_page_log") . "\"" . $_POST["staticc-page-create-name-input"] . "\"");
-        header("Location: ../../adminpanel.php?p=staticc&res=7scp");
+        header("Location: ../../adminpanel.php?p=staticc&res=7scp&reqtype=1");
         exit;
     } else {
         //header("Location: ../../adminpanel.php?p=staticc&reqtype=1&res=7ncp");
@@ -108,7 +108,7 @@ elseif (isset($_POST["staticc-page-edit-edit-btn"]) && $editSPPerm) {
     $result = \Forum\StaticPagesAgent::EditPage($pageId, $_POST["staticc-page-edit-textarea"]);
     if ($result) {
         \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("static_editor.logs.edited_static_page_log") . "\"" . $_POST["staticc-page-edit-name-input"] . "\".");
-        header("Location: ../../adminpanel.php?p=staticc&res=7sphbe");
+        header("Location: ../../adminpanel.php?p=staticc&res=7sphbe&reqtype=1");
         exit;
     } else {
         header("Location: ../../adminpanel.php?p=staticc&res=7npse&reqtype=3&editpage=$pageId");
