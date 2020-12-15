@@ -33,7 +33,7 @@ if (empty($results)){
         $form = str_replace_once("{TOPIC_CATEGORY_ID}", $topic->getCategory()->getId(), $form);
         echo $form;
     }
-    $pagesCount = $count % 15;
+    $pagesCount = $count / 15;
     if ($pagesCount > 1){
         $pagination = "<div class=\"btn-group\">";
         for ($i = 1; $i <= $pagesCount; $i++){
