@@ -25,7 +25,7 @@
             <button class="btn btn-default" title="Спойлер" type="button" onclick="insertBBCode('spoiler', false, document.getElementById('report-edit-message-text'));"><span class="glyphicons glyphicons-note-empty"></span></button>
             <button class="btn btn-default" title="Цитата" type="button" onclick="insertBBCode('quote', 'quote', document.getElementById('report-edit-message-text'));"><span class="glyphicons glyphicons-user-conversation"></span></button>
         </div>
-        <textarea class="form-control" name="reports-edit-message-text" id="report-edit-message-text" style="resize: none; height: 350px;"><?php echo $message; ?></textarea>
+        <textarea class="form-control" name="reports-edit-message-text" id="report-edit-message-text" style="resize: none; height: 350px;"><?php echo \Engine\Engine::MakeUnactiveCodeWords($message); ?></textarea>
         <div class="btn-group">
             <button type="submit" class="btn btn-default" formaction="site/scripts/reports.php?{REPORT_PAGE:EDIT_SUFFIX_FORMACTION}" name="{REPORT_PAGE:EDIT_BTN_NAME}"><span class="glyphicons glyphicons-pencil"></span> Сохранить изменения</button>
             <button type="reset" class="btn btn-info" name="reports-edit-message-erase"><span class="glyphicons glyphicons-erase"></span> Отменить изменения</button>
