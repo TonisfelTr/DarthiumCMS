@@ -109,9 +109,9 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
                 \Engine\LanguageManager::GetTranslation("in") . " " . \Engine\Engine::DatetimeFormatToRead($topic->getLastEditDateTime()), $new);
         else
             $new = str_replace_once("{TOPIC_EDIT_INFO}", "", $new);
-        $new = str_replace_once("{TOPIC_AUTHOR_SKYPE}", (($author->IsSkypePublic()) ? "Skype: <a href=\"skype:" . $author->getSkype() . "?chat\">" . $author->getSkype() . "</a><br>" : ""), $new);
-        $new = str_replace_once("{TOPIC_AUTHOR_EMAIL}", (($author->IsEmailPublic()) ? "Email: <a href=\"mailto:" . $author->getEmail() . "\">" . \Engine\LanguageManager::GetTranslation("newsviewer.write_to") . "</a><br>" : ""), $new);
-        $new = str_replace_once("{TOPIC_AUTHOR_VK}", (($author->IsVKPublic()) ? "VK: <a href=\"https://vk.com/" . $author->getVK() . "\">" . $author->getVK() . "</a><br>" : ""), $new);
+        $new = str_replace_once("{TOPIC_AUTHOR_SKYPE}", (($author->IsSkypePublic()) ? "Skype: <a href=\"skype:" . $author->getSkype() . "?chat\">" . htmlentities($author->getSkype()) . "</a><br>" : ""), $new);
+        $new = str_replace_once("{TOPIC_AUTHOR_EMAIL}", (($author->IsEmailPublic()) ? "Email: <a href=\"mailto:" . $author->getEmail() . "\">" . htmlentities(\Engine\LanguageManager::GetTranslation("newsviewer.write_to")) . "</a><br>" : ""), $new);
+        $new = str_replace_once("{TOPIC_AUTHOR_VK}", (($author->IsVKPublic()) ? "VK: <a href=\"https://vk.com/" . $author->getVK() . "\">" . htmlentities($author->getVK()) . "</a><br>" : ""), $new);
         $new = str_replace_once("{TOPIC_CONTENT}", Engine\Engine::ChatFilter(\Engine\Engine::CompileMentions(html_entity_decode(\Engine\Engine::CompileBBCode($topic->getText())))), $new);
         $new = str_replace_once("{TOPIC_FOOTER_LIKE_CLASS}", (($topic->getLikes() > $topic->getDislikes()) ? "positive" : (($topic->getDislikes() > $topic->getLikes()) ? "negative" : "")), $new);
     //First condition:
@@ -225,6 +225,7 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
         if ($comment->getChangeInfo()["editorId"] != "") {
             $userEditor = $comment->getChangeInfo()["editorId"];
             $reasonEdit = $comment->getChangeInfo()["editReason"];
+            $reasonEdit = htmlentities($reasonEdit);
             $dateEdit = $comment->getChangeInfo()["editDate"];
             $currentComment = str_replace_once("{COMMENT_EDIT_INFO}", \Engine\LanguageManager::GetTranslation("newsviewer.last_edited_comment") . " by " . \Users\UserAgent::GetUserNick($userEditor) . " " .
                     \Engine\LanguageManager::GetTranslation("in") . " " . \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s", $dateEdit)) .
@@ -298,8 +299,8 @@ elseif (isset($_GET["edit"])) {
             $selectorAtr = "disabled";
         $editor = str_replace_once("{TOPIC_DISABLED_PROPERTY}", $selectorAtr, $editor);
         $editor = str_replace_once("{TOPIC_DISABLED_STATUS_PROPERTY}", $selectorAtr, $editor);
-        $editor = str_replace_once("{TOPIC_PREVIEW_TEXT}", $topic->getPretext(), $editor);
-        $editor = str_replace_once("{TOPIC_CONTENT_TEXT}", $topic->getText(), $editor);
+        $editor = str_replace_once("{TOPIC_PREVIEW_TEXT}", \Engine\Engine::MakeUnactiveCodeWords($topic->getPretext()), $editor);
+        $editor = str_replace_once("{TOPIC_CONTENT_TEXT}", \Engine\Engine::MakeUnactiveCodeWords($topic->getText()), $editor);
         $isNotClosed = "<option value=\"1\"" . (($topic->getStatus() == 1) ? " selected" : "") . ">" . \Engine\LanguageManager::GetTranslation("newsviewer.open") . "</option>";
         $isClosed = "<option value=\"0\"" . (($topic->getStatus() == 0) ? " selected" : "") . ">" . \Engine\LanguageManager::GetTranslation("newsviewer.close") . "</option>";
         $editor = str_replace_once("{TOPIC_PAGE:STATUS_OPTIONS", $isNotClosed . $isClosed, $editor);
@@ -315,7 +316,7 @@ elseif (isset($_GET["cedit"])) {
         $editor = getBrick();
 
         $editor = str_replace_once("{COMMENT_ID}", $comment->getId(), $editor);
-        $editor = str_replace_once("{COMMENT_TEXT}", $comment->getText(), $editor);
+        $editor = str_replace_once("{COMMENT_TEXT}", \Engine\Engine::MakeUnactiveCodeWords($comment->getText()), $editor);
 
         $errors = "";
         if ($_GET["res"] == "3ntlc") {

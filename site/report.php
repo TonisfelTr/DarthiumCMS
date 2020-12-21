@@ -177,8 +177,8 @@ if (empty($_GET["preg"])) {
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_GROUP_NAME}", $report->ReportAuthor()->UserGroup()->getName(), $reportSeeBlock);
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_REALNAME}", ($report->ReportAuthor()->getRealName() != '') ? \Engine\LanguageManager::GetTranslation("reports_site_panel.name") . " " . htmlentities($report->ReportAuthor()->getRealName()) . "<br>" : "", $reportSeeBlock);
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_FROM}", ($report->ReportAuthor()->getFrom() != '') ? \Engine\LanguageManager::GetTranslation("reports_site_panel.from") . " " . htmlentities($report->ReportAuthor()->getFrom()) . "<br>" : "", $reportSeeBlock);
-            $reportSeeBlock = str_replace_once("{REPORT_PAGE:VK}", ($report->ReportAuthor()->getVK() != '' && $report->ReportAuthor()->IsVKPublic()) ? "VK: <a href=\"http://vk.com/" . htmlentities($report->ReportAuthor()->getVK()) . "\"" . \Engine\LanguageManager::GetTranslation("reports_site_panel.go_to") . "</a><br>" : "", $reportSeeBlock);
-            $reportSeeBlock = str_replace_once("{REPORT_PAGE:REPORT_TEXT}", nl2br(\Engine\Engine::CompileBBCode($report->getMessage())), $reportSeeBlock);
+            $reportSeeBlock = str_replace_once("{REPORT_PAGE:VK}", ($report->ReportAuthor()->getVK() != '' && $report->ReportAuthor()->IsVKPublic()) ? "VK: <a href=\"http://vk.com/" . htmlentities($report->ReportAuthor()->getVK()) . "\">Вс" . \Engine\LanguageManager::GetTranslation("reports_site_panel.go_to") . "</a><br>" : "", $reportSeeBlock);
+            $reportSeeBlock = str_replace_once("{REPORT_PAGE:REPORT_TEXT}", \Engine\Engine::MakeUnactiveCodeWords(nl2br(\Engine\Engine::CompileBBCode($report->getMessage()))), $reportSeeBlock);
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_SIGNATURE}", nl2br(\Engine\Engine::CompileBBCode($report->ReportAuthor()->getSignature())), $reportSeeBlock);
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:REPORT_STATUS}", $report->getStatus(), $reportSeeBlock);
             $reportSeeBlock = str_replace_once("{REPORT_ID}", $report->getId(), $reportSeeBlock);
@@ -328,7 +328,7 @@ if (empty($_GET["preg"])) {
             $reportEditBlock = str_replace_once("{REPORT_PAGE:EDIT_SUFFIX_FORMACTION}", $suffixFormaction, $reportEditBlock);
             $reportEditBlock = str_replace_once("{REPORT_PAGE:EDIT_BTN_NAME}", $nameBtnEdit, $reportEditBlock);
 
-            echo $reportEditBlock;
+            echo \Engine\Engine::MakeUnactiveCodeWords($reportEditBlock);
             break;
         }
         default: {

@@ -239,7 +239,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
         $tag = "";
         $title = "";
         $closingTag = "";
-        $content = $userAdFields[$id]["content"];
+        $content = htmlentities($userAdFields[$id]["content"]);
         $isPrivate = $userAdFields[$id]["isPrivate"];
         if (strlen($content) > 0){
             if ($fieldProp["link"] != ""){
@@ -811,11 +811,11 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
     $main = str_replace("{PROFILE_PAGE:USER_REPORT_CREATED_COUNT}", $user->getReportsCreatedCount(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_FRIENDS_COUNT}", $user->FriendList()->getFriendsCount(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_ONLINE_FRIENDS_COUNT}", $user->FriendList()->getOnlineFriendCount(), $main);
-    $main = str_replace("{PROFILE_PAGE:USER_REALNAME_TEXT}", $user->getRealName(), $main);
-    $main = str_replace("{PROFILE_PAGE:USER_BIRTHDAY_TEXT}", $user->getBirth(), $main);
-    $main = str_replace("{PROFILE_PAGE:USER_FROM_TEXT}", $user->getFrom(), $main);
-    $main = str_replace("{PROFILE_PAGE:USER_ABOUT_TEXT}", $user->getAbout(), $main);
-    $main = str_replace("{PROFILE_PAGE:USER_HOBBIES_TEXT}", $user->getHobbies(), $main);
+    $main = str_replace("{PROFILE_PAGE:USER_REALNAME_TEXT}", htmlentities($user->getRealName()), $main);
+    $main = str_replace("{PROFILE_PAGE:USER_BIRTHDAY_TEXT}", htmlentities($user->getBirth()), $main);
+    $main = str_replace("{PROFILE_PAGE:USER_FROM_TEXT}", htmlentities($user->getFrom()), $main);
+    $main = str_replace("{PROFILE_PAGE:USER_ABOUT_TEXT}", htmlentities($user->getAbout()), $main);
+    $main = str_replace("{PROFILE_PAGE:USER_HOBBIES_TEXT}", htmlentities($user->getHobbies()), $main);
     if ($user->getId() == $_SESSION["uid"]){
         include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/userperrors.phtml";
         $userPageErrors = getBrick();
@@ -908,7 +908,7 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
         $closingTag = "";
         foreach ($userAdFields as $adField){
             if ($fieldProp["id"] == $adField["fieldId"]){
-                $content = $adField["content"];
+                $content = htmlentities($adField["content"]);
                 $isPrivate = $adField["isPrivate"];
             }
         }
@@ -918,7 +918,7 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
                 $closingTag = "</a>";
             }
             if ($fieldProp["description"] != ""){
-                $title = " title=\"" . $fieldProp["description"] . "\"";
+                $title = " title=\"" . htmlentities($fieldProp["description"]). "\"";
             }
             if ($fieldProp["link"] == "" && $title != ""){
                 $tag = "<span";
@@ -974,11 +974,11 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
     $userInfo = getBrick();
 
     if ($user->IsVKPublic() || $user->FriendList()->isFriend($_SESSION["uid"]))
-        $userVKLink = ($user->getVK() == "") ? "VK: " . \Engine\LanguageManager::GetTranslation("not_setted") . "<br>" : "VK: <a class=\"profile-profile-link\" href=\"http://vk.com/".$user->getVK()."\">" . $user->getVK() . "</a><br>";
+        $userVKLink = ($user->getVK() == "") ? "VK: " . \Engine\LanguageManager::GetTranslation("not_setted") . "<br>" : "VK: <a class=\"profile-profile-link\" href=\"http://vk.com/".htmlentities($user->getVK())."\">" . $user->getVK() . "</a><br>";
     else $userVKLink = "";
     if ($user->IsBirthdayPublic() || $user->FriendList()->isFriend($_SESSION["uid"]))
         $userBirthday = $user->getBirth() == "" ? \Engine\LanguageManager::GetTranslation("birthday") . ": " . \Engine\LanguageManager::GetTranslation("not_setted") . "<br>" :
-             \Engine\LanguageManager::GetTranslation("birthday") . ": " . $user->getBirth() . "<br>";
+             \Engine\LanguageManager::GetTranslation("birthday") . ": " . htmlentities($user->getBirth()) . "<br>";
     else $userBirthday = "";
     if ($user->IsSkypePublic() || $user->FriendList()->isFriend($_SESSION["uid"]))
         $userSkypeLink = $user->getSkype() == "" ? "Skype: " . \Engine\LanguageManager::GetTranslation("not_setted") ."<br>" : "Skype: <a class=\"profile-profile-link\" href=\"skype:". $user->getSkype()."?chat\">написать</a><br>";
@@ -1040,8 +1040,8 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
     $main = str_replace("{PROFILE_PAGE:USER_REGDATETIME}", (($user->getSex() == 2) ? "а " : " ") . \Engine\Engine::DateFormatToRead($user->getRegDate()) . ".", $main);
     $main = str_replace("{PROFILE_PAGE:USER_TOPICS_CREATED_COUNT}", \Forum\ForumAgent::GetCountTopicOfAuthor($user->getId()), $main);
     $main = str_replace("{PROFILE_PAGE:USER_COMMENTS_CREATED_COUNT}", \Forum\ForumAgent::GetCountOfCommentOfUser($user->getId()), $main);
-    $main = str_replace("{PROFILE_PAGE:USER_FROM}", $user->getFrom(), $main);
-    $main = str_replace("{PROFILE_PAGE:USER_REALNAME}", $user->getRealName(), $main);
+    $main = str_replace("{PROFILE_PAGE:USER_FROM}", htmlentities($user->getFrom()), $main);
+    $main = str_replace("{PROFILE_PAGE:USER_REALNAME}", htmlentities($user->getRealName()), $main);
     $main = str_replace("{PROFILE_PAGE:USER_BIRTHDAY_LINK}", $userBirthday, $main);
     $main = str_replace("{PROFILE_PAGE:USER_SEX}", $userSex, $main);
     $main = str_replace("{PROFILE_PAGE:USER_REFERER}", $userRefererLink, $main);

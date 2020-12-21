@@ -63,7 +63,7 @@ else {
         $userRCNickname = \Users\UserAgent::GetUserNick($user->getReputation()->getReputationArray()[$i]["authorId"]);
         $userRCMark = ($user->getReputation()->getReputationArray()[$i]["type"] == 1) ? "<span style=\"color: green;\">" . \Engine\LanguageManager::GetTranslation("reputationer.mark_positive") . "</span>" : "<span style=\"color: darkred;\">" . \Engine\LanguageManager::GetTranslation("reputationer.mark_negative") . "</span>";
         $userRCDate = \Engine\Engine::DateFormatToRead(date("Y-m-d", $user->getReputation()->getReputationArray()[$i]["createDate"]));
-        $userRCComment = htmlentities($user->getReputation()->getReputationArray()[$i]["comment"]);
+        $userRCComment = htmlentities(\Engine\Engine::MakeUnactiveCodeWords($user->getReputation()->getReputationArray()[$i]["comment"]));
         $reputationerList .= "<div class=\"reputation-change-info\">";
         $reputationerList .= "$userRCGenderEnding: ";
         $reputationerList .= "<a href=\"profile.php?uid=$userRCUID\">$userRCNickname</a><br>";
