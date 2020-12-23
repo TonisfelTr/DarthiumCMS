@@ -56,6 +56,7 @@ if( \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Loca
 </head>
 <body>
 <?php include "adminpanel/subpanels/uploader.php"; ?>
+
 <div class="wrapper">
     <div class="container">
         <!-- Static navbar -->
