@@ -54,7 +54,7 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
                 $quizeFrame = str_replace_once("{QUIZE_RESULTS_HIDDEN}", "hidden", $quizeFrame);
             }
 
-            $quizeFrame = str_replace("{QUIZE_QUESTION}", $quize->getQuestion(), $quizeFrame);
+            $quizeFrame = str_replace("{QUIZE_QUESTION}", \Engine\Engine::MakeUnactiveCodeWords($quize->getQuestion()), $quizeFrame);
             $quizeAnswersForInput = "";
             $quizeAnswers = $quize->getVars();
             for ($i = 0; $i < count($quizeAnswers); $i++) {
@@ -64,7 +64,7 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
                 $quizeAnswersForInput .= "<p><span class=\"quize-label quize-label-$color\">$var</span> "
                     . "<span data-var-id=\"$id\">" . $quize->getProcentAnswer($quizeAnswers[$i][0]) . "</span></p>";
             }
-            $quizeFrame = str_replace_once("{QUIZE_VOTES}", $quizeAnswersForInput, $quizeFrame);
+            $quizeFrame = str_replace_once("{QUIZE_VOTES}", \Engine\Engine::MakeUnactiveCodeWords($quizeAnswersForInput), $quizeFrame);
             $quizeAnswersForInput = "";
             $quizeAnswers = $quize->getVars();
             for ($i = 0; $i < count($quizeAnswers); $i++) {
@@ -73,7 +73,7 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
                 $quizeAnswersForInput .= "<button class=\"btn btn-default\" type=\"button\" id=\"quize-answer-$id\" 
                 data-var-id=\"$id\">$var</button>";
             }
-            $quizeFrame = str_replace_once("{QUIZE_ANSWERS}", $quizeAnswersForInput, $quizeFrame);
+            $quizeFrame = str_replace_once("{QUIZE_ANSWERS}",\Engine\Engine::MakeUnactiveCodeWords($quizeAnswersForInput), $quizeFrame);
             $quizeFrame = str_replace("{QUIZE_ANSWERED_COUNT}", $quize->getTotalAnswers(), $quizeFrame);
             if ($user !== false)
                 $quizeFrame = str_replace_once("{USER_ID}", $user->getId(), $quizeFrame);
@@ -229,7 +229,7 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
             $dateEdit = $comment->getChangeInfo()["editDate"];
             $currentComment = str_replace_once("{COMMENT_EDIT_INFO}", \Engine\LanguageManager::GetTranslation("newsviewer.last_edited_comment") . " by " . \Users\UserAgent::GetUserNick($userEditor) . " " .
                     \Engine\LanguageManager::GetTranslation("in") . " " . \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s", $dateEdit)) .
-                ((strlen($reasonEdit) > 0) ? \Engine\LanguageManager::GetTranslation("newsviewer.last_edited_comment_reason") . " : " . $reasonEdit : ""), $currentComment) . "";
+                ((strlen($reasonEdit) > 0) ? \Engine\LanguageManager::GetTranslation("newsviewer.last_edited_comment_reason") . " : " . htmlentities($reasonEdit) : ""), $currentComment) . "";
             } else
                 $currentComment = str_replace_once("{COMMENT_EDIT_INFO}", "", $currentComment);
         array_push($comments, $currentComment);
@@ -303,7 +303,7 @@ elseif (isset($_GET["edit"])) {
         $editor = str_replace_once("{TOPIC_CONTENT_TEXT}", \Engine\Engine::MakeUnactiveCodeWords($topic->getText()), $editor);
         $isNotClosed = "<option value=\"1\"" . (($topic->getStatus() == 1) ? " selected" : "") . ">" . \Engine\LanguageManager::GetTranslation("newsviewer.open") . "</option>";
         $isClosed = "<option value=\"0\"" . (($topic->getStatus() == 0) ? " selected" : "") . ">" . \Engine\LanguageManager::GetTranslation("newsviewer.close") . "</option>";
-        $editor = str_replace_once("{TOPIC_PAGE:STATUS_OPTIONS", $isNotClosed . $isClosed, $editor);
+        $editor = str_replace_once("{TOPIC_PAGE:STATUS_OPTIONS}", $isNotClosed . $isClosed, $editor);
         echo $editor;
 
     }
