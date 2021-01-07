@@ -6,7 +6,8 @@ namespace SiteBuilders {
     use Engine\ErrorManager;
     use Users\PrivateMessager;
     use Engine\Engine;
-
+    //@TODO: Убрать названия таблиц,
+    //       Возможно, префикс у таблиц можно будет указать при установке.
     const SB_TABLE = "tt_staticcomponents";
     const SB_NAVIGATOR = "tt_navbar";
     const SB_RIGHTSIDE = 3;
