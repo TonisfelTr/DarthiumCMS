@@ -343,7 +343,7 @@ if ($canIPBan || $canIPUnban){
                                         <td><?php echo \Users\UserAgent::GetUserNick(\Guards\SocietyGuard::GetBanUserParam($bannedList[$i], "author")); ?></td>
                                         <td><?php echo htmlentities(\Guards\SocietyGuard::GetBanUserParam($bannedList[$i], "reason")); ?></td>
                                         <?php if ($canUserUnban) { ?><td>
-                                            <button class="btn btn-default" type="submit" style="width: 100%" formaction="adminpanel/scripts/userer.php?ufuban=<?php echo $bannedList[$i]; ?>">Разбанить</button>
+                                            <button class="btn btn-default" name="user_ban_unban" type="submit" style="width: 100%" formaction="adminpanel/scripts/userer.php?ufuban=<?php echo $bannedList[$i]; ?>">Разбанить</button>
                                         </td>
                                         <?php } ?>
                                     </tr>
@@ -402,7 +402,7 @@ if ($canIPBan || $canIPUnban){
                                 <td><?php print (\Guards\SocietyGuard::GetIPBanParam($banipList[$h], "unban_time") == 0) ? \Engine\LanguageManager::GetTranslation("users_panel.banip_panel.permanently") : \Engine\Engine::DateFormatToRead(date("Y-m-d",\Guards\SocietyGuard::GetIPBanParam($banipList[$h], "unban_time"))); ?></td>
                                 <td><?php print \Users\UserAgent::GetUserNick(\Guards\SocietyGuard::GetIPBanParam($banipList[$h], "author")); ?></td>
                                 <td><?php print htmlentities(\Guards\SocietyGuard::GetIPBanParam($banipList[$h], "reason")); ?></td>
-                                <?php if ($canIPUnban) { ?> <td><button style="width: 100%;" class="btn btn-default" type="submit" formaction="adminpanel/scripts/userer.php?ipuban=<?php print htmlentities($banipList[$h]); ?>">Разблокировать</button></td> <?php } ?>
+                                <?php if ($canIPUnban) { ?> <td><button style="width: 100%;" class="btn btn-default" type="submit" name="user_bip_unban" formaction="adminpanel/scripts/userer.php?ipuban=<?php print htmlentities($banipList[$h]); ?>">Разблокировать</button></td> <?php } ?>
                             </tr>
                         <?php } ?>
                     </tbody>
