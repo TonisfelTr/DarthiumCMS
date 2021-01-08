@@ -6,6 +6,12 @@ include_once "../../engine/main.php";
 $session = \Users\UserAgent::SessionContinue();
 if ($session === TRUE) {
     $user = new \Users\User($_SESSION["uid"]);
+
+    if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBanned()){
+        header("Location: banned.php");
+        exit;
+    }
+
     if (isset($_POST["topic-create-btn"])) {
         if ($user->UserGroup()->getPermission("topic_create")) {
             $category = $_POST["topic-category-select"];

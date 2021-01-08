@@ -22,6 +22,11 @@ if ($session !== TRUE){
 
 $user = new \Users\User(@$_SESSION["uid"]);
 
+if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBanned()){
+    header("Location: banned.php");
+    exit;
+}
+
 if (isset($_REQUEST["profile-blacklist-add"])){
     if (empty($_REQUEST["profile-edit-blacklist-nickname"])){
         //Not sended nickname

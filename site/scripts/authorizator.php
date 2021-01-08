@@ -27,7 +27,6 @@ if (empty($_REQUEST["profile-auth-password"])){
     header("Location: ../../profile.php?res=nspwd");
     exit;
 }
-
 $session = \Users\UserAgent::SessionCreate($_REQUEST["profile-auth-uid"], $_REQUEST["profile-auth-password"]);
 echo $session;
 if ($session === TRUE){

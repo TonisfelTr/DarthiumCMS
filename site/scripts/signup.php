@@ -2,6 +2,11 @@
 require_once "../../engine/main.php";
 \Engine\Engine::LoadEngine();
 
+if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){
+    header("Location: banned.php");
+    exit;
+}
+
 @$nickname = $_POST["profile-reg-nickname-input"];
 @$password = $_POST["profile-reg-password-input"];
 @$rePassword = $_POST["profile-reg-repassword-input"];

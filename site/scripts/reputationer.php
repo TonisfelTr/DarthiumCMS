@@ -6,6 +6,11 @@ require_once "../../engine/main.php";
 if ($sessionRes = \Users\UserAgent::SessionContinue()) $user = new \Users\User($_SESSION["uid"]);
 else { header("Location: ../../index.php?page=errors/nonauth"); exit;}
 
+if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBanned()){
+    header("Location: banned.php");
+    exit;
+}
+
 if ($user->getId() == @$_POST["uid"]){
     header("Location: ../../profile.php?res=yuid");
     exit;

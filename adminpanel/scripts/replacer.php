@@ -4,11 +4,15 @@ require_once "../../engine/main.php";
 \Engine\Engine::LoadEngine();
 
 if ($sessionRes = \Users\UserAgent::SessionContinue()) $user = new \Users\User($_SESSION["uid"]);
-if (!$user->UserGroup()->getPermission("change_engine_settings")){
+if (!$user->UserGroup()->getPermission("change_engine_settings")) {
     header("Location: ../../adminpanel.php?res=1");
     exit;
-}
-else {
+} else {
+    if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBanned()){
+        header("Location: banned.php");
+        exit;
+    }
+
     if (isset($_POST["save_cfg_button"])) {
         if ($_POST["emailconnecttype"] == "tls")
             $type = "tls";

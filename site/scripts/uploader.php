@@ -8,6 +8,11 @@ if ($user === false) exit;
 if ($sessionRes = \Users\UserAgent::SessionContinue()) $user = new \Users\User($_SESSION["uid"]);
 else { header("Location: ../../index.php?page=errors/nonauth"); exit;}
 
+if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBanned()){
+    header("Location: banned.php");
+    exit;
+}
+
 if (!strstr($_SESSION["LASTADDR"], "?")) $symbol = "?";
 else $symbol = "&";
 

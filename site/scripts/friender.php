@@ -10,6 +10,11 @@ if (\Users\UserAgent::SessionContinue() !== true){
 
 $user = new \Users\User($_SESSION["uid"]);
 
+if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBanned()){
+    header("Location: banned.php");
+    exit;
+}
+
 if (isset($_POST["profile-friend-add-btn"])){
     if (empty($_POST["profile-friend-nickname-add-input"])){
         header("Location: ../../profile.php?page=fadd&res=unins");

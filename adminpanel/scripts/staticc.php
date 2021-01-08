@@ -27,6 +27,11 @@ require_once "../../engine/main.php";
 if ($sessionRes = \Users\UserAgent::SessionContinue()) $user = new \Users\User($_SESSION["uid"]);
 else { header("Location: ../../adminpanel.php?p=forbidden"); exit; }
 
+if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBanned()){
+    header("Location: banned.php");
+    exit;
+}
+
 $createSPPerm = $user->UserGroup()->getPermission("sc_create_pages");
 $editSPPerm = $user->UserGroup()->getPermission("sc_edit_pages");
 $removeSPPerm = $user->UserGroup()->getPermission("sc_remove_pages");

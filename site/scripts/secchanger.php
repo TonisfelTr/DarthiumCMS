@@ -4,8 +4,13 @@ include_once "../../engine/main.php";
 
 $sessEffect = \Users\UserAgent::SessionContinue();
 if ($sessEffect == True) {
-    echo 1;
     $user = new \Users\User($_SESSION["uid"]);
+    
+    if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBanned()){
+        header("Location: banned.php");
+        exit;
+    }
+
     if ( $_REQUEST["uid"] == $_SESSION["uid"] && $user->UserGroup()->getPermission("change_profile") == 1) {
          if (!isset($_REQUEST["cp"]) || !isset($_REQUEST["pass-save"])) exit;
          if ( $_REQUEST["cp"] == 1 ){

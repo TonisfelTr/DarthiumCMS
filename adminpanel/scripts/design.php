@@ -4,8 +4,13 @@ include_once "../../engine/main.php";
 
 
 $session = \Users\UserAgent::SessionContinue();
-if ($session === TRUE)
+if ($session === TRUE) {
     $user = new \Users\User($_SESSION["uid"]);
+    if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBanned()){
+        header("Location: banned.php");
+        exit;
+    }
+}
 else
     $user = false;
 

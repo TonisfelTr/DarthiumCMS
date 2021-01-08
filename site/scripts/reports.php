@@ -3,6 +3,11 @@
 require_once "../../engine/main.php";
 \Engine\Engine::LoadEngine();
 
+if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){
+    header("Location: banned.php");
+    exit;
+}
+
 if ($sessionRes = \Users\UserAgent::SessionContinue()) $user = new \Users\User($_SESSION["uid"]);
 else { header("Location: ../../index.php?page=errors/nonauth"); exit;}
 

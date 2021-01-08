@@ -6,6 +6,11 @@ require_once "../../engine/main.php";
 if ($sessionRes = \Users\UserAgent::SessionContinue()) $user = new \Users\User($_SESSION["uid"]);
 else { header("Location: ../../adminpanel.php?p=forbidden"); exit; }
 
+if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBanned()){
+    header("Location: banned.php");
+    exit;
+}
+
 #Удаление жалоб(ы) из страницы просмотра таблицы жалоб.
 if (isset($_POST["reports-table-delete-btn"])){
     if ($user->UserGroup()->getPermission("report_foreign_remove")){
