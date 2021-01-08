@@ -1410,7 +1410,7 @@ namespace Users {
             else
                 return false;
         }
-        public static function AddUser($nick, $password, $email, $referer, $unforce = False, $name = '', $city = '', $sex = 0)
+        public static function AddUser($nick, $password, $email, $referer, $unforce = False, $name = '', $city = '', $sex = 1)
         {
             if (!self::IsValidNick($nick)){
                 ErrorManager::GenerateError(21);
