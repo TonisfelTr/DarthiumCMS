@@ -7,6 +7,8 @@
  * находится в /engine/replacer.php.
  ***************************************************************************************/
 
+use Engine\DataKeeper;
+
 if (!defined("TT_AP")){ header("Location: ../adminpanel.php?p=forbidden"); exit; }
 //Проверка на наличие доступа к изменению конфигурации движка.
 if (!$user->UserGroup()->getPermission("change_engine_settings")) header("Location: ../../adminpanel.php?res=1");
@@ -19,7 +21,19 @@ else {
        $additionalFieldsOptions[] = "<option value=\"" . $field["id"] . "\">" . $field["name"] . "</option>";
    }
 
+   function array_clear_up(){
+        $pluginsList = \Engine\PluginManager::GetPluginsList();
+        $installedList = \Engine\PluginManager::GetInstalledPlugins();
 
+        $installedKeys = array_keys($installedList);
+        foreach($installedKeys as $key){
+            unset($pluginsList[$key]);
+        }
+        return $pluginsList;
+   }
+
+   $pluginList = array_clear_up();
+   $installedPluginList = \Engine\PluginManager::GetInstalledPlugins();
    ?>
 <div class="inner cover">
     <h1 class="cover-heading"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.page_name");?></h1>
@@ -29,9 +43,10 @@ else {
         <button type="button" class="btn btn-default" data-div-number="2"><span class="glyphicon glyphicon-envelope"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman");?></button>
         <button type="button" class="btn btn-default" data-div-number="3"><span class="glyphicon glyphicon-pencil"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration");?></button>
         <button type="button" class="btn btn-default" data-div-number="4"><span class="glyphicon glyphicon-user"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users");?></button>
-        <button type="button" class="btn btn-default" data-div-number="5"><span class="glyphicons glyphicons-pie-chart"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.statistic");?></button>
+        <button type="button" class="btn btn-default" data-div-number="5"><span class="glyphicons glyphicons-book"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.plugins");?></button>
+        <button type="button" class="btn btn-default" data-div-number="6"><span class="glyphicons glyphicons-pie-chart"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.statistic");?></button>
     </div>
-    </div>
+
     <form name="settings" method="post" action="adminpanel/scripts/replacer.php">
         <div class="custom-group">
             <div class="div-border" id="custom_sets" data-number="1">
@@ -346,7 +361,40 @@ else {
                     <div class="form-control alert-info"><span class="glyphicons glyphicons-info-sign"></span> <?=\Engine\LanguageManager::GetTranslation("settings_panel.users_panel.multivote_rep_tip")?></div>
                 </div>
             </div>
-            <div class="div-border" id="metric_sets" data-number="5" hidden>
+            <div class="div-border" id="plugin_panel" data-number="5" hidden>
+                <h3><span class="glyphicons glyphicons-book"></span> <?=\Engine\LanguageManager::GetTranslation("settings_panel.plugins")?></h3>
+                <p class="helper">Здесь Вы можете управлять дополнениями для системы.</p>
+                <hr>
+                <p>Системы управления контентом предусматривают модификации созданые отдельно - это означает, что сторонние разработчики имеют в своём наборе API инструменты для работы с системой управления контента.</p>
+                <div class="plugin-div">
+                    <div class="plugins">
+                        <label for="template_ready_to_install">Доступные плагины:</label>
+                        <select class="form-control template_list" id="template_ready_to_install" size="20">
+                            <?php foreach($pluginList as $plagName => $plugin){
+                                echo "<option value=\"$plagName\" data-codename=\"" . $plugin["config"]["codeName"] . "\">" . $plugin["config"]["name"] . "</option>";
+                            } ?>
+                        </select>
+                    </div>
+                    <div class="plugins">
+                        <label for="template_official">Установленные плагины:</label>
+                        <select class="form-control template_list" id="template_official" size="20">
+                            <?php foreach($installedPluginList as $plagName => $plugin){
+                                echo "<option value=\"$plagName\" data-codename=\"" . $plugin["codeName"] . "\">" . $plugin["name"] . "</option>";
+                            } ?>
+                        </select>
+                    </div>
+                    <div class="plugins-info">
+                        <h3 id="plugin-name">Выберите плагин</h3>
+                        <b>Описание: </b><span id="plugin-description"></span>
+                        <p id="btn-status-block"><b>Статус плагина: </b><button id="plugin-status" class="btn" type="button">Выключено</button></p>
+                        <div class="btn-group" style="width: 100%; padding-top: 15px;">
+                            <button class="btn btn-default" type="button" id="btn-install" disabled><span class="glyphicons glyphicons-settings"></span> Установить плагин</button>
+                            <button class="btn btn-default" type="button" id="btn-delete" disabled><span class="glyphicons glyphicons-delete"></span> Удалить плагин</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="div-border" id="metric_sets" data-number="6" hidden>
                 <h3><span class="glyphicons glyphicons-pie-chart"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.statistic_panel.panel_name");?></h3>
                 <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.statistic_panel.panel_description");?></p>
                 <hr>
@@ -364,7 +412,7 @@ else {
                 </div>
             </div>
         </div>
-        <hr />
+        <hr/>
         <div class="btn-group" role="group">
             <button type="submit" class="btn btn-default" name="save_cfg_button"><?php echo \Engine\LanguageManager::GetTranslation("apply");?></button>
             <button type="button" class="btn btn-default" name="restart_cfg_button"><?php echo \Engine\LanguageManager::GetTranslation("cancel");?></button>
@@ -372,10 +420,78 @@ else {
     </form>
 </div>
 <script>
+    var HandleTurner = function (bool){
+        var Lever = $("p#btn-status-block");
+        if (bool === true) {
+            $(Lever).show();
+        } else {
+            $(Lever).hide();
+        }
+    };
+
+    var LycantropyActiveButton = function(bool){
+        var btn = $("p#btn-status-block > .btn");
+        if (bool === true){
+            btn.removeClass("btn-danger");
+            btn.addClass("btn-success");
+            $(btn).html("Включено");
+        }
+        else {
+            btn.removeClass("btn-success");
+            btn.addClass("btn-danger");
+            $(btn).html("Выключено");
+        }
+    };
+
+    var GetPluginStatus = function (){
+        var pluginInstalled = document.getElementById("template_official");
+        var plugCodeName = pluginInstalled.options[pluginInstalled.selectedIndex].dataset.codename;
+        $.ajax({
+           url: "adminpanel/scripts/ajax/pluginsajax.php",
+           type: "POST",
+           data: "getModePlugin=1&codename=" + plugCodeName,
+           success: function(data){
+               switch (data){
+                   case "1":
+                       LycantropyActiveButton(true);
+                       break;
+                   case "0":
+                       LycantropyActiveButton(false);
+                       break;
+               }
+           }
+        });
+    };
+
+    var ChangeStatus = function (){
+        var pluginInstalled = document.getElementById("template_official");
+        var plugCodeName = pluginInstalled.options[pluginInstalled.selectedIndex].dataset.codename;
+        var btn = $("button#plugin-status");
+        if (btn.hasClass("btn-danger")){
+          $.ajax({
+              url: "adminpanel/scripts/ajax/pluginsajax.php",
+              type: "POST",
+              data: "turnModePlugin=1&mode=1&codename=" + plugCodeName,
+              success: function(){
+                  LycantropyActiveButton(true);
+              }
+          });
+        }
+        if (btn.hasClass("btn-success")){
+            $.ajax({
+                url: "adminpanel/scripts/ajax/pluginsajax.php",
+                type: "POST",
+                data: "turnModePlugin=1&mode=0&codename=" + plugCodeName,
+                success: function(){
+                    LycantropyActiveButton(false);
+                }
+            });
+        }
+    };
+
     var MetricSystemGUIPrepare = function() {
         if ($("#metric-level-btn").is(":checked")){
             $("#metric-information").show();
-            MetricCodeGUIPrepare();
         } else {
             $("#metric-information").hide();
         }
@@ -423,6 +539,8 @@ else {
             scrollTop: $(div).offset().top-100
         }, 1000);
     };
+
+    $("p#btn-status-block").hide();
 
     $("#field-add-btn").on("click", function() {
        $(this).attr("disabled", true);
@@ -653,6 +771,88 @@ else {
            $("button").removeClass("active");
            $("button[data-div-number=" + divNum + "]").addClass("active");
        }
+    });
+
+    $("select#template_ready_to_install").on("click", function() {
+       if (this.selectedIndex != -1){
+           var pluginToInstall = document.getElementById("template_ready_to_install");
+           var plugCodeName = pluginToInstall.options[pluginToInstall.selectedIndex].dataset.codename;
+
+           $("h3#plugin-name").html(this.options[this.selectedIndex].innerHTML);
+           $("button#btn-install").attr("disabled", false);
+           var pluginToInstall = document.getElementById("template_ready_to_install");
+           $.ajax({
+               url: "adminpanel/scripts/ajax/pluginsajax.php",
+               type: "POST",
+               data: "descriptionPlugin=1&pluginCodeName=" + plugCodeName,
+               success: function (data){
+                   $("span#plugin-description").html(data);
+                   HandleTurner(false);
+
+               }
+           });
+       }
+    });
+
+    $("select#template_official").on("click", function() {
+        if (this.selectedIndex != -1) {
+            var pluginInstalled = document.getElementById("template_official");
+            var plugCodeName = pluginInstalled.options[pluginInstalled.selectedIndex].dataset.codename;
+            $("h3#plugin-name").html(this.options[this.selectedIndex].innerHTML);
+            $("button#btn-install").attr("disabled", true);
+            $("button#btn-delete").attr("disabled", false);
+            $.ajax({
+                url: "adminpanel/scripts/ajax/pluginsajax.php",
+                type: "POST",
+                data: "descriptionPlugin=1&pluginCodeName=" + pluginInstalled.options[pluginInstalled.selectedIndex].dataset.codename,
+                success: function (data) {
+                    $("span#plugin-description").html(data);
+                    HandleTurner(true);
+                    GetPluginStatus();
+                }
+            });
+        } else {
+            $("button#btn-install").attr("disabled", true);
+            $("button#btn-delete").attr("disabled", true);
+        }
+    });
+
+    $("button#btn-install").click(function(){
+        var pluginToInstall = document.getElementById("template_ready_to_install");
+        var pluginInstalled = document.getElementById("template_official");
+        pluginInstalled.append(pluginToInstall.options[pluginToInstall.selectedIndex]);
+        $.ajax({
+            url: "adminpanel/scripts/ajax/pluginsajax.php",
+            type: "POST",
+            data: "installPlugin=1&pluginCodeName=" + pluginInstalled.options[pluginInstalled.selectedIndex].dataset.codename,
+            success: function(){
+                HandleTurner(true);
+                //LycantropyActiveButton(true);
+                GetPluginStatus();
+            }
+        });
+    });
+
+    $("button#btn-delete").click(function() {
+        var pluginToInstall = document.getElementById("template_ready_to_install");
+        var pluginInstalled = document.getElementById("template_official");
+        pluginToInstall.append(pluginInstalled.options[pluginInstalled.selectedIndex]);
+        $.ajax({
+            url: "adminpanel/scripts/ajax/pluginsajax.php",
+            type: "POST",
+            data: "deletePlugin=1&pluginCodeName=" + pluginToInstall.options[pluginToInstall.selectedIndex].dataset.codename
+        });
+        if ($("select#template_official").selectedIndex == -1 || $("select#template_official option").length == 0)
+            $(this).attr("disabled", true);
+        HandleTurner(false);
+    });
+
+    $("select#template_ready_to_install").click(function() {
+       $("button#btn-delete").prop('disabled', true);
+    });
+
+    $("#plugin-status").on("click", function(){
+       ChangeStatus();
     });
 
     <?php if ($user->UserGroup()->getPermission("look_statistic")) { ?>
