@@ -66,6 +66,12 @@ body{
     padding: 35px;
 }
 
+.error-group {
+    position: relative;
+    padding: 35px;
+    margin-bottom: 215px;
+}
+
 .borders{
     border: 1px solid #0f0f0f;
     border-radius: 7px;

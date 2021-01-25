@@ -112,6 +112,17 @@ if ((!$user->UserGroup()->getPermission("group_create")) &&
 
             //Custom logs permissions
             \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "logs_see", $_POST["logs_see"]);
+            \Users\GroupAgent::ChangeGroupPerms($_POST["group"], "plugins_control", $_POST["see_controllers"]);
+
+            //Plugins permissions.
+            $plugins = \Engine\PluginManager::GetInstalledPlugins();
+            foreach ($plugins as $plugin){
+                $permissions = \Engine\PluginManager::GetPermissionsOfPlugin($plugin["id"], $_POST["group"]);
+                foreach($permissions as $permission){
+                    \Engine\PluginManager::SetPermissionValue($plugin["id"], $permission["codename"], $_POST["group"], (bool) $_POST[$plugin["codeName"] . "_" . $permission["translate_path"]]);
+                }
+            }
+
             \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("group_panel.logs.change_group_perm_log") . "\"$groupName\".");
         } else { header("Location: ../../adminpanel.php?res=3npc&p=groups&visible&group=" . $_POST["group"]); exit; }
         { header("Location: ../../adminpanel.php?p=groups&res=3spc&visible&group=" . $_POST["group"]); exit; }

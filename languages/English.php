@@ -316,7 +316,7 @@ not available or access to them is closed.",
 Administrator panel.<br>
 All add-ins for the admin panel are unofficial.<br>
 Developer- Ilya Bagdanov.<br>
-All rights reserved 2020 year. '.<br>"
+All rights reserved 2021 year. '.<br>"
 
 ],
 "categories_panel" => [

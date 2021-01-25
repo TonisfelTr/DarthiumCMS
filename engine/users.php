@@ -5,6 +5,7 @@ namespace Users {
     use Engine\Engine;
     use Engine\ErrorManager;
     use Engine\Mailer;
+    use Engine\PluginManager;
     use Engine\Uploader;
     use Forum\ForumAgent;
     use Guards\SocietyGuard;
@@ -40,7 +41,7 @@ namespace Users {
                     $topic_create, $topic_edit, $topic_foreign_edit, $topic_delete, $topic_foreign_delete, $topic_manage,
                     $comment_create, $comment_edit, $comment_foreign_edit, $comment_delete, $comment_foreing_delete,
                     $sc_create_pages, $sc_edit_pages, $sc_remove_pages, $sc_design_edit,
-                    $logs_see);
+                    $logs_see, $plugins_control);
                 while ($stmt->fetch()){
                     $this->gId = $id;
                     $this->gName = $name;
@@ -148,7 +149,8 @@ namespace Users {
 
                         'bmail_sende' => $bmail_sende,
                         'bmail_sends' => $bmail_sends,
-                        'logs_see' => $logs_see
+                        'logs_see' => $logs_see,
+                        'plugins_control' => $plugins_control
                     );
                 }
             } else {
@@ -2020,7 +2022,7 @@ namespace Users {
             return $result;
         }
         public static function GetAdditionalFieldContentOfUser($userId, $fieldId){
-            return DataKeeper::Get("tt_adfieldscontent", ["content"], ["userId" => $userId, "fieldId" => $fieldId]);
+            return DataKeeper::Get("tt_adfieldscontent", ["content"], ["userId" => $userId, "fieldId" => $fieldId])[0];
         }
         public static function SetAdditionalFieldContent($userId, $fieldId, $content){
             if (DataKeeper::_isExistsIn("tt_adfieldscontent", array("fieldId" => $fieldId, "userId" => $userId)))
@@ -2339,27 +2341,16 @@ namespace Users {
             }
             return false;
         }
-        public static function IsHavePerm($id, $perm){
+        public static function IsHavePerm($id, $perm) : bool{
             $nonPerms = array(0=>'id', 1=>'name', 2=>'color', 3=>'descript');
-            if (in_array($perm, $nonPerms)) exit;
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            if (in_array($perm, $nonPerms))
+                return false;
 
-            if (mysqli_connect_errno()) {
-                printf(mysqli_connect_error() . "<br />");
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT `$perm` FROM `tt_groups` WHERE `id`=?")) {
-                $stmt->bind_param("i", $id);
-                $stmt->execute();
-                $stmt->bind_result($result);
-                $stmt->fetch();
-                $result1 = $result;
-                $stmt->close();
-                $mysqli->close();
-                return $result1;
-            }
+            $result = DataKeeper::Get("tt_groups", [$perm], ["id" => $id])[0][$perm];
+            if ($result)
+                return true;
+            else
+                return false;
         }
     }
 }

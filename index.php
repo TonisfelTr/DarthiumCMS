@@ -331,6 +331,9 @@ if (\Engine\Engine::GetEngineInfo("smt")){
 
 ob_end_clean();
 
+\Engine\PluginManager::Integration($main);
 
-echo $main;
+
+
+
 ?>

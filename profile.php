@@ -29,8 +29,8 @@ if ($session === TRUE || $session === 26){
         $response = $_REQUEST["res"];
     }
     $notReadCount = $user->MessageManager()->getNotReadCount();
-
 }
+
 if (!empty($_GET["uid"])){
     if (\Users\UserAgent::IsUserExist($_GET["uid"])) {
         $user = new \Users\User($_GET["uid"]);
@@ -131,6 +131,10 @@ if ($seeProfile){
 
 /***********************************Block profile page if user is exist.*********************/
 if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
+    if ($user->isBanned() || \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){
+        header("Location: banned.php");
+        exit;
+    }
     include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/userprofile.html";
     $profileMainPanel = getBrick();
     include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/userscript.js";
@@ -267,7 +271,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
             else {
                 $value = (\Users\UserAgent::GetAdditionalFieldContentOfUser($user->getId(), $id) == null) ? $fieldProp["custom"] :
                     \Users\UserAgent::GetAdditionalFieldContentOfUser($user->getId(), $id);
-                $result = $fieldName . ": " . $value . ".<br>";
+                $result = $fieldName . ": " . $value . "<br>";
             }
         }
 
@@ -731,13 +735,6 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
             $lastOnline = "<span style=\"color: #00dd00;\">". \Engine\LanguageManager::GetTranslation("online"). "</span>";
         }
     }
-    include_once \Engine\Engine::ConstructTemplatePath("main", "imager", "html");
-    $imagerMain = getBrick();
-    include_once \Engine\Engine::ConstructTemplatePath("script", "imager", "js");
-    $imagerJS = getBrick();
-    $main = str_replace_once("{IMAGER_STYLESHEET}", "<link rel=\"stylesheet\" href=\"./site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/css/imager-style.css\">", $main);
-    $main = str_replace_once("{IMAGER}", $imagerMain, $main);
-    $main = str_replace_once("{IMAGER_JS}", $imagerJS, $main);
     $main = str_replace("{PROFILE_PAGE:USER_LASTONLINE}", $lastOnline, $main);
     $main = str_replace_once("{PROFILE_PAGE_INFO}", $userInfo, $main);
     $main = str_replace_once("{PROFILE_PAGE_EDIT}", $userEdit, $main);
@@ -771,13 +768,13 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
     else $userRefererLink = "";
     switch ($user->getSex()){
         case 1:
-            $userSex = "<span class=\"glyphicons glyphicons-gender-male\"></span> " . \Engine\LanguageManager::GetTranslation("gender_male");
+            $userSex = "<span class=\"glyphicons glyphicons-gender-intersex\"></span> " . \Engine\LanguageManager::GetTranslation("not_setted");
             break;
         case 2:
-            $userSex = "<span class=\"glyphicons glyphicons-gender-female\"></span> " . \Engine\LanguageManager::GetTranslation("gender_female");
+            $userSex = "<span class=\"glyphicons glyphicons-gender-male\"></span> " . \Engine\LanguageManager::GetTranslation("gender_male");
             break;
-        default:
-            $userSex = "<span class=\"glyphicons glyphicons-gender-intersex\"></span> " . \Engine\LanguageManager::GetTranslation("not_setted");
+        case 3:
+            $userSex = "<span class=\"glyphicons glyphicons-gender-female\"></span> " . \Engine\LanguageManager::GetTranslation("gender_female");
             break;
     }
     if ($user->getFrom() == "")
@@ -794,7 +791,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
     $main = str_replace("{PROFILE_PAGE:USER_BIRTHDAY_LINK}", $userBirthday, $main);
     $main = str_replace("{PROFILE_PAGE:USER_SEX}", $userSex, $main);
     $main = str_replace("{PROFILE_PAGE:USER_REFERER}", $userRefererLink, $main);
-    $main = str_replace("{PROFILE_PAGE:USER_REP_POINTS}", $user->getReputation()->getReputationPoints() . " балл(ов).", $main);
+    $main = str_replace("{PROFILE_PAGE:USER_REP_POINTS}", $user->getReputation()->getReputationPoints() . " " . \Engine\LanguageManager::GetTranslation("point(s)"), $main);
     $main = str_replace("{PROFILE_PAGE:USER_EMAIL}", $userEmailLink, $main);
     $main = str_replace("{PROFILE_PAGE:USER_SKYPE_LINK}", $userSkypeLink, $main);
     $main = str_replace("{PROFILE_PAGE:USER_VK_LINK}", $userVKLink, $main);
@@ -822,9 +819,9 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
         include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/aup_buttons.html";
         $userFootBtns = getBrick();
 
-        $sexOptions = "<option value=\"0\"". (($user->getSex() == 0) ? " selected" : "" ). ">" . \Engine\LanguageManager::GetTranslation("not_setted")."</option>". PHP_EOL .
-            "<option value=\"1\"". (($user->getSex() == 1) ? " selected" : "" ). ">".\Engine\LanguageManager::GetTranslation("gender_male")."</option>" . PHP_EOL .
-            "<option value=\"2\"". (($user->getSex() == 2) ? " selected" : "" ). ">" . \Engine\LanguageManager::GetTranslation("gender_female") . "</option>";
+        $sexOptions = "<option value=\"1\"". (($user->getSex() == 1) ? " selected" : "" ). ">" . \Engine\LanguageManager::GetTranslation("not_setted")."</option>". PHP_EOL .
+            "<option value=\"2\"". (($user->getSex() == 2) ? " selected" : "" ). ">".\Engine\LanguageManager::GetTranslation("gender_male")."</option>" . PHP_EOL .
+            "<option value=\"3\"". (($user->getSex() == 3) ? " selected" : "" ). ">" . \Engine\LanguageManager::GetTranslation("gender_female") . "</option>";
         if (count($user->Blacklister()->getList()) == 0) {
             $blacklistTable = "<td colspan=\"4\" style=\"text-align: center;\"><span class=\"glyphicons glyphicons-info-sign\"></span> " . \Engine\LanguageManager::GetTranslation("empty_blacklist") . "</td>";
         } else {
@@ -933,11 +930,11 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
             }
         } else {
             if ($fieldProp["type"] !== "3")
-                $result = $fieldName . ": " . \Engine\LanguageManager::GetTranslation("not_setted"). ".<br>";
+                $result = $fieldName . ": " . \Engine\LanguageManager::GetTranslation("not_setted"). "<br>";
             else {
                 $value = (\Users\UserAgent::GetAdditionalFieldContentOfUser($user->getId(), $id) == null) ? $fieldProp["custom"] :
                     \Users\UserAgent::GetAdditionalFieldContentOfUser($user->getId(), $id);
-                $result = $fieldName . ": " . $value . ".<br>";
+                $result = $fieldName . ": " . $value . "<br>";
             }
         }
         switch ($fieldProp["type"]){
@@ -992,13 +989,13 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
     else $userRefererLink = "";
     switch ($user->getSex()){
         case 1:
-            $userSex = "<span class=\"glyphicons glyphicons-gender-male\"></span> " . \Engine\LanguageManager::GetTranslation("gender_male");
+            $userSex = "<span class=\"glyphicons glyphicons-gender-intersex\"></span> " . \Engine\LanguageManager::GetTranslation("not_setted");
             break;
         case 2:
-            $userSex = "<span class=\"glyphicons glyphicons-gender-female\"></span> " . \Engine\LanguageManager::GetTranslation("gender_female");
+            $userSex = "<span class=\"glyphicons glyphicons-gender-male\"></span> " . \Engine\LanguageManager::GetTranslation("gender_male");
             break;
-        default:
-            $userSex = "<span class=\"glyphicons glyphicons-gender-intersex\"></span> " . \Engine\LanguageManager::GetTranslation("not_setted");
+        case 3:
+            $userSex = "<span class=\"glyphicons glyphicons-gender-female\"></span> " . \Engine\LanguageManager::GetTranslation("gender_female");
             break;
     }
     include_once "./site/reputationer.php";
@@ -1045,7 +1042,7 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
     $main = str_replace("{PROFILE_PAGE:USER_BIRTHDAY_LINK}", $userBirthday, $main);
     $main = str_replace("{PROFILE_PAGE:USER_SEX}", $userSex, $main);
     $main = str_replace("{PROFILE_PAGE:USER_REFERER}", $userRefererLink, $main);
-    $main = str_replace("{PROFILE_PAGE:USER_REP_POINTS}", $user->getReputation()->getReputationPoints() . " балл(ов).", $main);
+    $main = str_replace("{PROFILE_PAGE:USER_REP_POINTS}", $user->getReputation()->getReputationPoints() . " " . \Engine\LanguageManager::GetTranslation("point(s)"), $main);
     $main = str_replace("{PROFILE_PAGE:USER_EMAIL}", $userEmailLink, $main);
     $main = str_replace("{PROFILE_PAGE:USER_SKYPE_LINK}", $userSkypeLink, $main);
     $main = str_replace("{PROFILE_PAGE:USER_VK_LINK}", $userVKLink, $main);
@@ -1210,6 +1207,6 @@ include_once "./site/scripts/SpoilerController.js";
 $spoilerManager = getBrick();
 $main = str_replace_once("{SPOILER_CONTROLLER:JS}", $spoilerManager, $main);
 
-echo $main;
+\Engine\PluginManager::Integration($main);
 
 ?>

@@ -20,6 +20,7 @@ body{
     position: fixed;
     font-size: 13px;
     color: white;
+    background: radial-gradient(at top left, #1b6d85, rgba(0,0,0,0));
 }
 
 .index-body{
@@ -1064,6 +1065,7 @@ table.group-users-table > thead > tr
     padding: 10px;
     border-radius: 10px;
     margin: 10px;
+    display: inline flow-root list-item;
 }
 
 .img-for-frame {

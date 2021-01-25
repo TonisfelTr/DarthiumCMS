@@ -10,6 +10,7 @@ if ((!$user->UserGroup()->getPermission("group_create")) &&
         $user->UserGroup()->getPermission("change_perms")) $permGroupManage = true;
     else $permGroupManage = false;
 $groupList = \Users\GroupAgent::GetGroupList();
+$plugins = \Engine\PluginManager::GetInstalledPlugins();
 ?>
 <div class="inner cover">
     <h1 class="cover-heading"><?php echo \Engine\LanguageManager::GetTranslation("group_panel.page_name"); ?></h1>
@@ -505,7 +506,31 @@ $groupList = \Users\GroupAgent::GetGroupList();
                                             <option value="0"  class="danger alert-danger" <?php if (!\Users\GroupAgent::IsHavePerm($_REQUEST["group"], "logs_see")) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("group_panel.group_managment.denied"); ?></option>
                                         </select>
                                     </div>
-                                    <hr />
+                                    <hr>
+                                    <p class="h-helper"><?php echo \Engine\LanguageManager::GetTranslation("group_panel.group_managment.perms_plugins_control.tip"); ?></p>
+                                    <div class="input-group">
+                                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("group_panel.group_managment.perms_plugins_control.see_controllers"); ?></div>
+                                        <select class="form-control" name="see_controllers">
+                                            <option value="1"  class="success alert-success" <?php if (\Users\GroupAgent::IsHavePerm($_REQUEST["group"], "plugins_control")) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("group_panel.group_managment.allow"); ?></option>
+                                            <option value="0"  class="danger alert-danger" <?php if (!\Users\GroupAgent::IsHavePerm($_REQUEST["group"], "plugins_control")) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("group_panel.group_managment.denied"); ?></option>
+                                        </select>
+                                    </div>
+                                    <hr>
+                                    <?php foreach($plugins as $plugin){ ?>
+                                        <p class="h-helper"><?=$plugin["name"]?></p>
+                                        <?php $pluginPermissions = \Engine\PluginManager::GetPermissionsOfPlugin($plugin["id"], $_GET["group"]);
+                                        foreach($pluginPermissions as $permission) {?>
+                                            <div class="input-group">
+                                                <div class="input-group-addon"><?=\Engine\PluginManager::GetTranslation($plugin["codeName"] . "." . $permission["translate_path"]) ?></div>
+                                                <select class="form-control" name="<?= $plugin["codeName"] . "_" . $permission["translate_path"]?>">
+                                                    <option value="1"  class="success alert-success" <?php if (\Engine\PluginManager::GetPermissionValue($plugin["id"], $permission["codename"], $_GET["group"])) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("group_panel.group_managment.allow"); ?></option>
+                                                    <option value="0"  class="danger alert-danger" <?php if (!\Engine\PluginManager::GetPermissionValue($plugin["id"], $permission["codename"], $_GET["group"])) echo "selected";?>><?php echo \Engine\LanguageManager::GetTranslation("group_panel.group_managment.denied"); ?></option>
+                                                </select>
+                                            </div>
+                                        <?php } ?>
+                                        <hr>
+                                    <?php } ?>
+
                                     <div class="btn-group" role="group">
                                         <?php if (isset($_REQUEST["visible"]) && $_REQUEST["group"] != 0){
                                             if ($user->UserGroup()->getPermission("change_perms")) { ?>

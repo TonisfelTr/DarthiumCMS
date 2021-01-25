@@ -770,10 +770,7 @@ if ($editSContentPerm){
                                                 type: "POST",
                                                 data: "change_list_param&content=" + $("#list-name-edit-input").val() +
                                                     "&action=" + $("#list-text-edit-input").val() +
-                                                    "&id=" + $(edit_btn).attr("data-id"),
-                                                success: function(data){
-                                                    $(li).attr("data-id", data);
-                                                }
+                                                    "&id=" + $(edit_btn).attr("data-id")
                                             });
                                         });
 

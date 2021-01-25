@@ -2,7 +2,6 @@
 include_once "../../engine/main.php";
 \Engine\Engine::LoadEngine();
 
-
 $session = \Users\UserAgent::SessionContinue();
 if ($session === TRUE) {
     $user = new \Users\User($_SESSION["uid"]);

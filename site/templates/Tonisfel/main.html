@@ -14,6 +14,7 @@
     <script src="../../../libs/bootstrap/js/bootstrap.bundle.js"></script>
     <script src="../../../libs/bootstrap/js/jquery-ui.min.js"></script>
     <script>window.jQuery || document.write('&lt;script src="../../../libs/js/jquery-3.1.0.min.js"&gt;&lt;\/script&gt;')</script>
+    {PLUGIN_HEAD_JS}
     <link href="../../../libs/bootstrap/css/ie10-viewport.css" rel="stylesheet">
     <link href="../../../libs/bootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="../../../libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -22,11 +23,11 @@
     <link href="../../../site/templates/Tonisfel/css/ap-style.css" rel="stylesheet">
     <link href="../../../site/templates/Tonisfel/css/sp-style.css" rel="stylesheet">
     <link href="../../../site/templates/Tonisfel/icon.ico" rel="icon">
+    {PLUGINS_STYLESHEETS}
     {PROFILE_UPLOADER:STYLESHEET}
 </head>
 <body class="index-body">
     {PROFILE_UPLOADER_BLOCK}
-    {IMAGER}
     <div class="wrapper">
         {INDEX_PAGE_NAVBAR}
         {INDEX_PAGE_HEADER}
@@ -54,11 +55,13 @@
     </div>
         {INDEX_PAGE_FOOTER}
 </body>
+<script src="site/scripts/SpoilerController.js"></script>
 <script src="../../../libs/lightbox/js/lightbox.js"></script>
 <script type="text/javascript">
     {PROFILE_UPLOADER:JS}
     {REPORT_PAGE:JS}
     {SPOILER_CONTROLLER:JS}
 </script>
+{PLUGIN_FOOTER_JS}
 {METRIC_JS}
 </html>

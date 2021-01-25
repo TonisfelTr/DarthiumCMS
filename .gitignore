@@ -1,7 +1,6 @@
 /tests/*
-/engine/addons/
+/addons/*
 /engine/config/dbconf.sfc
 /engine/config/config.sfc
 /tests/
 /uploads/
-/tests/
