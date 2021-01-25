@@ -139,8 +139,8 @@ if ($bigBannersCount > 0) {
     $firstBigBanner = "<img class=\"img-bgbanner\" src=\"$firstBigBanner\">";
     $secondBigBanner = "<img class=\"img-bgbanner\" src=\"$secondBigBanner\">";
 } else {
-    $firstBigBanner = "<img class=\"img-bgbanner\" src=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp").  "/bigbanner.png\" title=\"Это место свободно\">";
-    $secondBigBanner = "<img class=\"img-bgbanner\" src=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp").  "/bigbanner.png\" title=\"Это место свободно\">";
+    $firstBigBanner = "<img class=\"img-bgbanner\" src=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp").  "/bigbanner.png\" title=\"" . \Engine\LanguageManager::GetTranslation("ad_is_free") . "\">";
+    $secondBigBanner = "<img class=\"img-bgbanner\" src=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp").  "/bigbanner.png\" title=\"" . \Engine\LanguageManager::GetTranslation("ad_is_free") . "\">";
 }
 $main = str_replace_once("{MAIN_PAGE:FIRST_BIG_BANNER}", $firstBigBanner, $main);
 $footer = str_replace_once("{MAIN_PAGE:SECOND_BIG_BANNER}", $secondBigBanner, $footer);
@@ -148,11 +148,11 @@ $footer = str_replace_once("{MAIN_PAGE:SECOND_BIG_BANNER}", $secondBigBanner, $f
 $firstBanner = \SiteBuilders\BannerAgent::GetBannersByName("firstbanner")[0]["content"];
 $secondBanner = \SiteBuilders\BannerAgent::GetBannersByName("secondbanner")[0]["content"];
 if (empty($firstBanner))
-    $firstBanner = "<img class=\"img-smbanner\" src=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp").  "/smallbanner.png\" title=\"Это место свободно\">";
+    $firstBanner = "<img class=\"img-smbanner\" src=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp").  "/smallbanner.png\" title=\"" . \Engine\LanguageManager::GetTranslation("ad_is_free") . "\">";
 else
     $firstBanner = "<div class=\"img-smbanner\">" . $firstBanner . "</div>";
 if (empty($secondBanner))
-    $secondBanner = "<img class=\"img-smbanner\" src=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp").  "/smallbanner.png\" title=\"Это место свободно\">";
+    $secondBanner = "<img class=\"img-smbanner\" src=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp").  "/smallbanner.png\" title=\"" . \Engine\LanguageManager::GetTranslation("ad_is_free") . "\">";
 else
     $secondBanner = "<div class=\"img-smbanner\">" . $secondBanner . "</div>";
 $footer = str_replace_once("{MAIN_PAGE:FOOTER_FIRST_SMALL_BANNER}", $firstBanner, $footer);
@@ -179,7 +179,7 @@ foreach ($panels as $panel){
 $info = "";
 if (isset($_GET["res"])){
     if ($_GET["res"] == "3sdt"){
-        $info = "<div class='alert alert-success'><span class='glyphicon glyphicon-ok'></span> " . \Engine\LanguageManager::GetTranslation("topic_has_been_removed");
+        $info = "<div class='alert alert-success'><span class='glyphicon glyphicon-ok'></span> " . \Engine\LanguageManager::GetTranslation("topic_has_been_removed") . "</div>";
     }
 }
 
@@ -221,9 +221,9 @@ $main = str_replace_once("{INDEX_PAGE_INFORMATOR}", $info, $main);
 $main = str_replace_once("{INDEX_PAGE_LEFT}", $leftPanels, $main);
 
 if (isset($_GET["category"]) && $_GET["category"] != "") {
-    $main = str_replace_once("{INDEX_CATEGORY_HINT}", "<div class=\"alert alert-info\">
-                    <span class=\"glyphicons glyphicons-info-sign\"></span> <strong>" . \Engine\LanguageManager::GetTranslation("category") . ":</strong> " .
-        \Forum\ForumAgent::GetCategoryParam($_GET["category"], "name") . "</div>", $main);
+    include_once \Engine\Engine::ConstructTemplatePath("category_hint", "", "phtml");
+    $categoryHint = getBrick();
+    $main = str_replace_once("{INDEX_CATEGORY_HINT}", $categoryHint, $main);
     $keywords = \Forum\ForumAgent::GetCategoryParam($_GET["category"], "keywords");
     $main = str_replace_once("{ENGINE_META:KEYWORDS}", $keywords, $main);
 }
@@ -265,7 +265,7 @@ if ($user !== false) {
     $main = str_replace("{INDEX_PROFILE_MENU:NOTIF_SPAN_COUNT}", $notificationSpanCount, $main);
     $main = str_replace("{INDEX_PROFILE_MENU:USER_NICKNAME}", $user->getNickname(), $main);
     if ($canEnterToAP)
-        $main = str_replace_once("{INDEX_PROFILE_MENU:ADMPANEL_BUTTON}", "<li><a href=\"adminpanel.php\">Админ-панель</a>", $main);
+        $main = str_replace_once("{INDEX_PROFILE_MENU:ADMPANEL_BUTTON}", "<li><a href=\"adminpanel.php\">" . \Engine\LanguageManager::GetTranslation("adminpanel-link") . "</a>", $main);
     else
         $main = str_replace_once("{INDEX_PROFILE_MENU:ADMPANEL_BUTTON}", "", $main);
 }

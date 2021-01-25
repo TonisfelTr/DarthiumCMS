@@ -66,21 +66,23 @@
             <label for="profile-edit-blacklist-comment">Комментарий:</label>
             <input type="text" maxlength="50" class="profile-input" name="profile-edit-blacklist-comment" id="profile-edit-blacklist-comment" placeholder="не обязательно">
         </div>
-        <table class="table">
-            <thead>
-            <tr>
-                <td>Никнейм</td>
-                <td>Дата добавления</td>
-                <td>Причина</td>
-                <td></td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                {PROFILE_PAGE:USER_BLACKLIST_TABLE}
-            </tr>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <td>Никнейм</td>
+                    <td>Дата добавления</td>
+                    <td>Причина</td>
+                    <td></td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    {PROFILE_PAGE:USER_BLACKLIST_TABLE}
+                </tr>
+                </tbody>
+            </table>
+        </div>
         </div>
     </div>
     <div class="profile-profile-footer-btn-group" id="profile-edit-control-btn-panel">

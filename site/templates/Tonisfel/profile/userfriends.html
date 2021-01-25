@@ -8,19 +8,21 @@
         <div id="profile-friends-list" hidden>
             <p>Здесь Вы можете управлять списком Ваших друзей.</p>
             <hr>
-            <table class="profile-friends-table">
-                <thead>
-                <tr>
-                    <td></td>
-                    <td>Никнейм</td>
-                    <td>Когда добавлен</td>
-                    <td></td>
-                </tr>
-                </thead>
-                <tbody>
-                {PROFILE_PAGE:USER_FRIEND_TABLE}
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="profile-friends-table">
+                    <thead>
+                    <tr>
+                        <td></td>
+                        <td>Никнейм</td>
+                        <td>Когда добавлен</td>
+                        <td></td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {PROFILE_PAGE:USER_FRIEND_TABLE}
+                    </tbody>
+                </table>
+            </div>
         </div>
         <div id="profile-friends-add" hidden>
             <p>Здесь Вы можете добавить пользователя в друзья.</p>

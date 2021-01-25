@@ -223,6 +223,7 @@ if ($canIPBan || $canIPUnban){
                 <hr>
                 <h2><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.search_result")?></h2>
                 <p id="users-selected-counter" class="alert alert-info" hidden><strong><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.selected_users_count")?></strong> <span id="users-selected-counter-span"></span>.</p>
+                <div class="table-responsive">
                 <table id="users-find-results" class="table">
                     <thead style="background: radial-gradient(at right center, #874c15, #cc8c53); color: white; text-shadow: 2px 2px 3px black;">
                         <tr>
@@ -270,6 +271,7 @@ if ($canIPBan || $canIPUnban){
                         <?php } ?>
                     </tbody>
                 </table>
+                </div>
                 <div class="btn-group center">
                     <?php
                     if ($usersCount > 50) { for ($i = 1; $i <= ceil($usersCount / 50); $i++) { ?>
@@ -317,6 +319,7 @@ if ($canIPBan || $canIPUnban){
                     <div class="alert alert-info" id="users-ban-selected-counter" hidden>
                         <strong><?=\Engine\LanguageManager::GetTranslation("users_panel.ban_panel.selected_count")?></strong> <span id="users-ban-selected-counter-span"></span>
                     </div>
+                    <div class="table-responsive">
                     <table id="users-banfind-results" class="table">
                         <thead style="background: radial-gradient(at right center, #66070a, #eb2b2c); color: white; text-shadow: 2px 4px 3px black;">
                             <tr>
@@ -351,6 +354,7 @@ if ($canIPBan || $canIPUnban){
                             }?>
                         </tbody>
                     </table>
+                    </div>
                     <div class="btn-group center">
                         <?php
                         if ($bannedCount > 50) { for ($i = 1; $i <= ceil($bannedCount / 50); $i++) { ?>
@@ -379,6 +383,7 @@ if ($canIPBan || $canIPUnban){
                 </div>
                 <h2><?=\Engine\LanguageManager::GetTranslation("users_panel.banip_panel.search_results")?></h2>
                 <div class="alert alert-info" id="users-bip-selected-counter" hidden><strong><?=\Engine\LanguageManager::GetTranslation("users_panel.banip_panel.selected_ips")?> </strong><span id="users-bip-selected-counter-span"></span></div>
+                <div class="table-responsive">
                 <table class="table">
                     <thead style="background: radial-gradient(at right, #003eff, #10e4ff); color: white; text-shadow: 2px 2px 4px black;">
                         <tr>
@@ -407,6 +412,7 @@ if ($canIPBan || $canIPUnban){
                         <?php } ?>
                     </tbody>
                 </table>
+                </div>
                 <div class="btn-group center">
                     <?php
                     if ($banipCount > 50) { for ($i = 1; $i <= ceil($banipCount / 50); $i++) { ?>

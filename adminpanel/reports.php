@@ -75,6 +75,7 @@ else {
                     </div>
                     <input type="hidden" id="report-ids-for-delete" name="reports-ids-for-delete">
                     <hr>
+                    <div class="table-responsive">
                     <table class="table">
                         <thead style="background: radial-gradient(at center, #b40000, #351822); color: white;">
                             <tr>
@@ -106,6 +107,7 @@ else {
                                 <?php }} ?>
                         </tbody>
                     </table>
+                    </div>
                     <div class="table-footer">
                         <div class="btn-group">
                             <?php for ($i = 0; $i <= $allReportsCount/50; $i++) {

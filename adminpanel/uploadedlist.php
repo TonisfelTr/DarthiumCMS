@@ -62,6 +62,7 @@ if (isset($_GET["filter"])){
             <div class="alert alert-info" id="selected-files-count" hidden>
                 <strong><?=\Engine\LanguageManager::GetTranslation("uploaded_panel.selected_files_count")?></strong> <span id="selected-files-count-span"></span>
             </div>
+            <div class="table-responsive">
             <table class="table">
                 <thead style="background: radial-gradient(at right, #151333, #1ba397); color: white;">
                     <tr>
@@ -98,6 +99,7 @@ if (isset($_GET["filter"])){
                     }?>
                 </tbody>
             </table>
+            </div>
         </div>
     </form>
 </div>

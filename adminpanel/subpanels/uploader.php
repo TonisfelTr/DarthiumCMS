@@ -97,19 +97,21 @@ if (!empty($_GET["res"])){
                     <button class="btn btn-danger" type="submit" id="uploader-delete-files-btn" name="uploader-delete-files-btn" disabled>Удалить выделенные</button>
                 </div>
                 <hr>
-                <table class="uploader-table">
-                    <thead>
-                    <tr>
-                        <td><input type="checkbox" id="uploader-table-select-all" title="Выделить все"></td>
-                        <td>Имя файла</td>
-                        <td>Дата загрузки</td>
-                        <td></td>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        <?=$tableBody?>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="uploader-table">
+                        <thead>
+                        <tr>
+                            <td><input type="checkbox" id="uploader-table-select-all" title="Выделить все"></td>
+                            <td>Имя файла</td>
+                            <td>Дата загрузки</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <?=$tableBody?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </form>

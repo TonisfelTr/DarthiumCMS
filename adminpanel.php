@@ -754,7 +754,11 @@ function str_replace_once($search, $replace, $text){
 
 <div class="footer">
     <p class="footer">
-        <?php echo \Engine\LanguageManager::GetTranslation("adminpanel.footer");?>
+        Tonisfel Tavern CMS.<br>
+        Администраторская панель.<br>
+        Все дополнения для админ-панели являются неофициальными.<br>
+        Разработчик - Багданов Илья.<br>
+        Все права защищены 2021 год.<br>
     </p>
 </div>
 <script>

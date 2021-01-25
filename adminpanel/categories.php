@@ -52,6 +52,7 @@ else {
                     <span id="categories-table-count-span"></span>
                 </div>
                 <h3><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_managment.categories_list"); ?></h3>
+                <div class="table-responsive">
                 <table class="table">
                     <thead style="background: radial-gradient(at right, #11ee11, #0b401c); color: white; text-shadow: 1px 1px 3px black;">
                         <tr>
@@ -86,6 +87,7 @@ else {
                         <?php } } ?>
                     </tbody>
                 </table>
+                </div>
             </div>
             <?php if ($canCategoryCreate) { ?>
             <div class="div-border" id="category_add_div" <?php if (!isset($_GET["reqtype"]) || $_GET["reqtype"] != 1) echo "hidden"; ?>>

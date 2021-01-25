@@ -130,11 +130,13 @@ $languagePack = [
     "go_to_site_link" => "сюда",
     "to_redirect" => ", чтобы перейти",
 //Index page
+    "adminpanel-link" => "Админ-панель",
     "list_is_empty" => "Список пуст :(",
     "no_online_users" => "Нет онлайн пользователей",
     "topic_has_been_removed" => "Тема была успешно удалена!",
     "category" => "Категория",
     "empty_news_list" => "Ещё не создано ни одной темы. Вы будете первым!",
+    "ad_is_free" => "Это место свободно",
 //Banned page
     "permanently" => "Перманентно",
     "banned" => "Блокировка",
@@ -321,12 +323,6 @@ $languagePack = [
         "pm_sender" => "Почтальон сайта",
         "pm_sender_description" => "Отправка личных сообщений каждому зарегистрированному пользователю.",
         "plugins_control" => "Управление плагинами",
-        "footer" => "Tonisfel Tavern CMS.<br>
-                    Администраторская панель.<br>
-                    Все дополнения для админ-панели являются неофициальными.<br>
-                    Разработчик - Багданов Илья.<br>
-                    Все права защищены 2021 год. ©.<br>"
-
     ],
     "categories_panel" => [
         "page_name" => "Категории",
@@ -993,6 +989,7 @@ $languagePack = [
                 "creating_button" => "Создание кнопки",
                 "text_button" => "Текст кнопки",
                 "link_button" => "Ссылка",
+                "link_text" => "Ссылка кнопки листа",
                 "creating_list" => "Создание листа",
                 "list_name" => "Заголовок листа",
                 "list_text" => "Текст листа",
@@ -1005,6 +1002,7 @@ $languagePack = [
                 "element_tip" => "Оба поля обязательны к заполнению. ",
                 "save_element" => "Сохранить элемент",
                 "select_button" => "Выберите кнопку...",
+                "save" => "Добавить элемент",
             ],
             "js" => [
                 "enter_button_text" => "Введите текст кнопки.",

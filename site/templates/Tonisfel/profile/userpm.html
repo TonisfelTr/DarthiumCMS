@@ -15,48 +15,56 @@
         <div id="profile-pm-incoming" hidden>
             <h2>Входящие</h2>
             <p>Писем в папке: {PROFILE_PAGE:USER_PM_INCOMING_COUNT}</p>
-            <table class="profile-pm-table">
-                <tbody>
-                    {PROFILE_PAGE:USER_PM_INCOMING_TABLE}
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="profile-pm-table table">
+                    <tbody>
+                        {PROFILE_PAGE:USER_PM_INCOMING_TABLE}
+                    </tbody>
+                </table>
+            </div>
         </div>
         <div id="profile-pm-outcoming" hidden>
             <h2>Исходящие</h2>
             <p>Писем в папке: {PROFILE_PAGE:USER_PM_OUTCOMING_COUNT}</p>
-            <table class="profile-pm-table">
-                <tbody>
-                {PROFILE_PAGE:USER_PM_OUTCOMING_TABLE}
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="profile-pm-table table">
+                    <tbody>
+                    {PROFILE_PAGE:USER_PM_OUTCOMING_TABLE}
+                    </tbody>
+                </table>
+            </div>
         </div>
         <div id="profile-pm-sended" hidden>
             <h2>Отправленные</h2>
             <p>Писем в папке: {PROFILE_PAGE:USER_PM_SENDED_COUNT}</p>
-            <table class="profile-pm-table">
-                <tbody>
-                {PROFILE_PAGE:USER_PM_SENDED_TABLE}
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="profile-pm-table table">
+                    <tbody>
+                    {PROFILE_PAGE:USER_PM_SENDED_TABLE}
+                    </tbody>
+                </table>
+            </div>
         </div>
         <div id="profile-pm-bin" hidden>
             <h2>Корзина</h2>
             <p>Писем в папке: {PROFILE_PAGE:USER_PM_BIN_COUNT}</p>
-            <table class="profile-pm-table">
-                <thead>
-                <tr>
-                    <td class="profile-pm-table-icon"></td>
-                    <td class="profile-pm-table-author">Отправитель</td>
-                    <td class="profile-pm-table-author">Получатель</td>
-                    <td class="profile-pm-table-subject">Тема</td>
-                    <td class="profile-pm-table-time">Дата получения</td>
-                    <td></td>
-                </tr>
-                </thead>
-                <tbody>
-                    {PROFILE_PAGE:USER_PM_BIN_TABLE}
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="profile-pm-table">
+                    <thead>
+                    <tr>
+                        <td class="profile-pm-table-icon"></td>
+                        <td class="profile-pm-table-author">Отправитель</td>
+                        <td class="profile-pm-table-author">Получатель</td>
+                        <td class="profile-pm-table-subject">Тема</td>
+                        <td class="profile-pm-table-time">Дата получения</td>
+                        <td></td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {PROFILE_PAGE:USER_PM_BIN_TABLE}
+                    </tbody>
+                </table>
+            </div>
         </div>
         <div id="profile-pm-write" hidden>
             <input class="profile-pm-input" type="text" id="profile-pm-receiver-input" name="profile-pm-receiver-input" value="{PROFILE_PAGE:USER_PM_SENDING_RECEIVER}" placeholder="Кому" maxlength="16">

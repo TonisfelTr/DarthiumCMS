@@ -103,6 +103,7 @@ if ($editSContentPerm){
                         <strong><?php echo $label; ?></strong> <?php echo $value; ?>
                         </div><?php } ?>
                     <div class="alert alert-info" id="staticc-selected-div" style="display: none;"><strong><?=\Engine\LanguageManager::GetTranslation("staticc_panel.pages_managment.selected_pages")?></strong> <span>0</span></div>
+                    <div class="table-responsive">
                     <table class="table" id="staticc-pages-table">
                         <thead>
                         <tr class="staticc-table-header">
@@ -140,6 +141,7 @@ if ($editSContentPerm){
 
                         </tbody>
                     </table>
+                    </div>
                     <input type="hidden" id="staticc-page-delete" name="staticc-page-delete">
                     <?php if (\Forum\StaticPagesAgent::GetPagesCount() > 0) { ?>
                         <nav aria-label="Page navigation">
