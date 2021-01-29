@@ -4,6 +4,7 @@ namespace Users {
     use Engine\DataKeeper;
     use Engine\Engine;
     use Engine\ErrorManager;
+    use Engine\LanguageManager;
     use Engine\Mailer;
     use Engine\PluginManager;
     use Engine\Uploader;
@@ -1480,20 +1481,17 @@ namespace Users {
                 $link = ((!empty(Engine::GetEngineInfo("dm"))) ? Engine::GetEngineInfo("dm") : $_SERVER['HTTP_HOST']) .
                         "/profile.php?activate=$randomWord&uid=" . UserAgent::GetUserId($nick);
                 if (Engine::GetEngineInfo("na") &&  $unforce != false) {
-                    $bodyMain = "<p> Вы получили данное сообщение, поскольку на нашем сайте при регистрации кто-то указал этот Email. Если это были не Вы, тогда
-                                      забудьте о существовании этого письма, предварительно кинув его в мусорку. А так же в небытье пустоты.</p>
-                                 <p> Если же это были всё таки Вы, то напоминаем, что для того, чтобы начать пользоваться Вашим аккаунтом нужно его активировать, перейдя по
-                                      ссылке ниже. Также, Вы можете активировать свой аккаунт при входе. После авторизации, сайт попросит у Вас код активации.</p>
-                                  <span class=\"mail-span\">Никнейм: </span>$nick<br>
-                                  <span class=\"mail-span\">Код активации: </span>$randomWord
-                                  <p class=\"mail-link\">Вы также можете активировать свой аккаунт просто перейдя по ссылке: <a href=\"$link\">$link</a>";
-                    $body = str_replace("{MAIL_TITLE}", "Активация аккаунта - Администрация \"" . Engine::GetEngineInfo("sn") . "\"", $body);
+                    $bodyMain = LanguageManager::GetTranslation("mail_need_activation");
+                    $bodyMain = str_replace("{EMAIL:ACTIVATION_LINK}", $link, $bodyMain);
+                    $bodyMain = str_replace_once("{EMAIL:NICKNAME}", $nick, $bodyMain);
+                    $bodyMain = str_replace_once("{EMAIL:ACTIVATION_CODE}", $randomWord, $bodyMain);
+                    $body = str_replace("{MAIL_TITLE}", LanguageManager::GetTranslation("mail_activation_topic") . " \"" . Engine::GetEngineInfo("sn") . "\"", $body);
                     $body = str_replace("{MAIL_SITENAME}", Engine::GetEngineInfo("sn") , $body);
-                    $body = str_replace("{MAIL_NICKNAME_TO}", "Приветствуем, " . $nick . "!" , $body);
+                    $body = str_replace("{MAIL_NICKNAME_TO}", LanguageManager::GetTranslation("mail_hello") . " " . $nick . "!" , $body);
                     $body = str_replace("{MAIL_BODY_MAIN}", $bodyMain, $body);
-                    $body = str_replace("{MAIL_FOOTER_INFORMATION}", "С уважением, Администрация \"" . Engine::GetEngineInfo("sn") . "\"<br>
-                                                                                 Все права защищены ©", $body);
-                    if (!Mailer::SendMail($body, $email, "Активация аккаунта - Администрация \"" . Engine::GetEngineInfo("sn") . "\"")){
+                    $body = str_replace("{MAIL_FOOTER_INFORMATION}", LanguageManager::GetTranslation("mail_administrators_signature") ." \"" . Engine::GetEngineInfo("sn") . "\"<br>"
+                                                                                 . LanguageManager::GetTranslation("copyright"), $body);
+                    if (!Mailer::SendMail($body, $email, LanguageManager::GetTranslation("mail_activation_topic") . " \"" . Engine::GetEngineInfo("sn") . "\"")){
                         DataKeeper::Delete("tt_users", ["nickname" => $nick]);
                         return false;
                     } else {
@@ -1503,18 +1501,16 @@ namespace Users {
                         }
                     }
                 } else {
-                    $bodyMain = "<p> Вы получили данное сообщение, поскольку на нашем сайте при регистрации кто-то указал этот Email. Если это были не Вы, тогда
-                                      забудьте о существовании этого письма, предварительно кинув его в мусорку. А так же в небытье пустоты.</p>
-                                 <p> На нашем сайте не требуется активация аккаунтов, но мы не хотим, чтобы Вы забылы данные от Ващего аккаунта.</p>
-                                  <span class=\"mail-span\">Никнейм: </span>$nick<br>
-                                  <span class=\"mail-span\">Пароль: </span>$password";
-                    $body = str_replace("{MAIL_TITLE}", "Регистрация аккаунта - Администрация \"" . Engine::GetEngineInfo("sn") . "\"", $body);
+                    $bodyMain = LanguageManager::GetTranslation("mail_just_info");
+                    $bodyMain = str_replace("{EMAIL:NICKNAME}", $nick, $bodyMain);
+                    $bodyMain = str_replace("{EMAIL:PASSWORD}", $password, $bodyMain);
+                    $body = str_replace("{MAIL_TITLE}", LanguageManager::GetTranslation("mail_registration_topic") . " \"" . Engine::GetEngineInfo("sn") . "\"", $body);
                     $body = str_replace("{MAIL_SITENAME}", Engine::GetEngineInfo("sn") , $body);
                     $body = str_replace("{MAIL_NICKNAME_TO}", $nick , $body);
                     $body = str_replace("{MAIL_BODY_MAIN}", $bodyMain, $body);
-                    $body = str_replace("{MAIL_FOOTER_INFORMATION}", "С уважением, Администрация \"" . Engine::GetEngineInfo("sn") . "\"<br>
-                                                                                 Все права защищены ©", $body);
-                    if (!Mailer::SendMail($body, $email, "Регистрация аккаунта - Администрация \"" . Engine::GetEngineInfo("sn") . "\"")) {
+                    $body = str_replace("{MAIL_FOOTER_INFORMATION}", LanguageManager::GetTranslation("mail_administrators_signature") ." \"" . Engine::GetEngineInfo("sn") . "\"<br>"
+                        . LanguageManager::GetTranslation("copyright"), $body);
+                    if (!Mailer::SendMail($body, $email, LanguageManager::GetTranslation("mail_registration_topic") . " \"" . Engine::GetEngineInfo("sn") . "\"")) {
                         DataKeeper::Delete("tt_users", ["nickname" => $nick]);
                         return false;
                     } else {

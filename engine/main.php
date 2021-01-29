@@ -113,7 +113,7 @@
 
             public static function BooleanToWords($bool)
             {
-                return ($bool) ? "Да" : "Нет";
+                return ($bool) ? LanguageManager::GetTranslation("yes") : LanguageManager::GetTranslation("no");
             }
 
             public static function LoadEngine()
