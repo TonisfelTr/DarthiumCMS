@@ -15,7 +15,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>Таверна Тонисфеля</h1>
+        <h1>Таверна Тонисфели</h1>
         <p>Обработчик ошибок</p>
     </div>
     <p class="helper">Эта страница предназначена для разработчиков и Администрации сайта. Здесь можно узнать подробности
@@ -23,25 +23,19 @@
     <div class="container-fluid">
         <div class="row">
             <div class="error-informer col-lg-6 col-md-6 col-xs-6 col-sm-6">
-                <!--Здесь должно быть сообщение самого менеджера ошибок, которое было отправлено
-                в стек.-->
-                <p class="helper"></p>
+                <p class="helper">Текст ошибки:</p>
                 {ERROR_MANAGER:MESSAGE}
             </div>
             <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 error-code-analyzator">
-                <!--Здесь должен быть кусок кода, в котором произошло исключение.-->
                 <p class="helper">Выполняемый код:</p>
                 {ERROR_MANAGER:WRONG_CODE}
             </div>
         </div>
     </div>
     <div class="error-stacktrace col-lg-12 col-md-12 col-xs-12 col-sm-12">
-        <!--А здесь должен быть стактрейс исключения, который будет разделён по столбцам.-->
-        <p class="helper">Exception stacktrace:</p>
+        <p class="helper">Трассировака стека:</p>
         <hr>
         {ERROR_MANAGER:EXCEPTION_FORMATED_TEXT}
     </div>
-    {ERROR_MANAGER:MODE_TIP}
-
 </body>
 </html>
