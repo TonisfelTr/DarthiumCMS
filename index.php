@@ -299,19 +299,6 @@ else {
     $main = str_replace("{PROFILE_UPLOADER:JS}", $uploaderBlock, $main);
 }
 
-if (isset($_GET["topic"])){
-    include_once \Engine\Engine::ConstructTemplatePath("main", "imager", "html");
-    $imagerMain = getBrick();
-    include_once \Engine\Engine::ConstructTemplatePath("script", "imager", "js");
-    $imagerJS = getBrick();
-    $main = str_replace_once("{IMAGER_STYLESHEET}", "<link rel=\"stylesheet\" href=\"./site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/css/imager-style.css\">", $main);
-    $main = str_replace_once("{IMAGER}", $imagerMain, $main);
-    $main = str_replace_once("{IMAGER_JS}", $imagerJS, $main);
-}
-$main = str_replace_once("{IMAGER}", "", $main);
-$main = str_replace_once("{IMAGER_JS}", "", $main);
-$main = str_replace_once("{IMAGER_STYLESHEET}", "", $main);
-
 include_once "./site/scripts/SpoilerController.js";
 $spoilerManager = getBrick();
 

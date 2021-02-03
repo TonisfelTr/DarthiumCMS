@@ -1199,9 +1199,6 @@ $main = str_replace_once("{PROFILE_PAGE:PAGE_NAME}", "", $main);
 $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}", "", $main);
 $main = str_replace_once("{PROFILE_MAIN_BODY}", $test, $main);
 //$main = str_replace_once("{PROFILE_MAIN_BODY}", \Engine\LanguageManager::GetTranslation("ua_info"), $main);
-$main = str_replace_once("{IMAGER_STYLESHEET}", "", $main);
-$main = str_replace_once("{IMAGER}", "", $main);
-$main = str_replace_once("{IMAGER_JS}", "", $main);
 
 include_once "./site/scripts/SpoilerController.js";
 $spoilerManager = getBrick();
