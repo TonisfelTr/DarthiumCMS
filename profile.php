@@ -1037,8 +1037,8 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
     $main = str_replace("{PROFILE_PAGE:USER_REGDATETIME}", (($user->getSex() == 2) ? "а " : " ") . \Engine\Engine::DateFormatToRead($user->getRegDate()) . ".", $main);
     $main = str_replace("{PROFILE_PAGE:USER_TOPICS_CREATED_COUNT}", \Forum\ForumAgent::GetCountTopicOfAuthor($user->getId()), $main);
     $main = str_replace("{PROFILE_PAGE:USER_COMMENTS_CREATED_COUNT}", \Forum\ForumAgent::GetCountOfCommentOfUser($user->getId()), $main);
-    $main = str_replace("{PROFILE_PAGE:USER_FROM}", htmlentities($user->getFrom()), $main);
-    $main = str_replace("{PROFILE_PAGE:USER_REALNAME}", htmlentities($user->getRealName()), $main);
+    $main = str_replace("{PROFILE_PAGE:USER_FROM}", $user->getFrom() != "" ? htmlentities($user->getFrom()) : \Engine\LanguageManager::GetTranslation("not_setted"), $main);
+    $main = str_replace("{PROFILE_PAGE:USER_REALNAME}", $user->getRealName() != "" ? htmlentities($user->getRealName()) : \Engine\LanguageManager::GetTranslation("not_setted"), $main);
     $main = str_replace("{PROFILE_PAGE:USER_BIRTHDAY_LINK}", $userBirthday, $main);
     $main = str_replace("{PROFILE_PAGE:USER_SEX}", $userSex, $main);
     $main = str_replace("{PROFILE_PAGE:USER_REFERER}", $userRefererLink, $main);
@@ -1049,7 +1049,7 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
     $main = str_replace("{PROFILE_PAGE:USER_HOBBIES}", $user->getHobbies() == "" ? "не указано" : htmlentities($user->getHobbies()), $main);
     $main = str_replace("{PROFILE_PAGE:USER_ABOUT}", $user->getAbout() == "" ? "не указано" : htmlentities($user->getAbout()), $main);
     if ($user->getSignature() == ""){
-        $signature = "не указано";
+        $signature = \Engine\LanguageManager::GetTranslation("not_setted");
     } else {
         $signature = nl2br(html_entity_decode(\Engine\Engine::ChatFilter(\Engine\Engine::CompileBBCode($user->getSignature()))));
     }
