@@ -1295,6 +1295,9 @@ namespace Engine {
             return $string;
         }
 
+        public static function GetPluginId(string $codename){
+            return DataKeeper::Get("tt_plugins", ["id"], ["codename" => $codename])[0]["id"];
+        }
         /**
          * Return translation in dependence of site language.
          * If file with site language doesn't exist then return English version.
@@ -1356,7 +1359,7 @@ namespace Engine {
          * @return bool
          */
         public static function GetPermissionValue(int $pluginId, string $permissionName, int $groupId) : bool {
-            $value = DataKeeper::Get("tt_plugin_permissions", ["value"], ["ofPlugin" => $pluginId, "codename" => $permissionName, "ofGroup" => $groupId])[0];
+            $value = DataKeeper::Get("tt_plugin_permissions", ["value"], ["ofPlugin" => $pluginId, "codename" => $permissionName, "ofGroup" => $groupId])[0]["value"];
             if (!empty($value)){
                 if ($value["value"] <= 0)
                     return false;

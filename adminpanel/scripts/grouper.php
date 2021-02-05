@@ -119,7 +119,7 @@ if ((!$user->UserGroup()->getPermission("group_create")) &&
             foreach ($plugins as $plugin){
                 $permissions = \Engine\PluginManager::GetPermissionsOfPlugin($plugin["id"], $_POST["group"]);
                 foreach($permissions as $permission){
-                    \Engine\PluginManager::SetPermissionValue($plugin["id"], $permission["codename"], $_POST["group"], (bool) $_POST[$plugin["codeName"] . "_" . $permission["translate_path"]]);
+                    \Engine\PluginManager::SetPermissionValue($plugin["id"], $permission["codename"], $_POST["group"], $_POST[$plugin["codeName"] . "_" . $permission["translate_path"]]);
                 }
             }
 
