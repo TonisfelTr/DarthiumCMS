@@ -45,13 +45,16 @@ function str_replace_once($search, $replace, $text){
     <script src="libs/js/jquery-3.1.0.min.js"></script>
     <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="libs/bootstrap/js/bootstrap.min.js"></script>
     <link href="libs/bootstrap/css/ie10-viewport.css" rel="stylesheet">
     <link href="libs/bootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="libs/bootstrap/css/glyphicons-regular.css" rel="stylesheet">
-    <script src="libs/codemirror/lib/codemirror.js"></script>
     <link rel="stylesheet" href="libs/codemirror/lib/codemirror.css">
+    <link href="adminpanel/css/ap-style.css" rel="stylesheet">
+    <link href="adminpanel/css/uploader-style.css" rel="stylesheet">
+    <link href="adminpanel/css/icon.ico" rel="icon">
+    <script src="libs/bootstrap/js/bootstrap.min.js"></script>
+    <script src="libs/codemirror/lib/codemirror.js"></script>
     <script src="libs/codemirror/mode/javascript/javascript.js"></script>
     <script src="libs/codemirror/mode/xml/xml.js"></script>
     <script src="libs/codemirror/mode/css/css.js"></script>
@@ -59,9 +62,6 @@ function str_replace_once($search, $replace, $text){
     <script src="libs/codemirror/mode/htmlembedded/htmlembedded.js"></script>
     <script src="libs/codemirror/mode/htmlmixed/htmlmixed.js"></script>
     <script src="libs/codemirror/mode/clike/clike.js"></script>
-    <link href="adminpanel/css/ap-style.css" rel="stylesheet">
-    <link href="adminpanel/css/uploader-style.css" rel="stylesheet">
-    <link href="adminpanel/css/icon.ico" rel="icon">
     {PLUGINS_STYLESHEETS}
     <?php if (@$_GET["p"] == "staticc")
     echo "<link href=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/css/sp-style.css\" rel=\"stylesheet\">";
@@ -76,7 +76,13 @@ function str_replace_once($search, $replace, $text){
         <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <span class="navbar-brand"><?php echo \Engine\LanguageManager::GetTranslation("navigation"); ?></span>
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#"><?= \Engine\LanguageManager::GetTranslation("navigation"); ?></a>
                 </div>
                 <div class="navbar-collapse collapse" id="navbar">
                     <ul class="nav navbar-nav">
@@ -747,8 +753,17 @@ function str_replace_once($search, $replace, $text){
     </div>
     <?php } elseif (isset($_GET["plp"])) { ?>
         <div class="container-fluid">
-        <?php if (file_exists("addons/".$_GET["plp"]."/bin/adminpanel.php")) include_once "addons/".$_GET["plp"]."/bin/adminpanel.php";
-              else include_once "adminpanel/errors/notfound.php";?>
+        <?php
+        if (file_exists("addons/".$_GET["plp"]."/bin/adminpanel.php")){
+            ob_start();
+            include_once "addons/".$_GET["plp"]."/bin/adminpanel.php";
+            $plp = getBrick();
+            ob_end_flush();
+            echo \Engine\Engine::StripScriptTags($plp);
+//            $plp = getBrick();
+//            echo \Engine\Engine::StripScriptTags($plp);
+        }
+        else include_once "adminpanel/errors/notfound.php";?>
         </div>
     <?php } else include_once "adminpanel/errors/notfound.php"; ?>
 
