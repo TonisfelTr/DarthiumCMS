@@ -344,10 +344,10 @@ namespace Engine {
             $text = str_ireplace("[s]", "<s>", $text);
             $text = str_ireplace("[/s]", "</s>", $text);
             $text = str_ireplace("[hr]", "<hr style=\"box-shadow: 1px 1px #3f3f3f;\">", $text);
-            $text = str_ireplace("[quote]", "<p class=\"message-quote-author-sign\">Неизвестный автор сказал:</p><div class=\"message-quote-block\"><span style=\"font-size: 50px; display: inline-block;\">“</span>", $text);
+            $text = str_ireplace("[quote]", "<p class=\"message-quote-author-sign\">" . LanguageManager::GetTranslation("quote_anonim_said") . ":</p><div class=\"message-quote-block\"><span style=\"font-size: 50px; display: inline-block;\">“</span>", $text);
             $text = str_ireplace("[/quote]", "</div>", $text);
             $text = str_ireplace("[/align]", "</p>", $text);
-            $text = str_ireplace("[spoiler]", "<div class=\"col-12 div-spoiler\"><span class=\"glyphicons glyphicons-alert\"></span> Спойлер<div hidden>", $text);
+            $text = str_ireplace("[spoiler]", "<div class=\"col-12 div-spoiler\"><span class=\"glyphicons glyphicons-alert\"></span> " . LanguageManager::GetTranslation("spoiler") . "<div hidden>", $text);
             $text = str_ireplace("[/spoiler]", "</div></div>", $text);
             $text = preg_replace("/\[size\=(\d+)\]/", "<p style=\"font-size: $1px;\">", $text);
             $text = preg_replace("/\[youtube\=https:\/\/youtu\.be\/(.+)\]/", "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/$1\" frameborder=\"0\" allowfullscreen></iframe>", $text);
@@ -358,7 +358,7 @@ namespace Engine {
             $text = preg_replace("/\[align\=(.+?)\]/", "<p style=\"text-align: $1;\">", $text);
             $text = preg_replace("/\[color\=(.+?)\]/", "<span style=\"color: $1;\">", $text);
             $text = preg_replace("/\[\*\](.*)/", "<li>$1</li>", $text);
-            $text = preg_replace("/\[quote\=(.+?)\]/", "<p class=\"message-quote-author-sign\">$1 сказал(а):</p><div class=\"message-quote-block\"><span style=\"font-size: 50px; display: inline-block;\">“</span>", $text);
+            $text = preg_replace("/\[quote\=(.+?)\]/", "<p class=\"message-quote-author-sign\">$1 " . LanguageManager::GetTranslation("quote_said") . ":</p><div class=\"message-quote-block\"><span style=\"font-size: 50px; display: inline-block;\">“</span>", $text);
             $text = preg_replace("/\[link\=(.+?)\](.*)\[\/link\]/", "<a href=\"$1\" class=\"profile-link\">$2</a>", $text);
 
 
@@ -463,6 +463,12 @@ namespace Engine {
             $string = str_replace("}", '&#125;', $string);
             return $string;
         }
+
+        public static function StripScriptTags(string $string){
+            $string = str_replace("<script", "&lt;script", $string);
+            $string = str_replace("</script>", "&lt;/script&gt;", $string);
+            return $string;
+        }
     }
 
     class ErrorManager
@@ -514,7 +520,9 @@ namespace Engine {
             /* Errors of plugin manager.            */
             /****************************************/
             37 => "Plugin with that constant already exists!",
-            38 => "Plugin has no languages files."
+            38 => "Plugin has no languages files.",
+            /*-------------------------------------*/
+            39 => "Syntax error in SQL code"
         );
 
         static public function GenerateError($errorCode)
@@ -526,7 +534,6 @@ namespace Engine {
 
         static public function GetError()
         {
-
             return self::$lastError;
         }
 
@@ -884,10 +891,6 @@ namespace Engine {
             return false;
         }
 
-        public static function getErrorMessage(){
-            return self::$errMessage;
-        }
-
         public static function getMax($table, $column)
         {
             $pdo = self::connect();
@@ -1044,10 +1047,23 @@ namespace Engine {
                 $preparedQuery = $pdo->prepare($query);
                 $preparedQuery->execute();
             }
+            if ($pdo->errorInfo()[3] != null){
+                ErrorManager::GenerateError(39);
+                ErrorManager::PretendToBeDied(ErrorManager::GetErrorCode(39), new \PDOException(LanguageManager::GetTranslation("sql_syntax_error")));
+                exit;
+            }
+
             return $preparedQuery->fetchAll($pdo::FETCH_ASSOC);
         }
 
-        public static function MakeQuery($query, array $whereArr = null)
+        /** Executes SQL query.
+         *
+         * @param string $query SQL query
+         * @param array|null $whereArr Associative array with values by order.
+         * @param bool $multiResponse If true returns all fetches lines.
+         * @return array|bool|mixed One fetched line or all fetched lines. If query is invalid returns false.
+         */
+        public static function MakeQuery($query, array $whereArr = null, bool $multiResponse = false)
         {
             $pdo = self::connect();
 
@@ -1057,12 +1073,14 @@ namespace Engine {
             else
                 $result = $preparedQuery->execute();
             if (!$result) {
-                echo $query;
                 ErrorManager::GenerateError(33);
                 ErrorManager::PretendToBeDied("Cannot make special SQL query: [" . $preparedQuery->errorInfo()[0] . "] " . $preparedQuery->errorInfo()[2], new \PDOException("Cannot make special SQL query."));
                 return false;
             }
-            return $preparedQuery->fetch($pdo::FETCH_ASSOC);
+            if ($multiResponse)
+                return $preparedQuery->fetchAll($pdo::FETCH_ASSOC);
+            else
+                return $preparedQuery->fetch($pdo::FETCH_ASSOC);
         }
     }
 
@@ -1376,9 +1394,9 @@ namespace Engine {
          * @param bool $value New value of permission.
          * @return bool
          */
-        public static function SetPermissionValue(int $ofPlugin, string $permissionName, int $groupId, bool $value) : bool {
+        public static function SetPermissionValue(int $ofPlugin, string $permissionName, int $groupId, int $value) : bool {
             return DataKeeper::Update("tt_plugin_permissions",
-                ["value" => (int) $value],
+                ["value" => $value],
                 ["codename" => $permissionName,
                     "ofGroup" => $groupId,
                     "ofPlugin" => $ofPlugin]);

@@ -22,16 +22,16 @@ for ($i = 0; $i < count($usersInGroup); $i++){
     $number = $i +1;
     $tableUnit .= "<tr>
                         <td>$number</td>
-                        <td><a href=\"profile.php?uid=$usersInGroup[$i]\">" . \Users\UserAgent::GetUserNick($usersInGroup[$i]) . "</a></td>
+                        <td><a href=\"profile.php?uid=" . $usersInGroup[$i]["id"] . "\">" . \Users\UserAgent::GetUserNick($usersInGroup[$i]["id"]) . "</a></td>
                    <tr>";
 }
 
 $groupPage = str_replace_once("{GROUP_USER_LIST}", $tableUnit, $groupPage);
 
-$pageCount = \Users\GroupAgent::GetUsersCountInGroup($group->getId()) % 15;
+$pageCount = \Users\GroupAgent::GetUsersCountInGroup($group->getId()) / 15;
 if ($pageCount != 1){
     $groupTablePagination = "<div class=\"btn-group\">";
-    for ($i = 0; $i < $pageCount; $i++)
+    for ($i = 1; $i < $pageCount; $i++)
         $groupTablePagination .= "<a class=\"btn btn-default\" href=?group=" . $group->getId() . "&p=$i>$i</a>";
     $groupTablePagination .= "</div>";
     $groupPage = str_replace_once("{GROUP_TABLE_PAGINATION}", $groupTablePagination, $groupPage);

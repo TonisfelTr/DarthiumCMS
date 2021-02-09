@@ -19,146 +19,115 @@ namespace Users {
         private $gPerms = array();
 
         public function __construct($groupId){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            $result          = DataKeeper::Get("tt_groups", ["*"], ["id" => $groupId])[0];
+            $this->gId       = $groupId;
+            $this->gName     = $result["name"];
+            $this->gColor    = $result["color"];
+            $this->gDescript = $result["descript"];
+            $this->gPerms    = array(
+                'enterpanel' => $result["enterpanel"],
+                'change_engine_settings' => $result["change_engine_settings"],
+                'offline_visiter' => $result["offline_visiter"],
+                'rules_edit' => $result["rules_edit"],
+                'change_template_design' => $result["change_template_design"],
 
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                ErrorManager::PretendToBeDied(ErrorManager::GetErrorCode(2), "Could not connect to the db in Group constructor.");
-            }
+                /***********************************************************
+                 * Group permissions.                                      *
+                 ***********************************************************/
 
-            if ($stmt = $mysqli->prepare("SELECT * FROM `tt_groups` WHERE `id`=?")){
-                $stmt->bind_param("i", $groupId);
-                $stmt->execute();
-                $stmt->bind_result($id, $name, $descript, $color, $enterpanel, $change_template_design, $offline_visiter, $rules_edit,
-                    $change_perms, $group_create, $group_delete, $group_change,
-                    $change_another_profiles,
-                    $change_user_group, $user_add, $user_remove, $user_see_foreign, $user_signs,
-                    $user_ban, $user_unban, $user_banip, $user_unbanip,
-                    $report_create, $report_foreign_remove, $report_talking, $report_remove, $report_edit, $report_foreign_edit, $report_answer_edit, $report_anser_foreign_edit, $report_close,
-                    $change_profile, $change_engine_settings,
-                    $bmail_sende, $bmail_sends,
-                    $upload_add, $upload_see_all, $upload_delete, $upload_delete_foreign,
-                    $category_create, $category_edit, $category_delete, $category_see_unpublic, $category_params_ignore,
-                    $topic_create, $topic_edit, $topic_foreign_edit, $topic_delete, $topic_foreign_delete, $topic_manage,
-                    $comment_create, $comment_edit, $comment_foreign_edit, $comment_delete, $comment_foreing_delete,
-                    $sc_create_pages, $sc_edit_pages, $sc_remove_pages, $sc_design_edit,
-                    $logs_see, $plugins_control);
-                while ($stmt->fetch()){
-                    $this->gId = $id;
-                    $this->gName = $name;
-                    $this->gColor = $color;
-                    $this->gDescript = $descript;
+                'change_perms' => $result["change_perms"],
+                'group_create' => $result["group_create"],
+                'group_delete' => $result["group_delete"],
+                'group_change' => $result["group_change"],
 
-                    $this->gPerms = array(
-                        'enterpanel' => $enterpanel,
-                        'change_engine_settings' => $change_engine_settings,
-                        'offline_visiter' => $offline_visiter,
-                        'rules_edit' => $rules_edit,
-                        'change_template_design' => $change_template_design,
+                /************************************************************
+                 * User permissions.                                        *
+                 ************************************************************/
 
-                        /***********************************************************
-                         * Group permissions.                                      *
-                         ***********************************************************/
+                'change_another_profiles' => $result["change_another_profiles"],
+                'change_user_group' => $result["change_user_group"],
+                'user_add' => $result["user_add"],
+                'user_remove' => $result["user_remove"],
+                'user_see_foreign' => $result["user_see_foreign"],
+                'user_signs' => $result["user_signs"],
+                'change_profile' => $result["change_profile"],
+                'user_ban' => $result["user_ban"],
+                'user_unban' => $result["user_unban"],
+                'user_banip' => $result["user_banip"],
+                'user_unbanip' => $result["user_unbanip"],
 
-                        'change_perms' => $change_perms,
-                        'group_create' => $group_create,
-                        'group_delete' => $group_delete,
-                        'group_change' => $group_change,
+                /*************************************************************
+                 * Reports permissions                                       *
+                 *************************************************************/
 
-                        /************************************************************
-                         * User permissions.                                        *
-                         ************************************************************/
+                'report_create' => $result["report_create"],
+                'report_foreign_remove' => $result["report_foreign_remove"],
+                'report_talking' => $result["report_talking"],
+                'report_remove' => $result["report_remove"],
+                'report_edit' => $result["report_edit"],
+                'report_foreign_edit' => $result["report_foreign_remove"],
+                'report_answer_edit' => $result["report_answer_edit"],
+                'report_foreign_answer_edit' => $result["report_anser_foreign_edit"],
+                'report_close' => $result["report_close"],
 
-                        'change_another_profiles' => $change_another_profiles,
-                        'change_user_group' => $change_user_group,
-                        'user_add' => $user_add,
-                        'user_remove' => $user_remove,
-                        'user_see_foreign' => $user_see_foreign,
-                        'user_signs' => $user_signs,
-                        'change_profile' => $change_profile,
-                        'user_ban' => $user_ban,
-                        'user_unban' => $user_unban,
-                        'user_banip' => $user_banip,
-                        'user_unbanip' => $user_unbanip,
+                /*************************************************************
+                 * Uploading permissions                                     *
+                 *************************************************************/
 
-                        /*************************************************************
-                         * Reports permissions                                       *
-                         *************************************************************/
+                'upload_add' => $result["upload_add"],
+                'upload_delete' => $result["upload_delete"],
+                'upload_delete_foreign' => $result["upload_delete_foreign"],
+                'upload_see_all' => $result["upload_see_all"],
 
-                        'report_create' => $report_create,
-                        'report_foreign_remove' => $report_foreign_remove,
-                        'report_talking' => $report_talking,
-                        'report_remove' => $report_remove,
-                        'report_edit' => $report_edit,
-                        'report_foreign_edit' => $report_foreign_remove,
-                        'report_answer_edit' => $report_answer_edit,
-                        'report_foreign_answer_edit' => $report_anser_foreign_edit,
-                        'report_close' => $report_close,
+                /*************************************************************
+                 * Categories permissions                                    *
+                 *************************************************************/
 
-                        /*************************************************************
-                         * Uploading permissions                                     *
-                         *************************************************************/
+                'category_create' => $result["category_create"],
+                'category_delete' => $result["category_delete"],
+                'category_edit' => $result["category_edit"],
+                'category_see_unpublic' => $result["category_see_unpublic"],
+                'category_params_ignore' => $result["category_params_ignore"],
 
-                        'upload_add' => $upload_add,
-                        'upload_delete' => $upload_delete,
-                        'upload_delete_foreign' => $upload_delete_foreign,
-                        'upload_see_all' => $upload_see_all,
+                /*************************************************************
+                 * Topics permissions                                        *
+                 *************************************************************/
 
-                        /*************************************************************
-                         * Categories permissions                                    *
-                         *************************************************************/
+                'topic_create' => $result["topic_create"],
+                'topic_edit' => $result["topic_edit"],
+                'topic_foreign_edit' => $result["topic_foreign_edit"],
+                'topic_delete' => $result["topic_delete"],
+                'topic_foreign_delete' => $result["topic_foreign_delete"],
+                'topic_manage' => $result["topic_manage"],
 
-                        'category_create' => $category_create,
-                        'category_delete' => $category_delete,
-                        'category_edit' => $category_edit,
-                        'category_see_unpublic' => $category_see_unpublic,
-                        'category_params_ignore' => $category_params_ignore,
+                /*************************************************************
+                 * Comments permissions                                      *
+                 *************************************************************/
 
-                        /*************************************************************
-                         * Topics permissions                                        *
-                         *************************************************************/
+                'comment_create' => $result["comment_create"],
+                'comment_edit' => $result["comment_edit"],
+                'comment_foreign_edit' => $result["comment_foreign_edit"],
+                'comment_delete' => $result["comment_delete"],
+                'comment_foreign_delete' => $result["comment_foreing_delete"],
 
-                        'topic_create' => $topic_create,
-                        'topic_edit' => $topic_edit,
-                        'topic_foreign_edit' => $topic_foreign_edit,
-                        'topic_delete' => $topic_delete,
-                        'topic_foreign_delete' => $topic_foreign_delete,
-                        'topic_manage' => $topic_manage,
+                /**************************************************************
+                 * Permissions manage with static content              *
+                 **************************************************************/
 
-                        /*************************************************************
-                         * Comments permissions                                      *
-                         *************************************************************/
+                'sc_create_pages' => $result["sc_create_pages"],
+                'sc_edit_pages' => $result["sc_edit_pages"],
+                'sc_remove_pages' => $result["sc_remove_pages"],
+                'sc_design_edit' => $result["sc_design_edit"],
 
-                        'comment_create' => $comment_create,
-                        'comment_edit' => $comment_edit,
-                        'comment_foreign_edit' => $comment_foreign_edit,
-                        'comment_delete' => $comment_delete,
-                        'comment_foreign_delete' => $comment_foreing_delete,
+                /**************************************************************
+                 * Other                                                      *
+                 **************************************************************/
 
-                        /**************************************************************
-                         * Permissions manage with static content              *
-                         **************************************************************/
-
-                        'sc_create_pages' => $sc_create_pages,
-                        'sc_edit_pages' => $sc_edit_pages,
-                        'sc_remove_pages' => $sc_remove_pages,
-                        'sc_design_edit' => $sc_design_edit,
-
-                        /**************************************************************
-                         * Other                                                      *
-                         **************************************************************/
-
-                        'bmail_sende' => $bmail_sende,
-                        'bmail_sends' => $bmail_sends,
-                        'logs_see' => $logs_see,
-                        'plugins_control' => $plugins_control
-                    );
-                }
-            } else {
-                ErrorManager::GenerateError(9);
-                return ErrorManager::GetError();
-            }
-
+                'bmail_sende' => $result["bmail_sende"],
+                'bmail_sends' => $result["bmail_sends"],
+                'logs_see' => $result["logs_see"],
+                'plugins_control' => $result["plugins_control"]
+            );
             return $this;
         }
         public function getPermission($permValue){
@@ -221,7 +190,6 @@ namespace Users {
         public function __construct($userId)
         {
             $result = DataKeeper::Get("tt_users", ["*"], ["id" => $userId])[0];
-
             $this->uId = $result["id"];
             $this->uNickname = $result["nickname"];
             $this->uPassHash = $result["password"];
@@ -337,24 +305,11 @@ namespace Users {
             return $this->uLastTime;
         }
         public function getReportsCreatedCount(){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT count(*) FROM `tt_reports` WHERE `author` = ?")){
-                $id = $this->getId();
-                $stmt->bind_param("i", $id);
-                $stmt->execute();
-                $stmt->bind_result($result);
-                $stmt->fetch();
-                return $result;
-            }
-
-            $mysqli->close();
-            return 0;
+            $queryResponse = DataKeeper::Get("tt_reports", ["count(*)"], ["author" => $this->getId()]);
+            if (empty($queryResponse))
+                return 0;
+            else
+                return $queryResponse[0]["count(*)"];
         }
         public function getAdditionalFields(){
             return $this->uAdditionFields;
@@ -427,120 +382,97 @@ namespace Users {
         private $userId;
 
         private function getStatusForMessage($id){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            $queryResponse = DataKeeper::Get("tt_pmessages", ["senderUID", "receiverUID"], ["id" => $id, "isVisible" => 1]);
+            $sender        = $queryResponse[0]["senderUID"];
+            $receiver      = $queryResponse[0]["receiverUID"];
 
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
+            if ($sender == $this->userId) return "sender";
+            elseif ($receiver == $this->userId) return "receiver";
+            else return "nobody";
 
-            if ($stmt = $mysqli->prepare("SELECT `senderUID`, `receiverUID` FROM `tt_pmessages` WHERE `id`=? AND `isVisible`=?")){
-                $t = 1;
-                $stmt->bind_param("ii", $id, $t);
-                $stmt->execute();
-                $stmt->bind_result($sender, $receiver);
-                $stmt->fetch();
-                if ($sender == $this->userId) return "sender";
-                elseif ($receiver == $this->userId) return "receiver";
-                else return "nobody";
-            }
         }
         private function hasAccess($id){
             if (!in_array($this->getStatusForMessage($id), ["sender", "receiver"])) return false;
             else return true;
         }
         private function setRead($id){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("UPDATE `tt_pmessages` SET `isRead`=? WHERE `id`=?")){
-                $t = true;
-                $stmt->bind_param("ii", $t, $id);
-                $stmt->execute();
-                if ($stmt->errno) return false;
-                else return true;
-            }
-            $mysqli->close();
-            return false;
+            return DataKeeper::Update("tt_pmessages", ["isRead" => true], ["id" => $id]);
         }
 
         public function __construct($userId)
         {
             $this->userId = $userId;
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            $queryResponse = DataKeeper::MakeQuery("SELECT * 
+                                                           FROM `tt_pmessages`
+                                                           WHERE `senderUID`=? OR `receiverUID`=? AND `isVisible`=?
+                                                           ORDER BY `id` DESC", [$this->userId, $this->userId, 1], true);
+            //var_dump($queryResponse);
+            //exit;
+            foreach ($queryResponse as $array) {
+                $id = $array["id"];
+                $senderUID = $array["senderUID"];
+                $receiverUID = $array["receiverUID"];
+                $subject = $array["subject"];
+                $text = $array["text"];
+                $isRead = $array["isRead"];
+                $receiveTime = date("Y-m-d H:i:s", $array["receiveTime"]);
+                $isRemovedForSender = $array["isRemovedForSender"];
+                $isRemovedForReceiver = $array["isRemovedForReceiver"];
+                $isVisible = $array["isVisible"];
+                $isSaved = $array["isSaved"];
 
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT * FROM `tt_pmessages` WHERE `senderUID`=? OR `receiverUID`=? AND `isVisible`=? ORDER BY `id` DESC")){
-                $t = 1;
-                $stmt->bind_param("iii", $this->userId, $this->userId, $t);
-                $stmt->execute();
-                $stmt->bind_result($id, $senderUID, $receiverUID, $subject, $text, $isRead, $receiveTime, $isRemovedForSender, $isRemovedForReceiver, $isVisible, $isSaved);
-                while($stmt->fetch()){
-                    $receiveTime = date("Y-m-d H:i:s", $receiveTime);
-                    if (($senderUID == $this->userId && $isRemovedForSender == true) || ($receiverUID == $this->userId && $isRemovedForReceiver == true)) {
-                        array_push($this->bin, ["id" => $id,
-                            "senderUID" => $senderUID,
-                            "receiverUID" => $receiverUID,
-                            "subject" => $subject,
-                            "text" => $text,
-                            "isRead" => $isRead,
-                            "receiveTime" => $receiveTime,
-                            "isRemoved" => true,
-                            "isVisible" => 1,
-                            "isSaved" => $isSaved]);
-                        $this->binSize++;
-                    } elseif ($senderUID == $this->userId && !$isSaved && !$isRemovedForSender){
-                        array_push($this->sended, ["id" => $id,
-                            "senderUID" => $senderUID,
-                            "receiverUID" => $receiverUID,
-                            "subject" => $subject,
-                            "text" => $text,
-                            "isRead" => $isRead,
-                            "receiveTime" => $receiveTime,
-                            "isRemove" => false,
-                            "isVisible" => 1,
-                            "isSaved" => $isSaved]);
-                        $this->sendedSize++;
-                    } elseif ($senderUID == $this->userId && $isSaved && !$isRemovedForSender){
-                        array_push($this->outcomes, ["id" => $id,
-                            "senderUID" => $senderUID,
-                            "receiverUID" => $receiverUID,
-                            "subject" => $subject,
-                            "text" => $text,
-                            "isRead" => $isRead,
-                            "receiveTime" => $receiveTime,
-                            "isRemove" => false,
-                            "isVisible" => 1,
-                            "isSaved" => $isSaved]);
-                        $this->outcomeSize++;
-                    } elseif ($receiverUID == $this->userId && !$isSaved && !$isRemovedForReceiver){
-                        array_push($this->incomes, ["id" => $id,
-                            "senderUID" => $senderUID,
-                            "receiverUID" => $receiverUID,
-                            "subject" => $subject,
-                            "text" => $text,
-                            "isRead" => $isRead,
-                            "receiveTime" => $receiveTime,
-                            "isRemove" => false,
-                            "isVisible" => 1,
-                            "isSaved" => false]);
-                        $this->incomeSize++;
-                        if ($isRead == false) $this->notReadCount++;
-                    }
+                if (($senderUID == $this->userId && $isRemovedForSender == true) || ($receiverUID == $this->userId && $isRemovedForReceiver == true)) {
+                    array_push($this->bin, ["id" => $id,
+                        "senderUID" => $senderUID,
+                        "receiverUID" => $receiverUID,
+                        "subject" => $subject,
+                        "text" => $text,
+                        "isRead" => $isRead,
+                        "receiveTime" => $receiveTime,
+                        "isRemoved" => true,
+                        "isVisible" => 1,
+                        "isSaved" => $isSaved]);
+                    $this->binSize++;
+                } elseif ($senderUID == $this->userId && !$isSaved && !$isRemovedForSender) {
+                    array_push($this->sended, ["id" => $id,
+                        "senderUID" => $senderUID,
+                        "receiverUID" => $receiverUID,
+                        "subject" => $subject,
+                        "text" => $text,
+                        "isRead" => $isRead,
+                        "receiveTime" => $receiveTime,
+                        "isRemove" => false,
+                        "isVisible" => 1,
+                        "isSaved" => $isSaved]);
+                    $this->sendedSize++;
+                } elseif ($senderUID == $this->userId && $isSaved && !$isRemovedForSender) {
+                    array_push($this->outcomes, ["id" => $id,
+                        "senderUID" => $senderUID,
+                        "receiverUID" => $receiverUID,
+                        "subject" => $subject,
+                        "text" => $text,
+                        "isRead" => $isRead,
+                        "receiveTime" => $receiveTime,
+                        "isRemove" => false,
+                        "isVisible" => 1,
+                        "isSaved" => $isSaved]);
+                    $this->outcomeSize++;
+                } elseif ($receiverUID == $this->userId && !$isSaved && !$isRemovedForReceiver) {
+                    array_push($this->incomes, ["id" => $id,
+                        "senderUID" => $senderUID,
+                        "receiverUID" => $receiverUID,
+                        "subject" => $subject,
+                        "text" => $text,
+                        "isRead" => $isRead,
+                        "receiveTime" => $receiveTime,
+                        "isRemove" => false,
+                        "isVisible" => 1,
+                        "isSaved" => false]);
+                    $this->incomeSize++;
+                    if ($isRead == false) $this->notReadCount++;
                 }
-                $stmt->close();
             }
-
-            $mysqli->close();
         }
         public function getNotReadCount(){
             return $this->notReadCount;
@@ -574,66 +506,26 @@ namespace Users {
             else return $this->sended[$index];
         }
         public function send($receiverUID, $subject, $text){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("INSERT INTO `tt_pmessages` (`id`, `senderUID`, `receiverUID`, `subject`, `text`, `receiveTime`) VALUE (NULL, ?, ?, ?, ?, ?)")){
-                $time = Engine::GetSiteTime();
-                $stmt->bind_param("iisss", $this->userId, $receiverUID, $subject, $text, $time);
-                $stmt->execute();
-                if (!$stmt->errno) return true;
-                else return false;
-            }
-
-            return false;
+            return DataKeeper::InsertTo("tt_pmessages", ["senderUID" => $this->userId,
+                                                                "receiverUID" => $receiverUID,
+                                                                "subject" => $subject,
+                                                                "text" => $text,
+                                                                "receiveTime" => Engine::GetSiteTime()]);
         }
         public function remove($id){
             if ($this->getStatusForMessage($id) == "nobody") return false;
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
             if ($this->getStatusForMessage($id) == "receiver"){
-                $stmt = $mysqli->prepare("UPDATE `tt_pmessages` SET `isRemovedForReceiver`=? WHERE `id`=?");
+                return DataKeeper::Update("tt_pmessages", ["isRemovedForReceiver" => 1], ["id" => $id]);
             }
             if ($this->getStatusForMessage($id) == "sender"){
-                $stmt = $mysqli->prepare("UPDATE `tt_pmessages` SET `isRemovedForSender`=? WHERE `id`=?");
+                return DataKeeper::Update("tt_pmessages", ["isRemovedForSender" => 1], ["id" => $id]);
             }
-
-            if (isset($stmt)) {
-                $t = 1;
-                $stmt->bind_param("ii", $t, $id);
-                $stmt->execute();
-                if (!$stmt->errno) return true;
-            }
-
-            return false;
         }
         public function save($id){
             if ($this->getStatusForMessage($id) == "nobody") return false;
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("UPDATE `tt_pmessages` SET `isSaved`=? WHERE `id`=?")){
-                $t = 1;
-                $stmt->bind_param("ii", $t, $id);
-                $stmt->execute();
-                if(!$stmt->errno) return true;
-            }
-            return false;
+            return DataKeeper::Update("tt_pmessages", ["isSaved" => 1], ["id" => $id]);
         }
         public function read($id){
             if (!$this->hasAccess($id)){
@@ -661,30 +553,16 @@ namespace Users {
 
             return false;
         }
-        public function restore($id){
+        public function restore($id)
+        {
             if ($this->getStatusForMessage($id) == "nobody") return false;
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
+            if ($this->getStatusForMessage($id) == "receiver") {
+                return DataKeeper::Update("tt_pmessages", ["isRemovedForReceiver" => 0], ["id" => $id]);
             }
-
-            if ($this->getStatusForMessage($id) == "receiver"){
-                $stmt = $mysqli->prepare("UPDATE `tt_pmessages` SET `isRemovedForReceiver`=? WHERE `id`=?");
+            if ($this->getStatusForMessage($id) == "sender") {
+                return DataKeeper::Update("tt_pmessages", ["isRemovedForSender" => 0], ["id" => $id]);
             }
-            if ($this->getStatusForMessage($id) == "sender"){
-                $stmt = $mysqli->prepare("UPDATE `tt_pmessages` SET `isRemovedForSender`=? WHERE `id`=?");
-            }
-
-            if (isset($stmt)){
-                $t = 0;
-                $stmt->bind_param("ii", $t, $id);
-                $stmt->execute();
-                if (!$stmt->errno) return true;
-            }
-            return false;
         }
     }
     class UserReputationer{
@@ -698,31 +576,17 @@ namespace Users {
             $this->userReputationPoint = 0;
             $this->userReputationChanges = array();
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            $reputations = DataKeeper::Get("tt_reputation", ["*"], ["uid" => $this->userId]);
 
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
+            foreach($reputations as $reputation){
+                $this->userReputationChanges[] = [
+                    "authorId" => $reputation["authorId"],
+                    "type" => $reputation["type"],
+                    "comment" => $reputation["comment"],
+                    "createDate" => $reputation["createDate"]
+                ];
+                $this->userReputationPoint += ($reputation["type"] == 0) ? -1 : 1;
             }
-
-            if ($stmt = $mysqli->prepare("SELECT * FROM `tt_reputation` WHERE `uid`=?")){
-                $id = $user->getId();
-                $stmt->bind_param("i", $id);
-                $stmt->execute();
-                $stmt->bind_result($id, $userId, $authorId, $type, $comment, $createDate);
-                $i = 0;
-                while($stmt->fetch()){
-                    $i++;
-                    $this->userReputationChanges[$i] = ["authorId" => $authorId,
-                                                         "type" => $type,
-                                                         "comment" => $comment,
-                                                         "createDate" => $createDate];
-                    $this->userReputationPoint += ($type == 0) ? -1 : 1;
-                }
-            }
-
-            $stmt->close();
-            $mysqli->close();
         }
         public function getReputationChangeByIndex(int $index){
             return $this->userReputationChanges[$index];
@@ -768,13 +632,11 @@ namespace Users {
             }
             return false;
         }
-        //TODO Remove reputation function and avaibility.
         public function removeReputationPoint($commentId){
-
+            return DataKeeper::Delete("tt_reputation", ["id" => $commentId]);
         }
-        //TODO Change reputation comment function and avaibility.
-        public function changeReputationComment($commentId){
-
+        public function changeReputationComment(int $commentId, string $newComment){
+            return DataKeeper::Update("tt_reputation", ["comment" => $newComment], ["id" => $commentId]);
         }
     }
     class UserBlacklister{
@@ -785,76 +647,36 @@ namespace Users {
         {
             $this->uId = $userId;
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            $blacked = DataKeeper::Get("tt_blacklisted", ["blockId", "comment", "addedtime"], ["authorId" => $this->uId]);
 
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT `blockId`, `comment`, `addedtime` FROM `tt_blacklisted` WHERE `authorId`=?")){
-                $stmt->bind_param("i", $this->uId);
-                $stmt->execute();
-                $stmt->bind_result($blockId, $comment, $addedtime);
-                while($stmt->fetch()){
-                    array_push($this->uArray, ["bid" => $blockId, "comment" => $comment, "addedtime" => $addedtime]);
-                }
+            foreach ($blacked as $person){
+                $this->uArray[] = ["bid" => $person["blockId"], "comment" => $person["comment"], "addedtime" => $person["addedtime"]];
             }
         }
         public function getList(){
             return $this->uArray;
         }
-        public function add($userId, $comment = ""){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("INSERT INTO `tt_blacklisted` (`id`, `authorId`, `blockId`, `comment`, `addedtime`) VALUE (NULL, ?, ?, ?, ?)")){
-                $date = date("Y-m-d H:i:s", Engine::GetSiteTime());
-                $stmt->bind_param("iiss", $this->uId, $userId, $comment, $date);
-                $stmt->execute();
-                if (!$stmt->errno) return true;
-                else {
-                    echo $stmt->error;
-                    return false;
-                }
-            }
-            return false;
+        public function add(int $userId, string $comment = ""){
+            return DataKeeper::InsertTo("tt_blacklisted", ["authorId" => $this->uId, "blockId" => $userId, "comment" => $comment, "date" => date("Y-m-d H:i:s", Engine::GetSiteTime())]);
         }
-        public function isBlocked($userId){
-            for ($i = 0; $i <= count($this->uArray)-1; $i++){
-                if (in_array($userId, $this->uArray[$i]))
+        public function isBlocked(int $userId){
+            foreach ($this->uArray as $person){
+                if (in_array($userId, $person))
                     return true;
             }
             return false;
         }
-        public function remove($userId){
+        public function remove(int $userId) : bool{
             if (!$this->isBlocked($userId)) return false;
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("DELETE FROM `tt_blacklisted` WHERE `authorId`=? AND `blockId`=?")){
-                $stmt->bind_param("ii", $this->uId, $userId);
-                $stmt->execute();
-                return true;
-            }
-            return false;
+            return DataKeeper::Delete("tt_blacklisted", ["authorId" => $this->uId, "blockId" => $userId]);
         }
         public function getBlockedInfo($userId){
             if (!$this->isBlocked($userId)) return false;
 
-            for ($i = 0; $i <= count($this->uArray)-1; $i++){
-                if (in_array($userId, $this->uArray[$i])){
-                    return $this->uArray[$i];
-                }
+            foreach ($this->uArray as $info){
+                if (in_array($userId, $info))
+                    return $info;
             }
 
             return false;
@@ -869,28 +691,19 @@ namespace Users {
         public function __construct($userId)
         {
             $this->userId = $userId;
+            $notifications = DataKeeper::MakeQuery("SELECT * FROM `tt_notifications` WHERE `toUid` = ? ORDER BY `createTime` DESC", [$this->userId], true);
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT `id`, `createTime`, `fromUid`, `type`, `isRead`, `subject` FROM `tt_notifications` WHERE `toUid` = ? ORDER BY `createTime` DESC")){
-                $stmt->bind_param("i", $this->userId);
-                $stmt->execute();
-                $stmt->bind_result($id, $createTime, $fromUid, $type, $isRead, $subject);
-                while ($stmt->fetch()){
-                    array_push($this->notificationsList, ["id" => $id,
-                        "createTime" => $createTime,
-                        "fromUid" => $fromUid,
-                        "type" => $type,
-                        "isRead" => $isRead,
-                        "subject" => $subject]);
-                    $this->notificationsCount++;
-                    if (!$isRead) $this->notificationsUnreadCount++;
-                }
+            foreach ($notifications as $notification) {
+                $this->notificationsList[] = [
+                    "id" => $notification["id"],
+                    "createTime" => $notification["createTime"],
+                    "fromUid" => $notification["fromUid"],
+                    "type" => $notification["type"],
+                    "isRead" => $notification["isRead"],
+                    "subject" => $notification["subject"]
+                ];
+                $this->notificationsCount++;
+                if (!$notification["isRead"]) $this->notificationsUnreadCount++;
             }
         }
         public function getNotifies(){
@@ -933,44 +746,18 @@ namespace Users {
          * @param $subject integer ID of subject of action.
          * @return bool|int|string
          */
-        public function createNotify($notificationCode, $fromUid, $subject  = 0){
+        public function createNotify($notificationCode, $fromUid, int $subject  = 0){
             UserAgent::ClearNotifications();
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("INSERT INTO `tt_notifications` (`id`, `toUid`, `type`, `fromUid`, `createTime`, `isRead`, subject) VALUE (NULL,?,?,?,?,?,?)")){
-                $time = Engine::GetSiteTime();
-                $y = 0;
-                $stmt->bind_param("iiiiis", $this->userId, $notificationCode, $fromUid, $time, $y, $subject);
-                $stmt->execute();
-                if ($stmt->errno)
-                    return $stmt->error;
-                return true;
-            }
-            return false;
+            return DataKeeper::InsertTo("tt_notifications", ["toUid" => $this->userId,
+                                                                   "type" => $notificationCode,
+                                                                   "fromUid" => $fromUid,
+                                                                   "createTime" => Engine::GetSiteTime(),
+                                                                   "isRead" => 0,
+                                                                   "subject" => $subject]);
         }
         public function setRead($id){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("UPDATE `tt_notifications` SET `isRead`=? WHERE `id`=?")){
-                $y = 1;
-                $stmt->bind_param("ii", $y, $id);
-                $stmt->execute();
-                if ($stmt->errno)
-                    return $stmt->error;
-                return true;
-            }
-            return false;
+            return DataKeeper::Update("tt_notifications", ["isRead" => 1], ["id" => $id]);
         }
         public function getUserId(){
             return $this->userId;
@@ -981,45 +768,21 @@ namespace Users {
         private $friendCount = 0;
         private $friendList = [];
 
-        public function isFriend($userId){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf("Не удалось подключиться: %s\n", mysqli_connect_error());
-                return False;
-            }
-
-            if($stmt = $mysqli->prepare("SELECT count(*) FROM `tt_friends` WHERE `fhost` = ? AND `friendId` = ?")){
-                $stmt->bind_param("ii", $this->userId, $userId);
-                $stmt->execute();
-                $stmt->bind_result($result);
-                $stmt->fetch();
-                if ($result >= 1) return true;
-            }
-            return false;
-        }
-
         public function __construct($userId)
         {
             $this->userId = $userId;
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf("Не удалось подключиться: %s\n", mysqli_connect_error());
-                return False;
+            $friends = DataKeeper::Get("tt_friends", ["friendId", "regdate"], ["fhost" => $userId]);
+            foreach ($friends as $friend) {
+                $this->friendList[] = ["fhost" => $this->userId, "friendId" => $friend["friendId"], "regdate" => $friend["regdate"]];
+                $this->friendCount++;
             }
-
-            if ($stmt = $mysqli->prepare("SELECT `friendId`, `regdate` FROM `tt_friends` WHERE `fhost` = ?")){
-                $stmt->bind_param("i", $this->userId);
-                $stmt->execute();
-                if ($stmt->errno) echo $stmt->error;
-                $stmt->bind_result($friendId, $regdate);
-                while($stmt->fetch()){
-                    array_push($this->friendList, [ "friendId" => $friendId, "regdate" => $regdate]);
-                    $this->friendCount++;
-                }
-            }
+        }
+        public function isFriend($userId){
+            if (DataKeeper::MakeQuery("SELECT count(*) FROM tt_friends WHERE `fhost`=? AND `friendId`=?", [$this->userId, $userId])["count(*)"] >= 1)
+                return true;
+            else
+                return false;
         }
         public function getFriendsCount(){
             return $this->friendCount;
@@ -1027,29 +790,13 @@ namespace Users {
         public function getFriendsList(){
             return $this->friendList;
         }
-        public function getFriendFromList($index){
-            return new User($this->friendList[$index]["friendId"]);
-        }
         public function getFriendFromDB($friendId){
             if (!$this->isFriend($friendId)) return false;
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf("Не удалось подключиться: %s\n", mysqli_connect_error());
-                return False;
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT `friendId`, `regdate` FROM `tt_friends` WHERE `friendId`=? AND `fhost`=?")){
-                $stmt->bind_param("ii", $friendId, $this->userId);
-                $stmt->execute();
-                $stmt->bind_result($resFriendId, $resRegDate);
-                $stmt->fetch();
-                return [ "fhost" => $this->userId,
-                    "friendId" => $resFriendId,
-                    "regdate" => $resRegDate];
-            }
-            return false;
+            $friend = DataKeeper::Get("tt_friends", ["regdate"], ["friendId" => $friendId, "fhost" => $this->userId]);
+            return ["fhost" => $this->userId,
+                "friendId" => $friendId,
+                "regdate" => $friend[0]["regdate"]];
         }
         public function getOnlineFriendCount(){
             return UserAgent::GetOnlineFriendsCount($this->userId);
@@ -1060,38 +807,12 @@ namespace Users {
         public function addFriend($friendId){
             if ($this->isFriend($friendId)) return false;
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf("Не удалось подключиться: %s\n", mysqli_connect_error());
-                return False;
-            }
-
-            if ($stmt = $mysqli->prepare("INSERT INTO `tt_friends` (`fhost`, `friendId`, `regdate`) VALUE (?,?,?)")){
-                $time = Engine::GetSiteTime();
-                $stmt->bind_param("iis", $this->userId, $friendId, $time);
-                $stmt->execute();
-                if ($stmt->errno) return $stmt->error;
-                return true;
-            }
-            return false;
+            return DataKeeper::InsertTo("tt_friends", ["fhost" => $this->userId, "friendId" => $friendId, "regdate" => Engine::GetSiteTime()]);
         }
         public function deleteFriend($friendId){
             if (!$this->isFriend($friendId)) return false;
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf("Не удалось подключиться: %s\n", mysqli_connect_error());
-                return False;
-            }
-
-            if ($stmt = $mysqli->prepare("DELETE FROM `tt_friends` WHERE `fhost` = ? AND `friendId` = ?")){
-                $stmt->bind_param("ii", $this->userId, $friendId);
-                $stmt->execute();
-                if (!$stmt->errno) return true;
-            }
-            return false;
+            return DataKeeper::Delete("tt_friends", ["fhost" => $this->userId, "friendId" => $friendId]);
         }
     }
 
@@ -1108,70 +829,25 @@ namespace Users {
         }
         private static function IsEmailValid($str){
             if (strlen($str) < 2) return False;
-            if (preg_match("/[a-z0-9A-Z.@-_]+/", $str) == 1) return True;
+            if (preg_match("/[a-z0-9A-Z.@\-_]+/", $str) == 1) return True;
             else return False;
         }
         private static function UpdateLastData($id){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            $date = date("Y-m-d", Engine::GetSiteTime());
+            $time = Engine::GetSiteTime();
 
-            if (mysqli_connect_errno()) {
-                printf("Не удалось подключиться: %s\n", mysqli_connect_error());
-                return False;
-            }
-
-            if($stmt = $mysqli->prepare("UPDATE `tt_users` SET `lastip`=?, `lastdate`=?, `lasttime`=? WHERE `id`=?")){
-                $date = date("Y-m-d", Engine::GetSiteTime());
-                $time = Engine::GetSiteTime();
-                $stmt->bind_param("sssi", $_SERVER["REMOTE_ADDR"], $date, $time, $id);
-                $stmt->execute();
-                if($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                $stmt->close();
-                $mysqli->close();
-                return True;
-            } else echo $mysqli->error;
-
-            $mysqli->close();
-            return False;
-
+            return DataKeeper::Update("tt_users", ["lastip" => $_SERVER["REMOTE_ADDR"], "lastdate" => $date, "lasttime" => $time], ["id" => $id]);
         }
-
         private static function GetTopicsOfUser(int $userId){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            $result = [];
+            $topicsId = DataKeeper::Get("tt_topics", ["id"], ["authorId" => $userId]);
+            foreach ($topicsId as $topicId)
+                $result[] = $topicId;
 
-            if (mysqli_connect_errno()) {
-                printf("Не удалось подключиться: %s\n", mysqli_connect_error());
-                return False;
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT id FROM tt_topics WHERE authorId = ?")){
-                $stmt->bind_param("i", $userId);
-                $stmt->execute();
-                $stmt->bind_result($id);
-                $result = [];
-                while($stmt->fetch()){
-                    array_push($result, $id);
-                }
-                return $result;
-            }
+            return $result;
         }
         private static function IsWithQuize(int $topicId){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf("Не удалось подключиться: %s\n", mysqli_connect_error());
-                return False;
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT id FROM tt_quizes WHERE topicId = ?")){
-                $stmt->bind_param("i", $topicId);
-                $stmt->execute();
-                $stmt->bind_result($id);
-                $stmt->fetch();
-                return $id;
-            }
+            return DataKeeper::Get("tt_quizes", ["id"], ["topicId" => $topicId])[0];
         }
         /**
          * Try to authorize with given param and password.
@@ -1182,12 +858,16 @@ namespace Users {
          */
         private static function Authorization($param, $pass, $passIsHash = False){
             if (Engine::GetEngineInfo("na")){
-                $paramsToEnter = array($param, (($passIsHash) ? $pass : hash("sha256", $pass)));
+                $paramsToEnter = [$param,
+                                  ($passIsHash) ? $pass : hash("sha256", $pass)
+                ];
+
                 if (self::IsValidNick($param))
                     $autorizationResult = DataKeeper::MakeQuery("SELECT `id` FROM `tt_users` WHERE `nickname`=? AND `password`=?", $paramsToEnter);
                 if (self::IsEmailExists($param)) {
                     $autorizationResult = DataKeeper::MakeQuery("SELECT `id` FROM `tt_users` WHERE `email`=? AND `password`=?", $paramsToEnter);
                 }
+
                 if (isset($autorizationResult["id"]) && !empty($autorizationResult["id"])) {
                     if (self::IsActivate($autorizationResult["id"]) == false) {
                         ErrorManager::GenerateError(26);
@@ -1229,67 +909,24 @@ namespace Users {
             else return false;
         }
         private static function IsIPRegistred($ipaddress){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            $queryString = DataKeeper::MakeQuery("SELECT count(*) FROM tt_users WHERE `regip` = ?", [$ipaddress]);
 
-            if (mysqli_connect_errno()) {
-                printf(mysqli_connect_error() . "<br />");
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT count(*) FROM tt_users WHERE regip = ?")){
-                $stmt->bind_param("s", $ipaddress);
-                $stmt->execute();
-                $stmt->bind_result($count);
-                $stmt->fetch();
-                return $count;
-            }
-            return false;
+            return $queryString["count(*)"] == 0 ? false : $queryString["count(*)"];
         }
 
         public static function Get10OnlineUsers(){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf("Не удалось подключиться: %s\n", mysqli_connect_error());
-                return False;
-            };
-
-            if ($stmt = $mysqli->prepare("SELECT `id` FROM `tt_users` WHERE NOT lasttime < ? LIMIT 0,10")){
-                $timeBorder = Engine::GetSiteTime() - 60*5;
-                $stmt->bind_param("i", $timeBorder);
-                $stmt->execute();
-                $res = array();
-                $stmt->bind_result($val);
-                while($stmt->fetch()){
-                    array_push($res, $val);
-                }
+            $queryResponse = DataKeeper::MakeQuery("SELECT `id` FROM `tt_users` WHERE NOT `lasttime` < ? LIMIT 0,10", [Engine::GetSiteTime() - 60*5], true);
+            $res = [];
+            foreach ($queryResponse as $user){
+                $res[] = $user["id"];
             }
             return $res;
         }
         public static function IsEmailExists($email){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT count(*) FROM `tt_users` WHERE `email` = ? ")){
-                $stmt->bind_param("s", $email);
-                $stmt->execute();
-                $stmt->bind_result($res);
-                $stmt->fetch();
-                $res1 = $res;
-                if ($res1 >= 1) return true;
-                else return false;
-
-            }
-            return false;
+            return DataKeeper::MakeQuery("SELECT count(*) FROM `tt_users` WHERE `email` = ?", [$email])["count(*)"] > 0 ? true : false;
         }
         public static function IsNicknameExists($nickname){
-            $query = "SELECT count(*) FROM `tt_users` WHERE nickname=?";
-            $sqlResult = DataKeeper::MakeQuery($query, array($nickname));
+            $sqlResult = DataKeeper::MakeQuery("SELECT count(*) FROM `tt_users` WHERE nickname=?", [$nickname]);
             if ($sqlResult["count(*)"] > 0){
                 return true;
             }
@@ -1298,47 +935,22 @@ namespace Users {
         public static function ActivateAccount($id = null, $code)
         {
             if ($code == "true") return false;
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf("Не удалось подключиться: %s\n", mysqli_connect_error());
-                return False;
-            }
 
             if ($id != null) {
-                if (!$stmt = $mysqli->prepare("SELECT count(*) FROM `tt_users` WHERE `id`=? AND active=?")) return false;
-
-                $stmt->bind_param("is", $id, $code);
+                $queryResponse = DataKeeper::MakeQuery("SELECT count(*) FROM `tt_users` WHERE `id`=? AND `active` = ?", [$id, $code]);
             } else {
-                if (!$stmt = $mysqli->prepare("SELECT count(*) FROM `tt_users` WHERE active=?")) return false;
-                $stmt->bind_param("s", $code);
+                $queryResponse = DataKeeper::MakeQuery("SELECT count(*) FROM `tt_users` WHERE `active` = ?", [$code]);
             }
-            $stmt->execute();
-            if ($stmt->errno){
-                ErrorManager::GenerateError(9);
-                return ErrorManager::GetError();
-            }
-            $stmt->bind_result($act);
-            $stmt->fetch();
-            if ($act == 0) return false;
-            $stmt->close();
+            if ($queryResponse["count(*)"] == 0)
+                return false;
 
-            $valueAct = 'TRUE';
 
             if ($id != null) {
-                if(!$stmt = $mysqli->prepare("UPDATE `tt_users` SET active=? WHERE `id`=? AND active=?")) return false;
-                $stmt->bind_param("sis", $valueAct, $id, $code);
+                DataKeeper::Update("tt_users", ["active" => "TRUE"], [$id, $code]);
             } else {
-                if(!$stmt = $mysqli->prepare("UPDATE `tt_users` SET active=? WHERE active=?")) return false;
-                $stmt->bind_param("ss", $valueAct, $code);
-            }
-            $stmt->execute();
-            if ($stmt->errno){
-                ErrorManager::GenerateError(9);
-                return ErrorManager::GetError();
+                DataKeeper::Update("tt_users", ["active" => "TRUE"], [$code]);
             }
             return true;
-
         }
         public static function SessionCreate($param, $pass){
             $authIs = self::Authorization($param, $pass);
@@ -1381,7 +993,7 @@ namespace Users {
                 ini_set("session.cookie_lifetime", 31536000);
                 ini_set("session.save_path", $_SERVER["DOCUMENT_ROOT"] . "/engine/sessions/");
                 session_start();
-                $authResult = self::Authorization($_SESSION["email"], $_SESSION["passhash"], true);
+                $authResult = self::Authorization($_SESSION["email"] == null ? $_SESSION["nickname"] : $_SESSION["email"], $_SESSION["passhash"], true);
                 if ($authResult === True) return self::AfterAuth();
                 elseif ($authResult === False) return self::NotValidPWD();
                 else return $authResult;
@@ -1567,94 +1179,51 @@ namespace Users {
             DataKeeper::Delete("tt_users", ["id" => $id]);
         }
         public static function GetAllUsers(){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf(mysqli_connect_error() . "<br />");
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT id, nickname FROM tt_users")){
-                $stmt->execute();
-                $result = [];
-                $stmt->bind_result($id, $nickname);
-                while ($stmt->fetch()){
-                    array_push($result, [$id, $nickname]);
-                }
-                return $result;
-            }
+            return DataKeeper::Get("tt_users", ["id", "nickname"]);
         }
         public static function GetUsersList($paramsArray, $page = 1){
-
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf(mysqli_connect_error() . "<br />");
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
             $lowBorder = $page * 50 - 50;
-            $highBorder = $page*50;
+            $highBorder = $page * 50;
 
-            if ($paramsArray == 0)
-                $query = "SELECT `id` FROM `tt_users` LIMIT $lowBorder, $highBorder";
-            else {
-                $query = "SELECT `id` FROM `tt_users` WHERE `nickname` LIKE ? AND `email` LIKE ? AND `lastip` LIKE ? AND `referer` LIKE ? AND `group` LIKE ? LIMIT $lowBorder, $highBorder";
+            if ($paramsArray == 0){
+                $queryResponse = DataKeeper::MakeQuery("SELECT `id` FROM `tt_users` LIMIT $lowBorder, $highBorder", [], true);
+            } else {
                 if (isset($paramsArray["nickname"])) $paramsArray["nickname"] = str_replace("*", "%", $paramsArray["nickname"]);
                 if (isset($paramsArray["email"])) $paramsArray["email"] = str_replace("*", "%", $paramsArray["email"]);
                 if (isset($paramsArray["lastip"])) $paramsArray["lastip"] = str_replace("*", "%", $paramsArray["lastip"]);
             }
+            if ($paramsArray != 0){
+                if (!isset($paramsArray["nickname"])) $paramsArray["nickname"] = "%";
+                if (!isset($paramsArray["email"])) $paramsArray["email"]       = "%";
+                if (!isset($paramsArray["lastip"])) $paramsArray["lastip"]     = "%";
+                if (!isset($paramsArray["referer"])) $paramsArray["referer"]   = "%";
+                if (!isset($paramsArray["group"])) $paramsArray["group"]       = "%";
 
-            if ($stmt = $mysqli->prepare($query)){
-                if ($paramsArray != 0){
-                    $prc = "%";
-                    if (isset($paramsArray["referer"])) {
-                        #Проверка на существование...
-                        if (UserAgent::GetUserId($paramsArray["referer"]))
-                            $paramsArray["referer"] = UserAgent::GetUserId($paramsArray["referer"]);
+                if (isset($paramsArray["referer"])) {
+                    if (UserAgent::GetUserId($paramsArray["referer"]))
+                        $paramsArray["referer"] = UserAgent::GetUserId($paramsArray["referer"]);
 
-                    }
-                    if (!isset($paramsArray["nickname"])) $paramsArray["nickname"] = $prc;
-                    if (!isset($paramsArray["email"])) $paramsArray["email"] = $prc;
-                    if (!isset($paramsArray["lastip"])) $paramsArray["lastip"] = $prc;
-                    if (!isset($paramsArray["referer"])) $paramsArray["referer"] = $prc;
-                    if (!isset($paramsArray["group"])) $paramsArray["group"] = $prc;
-                    $stmt->bind_param("sssss", $paramsArray["nickname"], $paramsArray["email"],
-                        $paramsArray["lastip"], $paramsArray["referer"], $paramsArray["group"]);
                 }
-                $stmt->execute();
-                if (mysqli_stmt_errno($stmt)){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                $stmt->bind_result($id);
-                $result = array();
-                while ($stmt->fetch()){
-                    array_push($result, $id);
-                }
-                return $result;
+                $queryResponse = DataKeeper::MakeQuery("SELECT
+                                                                    `id`
+                                                                FROM
+                                                                    `tt_users`
+                                                                WHERE
+                                                                    `nickname` LIKE ?
+                                                                AND `email` LIKE ?
+                                                                AND `lastip` LIKE ?
+                                                                AND `referer` LIKE ?
+                                                                AND `group` LIKE ?
+                                                                LIMIT $lowBorder, $highBorder",
+                    [$paramsArray["nickname"], $paramsArray["email"],
+                        $paramsArray["lastip"], $paramsArray["referer"], $paramsArray["group"]],
+                    true);
             }
 
-            return False;
+            return $queryResponse;
         }
         public static function GetUsersCount(){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT count(*) FROM `tt_users`")) {
-                $stmt->execute();
-                $stmt->bind_result($paramProp);
-                $stmt->fetch();
-                return $paramProp;
-            }
-
-            return false;
+            return DataKeeper::MakeQuery("SELECT count(*) FROM `tt_users`")["count(*)"];
         }
         public static function ChangeUserParams($id, $param, $newparam){
             if ($param == 'password' || $param == 'id'){
@@ -1686,7 +1255,7 @@ namespace Users {
 
                 if (Engine::GetEngineInfo("na") && self::IsEmailExists($newparam)){
                     ErrorManager::GenerateError(34);
-                    return ErrorManager::GetError();
+                    ErrorManager::PretendToBeDied(ErrorManager::GetErrorCode(34), new \Exception("You cannot create user with duplicated email."));
                 }
             }
 
@@ -1706,25 +1275,7 @@ namespace Users {
             return $resp;
         }
         public static function GetUserId($param){
-
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf("Не удалось подключиться: %s\n", mysqli_connect_error());
-                return False;
-            }
-
-            if($stmt = $mysqli->prepare("SELECT `id` FROM `tt_users` WHERE nickname=? OR email=?")){
-                $stmt->bind_param("ss", $param, $param);
-                $stmt->execute();
-                $stmt->bind_result($result);
-                $stmt->fetch();
-                $result1 = $result;
-                if($result1 == ''){ $stmt->close(); return False;}
-                else{ $stmt->close(); $mysqli->close(); return $result1; }
-            }
-
-            return False;
+            return DataKeeper::MakeQuery("SELECT `id` FROM `tt_users` WHERE `nickname`=? OR `email` = ?", [$param, $param])["id"];
         }
         public static function GetUserNick($id){
             if (self::IsUserExist($id) === false) {
@@ -1732,24 +1283,7 @@ namespace Users {
                 return ErrorManager::GetError();
             }
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf("Не удалось подключиться: %s\n", mysqli_connect_error());
-                return False;
-            }
-
-            if($stmt = $mysqli->prepare("SELECT `nickname` FROM `tt_users` WHERE id=?")){
-                $stmt->bind_param("i", $id);
-                $stmt->execute();
-                $stmt->bind_result($result);
-                $stmt->fetch();
-                $result1 = $result;
-                if($result1 == ''){ $stmt->close(); return False;}
-                else{ $stmt->close(); $mysqli->close(); return $result1; }
-            }
-
-            return False;
+            return DataKeeper::Get("tt_users", ["nickname"], ["id" => $id])[0]["nickname"];
         }
         public static function GetUserGroupId($idUser){
             if (!self::IsUserExist($idUser)){
@@ -1757,26 +1291,7 @@ namespace Users {
                 return ErrorManager::GetError();
             }
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT `group` FROM `tt_users` WHERE `id`=?")){
-                $stmt->bind_param("i", $idUser);
-                $stmt->execute();
-                if(mysqli_stmt_errno($stmt)){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                } else {
-                    $stmt->bind_result($groupId);
-                    $stmt->fetch();
-                    return $groupId;
-                }
-            }
-            return false;
+            return DataKeeper::Get("tt_users", ["group"], ["id" => $idUser])["group"];
         }
         public static function GetUser($idUser){
             if (!UserAgent::IsUserExist($idUser)) return false;
@@ -1788,32 +1303,13 @@ namespace Users {
                 return ErrorManager::GetError();
             }
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT count(*) FROM `tt_users` WHERE `referer`=?")){
-                $stmt->bind_param("i", $idUser);
-                $stmt->execute();
-                if(mysqli_stmt_errno($stmt)){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                } else {
-                    $stmt->bind_result($refCounts);
-                    $stmt->fetch();
-                    return $refCounts;
-                }
-            }
-            return false;
+            return DataKeeper::MakeQuery("SELECT count(*) FROM `tt_users` WHERE `referer` = ?", [$idUser])["count(*)"];
         }
         /**
          * Return content of user property.
          * @param $idUser int User ID
          * @param $param string Property that should be returned.
-         * @return bool|int
+         * @return bool|int|array
          */
         public static function GetUserParam($idUser, $param)
         {
@@ -1828,49 +1324,22 @@ namespace Users {
                 ErrorManager::GenerateError(7);
                 return ErrorManager::GetError();
             }
-
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT `$param` FROM `tt_users` WHERE `id`=?")) {
-                $stmt->bind_param("i", $idUser);
-                $stmt->execute();
-                $stmt->bind_result($paramProp);
-                $stmt->fetch();
-                return $paramProp;
-            }
-
-            return false;
+            return DataKeeper::Get("tt_users", [$param], [$idUser])[$param];
         }
         /**
          * Return a array with ids users have a nickname like a shedule.
          * @param $Snickname Shedule of nickname.
-         * @return mixed
+         * @return array|int
          * In shedule you can use * symbol for unknown substring.
          */
         public static function FindUsersBySNickname($Snickname){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
             if (strstr($Snickname, "*") > -1) $Snickname = str_replace("*", "%", $Snickname);
-            if ($stmt = $mysqli->prepare("SELECT `id` FROM `tt_users` WHERE `nickname` LIKE ?")){
-                $stmt->bind_param("s", $Snickname);
-                $stmt->execute();
-                $result = array();
-                $stmt->bind_result($Sid);
-                while ($stmt->fetch()){
-                    array_push($result, $Sid);
-                }
-                return $result;
+            $result = [];
+            $queryResponse = DataKeeper::MakeQuery("SELECT `id` FROM `tt_users` WHERE `nickname` LIKE ?", [$Snickname]);
+            foreach ($queryResponse as $Sid){
+                $result[] = $Sid;
             }
-            return false;
+            return $result;
         }
         public static function UploadAvatar($idUser, $fileFormName){
             if (!UserAgent::IsUserExist($idUser)){
@@ -1921,90 +1390,25 @@ namespace Users {
                 return False;
             }
 
-
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf(mysqli_connect_error() . "<br />");
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("UPDATE `tt_users` SET `avatar`=? WHERE `id`=?")){
-                $stmt->bind_param("si", $newName, $idUser);
-                $stmt->execute();
-                if (mysqli_stmt_errno($stmt)){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                return True;
-            }
-
-            return False;
+            return DataKeeper::Update("tt_users", ["avatar" => $newName], ["id" => $idUser]);
         }
         public static function ClearNotifications(){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("DELETE FROM `tt_notifications` WHERE `createTime` < ?")){
-                $needlyTime = Engine::GetSiteTime() - 30*24*60*60;
-                $stmt->bind_param("i", $needlyTime);
-                $stmt->execute();
-                if ($stmt->errno){
-                    return $stmt->error;
-                }
-                return true;
-            }
+            return DataKeeper::MakeQuery("DELETE FROM `tt_notifications` WHERE `createTime` < ?", [Engine::GetSiteTime() - 30*24*60*60]);
         }
         public static function GetOnlineFriendsCount($userId){
             if (!self::IsUserExist($userId)) return false;
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT count(*) FROM `tt_users` WHERE `id` in (SELECT `friendId` FROM `tt_friends` WHERE `fhost`=?) AND `lasttime` > ?")){
-                $time = Engine::GetSiteTime()-60*15;
-                $stmt->bind_param("ii", $userId, $time);
-                $stmt->execute();
-                $stmt->bind_result($count);
-                $stmt->fetch();
-                return $count;
-            }
-            return 0;
+            return DataKeeper::MakeQuery("SELECT count(*) FROM `tt_users` WHERE `id` IN (SELECT `friendId` FROM `tt_friends` WHERE `fhost`=?) AND `lasttime` > ?", [$userId, Engine::GetSiteTime()-60*15])["count(*)"];
         }
         public static function GetOnlineFriends($ofUserId){
             if (!self::IsUserExist($ofUserId)) return false;
-
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT `id` FROM `tt_users` WHERE `id` IN (SELECT `friendId` FROM `tt_friends` WHERE `fhost`=?) AND `lasttime` > ?")){
-                $time = Engine::GetSiteTime()-60*15;
-                $stmt->bind_param("ii", $ofUserId, $time);
-                $stmt->execute();
-                if (!$stmt->errno){
-                    $res = [];
-                    $stmt->bind_result($id);
-                    while($stmt->fetch()){
-                        array_push($res, $id);
-                    }
-                    return $res;
-                }
-            }
-            $stmt->close();
-            return false;
+            return DataKeeper::MakeQuery("SELECT `users`.`id` AS `friendId`,
+                                                        `friends`.`fhost` AS `fhost`,
+                                                        `friends`.`regdate` AS `regdate`            
+                                                 FROM `tt_users` AS `users`
+                                                 LEFT JOIN `tt_friends` AS `friends` ON `users`.`id` = `friends`.`friendId`   
+                                                 WHERE `users`.`id` IN (SELECT `friendId` FROM `tt_friends` WHERE `fhost`=?) AND `users`.`lasttime` > ?",
+                [$ofUserId, Engine::GetSiteTime()-60*15], true);
         }
         public static function GetAdditionalFieldsList(){
             return DataKeeper::Get("tt_adfields", ["*"]);
@@ -2048,121 +1452,32 @@ namespace Users {
             preg_match("/[a-zA-Zа-яА-Я]+/", $name, $arrPreg);
             if (count($arrPreg) > 1 || strlen($arrPreg[0]) != strlen($name)) echo 2; else echo 1;
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf(mysqli_connect_error() . "<br />");
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if (!$stmt = $mysqli->prepare("SELECT count(*) FROM `tt_groups` WHERE `name`=?")) die ($mysqli->error);
-            $stmt->bind_param("s", $name);
-            $stmt->execute();
-            if (mysqli_stmt_errno($stmt)){
-                ErrorManager::GenerateError(9);
-                return ErrorManager::GetError();
-            }
-            $stmt->bind_result($res);
-            $stmt->fetch();
-            if($res >= 1){
-                ErrorManager::GenerateError(17);
-                return ErrorManager::GetError();
-            }
-            else return True;
-
+            return (bool) DataKeeper::MakeQuery("SELECT count(*) FROM `tt_groups` WHERE `name` = ?", [$name])["count(*)"];
         }
 
         public static function IsGroupExists($id){
-
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf(mysqli_connect_error() . "<br />");
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            $stmt = $mysqli->prepare("SELECT count(*) FROM `tt_groups` WHERE id=?");
-            $stmt->bind_param("i", $id);
-            $stmt->execute();
-            $stmt->bind_result($result);
-            $stmt->fetch();
-
-            if ($result != 0) return True;
-            elseif (mysqli_stmt_errno($stmt)) ErrorManager::GenerateError(9);
-            else return False;
-
-            return False;
+            return (bool) DataKeeper::MakeQuery("SELECT count(*) FROM `tt_groups` WHERE `id` = ?", [$id])["count(*)"];
         }
         public static function AddGroup($name, $color, $descript){
 
             if (!self::CheckNameValid($name) == True) return ErrorManager::GetError();
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf(mysqli_connect_error() . "<br />");
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            $stmt = $mysqli->prepare("INSERT INTO `tt_groups` (`id`, `name`, `color`, `descript`) VALUE (NULL,?,?,?)");
-            $stmt->bind_param("sss", $name, $color, $descript);
-            $stmt->execute();
-
-            if (mysqli_stmt_errno($stmt)){ echo mysqli_Stmt_error($stmt);ErrorManager::GenerateError(9); }
-            else return True;
-
-            return false;
+            return DataKeeper::InsertTo("tt_groups", ["id" => null, "name" => $name, "color" => $color, "descript" => $descript]);
         }
         public static function RemoveGroup($id){
-
             if (!self::IsGroupExists($id)) return ErrorManager::GetError();
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf(mysqli_connect_error() . "<br />");
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            $stmt = $mysqli->prepare("DELETE FROM `tt_groups` WHERE id=?");
-            $stmt->bind_param("i", $id);
-            $stmt->execute();
-
-            if (mysqli_stmt_errno($stmt)){ ErrorManager::GenerateError(9); return ErrorManager::GetError(); }
-
-            return True;
-
+            return DataKeeper::Delete("tt_groups", ["id" => $id]);
         }
         public static function ChangeGroupPerms($id, $type, $typeNew){
             $nonPerms = array(0=>'id', 1=>'name', 2=>'color', 3=>'descript');
             if (in_array($type, $nonPerms)) exit;
             if (!self::IsGroupExists($id)){ ErrorManager::GenerateError(10); return ErrorManager::GetError(); }
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf(mysqli_connect_error() . "<br />");
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-            if ($stmt = $mysqli->prepare("UPDATE `tt_groups` SET $type=? WHERE `id`=?")) {
-                $stmt->bind_param("ii", $typeNew, $id);
-                $stmt->execute();
-            }
-
-            if (mysqli_stmt_errno($stmt)){ ErrorManager::GenerateError(9); return ErrorManager::GetError(); }
-
-            $stmt->close();
-            $mysqli->close();
-            return True;
-
+            return DataKeeper::Update("tt_groups", ["$type" => $typeNew], ["id" => $id]);
         }
         public static function ChangeGroupData($id, $type, $typeNew){
-            $nonPerms = array(1=>'name', 2=>'color', 3=>'descript');
+            $nonPerms = array(0 => "id", 1=>'name', 2=>'color', 3=>'descript');
             if (!in_array($type, $nonPerms)) exit;
 
             if ($type == 'name')
@@ -2170,172 +1485,34 @@ namespace Users {
                     return ErrorManager::GetError();
                 }
 
-
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf(mysqli_connect_error() . "<br />");
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if (!$stmt = $mysqli->prepare("UPDATE `tt_groups` SET `$type`=? WHERE `id`=?")) die($mysqli->error);
-            $stmt->bind_param("si", $typeNew, $id);
-            $stmt->execute();
-
-            if (mysqli_stmt_errno($stmt)){
-                ErrorManager::GenerateError(9);
-                return ErrorManager::GetError();
-            }
-
-            $stmt->close();
-            $mysqli->close();
-
-            return True;
+            return DataKeeper::Update("tt_groups", ["$type" => $typeNew], ["id" => $id]);
         }
         public static function MoveGroupMembers($id, $toId){
             if (!GroupAgent::IsGroupExists($toId)) return False;
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf(mysqli_connect_error() . "<br />");
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if (!$stmt = $mysqli->prepare("UPDATE `tt_users` SET `group`=? WHERE `group`=?")) die($mysqli->error);
-            $stmt->bind_param("ii", $toId, $id);
-            $stmt->execute();
-
-            if (mysqli_stmt_errno($stmt)){
-                ErrorManager::GenerateError(9);
-                return ErrorManager::GetError();
-            }
-
-            $stmt->close();
-            $mysqli->close();
-
-            return True;
+            return DataKeeper::Update("tt_users", ["group" => $toId], ["group" => $id]);
         }
         public static function GetGroupList(){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf(mysqli_connect_error() . "<br />");
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            $stmt = $mysqli->prepare("SELECT `id` FROM `tt_groups`");
-            $stmt->execute();
-            $stmt->bind_result($id);
-            $r = array();
-            while($stmt->fetch()){
-                array_push($r, $id);
-            }
-            $stmt->close();
-            $mysqli->close();
-            return $r;
+            return DataKeeper::Get("tt_groups", ["id"]);
         }
         public static function GetGroupNameById($id){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf(mysqli_connect_error() . "<br />");
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            $stmt = $mysqli->prepare("SELECT `name` FROM `tt_groups` WHERE `id`=?");
-            $stmt->bind_param("i", $id);
-            $stmt->execute();
-            $stmt->bind_result($result);
-            $stmt->fetch();
-            $result1 = $result;
-            $stmt->close();
-            $mysqli->close();
-            return $result1;
+            return DataKeeper::Get("tt_groups", ["name"], ["id" => $id])[0]["name"];
         }
         public static function GetGroupColor($id){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf(mysqli_connect_error() . "<br />");
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            $stmt = $mysqli->prepare("SELECT `color` FROM `tt_groups` WHERE `id`=?");
-            $stmt->bind_param("i", $id);
-            $stmt->execute();
-            $stmt->bind_result($result);
-            $stmt->fetch();
-            $result1 = $result;
-            $stmt->close();
-            $mysqli->close();
-            return $result1;
+            return DataKeeper::Get("tt_groups", ["color"], ["id" => $id])[0]["color"];
         }
         public static function GetGroupDescribe($id){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf(mysqli_connect_error() . "<br />");
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            $stmt = $mysqli->prepare("SELECT `descript` FROM `tt_groups` WHERE `id`=?");
-            $stmt->bind_param("i", $id);
-            $stmt->execute();
-            $stmt->bind_result($result);
-            $stmt->fetch();
-            $result1 = $result;
-            $stmt->close();
-            $mysqli->close();
-            return $result1;
+            return DataKeeper::Get("tt_groups", ["descript"], ["id" => $id])[0]["descript"];
         }
         public static function GetUsersCountInGroup(int $groupId){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf(mysqli_connect_error() . "<br />");
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT count(*) FROM tt_users WHERE group = ?")){
-                $stmt->bind_param("i", $groupId);
-                $stmt->execute();
-                $stmt->bind_result($count);
-                $stmt->fetch();
-                return $count;
-            }
-            return false;
+            return DataKeeper::MakeQuery("SELECT count(*) FROM `tt_users` WHERE `group` = ?", [$groupId])["count(*)"];
         }
         public static function GetGroupUsers($id, int $page = 1){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf(mysqli_connect_error() . "<br />");
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
             $lowBorder = $page * 15 - 15;
             $highBorder = 15;
 
-            if ($stmt = $mysqli->prepare("SELECT id FROM tt_users WHERE `group` = ? ORDER BY id DESC LIMIT $lowBorder, $highBorder")){
-                $stmt->bind_param("i", $id);
-                $stmt->execute();
-                $stmt->bind_result($id);
-                $result = [];
-                while ($stmt->fetch()){
-                    array_push($result, $id);
-                }
-                return $result;
-            }
-            return false;
+            $queryResponse = DataKeeper::MakeQuery("SELECT `id` FROM `tt_users` WHERE `group` = ? ORDER BY `id` LIMIT $lowBorder, $highBorder", [$id], true);
+            return $queryResponse;
         }
         public static function IsHavePerm($id, $perm) : bool{
             $nonPerms = array(0=>'id', 1=>'name', 2=>'color', 3=>'descript');

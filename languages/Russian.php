@@ -14,7 +14,6 @@ $languagePack = [
     "yes" => "Да",
     "no" => "Нет",
 //Monthes
-
     "january_month" => "января",
     "febrary_month" => "февраля",
     "march_month" => "марта",
@@ -27,8 +26,13 @@ $languagePack = [
     "october_month" => "октября",
     "november_month" => "ноября",
     "december_month" => "декабря",
-
     "year" => "года",
+//Chat
+    "quote_anonim_said" => "Неизвестный автор сказал:",
+    "quote_said" => "сказал(а)",
+    "spoiler" => "Спойлер",
+//Errors
+    "sql_syntax_error" => "Ошибка в синтаксисе SQL кода.",
 //PMs
     "email_or_login" => "Email или логин",
     "nickname" => "Никнейм",
@@ -124,6 +128,9 @@ $languagePack = [
     "unsuccessfuly_authorization" => "Неудачная авторизация",
     "ua_info" => "Не получилось авторизироваться. Попробуйте очистить кеш Вашего браузера и повторите попытку снова.",
     "point(s)" => "балл.",
+    "registered_she" => "Зарегистрирована",
+    "registered_he" => "Зарегистрирован",
+    "authorization" => "Авторизация",
 //Offline page
     "site_is_off" => ":( Сайт выключен",
     "maintenance" => "Сейчас сайт находится на технических работах. Администрация сайта приносит извинения за технические неудобства.<br>
@@ -594,6 +601,7 @@ $languagePack = [
     "postman" => [
         "send" => "Отправить",
         "back" => "Назад",
+        "administration" => "Администрация",
         "email_panel" => [
             "page_name" => "Электронный почтальон",
             "page_description" => "Рассылка электронной почты всем пользователям сайта.",
@@ -1441,5 +1449,4 @@ $languagePack = [
     "plugins" => [
         "constant_exists" => "Плагин с таким кодовым именем уже зарегистрирован в системе."
     ]
-
 ];

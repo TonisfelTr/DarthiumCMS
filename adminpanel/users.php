@@ -224,60 +224,70 @@ if ($canIPBan || $canIPUnban){
                 <h2><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.search_result")?></h2>
                 <p id="users-selected-counter" class="alert alert-info" hidden><strong><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.selected_users_count")?></strong> <span id="users-selected-counter-span"></span>.</p>
                 <div class="table-responsive">
-                <table id="users-find-results" class="table">
-                    <thead style="background: radial-gradient(at right center, #874c15, #cc8c53); color: white; text-shadow: 2px 2px 3px black;">
+                    <table id="users-find-results" class="table">
+                        <thead style="background: radial-gradient(at right center, #874c15, #cc8c53); color: white; text-shadow: 2px 2px 3px black;">
                         <tr>
-                            <td><input type="checkbox" id="users-select-all" name="allselectorcheck" title="Выбрать всех"></td>
+                            <td><input type="checkbox" id="users-select-all" name="allselectorcheck"
+                                       title="Выбрать всех"></td>
                             <td>ID</td>
-                            <td><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_nickname")?></td>
-                            <td><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_group")?></td>
-                            <td><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_email")?></td>
-                            <td><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_last_ip")?></td>
-                            <td><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_reg_ip")?></td>
-                            <td><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_last_sign_in")?></td>
-                            <td><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_rate")?></td>
-                            <td><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_banned")?></td>
+                            <td><?= \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_nickname") ?></td>
+                            <td><?= \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_group") ?></td>
+                            <td><?= \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_email") ?></td>
+                            <td><?= \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_last_ip") ?></td>
+                            <td><?= \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_reg_ip") ?></td>
+                            <td><?= \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_last_sign_in") ?></td>
+                            <td><?= \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_rate") ?></td>
+                            <td><?= \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_banned") ?></td>
                             <?php if ($user->UserGroup()->getPermission("change_another_profiles")) echo "<td></td>"; ?>
                         </tr>
-                    </thead>
-                    <tbody>
+                        </thead>
+                        <tbody>
                         <?php
                         # Создание таблицы при отсутствии пользователей.
-                        if ($userCount == 0){?>
+                        if ($userCount == 0) {
+                            ?>
                             <tr>
-                                <td colspan="11" class="center alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.no_found_users")?></td>
+                                <td colspan="11" class="center alert alert-info"><span
+                                            class="glyphicon glyphicon-info-sign"></span> <?= \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.no_found_users") ?>
+                                </td>
                             </tr>
                         <?php }
                         # Создание таблицы при наличии в списке хотя бы одного пользователя.
-                        for ($i = 0; $i < $userCount; $i++){
-                            $selUser = new \Users\User($userList[$i]);
-                            if ($selUser->isBanned() === true) $selUserBan = \Engine\Engine::DateFormatToRead(date("Y-m-d", \Guards\SocietyGuard::GetBanUserParam($userList[$i], "banned_time")));
+                        foreach ($userList as $User) {
+                            $selUser = new \Users\User($User["id"]);
+                            if ($selUser->isBanned() === true) $selUserBan = \Engine\Engine::DateFormatToRead(date("Y-m-d", \Guards\SocietyGuard::GetBanUserParam($User["id"], "banned_time")));
                             else $selUserBan = \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.not_banned"); ?>
                             <tr>
-                                <td><input type="checkbox" data-uid-selected="<?php print(htmlentities($userList[$i])); ?>" title="<?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.select")?>"></td>
-                                <td><?php print(htmlentities($userList[$i]));?></td>
-                                <td><?php print(htmlentities($selUser->getNickname()));?></td>
-                                <td><?php print("<span style=\"color: " . htmlentities($selUser->UserGroup()->getColor()) . ";\">" . htmlentities($selUser->UserGroup()->getName()) . "</span>");?></td>
+                                <td><input type="checkbox"
+                                           data-uid-selected="<?php print(htmlentities($User["id"])); ?>"
+                                           title="<?= \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.select") ?>">
+                                </td>
+                                <td><?php print(htmlentities($User["id"])); ?></td>
+                                <td><?php print(htmlentities($selUser->getNickname())); ?></td>
+                                <td><?php print("<span style=\"color: " . htmlentities($selUser->UserGroup()->getColor()) . ";\">" . htmlentities($selUser->UserGroup()->getName()) . "</span>"); ?></td>
                                 <td><?php print(htmlentities($selUser->getEmail())); ?></td>
                                 <td><?php print(htmlentities(($selUser->getLastIp() != "null") ? $selUser->getLastIp() : \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.not_sign_in_he") . (($selUser->getSex() == 2) ? \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.not_sign_in_she") : ""))); ?></td>
                                 <td><?php print(htmlentities($selUser->getRegIp())); ?></td>
-                                <td><?php print($selUser->getLastDate() == "1970-01-01") ? ("Не заходил") : (htmlentities(\Engine\Engine::DateFormatToRead(($selUser->getLastDate())))); ?></td>
-                                <td><?php print(htmlentities($selUser->getReputation()->getReputationPoints()) . " ". \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.point")); ?></td>
+                                <td><?php print($selUser->getLastDate() == "1970-01-01") ? (($selUser->getSex() == 2)) : (htmlentities(\Engine\Engine::DateFormatToRead(($selUser->getLastDate())))); ?></td>
+                                <td><?php print(htmlentities($selUser->getReputation()->getReputationPoints()) . " " . \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.point")); ?></td>
                                 <td><?php print(htmlentities($selUserBan)); ?></td>
-                                <?php if ($canSeeProfiles){ ?>
-                                <td class="alert-info"><button class="btn btn-default alert-info" style="width: 100%;" type="submit" formaction="adminpanel/scripts/userer.php?uide=<?php print(htmlentities($userList[$i])); ?>"><?=\Engine\LanguageManager::GetTranslation("edit")?></button></td>
+                                <?php if ($canSeeProfiles) { ?>
+                                    <td class="alert-info">
+                                        <button class="btn btn-default alert-info" style="width: 100%;" type="submit"
+                                                formaction="adminpanel/scripts/userer.php?uide=<?php print(htmlentities($User["id"])); ?>"><?= \Engine\LanguageManager::GetTranslation("edit") ?></button>
+                                    </td>
                                 <?php } ?>
                             </tr>
                         <?php } ?>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
                 </div>
                 <div class="btn-group center">
-                    <?php
-                    if ($usersCount > 50) { for ($i = 1; $i <= ceil($usersCount / 50); $i++) { ?>
+                    <?php if ($usersCount > 50) {
+                        for ($i = 1; $i <= ceil($usersCount / 50); $i++) { ?>
                     <button class="btn btn-default <?php echo (isset($_REQUEST["fpage"]) && $_REQUEST["fpage"] == $i) ? "selected" : ""; ?>"
                         type="submit" formaction="adminpanel/scripts/userer.php?fpage=<?php echo $i . $formLink;?>"><?php echo $i; ?></button>
-                    <?php } }?>
+                    <?php } } ?>
                 </div>
             </div>
             <?php }
@@ -362,8 +372,7 @@ if ($canIPBan || $canIPUnban){
                                     type="submit" formaction="adminpanel/scripts/userer.php?bpage=<?php echo $i . $formLink;?>"><?php echo $i; ?></button>
                         <?php } }?>
                     </div>
-                </div>
-            <?php }
+                </div><?php }
             if ($canIPBan || $canIPUnban){ ?>
             <div class="div-border" id="user-bannedip" <?php if (isset($_REQUEST["reqtype"]) && $_REQUEST["reqtype"] == 2) echo setVisible(true); else echo setVisible(false);?>>
                 <h2><?=\Engine\LanguageManager::GetTranslation("users_panel.banip_users")?></h2>
@@ -451,8 +460,7 @@ if ($canIPBan || $canIPUnban){
                     <button class="btn btn-default" type="submit" id="user-add-add" name="user-add-add"><span class="glyphicon glyphicon-ok"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.register_panel.register")?></button>
                     <button class="btn btn-default" type="reset" id="user-add-reset" name="user-add-reset"><span class="glyphicon glyphicon-erase"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.register_panel.clear_form")?></button>
                 </div>
-            </div>
-            <?php }
+            </div><?php }
             if ($canSeeProfiles && $canChangeProfiles && $userExists) { ?>
             <div class="div-border" id="user-editor" <?php if ($userExists) echo setVisible(true); else echo setVisible(false); ?>>
                 <h2><?php print $USER->getNickname(); ?></h2>

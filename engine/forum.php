@@ -902,21 +902,12 @@ namespace Forum {
             return $topics;
         }
         public static function GetCountTopicsOfAuthor($nickname){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if($stmt = $mysqli->prepare("SELECT count(*) FROM tt_users WHERE nickname LIKE ?")){
-                $nicknameForQuery = "%$nickname%";
-                $stmt->bind_param("s", $nicknameForQuery);
-                $stmt->execute();
-                $stmt->bind_result($count);
-                $stmt->fetch();
-                return $count;
-            }
-            return false;
+            $queryResponse = DataKeeper::MakeQuery("SELECT count(*) 
+                                                           FROM `tt_topics` AS `topics`
+                                                           LEFT JOIN `tt_users` AS `users`
+                                                           ON `topics`.`authorId` = `users`.`id` 
+                                                           WHERE `users`.`nickname` LIKE ?", ["%$nickname%"]);
+            return $queryResponse["count(*)"];
         }
 
         public static function GetQuizeByTopic(int $topicId){

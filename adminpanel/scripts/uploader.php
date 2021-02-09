@@ -54,7 +54,6 @@ if (isset($_POST["uploader-upload-file-btn"])){
 }
 
 if (isset($_POST["uploader-file-delete"]) || isset($_POST["uploader-delete-files-btn"])){
-    echo 1;
     if ($user->UserGroup()->getPermission("upload_delete")){
         if (isset($_POST["uploader-delete-files-btn"])) {
             if (empty($_POST["uploader-file-delete-ids"])) {

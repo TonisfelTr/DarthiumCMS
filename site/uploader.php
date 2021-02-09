@@ -72,10 +72,10 @@ if ($user != false) {
         }
     }
 
-    include_once \Engine\Engine::ConstructTemplatePath("main", "uploader", "html");
+    include_once \Engine\Engine::ConstructTemplatePath("uploadermain", "uploader", "html");
     $uploaderBlock = getBrick();
 
-    include_once \Engine\Engine::ConstructTemplatePath("script", "uploader", "js");
+    include_once \Engine\Engine::ConstructTemplatePath("uploaderscript", "uploader", "js");
     $uploaderJS = getBrick();
 
     $uploaderBlock = str_replace_once("{PROFILE_UPLOADER:HIDDEN_ATTR}", $uploaderVisible, $uploaderBlock);

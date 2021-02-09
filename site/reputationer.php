@@ -57,13 +57,14 @@ $reputationerList = "";
 if (count($user->getReputation()->getReputationArray()) == 0)
     $reputationerList = "<span class=\"glyphicon glyphicon-info-sign\"></span> " . (($accessType) ? \Engine\LanguageManager::GetTranslation("reputationer.reputation") . " " . $user->getNickname() . " " : \Engine\LanguageManager::GetTranslation("reputationer.your_reputation") . " ") . \Engine\LanguageManager::GetTranslation("reputationer.nobody_change");
 else {
-    for ($i = 1; $i <= count($user->getReputation()->getReputationArray()); $i++){
-        $userRCGenderEnding = \Users\UserAgent::GetUserParam($user->getReputation()->getReputationArray()[$i]["authorId"], "sex") == 2 ? \Engine\LanguageManager::GetTranslation("reputationer.she_changed") : \Engine\LanguageManager::GetTranslation("reputationer.he_changed");
-        $userRCUID = $user->getReputation()->getReputationArray()[$i]["authorId"];
-        $userRCNickname = \Users\UserAgent::GetUserNick($user->getReputation()->getReputationArray()[$i]["authorId"]);
-        $userRCMark = ($user->getReputation()->getReputationArray()[$i]["type"] == 1) ? "<span style=\"color: green;\">" . \Engine\LanguageManager::GetTranslation("reputationer.mark_positive") . "</span>" : "<span style=\"color: darkred;\">" . \Engine\LanguageManager::GetTranslation("reputationer.mark_negative") . "</span>";
-        $userRCDate = \Engine\Engine::DateFormatToRead(date("Y-m-d", $user->getReputation()->getReputationArray()[$i]["createDate"]));
-        $userRCComment = htmlentities(\Engine\Engine::MakeUnactiveCodeWords($user->getReputation()->getReputationArray()[$i]["comment"]));
+    $reputationPoints = $user->getReputation()->getReputationArray();
+    foreach ($reputationPoints as $point){
+        $userRCGenderEnding = \Users\UserAgent::GetUserParam($point["authorId"], "sex") == 2 ? \Engine\LanguageManager::GetTranslation("reputationer.she_changed") : \Engine\LanguageManager::GetTranslation("reputationer.he_changed");
+        $userRCUID = $point["authorId"];
+        $userRCNickname = \Users\UserAgent::GetUserNick($point["authorId"]);
+        $userRCMark = ($point["type"] == 1) ? "<span style=\"color: green;\">" . \Engine\LanguageManager::GetTranslation("reputationer.mark_positive") . "</span>" : "<span style=\"color: darkred;\">" . \Engine\LanguageManager::GetTranslation("reputationer.mark_negative") . "</span>";
+        $userRCDate = \Engine\Engine::DateFormatToRead(date("Y-m-d", $point["createDate"]));
+        $userRCComment = htmlentities(\Engine\Engine::MakeUnactiveCodeWords($point["comment"]));
         $reputationerList .= "<div class=\"reputation-change-info\">";
         $reputationerList .= "$userRCGenderEnding: ";
         $reputationerList .= "<a href=\"profile.php?uid=$userRCUID\">$userRCNickname</a><br>";

@@ -33,10 +33,10 @@ $plugins = \Engine\PluginManager::GetInstalledPlugins();
                         <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("group_panel.group_managment.group"); ?></div>
                         <select class="form-control" name="group" id="selector_group">
                             <option value="0"><?php echo \Engine\LanguageManager::GetTranslation("group_panel.group_managment.select_group"); ?></option>
-                            <?php for($i = 0; $i < count($groupList); $i++){
-                                echo "<option value='".$groupList[$i]."'";
-                                if (isset($_REQUEST["group"])) if ($_REQUEST["group"] != 0 && $_REQUEST["group"] == $groupList[$i]) echo "selected";
-                                echo ">" . \Users\GroupAgent::GetGroupNameById($groupList[$i]) . "</option>";
+                            <?php foreach($groupList as $group) {
+                                echo "<option value='".$group["id"]."'";
+                                if (isset($_REQUEST["group"])) if ($_REQUEST["group"] != 0 && $_REQUEST["group"] == $group["id"]) echo "selected";
+                                echo ">" . \Users\GroupAgent::GetGroupNameById($group["id"]) . "</option>";
                             } ?>
                         </select>
                     </div>

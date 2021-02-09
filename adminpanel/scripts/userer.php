@@ -410,7 +410,6 @@ if (isset ($_POST["user-edit-save"])){
             }
         }
         if (isset($_FILES["user-edit-avatar"]) && $_FILES["user-edit-avatar"]["size"] > 0) {
-            echo 1;
             $res = \Users\UserAgent::UploadAvatar($eUser->getId(), "user-edit-avatar");
             if ($res === False) $backRequest .= "&res=4neav";
             elseif ($res === 18) $backRequest .= "&res=4neavvf";

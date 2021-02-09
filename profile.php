@@ -23,6 +23,7 @@ if ($session === TRUE || !empty($_GET["uid"]))
     $seeProfile = true;
 else
     $seeProfile = false;
+
 if ($session === TRUE || $session === 26){
     $user = new \Users\User($_SESSION["uid"]);
     if (!empty($_REQUEST["res"])){
@@ -42,6 +43,7 @@ if ($session !== true) {
     $captchaID = \Guards\CaptchaMen::GenerateCaptcha();
     $captchaImgPath = \Guards\CaptchaMen::GenerateImage(\Guards\CaptchaMen::FetchCaptcha(1));
 }
+
 ################################################
 #Менеджер управления панелями профайла:
 if ($session !== TRUE){
@@ -135,6 +137,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
         header("Location: banned.php");
         exit;
     }
+
     include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/userprofile.html";
     $profileMainPanel = getBrick();
     include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/userscript.js";
@@ -234,8 +237,6 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
      * $infoEditAF[] - array with fields to edit info additional fields.
      * And etc.
      *******************************************/
-    //var_dump($additionalFields);
-    //foreach($additionalFields as $fieldProp){
     for ($i = 0; $i < count($additionalFields); $i++){
         $fieldProp = $additionalFields[$i];
         $id = $fieldProp["id"];
@@ -269,8 +270,8 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
             if ($fieldProp["type"] !== "3")
                 $result = $fieldName . ": " . \Engine\LanguageManager::GetTranslation("not_setted"). ".<br>";
             else {
-                $value = (\Users\UserAgent::GetAdditionalFieldContentOfUser($user->getId(), $id) == null) ? $fieldProp["custom"] :
-                    \Users\UserAgent::GetAdditionalFieldContentOfUser($user->getId(), $id);
+                $value = (\Users\UserAgent::GetAdditionalFieldContentOfUser($user->getId(), $id)["content"] == null) ? $fieldProp["custom"] :
+                    \Users\UserAgent::GetAdditionalFieldContentOfUser($user->getId(), $id)["content"];
                 $result = $fieldName . ": " . $value . "<br>";
             }
         }
@@ -482,7 +483,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
 
             switch ($ntf[$i]["type"]){
                 case 1:
-                    if ($userForNotification->getSex() == 2)
+                    if ($userForNotification->getSex() == 3)
                         $prefix = \Engine\LanguageManager::GetTranslation("added_to_she");
                     else
                         $prefix = \Engine\LanguageManager::GetTranslation("added_to_he");
@@ -490,28 +491,28 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
                     . \Engine\LanguageManager::GetTranslation("to_report_room") . "</a> ". \Engine\LanguageManager::GetTranslation("for_discussions");
                     break;
                 case 2:
-                    if ($userForNotification->getSex() == 2)
+                    if ($userForNotification->getSex() == 3)
                         $prefix = \Engine\LanguageManager::GetTranslation("added_to_friendlist_she");
                     else
                         $prefix = \Engine\LanguageManager::GetTranslation("added_to_friendlist_he");
                     $userNotificsTable .= " $prefix.";
                     break;
                 case 3:
-                    if ($userForNotification->getSex() == 2)
+                    if ($userForNotification->getSex() == 3)
                         $prefix = \Engine\LanguageManager::GetTranslation("changed_profile_she");
                     else
                         $prefix = \Engine\LanguageManager::GetTranslation("changed_profile_he");
                     $userNotificsTable .= " $prefix";
                     break;
                 case 4:
-                    if ($userForNotification->getSex() == 2)
+                    if ($userForNotification->getSex() == 3)
                         $prefix = \Engine\LanguageManager::GetTranslation("remove_from_discussions_she");
                     else
                         $prefix = \Engine\LanguageManager::GetTranslation("remove_from_discussions_he");
                     $userNotificsTable .= " $prefix";
                     break;
                 case 5:
-                    if ($userForNotification->getSex() == 2)
+                    if ($userForNotification->getSex() == 3)
                         $prefix = \Engine\LanguageManager::GetTranslation("add_message_to_she");
                     else
                         $prefix = \Engine\LanguageManager::GetTranslation("add_message_to_he");
@@ -519,7 +520,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
                         \Engine\LanguageManager::GetTranslation("to_report_room") . "</a> " . \Engine\LanguageManager::GetTranslation("for_discussions");
                     break;
                 case 6:
-                    if ($userForNotification->getSex() == 2)
+                    if ($userForNotification->getSex() == 3)
                         $prefix = \Engine\LanguageManager::GetTranslation("add_message_to_your_topic_she");
                     else
                         $prefix = \Engine\LanguageManager::GetTranslation("add_message_to_your_topic_he");
@@ -531,63 +532,63 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
                     $userNotificsTable .= " $prefix <a href=\"index.php?topic=". $ntf[$i]["subject"] . "\">". \Engine\LanguageManager::GetTranslation("topic")."</a >.";
                     break;
                 case 8:
-                    if ($userForNotification->getSex() == 2)
+                    if ($userForNotification->getSex() == 3)
                         $prefix = \Engine\LanguageManager::GetTranslation("move_your_topic_she");
                     else
                         $prefix = \Engine\LanguageManager::GetTranslation("move_your_topic_he");
                     $userNotificsTable .= " $prefix <a href=\"index.php?topic=". $ntf[$i]["subject"] . "\">" . \Engine\LanguageManager::GetTranslation("topic").".</a>.";
                     break;
                 case 9:
-                    if ($userForNotification->getSex() == 2)
+                    if ($userForNotification->getSex() == 3)
                         $prefix = \Engine\LanguageManager::GetTranslation("remove_your_topic_she");
                     else
                         $prefix = \Engine\LanguageManager::GetTranslation("remove_your_topic_he");
                     $userNotificsTable .= " $prefix";
                     break;
                 case 10:
-                    if ($userForNotification->getSex() == 2)
+                    if ($userForNotification->getSex() == 3)
                         $prefix = \Engine\LanguageManager::GetTranslation("change_text_in_your_report_she");
                     else
                         $prefix = \Engine\LanguageManager::GetTranslation("change_text_in_your_report_he");
                     $userNotificsTable .= " $prefix";
                     break;
                 case 11:
-                    if ($userForNotification->getSex() == 2)
+                    if ($userForNotification->getSex() == 3)
                         $prefix = \Engine\LanguageManager::GetTranslation("remove_your_report_she");
                     else
                         $prefix = \Engine\LanguageManager::GetTranslation("remove_your_report_he");
                     $userNotificsTable .= " $prefix";
                     break;
                 case 12:
-                    if ($userForNotification->getSex() == 2)
+                    if ($userForNotification->getSex() == 3)
                         $prefix = \Engine\LanguageManager::GetTranslation("change_text_in_your_topic_she");
                     else
                         $prefix = \Engine\LanguageManager::GetTranslation("change_text_in_your_topic_he");
                     $userNotificsTable .= " $prefix";
                     break;
                 case 13:
-                    if ($userForNotification->getSex() == 2)
+                    if ($userForNotification->getSex() == 3)
                         $prefix = \Engine\LanguageManager::GetTranslation("change_status_topic_she");
                     else
                         $prefix = \Engine\LanguageManager::GetTranslation("change_status_topic_he");
                     $userNotificsTable .= " $prefix";
                     break;
                 case 14:
-                    if ($userForNotification->getSex() == 2)
+                    if ($userForNotification->getSex() == 3)
                         $prefix = \Engine\LanguageManager::GetTranslation("register_with_referer_she");
                     else
                         $prefix = \Engine\LanguageManager::GetTranslation("register_with_referer_he");
                     $userNotificsTable .= " $prefix";
                     break;
                 case 15:
-                    if ($userForNotification->getSex() == 2)
+                    if ($userForNotification->getSex() == 3)
                         $prefix = \Engine\LanguageManager::GetTranslation("closed_your_report_she");
                     else
                         $prefix = \Engine\LanguageManager::GetTranslation("closed_your_report_he");
                     $userNotificsTable .= " $prefix <a href=\"index.php?page=report&preg=see&rid=" . $ntf[$i]["subject"] . "\">" . \Engine\LanguageManager::GetTranslation("to_report"). "</a>.";
                     break;
                 case 16:
-                    if ($userForNotification->getSex() == 2) {
+                    if ($userForNotification->getSex() == 3) {
                         $prefix = \Engine\LanguageManager::GetTranslation("remove_your_answer_in_report_she");
                         $suffix = \Engine\LanguageManager::GetTranslation("pm_to_know_details_she");
                     }
@@ -599,14 +600,14 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
                     . \Engine\LanguageManager::GetTranslation("in_report").".</a>. " . $suffix;
                     break;
                 case 17:
-                    if ($userForNotification->getSex() == 2)
+                    if ($userForNotification->getSex() == 3)
                         $prefix = \Engine\LanguageManager::GetTranslation("change_your_answer_in_she");
                     else
                         $prefix = \Engine\LanguageManager::GetTranslation("change_your_answer_in_he");
                     $userNotificsTable .= " $prefix  <a href=\"index.php?page=report&preg=see&rid=" . $ntf[$i]["subject"] . "\">" . \Engine\LanguageManager::GetTranslation("to_report"). "</a>.";
                     break;
                 case 18:
-                    if ($userForNotification->getSex() == 2)
+                    if ($userForNotification->getSex() == 3)
                         $prefix = \Engine\LanguageManager::GetTranslation("added_she");
                     else
                         $prefix = \Engine\LanguageManager::GetTranslation("added_he");
@@ -617,7 +618,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
                                         . \Engine\LanguageManager::GetTranslation("to_report_room") ."</a> $suffix.";
                     break;
                 case 19:
-                    if ($userForNotification->getSex() == 2)
+                    if ($userForNotification->getSex() == 3)
                         $prefix = \Engine\LanguageManager::GetTranslation("remove_she");
                     else
                         $prefix = \Engine\LanguageManager::GetTranslation("remove_he");
@@ -627,7 +628,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
                         "\">". \Engine\LanguageManager::GetTranslation("from_room")."</a> ". \Engine\LanguageManager::GetTranslation("for_discussions").".";
                     break;
                 case 20:
-                    if ($userForNotification->getSex() == 2)
+                    if ($userForNotification->getSex() == 3)
                         $prefix = \Engine\LanguageManager::GetTranslation("close_she");
                     else
                         $prefix = \Engine\LanguageManager::GetTranslation("close_he");
@@ -638,7 +639,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
                             \Engine\LanguageManager::GetTranslation("created_by") . "<a href=\"profile.php?uid=$nAID\">$nANickname</a>.";
                     break;
                 case 21:
-                    if ($userForNotification->getSex() == 2)
+                    if ($userForNotification->getSex() == 3)
                         $prefix = \Engine\LanguageManager::GetTranslation("has_mentioned_in_she");
                     else
                         $prefix = \Engine\LanguageManager::GetTranslation("has_mentioned_in_he");
@@ -646,7 +647,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
                     $userNotificsTable .= " $prefix <a href=\"index.php?topic=$subjectNotification\">". \Engine\LanguageManager::GetTranslation("to_topic"). "</a>.";
                     break;
                 case 22:
-                    if ($userForNotification->getSex() == 2)
+                    if ($userForNotification->getSex() == 3)
                         $prefix = \Engine\LanguageManager::GetTranslation("has_mentioned_in_she");
                     else
                         $prefix = \Engine\LanguageManager::GetTranslation("has_mentioned_in_he");
@@ -677,26 +678,30 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
     else {
         $friendListTable = "<tr><td class=\"table-friends-online-td\" colspan=\"4\">" . \Engine\LanguageManager::GetTranslation("friends_online"). "</td></tr>";
         $onlineList = \Users\UserAgent::GetOnlineFriends($user->getId());
-        if (\Users\UserAgent::GetOnlineFriendsCount($user->getId()) == 0){
+        $onlineFriendsCount = \Users\UserAgent::GetOnlineFriendsCount($user->getId());
+        if ($onlineFriendsCount == 0){
             $friendListTable .= "<tr><td colspan=\"4\" class=\"table-no-online-friends-td\">" . \Engine\LanguageManager::GetTranslation("no_online_friends") . "</td></tr>";
         } else
-        for ($i = 0; $i < \Users\UserAgent::GetOnlineFriendsCount($user->getId()); $i++) {
-            $friend = new \Users\User($onlineList[$i]);
+        foreach ($onlineList as $onlineUser) {
+            $friend = new \Users\User($onlineUser["friendId"]);
             $friendListTable .= "<tr>
                                     <td><img class=\"profile-friends-avatar\" src=\"" . $friend->getAvatar() . "\"></td>
                                     <td><a class=\"profile-profile-link\" href=\"profile.php?uid=". $friend->getId() . "\">" . $friend->getNickname() ."</a>
-                                    <td>" . \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s", $user->FriendList()->getFriendFromDB($onlineList[$i])["regdate"])) . "</td>
+                                    <td>" . \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s", $user->FriendList()->getFriendFromDB($onlineUser["friendId"])["regdate"])) . "</td>
                                     <td></td>
                                  </tr>";
         }
         $friendListTable .= "<tr><td colspan=\"4\" class=\"table-friends-list-td\">" . \Engine\LanguageManager::GetTranslation("other_friends") . "</td></tr>";
-        @$offlineList = array_diff($user->FriendList()->getFriendsList(), $onlineList);
-        for ($i = 0; $i < count($offlineList); $i++) {
-            $friend = new \Users\User($offlineList[$i]["friendId"]);
+        @$offlineList = array_diff($user->FriendList()->getFriendsList(), $onlineList[0]);
+        if ($offlineList == null){
+            $offlineList = $user->FriendList()->getFriendsList();
+        }
+        foreach ($offlineList as $offlineUser) {
+            $friend = new \Users\User($offlineUser["friendId"]);
             $friendListTable .= "<tr>
                                     <td><img class=\"profile-friends-avatar\" src=\"".$friend->getAvatar() ."\"></td>
                                     <td><a class=\"profile-profile-link\" href=\"profile.php?uid=". $friend->getId() . "\">" . $friend->getNickname() ."</a></td>
-                                    <td>" . Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s", $offlineList[$i]["regdate"])) . "</td>
+                                    <td>" . Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s", $offlineUser["regdate"])) . "</td>
                                     <td></td>
                                  </tr>";
         }
@@ -705,7 +710,6 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
     $userFriendList = str_replace_once("{PROFILE_PAGE:USER_FRIEND_TABLE}", $friendListTable, $userFriendList);
 
     //End building.
-
     $header = str_replace_once("{PROFILE_PAGE:PAGE_NAME}",\Engine\LanguageManager::GetTranslation("profile"), $header);
 
     $main = str_replace_once("{PROFILE_PAGE_TITLE}", \Engine\LanguageManager::GetTranslation("profile"). " " . $user->getNickname() . " - " . \Engine\Engine::GetEngineInfo("sn"), $main);
@@ -718,7 +722,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
     $main = str_replace("{PROFILE_PAGE:USER_GROUP_NAME}", $user->UserGroup()->getName(), $main);
     $lastOnline = 0;
     if ($user->getLastTime() == 0){
-        if ($user->getSex() == 2)
+        if ($user->getSex() == 3)
             $lastOnline = \Engine\LanguageManager::GetTranslation("not_sign_in_she");
         else
             $lastOnline = \Engine\LanguageManager::GetTranslation("not_sign_in_he");
@@ -726,7 +730,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
     else
     {
         if (\Engine\Engine::GetSiteTime() > $user->getLastTime()+15*60) {
-            if ($user->getSex() == 2)
+            if ($user->getSex() == 3)
                 $lastOnline =  \Engine\LanguageManager::GetTranslation("signed_in_she");
             else
                 $lastOnline =  \Engine\LanguageManager::GetTranslation("signed_in_he");
@@ -741,7 +745,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
     $main = str_replace_once("{PROFILE_PAGE_PM}", $userPMs, $main);
     $main = str_replace_once("{PROFILE_PAGE_NOTIFICS}", $userNotifics, $main);
     $main = str_replace_once("{PROFILE_PAGE_FRIENDS}", $userFriendList, $main);
-    $main = str_replace("{PROFILE_PAGE:USER_REGDATETIME}", (($user->getSex() == 2) ? "а " : " ") .\Engine\Engine::DateFormatToRead($user->getRegDate()) . ".", $main);
+    $main = str_replace("{PROFILE_PAGE:USER_REGDATETIME}", (($user->getSex() == 3) ? \Engine\LanguageManager::GetTranslation("registered_she") : \Engine\LanguageManager::GetTranslation("registered_he")) . " ".\Engine\Engine::DateFormatToRead($user->getRegDate()) . ".", $main);
     $main = str_replace("{PROFILE_PAGE:USER_TOPICS_CREATED_COUNT}", \Forum\ForumAgent::GetCountTopicOfAuthor($user->getId()), $main);
     $main = str_replace("{PROFILE_PAGE:USER_COMMENTS_CREATED_COUNT}", \Forum\ForumAgent::GetCountOfCommentOfUser($user->getId()), $main);
     $main = str_replace_once("{PROFILE_REPUTATIONER:STYLESHEET}", "<link rel=\"stylesheet\" href=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/css/reputationer-style.css\">", $main);
@@ -1011,7 +1015,7 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
     //Механизм последнего входа.
     $lastOnline = 0;
     if ($user->getLastTime() == 0){
-        if ($user->getSex() == 2)
+        if ($user->getSex() == 3)
             $lastOnline = \Engine\LanguageManager::GetTranslation("not_sign_in_she");
         else
             $lastOnline = \Engine\LanguageManager::GetTranslation("not_sign_in_he");
@@ -1019,7 +1023,7 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
     else
     {
         if (\Engine\Engine::GetSiteTime() > $user->getLastTime()+15*60) {
-            if ($user->getSex() == 2)
+            if ($user->getSex() == 3)
                 $lastOnline =  \Engine\LanguageManager::GetTranslation("signed_in_she");
             else
                 $lastOnline =  \Engine\LanguageManager::GetTranslation("signed_in_he");
@@ -1034,7 +1038,7 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
     $main = str_replace_once("{PROFILE_PAGE_PM}", null, $main);
     $main = str_replace_once("{PROFILE_PAGE_NOTIFICS}", null, $main);
     $main = str_replace_once("{PROFILE_PAGE_FRIENDS}", null, $main);
-    $main = str_replace("{PROFILE_PAGE:USER_REGDATETIME}", (($user->getSex() == 2) ? "а " : " ") . \Engine\Engine::DateFormatToRead($user->getRegDate()) . ".", $main);
+    $main = str_replace("{PROFILE_PAGE:USER_REGDATETIME}", (($user->getSex() == 3) ? \Engine\LanguageManager::GetTranslation("registered_she") : \Engine\LanguageManager::GetTranslation("registered_he")) . " " . \Engine\Engine::DateFormatToRead($user->getRegDate()) . ".", $main);
     $main = str_replace("{PROFILE_PAGE:USER_TOPICS_CREATED_COUNT}", \Forum\ForumAgent::GetCountTopicOfAuthor($user->getId()), $main);
     $main = str_replace("{PROFILE_PAGE:USER_COMMENTS_CREATED_COUNT}", \Forum\ForumAgent::GetCountOfCommentOfUser($user->getId()), $main);
     $main = str_replace("{PROFILE_PAGE:USER_FROM}", $user->getFrom() != "" ? htmlentities($user->getFrom()) : \Engine\LanguageManager::GetTranslation("not_setted"), $main);
@@ -1099,9 +1103,9 @@ if (($session !== true && !empty($user) && !\Engine\Engine::GetEngineInfo("gsp")
 /***********************************Block profile page if user is not exist.*****************/
 
 if (!$session || empty($user)){
-    $header = str_replace_once("{PROFILE_PAGE:PAGE_NAME}", "Авторизация", $header);
+    $header = str_replace_once("{PROFILE_PAGE:PAGE_NAME}", \Engine\LanguageManager::GetTranslation("authorization"), $header);
 
-    $main = str_replace_once("{PROFILE_PAGE_TITLE}", "Авторизация - " . \Engine\Engine::GetEngineInfo("sn"), $main);
+    $main = str_replace_once("{PROFILE_PAGE_TITLE}", \Engine\LanguageManager::GetTranslation("authorization") . " - " . \Engine\Engine::GetEngineInfo("sn"), $main);
 
     include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/authscript.js";
     $authJS = getBrick();
@@ -1203,7 +1207,6 @@ $main = str_replace_once("{PROFILE_MAIN_BODY}", $test, $main);
 include_once "./site/scripts/SpoilerController.js";
 $spoilerManager = getBrick();
 $main = str_replace_once("{SPOILER_CONTROLLER:JS}", $spoilerManager, $main);
-
 \Engine\PluginManager::Integration($main);
 
 ?>

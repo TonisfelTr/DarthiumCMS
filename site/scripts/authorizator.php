@@ -28,7 +28,6 @@ if (empty($_REQUEST["profile-auth-password"])){
     exit;
 }
 $session = \Users\UserAgent::SessionCreate($_REQUEST["profile-auth-uid"], $_REQUEST["profile-auth-password"]);
-echo $session;
 if ($session === TRUE){
     header("Location: ../../profile.php?uid=" . $_SESSION["uid"]);
     exit;

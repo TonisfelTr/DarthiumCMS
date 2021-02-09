@@ -68,8 +68,8 @@ else {
 $onlineUsers = \Users\UserAgent::Get10OnlineUsers();
 $onlineUserStatistic = "<ul>";
 if (count($onlineUsers) > 0) {
-    for ($i = 0; $i < count($onlineUsers); $i++){
-        $onlineUserStatistic .= "<li><a class=\"alert-link\" href=\"./profile.php?uid=" . $onlineUsers[$i] . "\">" . \Users\UserAgent::GetUserNick($onlineUsers[$i]) . "</a></li>";
+    foreach ($onlineUsers as $person){
+        $onlineUserStatistic .= "<li><a class=\"alert-link\" href=\"./profile.php?uid=" . $person. "\">" . \Users\UserAgent::GetUserNick($person) . "</a></li>";
     }
 } else {
     $onlineUserStatistic .= "<li>" . \Engine\LanguageManager::GetTranslation("no_online_users") . "</li>";
