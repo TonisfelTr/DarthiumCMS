@@ -551,9 +551,9 @@ All rights reserved 2021 year. '.<br>"
 ],
 "logs" => [
 "change_group_perm_log" => "he/ she changed the rights for the group ",
-"create_group_log" => " he/she created a group ",
-"remove_group_log" => " he/she deleted the group ",
-"change_custom_group_info_log" => "he/she changed the main information of the group "
+"create_group_log" => "  created a group ",
+"remove_group_log" => "  deleted the group ",
+"change_custom_group_info_log" => " changed the main information of the group "
 ]
 ],
 "logs_panel" => [
@@ -640,12 +640,12 @@ If You have only the right to delete your own data, the system will not delete i
 
 ],
 "logs" => [
-"report_removed_log" => "he/she deleted the report ",
+"report_removed_log" => " deleted the report ",
 "from_report_list_log" => "from the list of reports.",
-"mark_your_answer_as_solve_log" => " he/she marked the answer as the solution of the problem ",
-"remove_answer_to_report_log" => " he/she deleted the answer to the report ",
-"change_answer_to_report_log" => " he/she changed the answer in the topic ",
-"change_report_text_log" => " he/she changed the text of the report "
+"mark_your_answer_as_solve_log" => "  marked the answer as the solution of the problem ",
+"remove_answer_to_report_log" => "  deleted the answer to the report ",
+"change_answer_to_report_log" => "  changed the answer in the topic ",
+"change_report_text_log" => "  changed the text of the report "
 ]
 ],
 "rules_panel" => [
@@ -658,7 +658,7 @@ If You have only the right to delete your own data, the system will not delete i
 "list_element" => " List element ",
 "enumeration" => "Enumeration",
 "enter_rules_text" => "Enter the text of the rules.",
-"change_rules_log" => "He/she changed the site's rules."
+"change_rules_log" => " changed the site's rules."
 ],
 "settings_panel" => [
 "not_selected" => "not selected ",
@@ -733,18 +733,18 @@ If You have only the right to delete your own data, the system will not delete i
 "utc+13" => "UTC +13:00 Nuku'alofa, Samoa...",
 "utc+14" => "UTC +14:00 Christmas Island "
 ],
-"change_protocol_log" => " he/she changed the connection protocol ",
-"disable_multiacc_log" => " he/she banned the multiple accounts.",
+"change_protocol_log" => " changed the connection protocol ",
+"disable_multiacc_log" => " banned the multiple accounts.",
 "enable_multiacc_log" => "It is allowed the multiple accounts.",
-"domain_site_log" => " he/she changed(a) the domain of the website ",
-"site_name_log" => " he/she changed(a) the name of the website ",
-"site_tagline_log" => " he/she changed the website's slogan ",
-"site_status_log" => " he/she changedthe status of the website ",
-"site_description_log" => " he/she changed description of the website ",
-"site_hashtags_log" => " he/she changed the website's hashtags ",
-"site_lang_log" =>  " he/she changed the website language ",
-"site_template_log" => " he/she changed the website template ",
-"site_timezone_log" => " he/she changed the website's clock zone ",
+"domain_site_log" => " changed the domain of the website ",
+"site_name_log" => " changed the name of the website ",
+"site_tagline_log" => " changed the website's slogan ",
+"site_status_log" => " changedthe status of the website ",
+"site_description_log" => " changed description of the website ",
+"site_hashtags_log" => " changed the website's hashtags ",
+"site_lang_log" =>  " changed the website language ",
+"site_template_log" => " changed the website template ",
+"site_timezone_log" => " changed the website's clock zone ",
 ],
 "bot_postman_panel" => [
 "panel_name" => " Bot mailing list ",
@@ -760,11 +760,11 @@ Also, don't forget to enable access to \"untrusted\" apps - Google (that is, Gma
 "email_server" => "Email server ",
 "email_port" => "Email port ",
 "email_check_validity" => "To test the correctness ",
-"site_mail_login_log" => "he/she changed the username for the site's mailing bot ",
-"site_mail_password_log" => "he/she changed the password for the site's mailing bot.",
-"site_mail_address_log" => "he/she changed the server address for the site's mailing bot ",
-"site_mail_port_log" => "he/she changed the port for the site's mailing bot ",
-"site_mail_connection_type_log" => "he/she changed the connection type for the website's mailing bot ",
+"site_mail_login_log" => " changed the username for the site's mailing bot ",
+"site_mail_password_log" => " changed the password for the site's mailing bot.",
+"site_mail_address_log" => " changed the server address for the site's mailing bot ",
+"site_mail_port_log" => " changed the port for the site's mailing bot ",
+"site_mail_connection_type_log" => " changed the connection type for the website's mailing bot ",
 ],
 "registration_panel" => [
 "panel_name" => "Sign up",
@@ -778,10 +778,10 @@ Also, don't forget to enable access to \"untrusted\" apps - Google (that is, Gma
 "multiacc_tip" => " Prohibit the registration of accounts with the same IP address.",
 "reggroup" => " Group when registering ",
 "reggroup_tip" => "Newcomers will be enrolled in this group.",
-"site_need_user_activation_log" => "he/she changedthe need for activation of ac ",
-"site_group_for_newbies_log" => "he/she changed the group for recording newcomer ",
+"site_need_user_activation_log" => " changedthe need for activation of ac ",
+"site_group_for_newbies_log" => " changed the group for recording newcomer ",
 "site_allowed_multiacc_log" => "It is allowed the multiple accounts.",
-"site_denied_multiacc_log" => "he/she banned the multiple accounts.",
+"site_denied_multiacc_log" => " banned the multiple accounts.",
 ],
 "users_panel" => [
 "panel_name" => "Users",
@@ -808,7 +808,7 @@ make a field that you click on to perform an action in the profile.",
 "af_visible_in_registration" => " Show at registration ",
 "af_visible_in_registration_tip" => "Show this field when registering a new user.",
 "af_can_be_private" => " Can be private ",
-"af_can_be_private_tip" => "he/she adds a field privacy setting to the profile.",
+"af_can_be_private_tip" => " adds a field privacy setting to the profile.",
 "af_link" => "Link",
 "af_link_tip_first" => "Enter the link you want to move by clicking on it. You can get the field value
 by writing in the right place \" <a href=\"#\" id=\"field-add-to-textarea\"><strong>{{1}}</strong></a>\". The system itself will replace this construction with the field value.",
@@ -836,15 +836,15 @@ by writing in the right place \" <a href=\"#\" id=\"field-add-to-textarea\"><str
 "guest_see_profile_tip" => "Guests are unregistered users",
 "multivote_rep" => " Single reputation change mode ",
 "multivote_rep_tip" => "Allow users to change the reputation of other users several times.",
-"site_filter_change_log" => "he/she changed the list of censored words.",
-"site_reasons_report_change_log" => "he/she changed the list of topics for reports.",
-"site_avatar_width_log" => "he/she changed the width of the buddy icon ",
-"site_avatar_height_log" => "he/she changed the height of the buddy icon ",
-"site_max_file_size_log" => "he/she changed the maximum size of the uploaded file ",
-"site_allowed_file_for_upload_log" => "he/she changed the list of file formats allowed to download ",
-"site_allowed_to_upload_log" => "he/she changed the files allowed to upload ",
-"site_allow_guest_see_users" => "he/she changed the visibility of user profiles for guests ",
-"site_allowed_multivote_rep_log" => "he/she changed the setting for the ability to change the reputation of other users several times "
+"site_filter_change_log" => " changed the list of censored words.",
+"site_reasons_report_change_log" => " changed the list of topics for reports.",
+"site_avatar_width_log" => " changed the width of the buddy icon ",
+"site_avatar_height_log" => " changed the height of the buddy icon ",
+"site_max_file_size_log" => " changed the maximum size of the uploaded file ",
+"site_allowed_file_for_upload_log" => " changed the list of file formats allowed to download ",
+"site_allowed_to_upload_log" => " changed the files allowed to upload ",
+"site_allow_guest_see_users" => " changed the visibility of user profiles for guests ",
+"site_allowed_multivote_rep_log" => " changed the setting for the ability to change the reputation of other users several times "
 ],
 "statistic_panel" => [
 "panel_name" => " Statistics ",
@@ -853,8 +853,8 @@ by writing in the right place \" <a href=\"#\" id=\"field-add-to-textarea\"><str
 "write_statistic" => "Record statistics:",
 "text_to_insert" => "Text for embedding:",
 "text_to_insert_tip" => "This should contain the code provided by the service. In the instructions, you will be asked to place this code on all pages of Your portal, this is the text you need to insert here.",
-"site_metric_log" => "he/she changed the status of statistics maintenance ",
-"site_metric_text_log" => "he/she changed the text for the Analytics script."
+"site_metric_log" => " changed the status of statistics maintenance ",
+"site_metric_text_log" => " changed the text for the Analytics script."
 ],
 "js" => [
 "field" => "Field",
@@ -1040,9 +1040,9 @@ by writing in the right place \" <a href=\"#\" id=\"field-add-to-textarea\"><str
 "has_been_created" => "was created successfully!",
 ],
 "logs" => [
-"created_static_page_log" => "he/she created a static page ",
-"edited_static_page_log" => "he/she edited a static page ",
-"remove_static_page_log" => "he/she deleted a static page "
+"created_static_page_log" => " created a static page ",
+"edited_static_page_log" => " edited a static page ",
+"remove_static_page_log" => " deleted a static page "
 ]
 ]
 ],
@@ -1249,26 +1249,26 @@ However, here you can also get system information about the user, it can't be ch
 "last_ip" => "Last IP address"
 ],
 "logs" => [
-"delete_user_log" => "he/she deleted a user with a nickname ",
-"ban_user_log" => "he/she banned an account ",
-"unban_user_log" => "he/she unbanned an account ",
-"banip_log" => "he/she banned the IP address ",
-"unbanip_log" => "he/she unbanned the IP address ",
-"reg_new_user_log" => " he/she signed up a new user - ",
-"change_user_nickname_log" => "he/she changed the user's nickname ",
-"change_user_password_log" => "he/she changed the user's password ",
-"change_user_email_log" => "he/she changed the user's email address ",
-"change_user_group_log" => "he/she changed the user's group ",
-"change_user_from_log" => "he/she changed the user's account ",
+"delete_user_log" => " deleted a user with a nickname ",
+"ban_user_log" => " banned an account ",
+"unban_user_log" => " unbanned an account ",
+"banip_log" => " banned the IP address ",
+"unbanip_log" => " unbanned the IP address ",
+"reg_new_user_log" => "  signed up a new user - ",
+"change_user_nickname_log" => " changed the user's nickname ",
+"change_user_password_log" => " changed the user's password ",
+"change_user_email_log" => " changed the user's email address ",
+"change_user_group_log" => " changed the user's group ",
+"change_user_from_log" => " changed the user's account ",
 "from_part" => "'''''':",
-"change_user_vk_id_log" => "he/she changed the user's VK ID ",
-"change_user_skype_id_log" => "he/she changed the user's Skype ID ",
-"change_user_sex_log" => "He/she changed the sex of the user ",
-"change_user_realname_log" => "He/She changed the user's real name ",
-"change_user_birthday_log" => "He/She changed the user's birthday ",
-"change_user_hobbies_log" => "He/she changed the user's hobby ",
-"change_user_about_log" => "He/She changed the user's autobiography ",
-"change_user_signature_log" => "He/She changed the signature of the user ",
+"change_user_vk_id_log" => " changed the user's VK ID ",
+"change_user_skype_id_log" => " changed the user's Skype ID ",
+"change_user_sex_log" => " changed the sex of the user ",
+"change_user_realname_log" => " changed the user's real name ",
+"change_user_birthday_log" => " changed the user's birthday ",
+"change_user_hobbies_log" => " changed the user's hobby ",
+"change_user_about_log" => " changed the user's autobiography ",
+"change_user_signature_log" => " changed the signature of the user ",
 "change_part" => "Changed ",
 "user_part" => " User ",
 "activate_user_log" => "activated an account "
