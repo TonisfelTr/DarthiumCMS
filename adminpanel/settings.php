@@ -212,13 +212,15 @@ else {
                 </div>
                 <hr>
                 <div class="input-group">
-                    <?php $r = \Users\GroupAgent::GetGroupList(); ?>
+                    <?php $groupList = \Users\GroupAgent::GetGroupList(); ?>
                     <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.reggroup");?></div>
                     <select class="form-control" name="standartgroup">
-                        <?php for($i = 0; $i <= count($r)-1; $i++){
-                                echo "<option value='".$r[$i]."'";
-                                if (\Engine\Engine::GetEngineInfo("sg") == $r[$i]) echo " selected";
-                                echo ">" . \Users\GroupAgent::GetGroupNameById($r[$i]) . "</option>";
+                        <?php
+                        foreach ($groupList as $group){
+                            echo "<option value=\"" . $group["id"] . "\"" . ((\Engine\Engine::GetEngineInfo("sg") == $group["id"]) ? " selected" : "") . ">" .
+                                \Users\GroupAgent::GetGroupNameById($group["id"]) .
+                                "</option>";
+
                         } ?>
                     </select>
                     <div class="form-control info alert-info" ><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.reggroup_tip");?></div>

@@ -647,63 +647,23 @@ namespace Engine {
 
         public static function GetUploadedFilesList(int $page)
         {
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
             $lowBorder = $page * 50 - 50;
             $highBorder = 50;
 
-            if ($stmt = $mysqli->prepare("SELECT * FROM tt_uploads ORDER BY id DESC LIMIT $lowBorder,$highBorder")) {
-                $stmt->execute();
-                $files = [];
-                $stmt->bind_result($id, $file_path, $upload_date, $name, $authorId);
-                while ($stmt->fetch()) {
-                    array_push($files, ["id" => $id,
-                        "file_path" => $file_path,
-                        "upload_date" => $upload_date,
-                        "name" => $name,
-                        "author" => $authorId]);
-                }
-                return $files;
-            }
-
+            return DataKeeper::MakeQuery("SELECT * FROM `tt_uploads` ORDER BY id DESC LIMIT $lowBorder,$highBorder", null, true);
         }
 
         public static function GetUploadedFilesListByAuthor(string $nickname, int $page)
         {
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
             $lowBorder = $page * 50 - 50;
             $highBorder = 50;
 
-            if ($stmt = $mysqli->prepare("SELECT * FROM tt_uploads 
-                                                     WHERE author IN 
-                                                     (SELECT id FROM tt_users WHERE nickname LIKE ?)
-                                                     ORDER BY id DESC LIMIT $lowBorder,$highBorder")) {
-                $stmt->bind_param("s", $nickname);
-                $stmt->execute();
-                $files = [];
-                $stmt->bind_result($id, $file_path, $upload_date, $name, $authorId);
-                while ($stmt->fetch()) {
-                    array_push($files, ["id" => $id,
-                        "file_path" => $file_path,
-                        "upload_date" => $upload_date,
-                        "name" => $name,
-                        "author" => $authorId]);
-
-                }
-                return $files;
-            }
-            return false;
+            return DataKeeper::MakeQuery("SELECT *
+                                                    FROM `tt_uploads`
+                                                    WHERE `author` IN 
+                                                    (SELECT `id` FROM `tt_users` WHERE `nickname` LIKE ?)
+                                                    ORDER BY id DESC
+                                                    LIMIT $lowBorder,$highBorder", ["%$nickname%"], true);
         }
 
         public static function GetUploadedFilesListByReference(string $ref, int $page)
@@ -714,8 +674,9 @@ namespace Engine {
             $queryResponse = DataKeeper::MakeQuery("SELECT * FROM tt_uploads 
                                                      WHERE name LIKE ?
                                                      ORDER BY id DESC                                                       
-                                                     LIMIT $lowBorder,$highBorder", ["%.$ref"]);
+                                                     LIMIT $lowBorder,$highBorder", ["%.$ref"], true);
 
+            $files = [];
             foreach ($queryResponse as $response){
                 $files[] = [
                     "id" => $response["id"],
@@ -725,7 +686,7 @@ namespace Engine {
                     "author" => $response["author"]
                 ];
             }
-            return false;
+            return $files;
         }
 
         public static function GetUploadInfo($fId, $param)
