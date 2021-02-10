@@ -1,5 +1,5 @@
 <?php
-define("TT_Uploader", true);#
+define("TT_Uploader", true);
 if ($user != false) {
     $uploadList = \Engine\Uploader::GetUploadList($user->getId());
     $uploadCount = count($uploadList);
@@ -55,12 +55,12 @@ if ($user != false) {
                             <td colspan=\"4\" style=\"text-align: center;\"><span class=\"glyphicon glyphicon-info-sign\"></span> " . \Engine\LanguageManager::GetTranslation("uploader.no_file_uploaded") . "</td>
                         </tr>";
     } else {
-        for ($i = 0; $i <= $uploadCount - 1; $i++) {
-            $uploadName = \Engine\Uploader::GetUploadInfo($uploadList[$i], "name");
-            $uploadFilePath = \Engine\Uploader::GetUploadInfo($uploadList[$i], "file_path");
-            $uploadDate = Engine\Engine::DateFormatToRead(\Engine\Uploader::GetUploadInfo($uploadList[$i], "upload_date"));
+        foreach ($uploadList as $file) {
+            $uploadName = \Engine\Uploader::GetUploadInfo($file["id"], "name")[0]["name"];
+            $uploadFilePath = \Engine\Uploader::GetUploadInfo($file["id"], "file_path")[0]["file_path"];
+            $uploadDate = Engine\Engine::DateFormatToRead(\Engine\Uploader::GetUploadInfo($file["id"], "upload_date")[0]["upload_date"]);
             $uploadFilesTable .= "<tr>
-                                <td><input type=\"checkbox\" data-fid-selected=\"$uploadList[$i]\"></td>
+                                <td><input type=\"checkbox\" data-fid-selected=\"". $file["id"] . "\"></td>
                                 <td>$uploadName</td>
                                 <td>
                                     <a href=\"$uploadFilePath\\$uploadName\">

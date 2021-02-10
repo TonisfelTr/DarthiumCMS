@@ -16,7 +16,7 @@ if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBa
 if (!strstr($_SESSION["LASTADDR"], "?")) $symbol = "?";
 else $symbol = "&";
 
-if (isset($_REQUEST["uploader-upload-file"])){
+if (isset($_POST["uploader-upload-file"])){
     if($user->UserGroup()->getPermission("upload_add")){
         $result = \Engine\Uploader::UploadFile($user->getId(), $_FILES['uploader-file']);
         if ($result === TRUE) {
@@ -55,7 +55,7 @@ if (isset($_REQUEST["uploader-upload-file"])){
     }
 }
 
-if (isset($_REQUEST["uploader-delete-file"])){
+if (isset($_POST["uploader-delete-file"])){
     if ($user->UserGroup()->getPermission("upload_delete")){
         if (empty($_REQUEST["fdelete"])){
             header("Location: " . $_SESSION["LASTADDR"] . $symbol . "res=1ndnef&uploaderVisible");

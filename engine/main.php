@@ -178,6 +178,10 @@ namespace Engine {
             define("TT_INDEX", __DIR__ . "../index.php");
             define("TT_PROFILE", __DIR__ . "../profile.php");
             define("TT_BAN", __DIR__ . "../banned.php");
+
+            $htaccessGlobal = file_get_contents("../../.htaccess", true);
+            $htaccessGlobal = preg_replace("/php_value upload_max_filesize [0-9]+/", "php_value upload_max_filesize " . self::GetEngineInfo("ups"), $htaccessGlobal);
+            file_put_contents("../../.htaccess", $htaccessGlobal);
         }
 
         public static function SettingsSave($DomainSite, $siteName, $siteTagline, $siteStatus,
@@ -629,53 +633,16 @@ namespace Engine {
             $newName = Engine::RandomGen() . "." . self::ExtractType($file['name']);
 
             if (move_uploaded_file($file['tmp_name'], $uploadPath . $newName)) {
-                $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-                if ($mysqli->errno) {
-                    ErrorManager::GenerateError(2);
-                    return ErrorManager::GetError();
-                }
-
-                if ($stmt = $mysqli->prepare("INSERT INTO `tt_uploads` (`file_path` , `name` , `author`, `upload_date` ) VALUES (?,?,?,?)")) {
-                    $date = date("Y-m-d", time());
-                    $stmt->bind_param("ssis", $filePath, $newName, $idUser, $date);
-                    $stmt->execute();
-                    if ($stmt->errno) {
-                        ErrorManager::GenerateError(9);
-                        return ErrorManager::GetError();
-                    }
-                    return true;
-                }
+                return (bool) DataKeeper::InsertTo("tt_uploads", ["file_path" => $filePath, "name" => $newName, "author" => $idUser, "upload_date" => date("Y-m-d", Engine::GetSiteTime())]);
             } else {
                 ErrorManager::GenerateError(12);
                 return ErrorManager::GetError();
             }
-            return false;
         }
 
         public static function GetUploadList($idUser)
         {
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT `id` FROM `tt_uploads` WHERE `author`=?")) {
-                $stmt->bind_param("i", $idUser);
-                $stmt->execute();
-                if ($stmt->errno) {
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                } else {
-                    $stmt->bind_result($id);
-                    $res = array();
-                    while ($stmt->fetch()) array_push($res, $id);
-                    return $res;
-                }
-            }
-            return false;
+            return DataKeeper::Get("tt_uploads", ["id"], ["author" => $idUser]);
         }
 
         public static function GetUploadedFilesList(int $page)
@@ -768,7 +735,7 @@ namespace Engine {
 
         public static function DeleteFile($fId)
         {
-            if (!unlink($_SERVER["DOCUMENT_ROOT"] . "/" . self::GetUploadInfo($fId, "file_path") . self::GetUploadInfo($fId, "name")))
+            if (!unlink($_SERVER["DOCUMENT_ROOT"] . "/" . self::GetUploadInfo($fId, "file_path")[0]["file_path"] . self::GetUploadInfo($fId, "name")[0]["name"]))
                 return false;
 
             return DataKeeper::Delete("tt_uploads", ["id" => $fId]);
@@ -933,6 +900,12 @@ namespace Engine {
             else return true;
         }
 
+        /**Insert into table one record.
+         *
+         * @param string $table Name of table.
+         * @param array $varsArr Associative array where key is column and value is content.
+         * @return int
+         */
         public static function InsertTo($table, array $varsArr)
         {
             $pdo = self::connect();
@@ -950,10 +923,10 @@ namespace Engine {
             $preparedQuery = $pdo->prepare($query);
             $execute = $preparedQuery->execute($varsArrToSend);
             if ($execute) {
-                return $pdo->lastInsertId() . "Success!";
+                return $pdo->lastInsertId();
             } else {
                 self::$errMessage = $pdo->errorInfo();
-                return false;
+                return 0;
             }
         }
 
