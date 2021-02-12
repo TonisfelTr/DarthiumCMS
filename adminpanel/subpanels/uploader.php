@@ -23,16 +23,16 @@ if ($uploadedListSize == 0) {
     $tableBody = "<tr><td colspan=\"4\"><span class=\"glyphicons glyphicons-info-sign\"></span> Вы не загрузили ещё ни одного файла.</td></tr>";
 }
 else {
-    for ($i = 0; $i < $uploadedListSize; $i++){
-        $fileName = \Engine\Uploader::GetUploadInfo($uploadedList[$i], "name");
-        $filePath = \Engine\Uploader::GetUploadInfo($uploadedList[$i], "file_path");
-        $fileUploadDate = \Engine\Engine::DateFormatToRead(\Engine\Uploader::GetUploadInfo($uploadedList[$i], "upload_date"));
+    foreach ($uploadedList as $upload){
+        $fileName = \Engine\Uploader::GetUploadInfo($upload["id"], "name");
+        $filePath = \Engine\Uploader::GetUploadInfo($upload["id"], "file_path");
+        $fileUploadDate = \Engine\Engine::DateFormatToRead(\Engine\Uploader::GetUploadInfo($upload["id"], "upload_date"));
         $tableBody .= "<tr>";
-        $tableBody .= "<td><input type=\"checkbox\" data-file-id=\"$uploadedList[$i]\"></td>";
+        $tableBody .= "<td><input type=\"checkbox\" data-file-id=\"". $upload["id"] . "\"></td>";
         $tableBody .= "<td><a href=\"$filePath\\$fileName\">$fileName</a></td>";
         $tableBody .= "<td>$fileUploadDate</td>";
         $tableBody .= "<td>
-                            <button class=\"btn btn-default\" type=\"submit\" name=\"uploader-file-delete\" formaction=\"adminpanel/scripts/uploader.php?fid=$uploadedList[$i]\">Удалить файл</button>
+                            <button class=\"btn btn-default\" type=\"submit\" name=\"uploader-file-delete\" formaction=\"adminpanel/scripts/uploader.php?fid=". $upload["id"] . "\">Удалить файл</button>
                         </td>";
         $tableBody .= "</tr>";
     }
