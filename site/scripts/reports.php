@@ -78,21 +78,6 @@ if (isset( $_REQUEST["reports-edit"])){
     }
 }
 
-if (isset( $_REQUEST["reports-edit"])){
-    if (empty($_REQUEST["rid"])){
-        header("Location: ../../index.php?page=report&res=2nrid");
-        exit;
-    }
-    if (($user->UserGroup()->getPermission("report_edit") && $user->getId() == \Guards\ReportAgent::GetReportParam($_REQUEST["rid"], "author"))
-        || $user->UserGroup()->getPermission("report_foreign_edit")){
-        header("Location: ../../index.php?page=report&preg=edit&rid=" . $_REQUEST["rid"]);
-        exit;
-    } else {
-        header("Location: ../../index.php?page=errors/notperm");
-        exit;
-    }
-}
-
 if (isset( $_REQUEST["reports-edit-message-edit"])){
     if (empty($_REQUEST["rid"])){
         header("Location: ../../index.php?page=report&res=2nrid");
@@ -150,8 +135,8 @@ if (isset( $_REQUEST["reports-answer-send"])){
     }
     if ($user->UserGroup()->getPermission("report_talking") &&
        ($user->getId() == \Guards\ReportAgent::GetReportParam($_REQUEST["rid"], "author") ||
-       in_array($user->getId(), explode(",", \Guards\ReportAgent::GetReportParam($_REQUEST["rid"], "added"))))){
-        if (\Guards\Report::GetReportParam($_REQUEST["rid"], "status") != 2) {
+           \Guards\ReportAgent::isAddedToDiscusse($_POST["rid"], $user->getId()))){
+        if (\Guards\Report::GetReportParam($_POST["rid"], "status") != 2) {
             if (!empty($_REQUEST["reports-answer-text"])) {
                 if (strlen($_REQUEST["reports-answer-text"]) > 4) {
                     $result = \Guards\ReportAgent::CreateAnswer($user->getId(), $_REQUEST["reports-answer-text"], $_REQUEST["rid"]);

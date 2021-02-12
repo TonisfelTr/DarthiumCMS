@@ -132,7 +132,7 @@ else {
                                | <?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.category")?> <?php echo htmlentities($report->getTheme()); ?></span>
                         </div>
                         <div class="report-header-body">
-                            <?php echo trim(\Engine\Engine::CompileBBCode(htmlentities($report->getMessage()))); ?>
+                            <?php echo (Engine\Engine::StripScriptTags(\Engine\Engine::CompileBBCode(htmlentities($report->getMessage())))); ?>
                         </div>
                         <div class="report-header-footer">
                             Статус: <?php echo $report->getStatus(); ?>
@@ -217,8 +217,8 @@ else {
                         </div>
                     </div>
                     <?php }
-                    for ($i = 0; $i <= $answerCount-1; $i++){
-                    $answer = new \Guards\ReportAnswer($answerList[$i]); ?>
+                    foreach ($answerList as $answerId){
+                    $answer = new \Guards\ReportAnswer($answerId["id"]); ?>
                     <hr>
                     <div class="report-answer">
                         <div class="report-answer-head">
