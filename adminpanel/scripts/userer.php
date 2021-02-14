@@ -104,7 +104,7 @@ if (isset($_POST["user_ban_ban"])){
                     exit;
                 }
                 if (\Guards\SocietyGuard::Ban(\Users\UserAgent::GetUserId($_POST["user_ban_input"]), (isset($_POST["user_ban_reason"])) ? $_POST["user_ban_reason"] : "none",
-                        (isset($_POST["user_ban_time"]) && $_POST["user_ban_time"] >= 0) ? $_POST["user_ban_time"] : 0, $user->getId()) === true) {
+                        (isset($_POST["user_ban_time"]) && $_POST["user_ban_time"] >= 0) ? $_POST["user_ban_time"] : 0, $user->getId()) == true) {
                     $backRequest .= "&res=4sbu";
                     \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.ban_user_log") . $_POST["user_ban_input"] . ".");
                 }
@@ -131,7 +131,7 @@ if (isset ($_POST["user_ban_unban"])) {
         if( isset ($_GET["ufuban"])) {
             $unbanUsers = explode(",", $_GET["ufuban"]);
             for ($i = 0; $i <= count($unbanUsers)-1; $i++){
-                if (\Guards\SocietyGuard::Unban($unbanUsers[$i]) !== true){
+                if (\Guards\SocietyGuard::Unban($unbanUsers[$i]) == false){
                     if (\Engine\ErrorManager::GetError() == 5) $backRequest .= "&res=4nibu";
                     elseif (\Engine\ErrorManager::GetError() == 6) $backRequest .= "&res=4nbeu";
                     else $backRequest .= "&res=4nuu";

@@ -61,6 +61,7 @@ $plugins = \Engine\PluginManager::GetInstalledPlugins();
                                     <input type="text" class="form-control" maxlength="16" id="exampleInputAmount" name="groupname" value="<?php echo \Users\GroupAgent::GetGroupNameById($_REQUEST["group"]);?>">
                                     <div class="form-control info alert-info" id="exampleInputAmount"><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("group_panel.group_managment.group_name_tip"); ?></div>
                                 </div>
+                                <input type="hidden" name="group-id-input" value="<?=$_GET["group"]?>">
                                 <div class="input-group">
                                     <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("group_panel.group_managment.group_description"); ?></div>
                                     <textarea class="form-control" id="exampleInputAmount" name="groupsubscribe"><?php echo Users\GroupAgent::GetGroupDescribe($_REQUEST["group"]);?></textarea>

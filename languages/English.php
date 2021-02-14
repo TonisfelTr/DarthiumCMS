@@ -592,7 +592,7 @@ All rights reserved 2021 year. '.<br>"
 "panel_tip" => "There is a table of user reports for one reason to another. You can help solve problems,,
 that appear to users of Your portal.",
 "panel_remove_tip" => "To delete reports from the table, You should have the right to delete them <strong>other people's</strong> reports.
-If You have only the right to delete your own data, the system will not delete it. To do it, use the table of reports about <a class=\"alert-link\" href=\"index.php?page=reports\">website</a>.",
+If You have only the right to delete your own data, the system will not delete it. To do it, use the table of reports about <a class=\"alert-link\" href=\"index.php?page=report\">website</a>.",
 "selected" => " selected ",
 "remove_selected" => " Delete selected ",
 "table_creation" => " Creation date ",

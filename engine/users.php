@@ -1181,18 +1181,18 @@ namespace Users {
         public static function GetAllUsers(){
             return DataKeeper::Get("tt_users", ["id", "nickname"]);
         }
-        public static function GetUsersList($paramsArray, $page = 1){
+        public static function GetUsersList(array $paramsArray, $page = 1){
             $lowBorder = $page * 50 - 50;
             $highBorder = $page * 50;
 
-            if ($paramsArray == 0){
+            if (count($paramsArray) == 0){
                 $queryResponse = DataKeeper::MakeQuery("SELECT `id` FROM `tt_users` LIMIT $lowBorder, $highBorder", [], true);
             } else {
                 if (isset($paramsArray["nickname"])) $paramsArray["nickname"] = str_replace("*", "%", $paramsArray["nickname"]);
                 if (isset($paramsArray["email"])) $paramsArray["email"] = str_replace("*", "%", $paramsArray["email"]);
                 if (isset($paramsArray["lastip"])) $paramsArray["lastip"] = str_replace("*", "%", $paramsArray["lastip"]);
             }
-            if ($paramsArray != 0){
+            if (count($paramsArray) != 0){
                 if (!isset($paramsArray["nickname"])) $paramsArray["nickname"] = "%";
                 if (!isset($paramsArray["email"])) $paramsArray["email"]       = "%";
                 if (!isset($paramsArray["lastip"])) $paramsArray["lastip"]     = "%";

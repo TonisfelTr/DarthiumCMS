@@ -56,9 +56,9 @@ if ($user != false) {
                         </tr>";
     } else {
         foreach ($uploadList as $file) {
-            $uploadName = \Engine\Uploader::GetUploadInfo($file["id"], "name")[0]["name"];
-            $uploadFilePath = \Engine\Uploader::GetUploadInfo($file["id"], "file_path")[0]["file_path"];
-            $uploadDate = Engine\Engine::DateFormatToRead(\Engine\Uploader::GetUploadInfo($file["id"], "upload_date")[0]["upload_date"]);
+            $uploadName = \Engine\Uploader::GetUploadInfo($file["id"], "name");
+            $uploadFilePath = \Engine\Uploader::GetUploadInfo($file["id"], "file_path");
+            $uploadDate = Engine\Engine::DateFormatToRead(\Engine\Uploader::GetUploadInfo($file["id"], "upload_date"));
             $uploadFilesTable .= "<tr>
                                 <td><input type=\"checkbox\" data-fid-selected=\"". $file["id"] . "\"></td>
                                 <td>$uploadName</td>

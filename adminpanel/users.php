@@ -108,11 +108,11 @@ if ($canSeeProfiles){
     if ((isset($_REQUEST["fnn"])) || (isset($_REQUEST["frid"])) || (isset($_REQUEST["fgroup"])) ||
         (isset($_REQUEST["flip"])) || (isset($_REQUEST["femail"])))
         $userParams = ["nickname" => (!isset($_REQUEST["fnn"])) ? "%" : $_REQUEST["fnn"],
-            "referer" =>  (!isset($_REQUEST["frid"])) ? "%" : $_REQUEST["frid"],
-            "group" =>  (!isset($_REQUEST["fgroup"])) ? "%" : $_REQUEST["fgroup"],
-            "lastip" =>  (!isset($_REQUEST["flip"])) ? "%" : $_REQUEST["flip"],
-            "email" =>  (!isset($_REQUEST["femail"])) ? "%" : $_REQUEST["femail"]];
-    else $userParams = 0;
+                       "referer" =>  (!isset($_REQUEST["frid"])) ? "%" : $_REQUEST["frid"],
+                       "group" =>  (!isset($_REQUEST["fgroup"])) ? "%" : $_REQUEST["fgroup"],
+                       "lastip" =>  (!isset($_REQUEST["flip"])) ? "%" : $_REQUEST["flip"],
+                       "email" =>  (!isset($_REQUEST["femail"])) ? "%" : $_REQUEST["femail"]];
+    else $userParams = [];
     $formLink = "";
     if (isset($_REQUEST["fnn"])) $formLink .= "&paramType=nickname&user-data-input=" . $_REQUEST["fnn"];
     if (isset($_REQUEST["frid"])) $formLink .= "&paramType=referer&user-data-input=" . $_REQUEST["frid"];
@@ -152,7 +152,9 @@ if ($canIPBan || $canIPUnban){
     $banipList = \Guards\SocietyGuard::GetIPBanList((isset($_REQUEST["bipage"])) ? $_REQUEST["bipage"] : 1);
     $banipCount = count($banipList);
 }
-
+if ($canSigns){
+    $groupList = \Users\GroupAgent::GetGroupList();
+}
 
 ?>
 <div class="inner cover">
@@ -346,17 +348,17 @@ if ($canIPBan || $canIPUnban){
                             <?php if ($bannedCount == 0 && !$banSearchActive) print("<tr><td colspan=\"7\" class=\"center alert alert-info\">" . \Engine\LanguageManager::GetTranslation("users_panel.ban_panel.no_banned_users") . "</td></tr>");
                             elseif ($bannedCount == 0 && $banSearchActive) print("<tr><td colspan=\"7\" class=\"center alert alert-info\">" . \Engine\LanguageManager::GetTranslation("users_panel.ban_panel.no_banned_users_found") . "</td></tr>");
                             else {
-                                for ($i = 0; $i < $bannedCount; $i++) { ?>
+                                foreach ($bannedList as $ban) { ?>
                                     <tr>
-                                        <td><input type="checkbox" data-bid-selected="<?php echo $bannedList[$i]; ?>"></td>
-                                        <td><?php echo \Users\UserAgent::GetUserNick($bannedList[$i]); ?></td>
-                                        <td><?php echo Engine\Engine::DateFormatToRead(date("Y-m-d", \Guards\SocietyGuard::GetBanUserParam($bannedList[$i], "banned_time"))); ?></td>
-                                        <td><?php echo (\Guards\SocietyGuard::GetBanUserParam($bannedList[$i], "unban_time") == 0) ? \Engine\LanguageManager::GetTranslation("users_panel.ban_panel.permanently") :
-                                                Engine\Engine::DateFormatToRead(date("Y-m-d", \Guards\SocietyGuard::GetBanUserParam($bannedList[$i], "unban_time"))); ?></td>
-                                        <td><?php echo \Users\UserAgent::GetUserNick(\Guards\SocietyGuard::GetBanUserParam($bannedList[$i], "author")); ?></td>
-                                        <td><?php echo htmlentities(\Guards\SocietyGuard::GetBanUserParam($bannedList[$i], "reason")); ?></td>
+                                        <td><input type="checkbox" data-bid-selected="<?php echo $ban["banned"]; ?>"></td>
+                                        <td><?php echo \Users\UserAgent::GetUserNick($ban["banned"]); ?></td>
+                                        <td><?php echo Engine\Engine::DateFormatToRead(date("Y-m-d", \Guards\SocietyGuard::GetBanUserParam($ban["banned"], "banned_time"))); ?></td>
+                                        <td><?php echo (\Guards\SocietyGuard::GetBanUserParam($ban["banned"], "unban_time") == 0) ? \Engine\LanguageManager::GetTranslation("users_panel.ban_panel.permanently") :
+                                                Engine\Engine::DateFormatToRead(date("Y-m-d", \Guards\SocietyGuard::GetBanUserParam($ban["banned"], "unban_time"))); ?></td>
+                                        <td><?php echo \Users\UserAgent::GetUserNick(\Guards\SocietyGuard::GetBanUserParam($ban["banned"], "author")); ?></td>
+                                        <td><?php echo htmlentities(\Guards\SocietyGuard::GetBanUserParam($ban["banned"], "reason")); ?></td>
                                         <?php if ($canUserUnban) { ?><td>
-                                            <button class="btn btn-default" name="user_ban_unban" type="submit" style="width: 100%" formaction="adminpanel/scripts/userer.php?ufuban=<?php echo $bannedList[$i]; ?>">Разбанить</button>
+                                            <button class="btn btn-default" name="user_ban_unban" type="submit" style="width: 100%" formaction="adminpanel/scripts/userer.php?ufuban=<?php echo $ban["banned"]; ?>">Разбанить</button>
                                         </td>
                                         <?php } ?>
                                     </tr>
@@ -408,15 +410,15 @@ if ($canIPBan || $canIPUnban){
                     <tbody>
                         <?php
                         if ($banipCount == 0){ ?><tr><td class="alert-info" colspan="7" style="text-align: center;"><span class="glyphicon glyphicon-info-sign"></span> <?=\Engine\LanguageManager::GetTranslation("users_panel.banip_panel.no_banned_ips")?></td></tr> <?php }
-                        else for ($h = 0; $h <= $banipCount-1; $h++) { ?>
+                        else foreach ($banipList as $banIP) { ?>
                             <tr>
-                                <td><input type="checkbox" data-bip-selected="<?php echo htmlentities($banipList[$h]); ?>"></td>
-                                <td><?php print htmlentities($banipList[$h]); ?></td>
-                                <td><?php print \Engine\Engine::DateFormatToRead(date("Y-m-d", \Guards\SocietyGuard::GetIPBanParam($banipList[$h], "banned_time"))); ?></td>
-                                <td><?php print (\Guards\SocietyGuard::GetIPBanParam($banipList[$h], "unban_time") == 0) ? \Engine\LanguageManager::GetTranslation("users_panel.banip_panel.permanently") : \Engine\Engine::DateFormatToRead(date("Y-m-d",\Guards\SocietyGuard::GetIPBanParam($banipList[$h], "unban_time"))); ?></td>
-                                <td><?php print \Users\UserAgent::GetUserNick(\Guards\SocietyGuard::GetIPBanParam($banipList[$h], "author")); ?></td>
-                                <td><?php print htmlentities(\Guards\SocietyGuard::GetIPBanParam($banipList[$h], "reason")); ?></td>
-                                <?php if ($canIPUnban) { ?> <td><button style="width: 100%;" class="btn btn-default" type="submit" name="user_bip_unban" formaction="adminpanel/scripts/userer.php?ipuban=<?php print htmlentities($banipList[$h]); ?>">Разблокировать</button></td> <?php } ?>
+                                <td><input type="checkbox" data-bip-selected="<?php echo htmlentities($banIP["banned"]); ?>"></td>
+                                <td><?php print htmlentities($banIP["banned"]); ?></td>
+                                <td><?php print \Engine\Engine::DateFormatToRead(date("Y-m-d", \Guards\SocietyGuard::GetIPBanParam($banIP["banned"], "banned_time"))); ?></td>
+                                <td><?php print (\Guards\SocietyGuard::GetIPBanParam($banIP["banned"], "unban_time") == 0) ? \Engine\LanguageManager::GetTranslation("users_panel.banip_panel.permanently") : \Engine\Engine::DateFormatToRead(date("Y-m-d",\Guards\SocietyGuard::GetIPBanParam($banIP["banned"], "unban_time"))); ?></td>
+                                <td><?php print \Users\UserAgent::GetUserNick(\Guards\SocietyGuard::GetIPBanParam($banIP["banned"], "author")); ?></td>
+                                <td><?php print htmlentities(\Guards\SocietyGuard::GetIPBanParam($banIP["banned"], "reason")); ?></td>
+                                <?php if ($canIPUnban) { ?> <td><button style="width: 100%;" class="btn btn-default" type="submit" name="user_bip_unban" formaction="adminpanel/scripts/userer.php?ipuban=<?php print htmlentities($banIP["banned"]); ?>">Разблокировать</button></td> <?php } ?>
                             </tr>
                         <?php } ?>
                     </tbody>
@@ -442,10 +444,8 @@ if ($canIPBan || $canIPUnban){
                 <?php if ($user->UserGroup()->getPermission("change_user_group")) { ?>
                 <select class="form-control" name="user-add-group" id="user-add-group">
                     <option value="0"><?=\Engine\LanguageManager::GetTranslation("users_panel.register_panel.select_group")?></option>
-                    <?php for($i = 0; $i < count($groupList = \Users\GroupAgent::GetGroupList()); $i++){
-                        echo "<option value='".$groupList[$i]."'";
-                        if (isset($_REQUEST["group"])) if ($_REQUEST["group"] != 0 && $_REQUEST["group"] == $groupList[$i]) echo "selected";
-                        echo ">" . \Users\GroupAgent::GetGroupNameById($groupList[$i]) . "</option>";
+                    <?php foreach ($groupList as $group) {
+                         echo "<option value\"" . $group["id"] . "\">" . \Users\GroupAgent::GetGroupNameById($group["id"]) . "</option>";
                     } ?>
                 </select>
                 <?php } ?>
@@ -476,10 +476,12 @@ if ($canIPBan || $canIPUnban){
                     <div class="form-control alert-info">
                     <?php $lastOnline = 0;
                     if ($user->getLastTime() == 0){
-                    $lastOnline = ($USER->getSex() == 2) ? \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.she_not_signed_in") : \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.he_not_signed_in");
+                        $lastOnline = ($USER->getSex() == 3) ? \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.she_not_signed_in") : \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.he_not_signed_in");
                     } else
-                    $lastOnline = (\Engine\Engine::GetSiteTime() > $USER->getLastTime()+15*60) ? (($USER->getSex() == 2) ? \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.she_signed_in") : \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.he_signed_in"))
-                    . " в " . \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s",$USER->getLastTime())) : "<span style=\"color: #009900;\">" . \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.online") . "</span>";
+                        $lastOnline = (\Engine\Engine::GetSiteTime() > $USER->getLastTime()+15*60) ?
+                            (($USER->getSex() == 3) ? \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.she_signed_in") :
+                            \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.he_signed_in"))
+                        . " " . \Engine\LanguageManager::GetTranslation("in") . " " . \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s",$USER->getLastTime())) : "<span style=\"color: #009900;\">" . \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.online") . "</span>";
                     echo $lastOnline; ?>
                     </div>
                 </div>
