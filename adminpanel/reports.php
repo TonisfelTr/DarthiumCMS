@@ -92,17 +92,17 @@ else {
                         <tbody>
                             <?php if ($reportCount == 0) { ?><tr><td class="alert-success" style="text-align: center;" colspan="8"><span class="glyphicon glyphicon-info-sign"></span> <?= \Engine\LanguageManager::GetTranslation("reports_panel.table_page.empty_table"); ?></td></tr> <?php }
                             else {
-                                for ($i = 0; $i <= $reportCount-1; $i++){
-                                    $report = new \Guards\Report($reportList[$i]); ?>
+                                foreach ($reportList as $reportElement){
+                                    $report = new \Guards\Report($reportElement["id"]); ?>
                                     <tr <?php if (!$report->getViewed()) echo "class=\"tr-bold\"";?>>
                                         <td><input type="checkbox" data-rid-selected="<?php echo $report->getId(); ?>"></td>
                                         <td><?php echo \Engine\Engine::DateFormatToRead($report->getCreateDate()); ?></td>
                                         <td><?php echo $report->ReportAuthor()->getNickname(); ?></td>
                                         <td><?php echo htmlentities($report->getTheme()); ?></td>
                                         <td><?php echo htmlentities($report->getShortMessage()); ?></td>
-                                        <td><?php echo $report->getMark(); ?></td>
-                                        <td><?php echo $report->ReportAnswerAuthor()->getNickname(); ?></td>
-                                        <td><button class="btn btn-default" style="width:100%;" type="submit" name="reports-see-btn" formaction="adminpanel/scripts/reports.php?rid=<?php echo $report->getId(); ?>"><?= \Engine\LanguageManager::GetTranslation("reports_panel.table_page.see_btn"); ?></button></td>
+                                        <td><?php echo 5; ?></td>
+                                        <td><?php echo $report->ReportAnswerAuthor()->getNickname() == null ? \Engine\LanguageManager::GetTranslation("reports_panel.table_page.wait_for_answer") : $report->ReportAnswerAuthor()->getNickname() ?></td>
+                                        <td><button class="btn btn-default" style="width:100%;" type="submit" name="reports-see-btn" formmethod="post" formaction="adminpanel/scripts/reports.php?rid=<?php echo $report->getId(); ?>"><?= \Engine\LanguageManager::GetTranslation("reports_panel.table_page.see_btn"); ?></button></td>
                                     </tr>
                                 <?php }} ?>
                         </tbody>
@@ -137,8 +137,8 @@ else {
                         <div class="report-header-footer">
                             Статус: <?php echo $report->getStatus(); ?>
                             <div class="btn-group" style="float: right;">
-                                <button class="btn btn-default" type="submit" name="reports-report-edit" formaction="adminpanel/scripts/reports.php?rid=<?php echo $report->getId(); ?>" title="<?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.edit_report_btn");?>"><span class="glyphicons glyphicons-pen"></span></button>
-                                <button class="btn btn-danger" type="submit" name="reports-report-delete" formaction="adminpanel/scripts/reports.php?rid=<?php echo $report->getId(); ?>" title="<?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.remove_report_btn");?>"><span class="glyphicons glyphicons-erase"></span></button>
+                                <button class="btn btn-default" type="submit" name="reports-report-edit" formmethod="post" formaction="adminpanel/scripts/reports.php?rid=<?php echo $report->getId(); ?>" title="<?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.edit_report_btn");?>"><span class="glyphicons glyphicons-pen"></span></button>
+                                <button class="btn btn-danger" type="submit" name="reports-report-delete" formmethod="post" formaction="adminpanel/scripts/reports.php?rid=<?php echo $report->getId(); ?>" title="<?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.remove_report_btn");?>"><span class="glyphicons glyphicons-erase"></span></button>
                             </div>
                         </div>
                     </div>
@@ -196,7 +196,7 @@ else {
                           placeholder="<?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.placeholder_answer");?>"></textarea>
 
                         <div class="btn-group">
-                            <button class="btn btn-default" type="submit" name="reports-answer-send" formaction="adminpanel/scripts/reports.php?rid=<?php echo $report->getId(); ?>"><?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.public_answer");?></button>
+                            <button class="btn btn-default" type="submit" name="reports-answer-send" formmethod="post" formaction="adminpanel/scripts/reports.php?rid=<?php echo $report->getId(); ?>"><?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.public_answer");?></button>
                             <button class="btn btn-default" type="reset"><?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.clear_form");?></button>
                         </div>
                     </div>
@@ -240,9 +240,9 @@ else {
                         <div class="report-answer-footer">
                             <?php if (!$report->isClosed()) { ?><?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.actions")?>
                             <div class="btn-group" style="float: right;">
-                                <button class="btn btn-default" type="submit" name="reports-answer-accept" title="<?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.check_for_solve")?>" formaction="adminpanel/scripts/reports.php?rid=<?php echo $answer->getParentReportID(); ?>&ansid=<?php echo $answer->getAnswerId(); ?>"><span class="glyphicon glyphicon-ok"></span></button>
-                                <button class="btn btn-default" type="submit" name="reports-answer-edit" title="<?= \Engine\LanguageManager::GetTranslation("edit")?>" formaction="adminpanel/scripts/reports.php?rid=<?php echo $answer->getParentReportID(); ?>&ansid=<?php echo $answer->getAnswerId(); ?>"><span class="glyphicons glyphicons-pen"></span></button>
-                                <button class="btn btn-danger" type="submit" name="reports-answer-delete" title="<?= \Engine\LanguageManager::GetTranslation("remove")?>" formaction="adminpanel/scripts/reports.php?rid=<?php echo $answer->getParentReportID(); ?>&ansid=<?php echo $answer->getAnswerId(); ?>"><span class="glyphicons glyphicons-delete"></span></button>
+                                <button class="btn btn-default" type="submit" name="reports-answer-accept" title="<?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.check_for_solve")?>" formmethod="post" formaction="adminpanel/scripts/reports.php?rid=<?php echo $answer->getParentReportID(); ?>&ansid=<?php echo $answer->getAnswerId(); ?>"><span class="glyphicon glyphicon-ok"></span></button>
+                                <button class="btn btn-default" type="submit" name="reports-answer-edit" title="<?= \Engine\LanguageManager::GetTranslation("edit")?>" formmethod="post" formaction="adminpanel/scripts/reports.php?rid=<?php echo $answer->getParentReportID(); ?>&ansid=<?php echo $answer->getAnswerId(); ?>"><span class="glyphicons glyphicons-pen"></span></button>
+                                <button class="btn btn-danger" type="submit" name="reports-answer-delete" title="<?= \Engine\LanguageManager::GetTranslation("remove")?>" formmethod="post" formaction="adminpanel/scripts/reports.php?rid=<?php echo $answer->getParentReportID(); ?>&ansid=<?php echo $answer->getAnswerId(); ?>"><span class="glyphicons glyphicons-delete"></span></button>
                             </div>
                             <?php } ?>
                         </div>
@@ -289,7 +289,7 @@ else {
                         </div>
                         <textarea class="form-control" name="reports-edit-message-text" id="report-edit-message-text" style="resize: none; height: 350px;"><?php echo $message; ?></textarea>
                         <div class="btn-group">
-                            <button type="submit" class="btn btn-default" formaction="adminpanel/scripts/reports.php?<?php echo $suffixFormaction; ?>" name="<?php echo $nameBtnEdit; ?>"><span class="glyphicons glyphicons-pencil"></span> <?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.save_changes")?></button>
+                            <button type="submit" class="btn btn-default" formmethod="post" formaction="adminpanel/scripts/reports.php?<?php echo $suffixFormaction; ?>" name="<?php echo $nameBtnEdit; ?>"><span class="glyphicons glyphicons-pencil"></span> <?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.save_changes")?></button>
                             <button type="reset" class="btn btn-info" name="reports-edit-message-erase"><span class="glyphicons glyphicons-erase"></span> <?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.cancel_changes")?></button>
                             <button type="button" class="btn btn-default" onclick="window.history.back();" name="reports-edit-message-back"><span class="glyphicons glyphicons-arrow-left"></span> <?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.back_btn")?></button>
                         </div>
@@ -308,10 +308,12 @@ else {
                     </div>
                     <?= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.added")?>
                     <div class="report-user-added-list" id="reports-au-list">
-                        <?php for ($i = 0; $i < count($report->getAddedToDiscuse()); $i++){ ?>
+                        <?php
+                        $addedToReport = $report->getAddedToDiscuse();
+                        foreach ($addedToReport as $added){ ?>
                             <div class="report-user-added-btn">
-                                <?php echo "<a target=\"_blank\" href=\"/adminpanel.php?p=users&uid=" . $report->getAddedToDiscuse()[$i]. "\">" . Users\UserAgent::GetUserNick($report->getAddedToDiscuse()[$i]) . "</a>"; ?>
-                                <span class="report-user-added-btn-cls" id="report-user-added-btn-span-<?php echo $report->getAddedToDiscuse()[$i]; ?>" onclick="deleteFromDiscuse('<?php echo $report->getAddedToDiscuse()[$i]; ?>')">X</span>
+                                <?php echo "<a target=\"_blank\" href=\"/adminpanel.php?p=users&uid=" . $added. "\">" . Users\UserAgent::GetUserNick($added) . "</a>"; ?>
+                                <span class="report-user-added-btn-cls" id="report-user-added-btn-span-<?=$added?>" onclick="deleteFromDiscuse('<?=$added ?>')">X</span>
                             </div>
                         <?php } ?>
                     </div>
@@ -407,16 +409,29 @@ else {
                 if (data == "Not need to add yourself.") {
                     return;
                 }
-                if (data == "User is added.") {
-                    return;
-                }
                 if (data == "User id not set."){
                     return;
                 }
-                alert(data);
-                $("#reports-au-list").append("<div class=\"report-user-added-btn\"><a target=\"_blank\" href=\"/adminpanel.php?p=users&uid=" + data.substring(0, data.indexOf(" ")) + "\">"
-                    + data.substring(data.indexOf(" ") + 1, data.length) + "</a><span class=\"report-user-added-btn-cls\" id=\"report-user-added-btn-span-" + data.substring(0, data.indexOf(" ")) +
-                    "\" onclick=\"deleteFromDiscuse('" + data.substring(0, data.indexOf(" ")) + "');\">X</span>");
+                if (data == "User is added.") {
+                    return;
+                }
+
+                var div = document.createElement("div");
+                var link = document.createElement("a");
+                var span = document.createElement("span");
+
+                div.classList.add("report-user-added-btn");
+                link.href = "/adminpanel.php?p=users&uid=" + data.substring(0, data.indexOf(" "));
+                link.innerText = document.querySelector("#report-user-add-input").value;
+                span.classList.add("report-user-added-btn-cls");
+                span.id = "report-user-added-btn-span-" + data.substring(0, data.indexOf(" "));
+                span.onclick = function () { deleteFromDiscuse(data.substring(0, data.indexOf(" "))); }
+                span.innerText = "X";
+
+                div.append(link);
+                div.append(span);
+                var parentDiv = document.querySelector("#reports-au-list");
+                parentDiv.append(div);
             }
         });
     }

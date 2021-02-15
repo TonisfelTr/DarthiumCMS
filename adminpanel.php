@@ -317,7 +317,7 @@ function str_replace_once($search, $replace, $text){
                     <?php echo \Engine\LanguageManager::GetTranslation("such_email_is_already_registered"); ?>
                 </div> <?php }
             }
-            if ($_GET["p"] == "report"){
+            if ($_GET["p"] == "reports"){
                 if ($_GET["res"] == "5nrid") { ?>
                     <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
                         <?php echo \Engine\LanguageManager::GetTranslation("not_setted_id_report_for_action"); ?>

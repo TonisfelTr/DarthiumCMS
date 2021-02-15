@@ -21,7 +21,9 @@ if (\Users\UserAgent::SessionContinue() === true){
                         echo "Not need to add yourself.";
                         exit;
                     }
-                    if (\Guards\ReportAgent::AddToDiscusse($_POST["rid"], $_POST["uid"], $user->getId())) {
+                    if (\Guards\ReportAgent::AddToDiscusse($_POST["rid"], $_POST["uid"], $user->getId()) === false) {
+                        echo "User is added."; exit;
+                    } else {
                         $thisUser = new \Users\User($_POST["uid"]);
                         $thisUser->Notifications()->createNotify(1, $user->getId(), $_POST["rid"]);
                         $report = new \Guards\Report($_POST["rid"]);
@@ -32,7 +34,7 @@ if (\Users\UserAgent::SessionContinue() === true){
                         }
                         echo $_POST["uid"] . " " . \Users\UserAgent::GetUserNick($_POST["uid"]);
                         exit;
-                    } else { echo "User is added."; exit; }
+                    }
                 } else { echo "Report id not set."; exit; }
             } else { echo "User id not set."; exit; }
         }
@@ -54,7 +56,7 @@ if (\Users\UserAgent::SessionContinue() === true){
                         exit;
                     }
 
-                    if (\Guards\ReportAgent::RemoveFromDiscusse($_POST["rid"], $_POST["uid"])){
+                    if (\Guards\ReportAgent::RemoveFromDiscusse($_POST["rid"], $_POST["uid"]) > 0){
                         $thisUser = new \Users\User($_POST["uid"]);
                         $thisUser->Notifications()->createNotify(1, $user->getId(), $_POST["rid"]);
                         $report = new \Guards\Report($_POST["rid"]);

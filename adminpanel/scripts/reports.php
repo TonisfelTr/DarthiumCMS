@@ -21,7 +21,7 @@ if (isset($_POST["reports-table-delete-btn"])){
         }
         $ids = explode(",", $_POST["reports-ids-for-delete"]);
         foreach($ids as $item){
-            $report = \Guards\ReportAgent::GetReportParam($item, "theme");
+            $report = \Guards\ReportAgent::GetReportParam($item, "short_message");
             if (!\Guards\ReportAgent::DeleteReport($item)){
                 \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("reports_panel.logs.report_removed_log") . "\"$report\"" . \Engine\LanguageManager::GetTranslation("reports_panel.logs.from_report_list_log"));
                 header($backRequest . "&res=5ndsr");
@@ -58,7 +58,7 @@ if (isset($_POST["reports-answer-accept"])){
         }
         $result = \Guards\ReportAgent::SetAsSolveOfReportTheAnswer($_GET["rid"], $_GET["ansid"]);
         if ($result === True) {
-            $reportName = \Guards\ReportAgent::GetReportParam($_GET["rid"], "theme");
+            $reportName = \Guards\ReportAgent::GetReportParam($_GET["rid"], "short_message");
             \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("reports_panel.logs.mark_your_answer_as_solve_log") . "\"$reportName\".");
             $ntf = new \Users\UserNotificator(\Guards\ReportAgent::GetReportParam($_GET["rid"], "author"));
             $ntf->createNotify("15", $user->getId(), $_GET["rid"]);
@@ -139,7 +139,7 @@ if (isset($_POST["reports-report-delete"])){
     if (\Guards\ReportAgent::GetReportParam($_GET["rid"], "status") != 2) {
         if (($user->getId() == \Guards\ReportAgent::GetReportParam($_GET["rid"], "author") && $user->UserGroup()->getPermission("report_remove")) ||
             ($user->getId() != \Guards\ReportAgent::GetReportParam($_GET["rid"], "author") && $user->UserGroup()->getPermission("report_foreign_remove"))){
-            $reportName = \Guards\ReportAgent::GetReportParam($_GET["rid"], "theme");
+            $reportName = \Guards\ReportAgent::GetReportParam($_GET["rid"], "short_message");
             $result = \Guards\ReportAgent::DeleteReport($_GET["rid"]);
             if ($result === TRUE){
                 if ($user->getId() != \Guards\ReportAgent::GetReportParam($_GET["rid"], "author")) {

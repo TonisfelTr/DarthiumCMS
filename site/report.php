@@ -114,7 +114,7 @@ if (empty($_GET["preg"])) {
                          </tr>";
     else {
         foreach ($reportList as $reportId){
-            $report = new \Guards\Report($reportId);
+            $report = new \Guards\Report($reportId["id"]);
 
             $reportSolveAnswerAuthor = $report->isClosed() ? \Users\UserAgent::GetUserNick(\Guards\ReportAgent::GetAnswerParam($report->getAnswerId(), "authorId")) : \Engine\LanguageManager::GetTranslation("reports_site_panel.no_solve");
             $reportCloseDate = $report->isClosed() ? \Engine\Engine::DateFormatToRead($report->getCloseDate()) : \Engine\LanguageManager::GetTranslation("reports_site_panel.not_closed");
