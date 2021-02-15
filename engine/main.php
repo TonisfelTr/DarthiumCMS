@@ -71,7 +71,7 @@ namespace Engine {
 
         }
 
-        public static function DateFormatToRead($string)
+        public static function DateFormatToRead(string $string)
         {
             $month = array(
                 '01' => LanguageManager::GetTranslation("january_month"),
@@ -179,9 +179,10 @@ namespace Engine {
             define("TT_PROFILE", __DIR__ . "../profile.php");
             define("TT_BAN", __DIR__ . "../banned.php");
 
-            $htaccessGlobal = file_get_contents("../../.htaccess", true);
-            $htaccessGlobal = preg_replace("/php_value upload_max_filesize [0-9]+/", "php_value upload_max_filesize " . self::GetEngineInfo("ups"), $htaccessGlobal);
-            file_put_contents("../../.htaccess", $htaccessGlobal);
+
+            @$htaccessGlobal = file_get_contents("../../.htaccess", true);
+            @$htaccessGlobal = preg_replace("/php_value upload_max_filesize [0-9]+/", "php_value upload_max_filesize " . self::GetEngineInfo("ups"), $htaccessGlobal);
+            @file_put_contents("../../.htaccess", $htaccessGlobal);
         }
 
         public static function SettingsSave($DomainSite, $siteName, $siteTagline, $siteStatus,
@@ -691,7 +692,7 @@ namespace Engine {
 
         public static function GetUploadInfo($fId, $param)
         {
-            return DataKeeper::Get("tt_uploads", [$param], ["id" => $fId]);
+            return DataKeeper::Get("tt_uploads", [$param], ["id" => $fId])[0][$param];
         }
 
         public static function DeleteFile($fId)
@@ -938,14 +939,15 @@ namespace Engine {
             $whereStr = rtrim($whereStr, "AND");
             $query = "DELETE FROM `$table` WHERE $whereStr";
             $preparedQuery = $pdo->prepare($query);
-            return $preparedQuery->execute($varsArrToSend);
+            $preparedQuery->execute($varsArrToSend);
+            return $preparedQuery->rowCount();
         }
 
         /** Executes "SELECT" query to $table of database and returns
          *  associative array as result.
          *
-         * @param string $table
-         * @param array $whatArr
+         * @param string $table Name of table
+         * @param array $whatArr Array with name of necessary row.
          * @param array $whereArr
          * @return array
          */
@@ -986,7 +988,6 @@ namespace Engine {
                 ErrorManager::PretendToBeDied(ErrorManager::GetErrorCode(39), new \PDOException(LanguageManager::GetTranslation("sql_syntax_error")));
                 exit;
             }
-
             return $preparedQuery->fetchAll($pdo::FETCH_ASSOC);
         }
 
@@ -1313,7 +1314,7 @@ namespace Engine {
         public static function GetPermissionValue(int $pluginId, string $permissionName, int $groupId) : bool {
             $value = DataKeeper::Get("tt_plugin_permissions", ["value"], ["ofPlugin" => $pluginId, "codename" => $permissionName, "ofGroup" => $groupId])[0]["value"];
             if (!empty($value)){
-                if ($value["value"] <= 0)
+                if ($value <= 0)
                     return false;
                 else
                     return true;

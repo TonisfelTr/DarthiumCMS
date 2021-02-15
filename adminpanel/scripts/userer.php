@@ -139,7 +139,7 @@ if (isset ($_POST["user_ban_unban"])) {
                     exit;
                 } else {
                     $unbanAccountNickname = \Users\UserAgent::GetUserNick($unbanUsers[$i]);
-                    \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.log.unban_user_log") . "$unbanAccountNickname.");
+                    \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.unban_user_log") . " $unbanAccountNickname.");
                 }
             }
             $backRequest .= "&res=4suu";

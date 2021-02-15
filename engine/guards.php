@@ -2,6 +2,7 @@
 
 namespace Guards {
 
+    use Engine\DataKeeper;
     use Engine\Engine;
     use Engine\ErrorManager;
     use Engine\LanguageManager;
@@ -12,30 +13,13 @@ namespace Guards {
     {
         public static function IsBanned($var, $isIP = false)
         {
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf(mysqli_connect_error() . "<br />");
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            $query = ($isIP) ? "SELECT count(*) FROM `tt_banned` WHERE ? REGEXP `banned` AND `type` = ?" : "SELECT count(*) FROM `tt_banned` WHERE `banned` = ? AND `type`= ?";
-            $type = ($isIP) ? 2 : 1;
-
-            if ($stmt = $mysqli->prepare($query)) {
-                $stmt->bind_param("si", $var, $type);
-                $stmt->execute();
-                $stmt->bind_result($count);
-                $stmt->fetch();
-                if ($count >= 1) return true;
-
-            }
-
-            $stmt->close();
-            $mysqli->close();
-
-            return false;
+            $type  = $isIP ? 2 : 1;
+            $query = $isIP ? DataKeeper::MakeQuery("SELECT count(*) FROM `tt_banned` WHERE ? REGEXP `banned` AND `type` = ?", [$var, $type]) :
+                             DataKeeper::MakeQuery("SELECT count(*) FROM `tt_banned` WHERE `banned` = ? AND `type` = ?", [$var, $type]);
+            if ($query["count(*)"] >= 1)
+                return true;
+            else
+                return false;
         }
         public static function Ban($id, $reason, $time = 1, $author)
         {
@@ -48,59 +32,29 @@ namespace Guards {
                 return ErrorManager::GetError();
             }
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("INSERT INTO `tt_banned` (`banned`, `type`,`banned_time`, `unban_time`,`reason`, `author`) VALUE (?,?,?,?,?,?)")) {
-                $bannedTime = time();
-                if ($time == 0) $unbanTime = "0"; else $unbanTime = time() + $time;
-                $type = 1;
-                $stmt->bind_param("sisssi", $id, $type, $bannedTime, $unbanTime, $reason, $author);
-                $stmt->execute();
-                if ($stmt->errno) {
-                    echo $stmt->error;
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-
-                }
-
+            $result = DataKeeper::InsertTo("tt_banned", ["banned" => $id,
+                                                            "type" => 1,
+                                                            "banned_time" => Engine::GetSiteTime(),
+                                                            "unban_time" => $time == 0 ? 0 : Engine::GetSiteTime() + $time,
+                                                            "reason" => $reason,
+                                                            "author" => $author]);
+            if ($result >= 0){
                 return true;
-            } else {
-                return $mysqli->error;
-            }
-
-            return false;
-
+            } else
+                return false;
         }
         public static function BanWithSearch($needle, $reason, $time = 1, $author) {
             //Поиск пользователей по шаблону.
             $needle = str_replace("*", "%", $needle);
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
 
-            if (mysqli_connect_errno()) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
+            $haystack = DataKeeper::MakeQuery("SELECT `id` FROM `tt_users` WHERE `nickname` LIKE ?", [$needle]);
+            $banID    = $haystack["id"];
+            $result   = self::Ban($banID, $reason, $time, $author);
 
-            if ($stmt = $mysqli->prepare("SELECT `id` FROM `tt_users` WHERE `nickname` LIKE ?")){
-                $stmt->bind_param("s", $needle);
-                $stmt->execute();
-                if ($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                } else {
-                    $stmt->bind_result($banID);
-                    while($stmt->fetch()){
-                        self::Ban($banID, $reason, $time, $author);
-                    }
-                    return true;
-                }
-            }
-            return False;
+            if ($result == 0)
+                return false;
+
+            return true;
         }
         public static function BanIP($ip, $reason, $time = 1, $author)
         {
@@ -109,30 +63,16 @@ namespace Guards {
                 return ErrorManager::GetError();
             }
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("INSERT INTO `tt_banned` (`banned`, `type`,`banned_time`, `unban_time`, `reason`, `author`) VALUE (?,?,?,?,?,?)")) {
-                if ($time != 0) $unbanTime = time() + $time;
-                else $unbanTime = 0;
-                $time = time();
-                $type = 2;
-                $stmt->bind_param("sisssi", $ip, $type, $time, $unbanTime, $reason, $author);
-                $stmt->execute();
-                if ($stmt->errno) {
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-
+            $result = DataKeeper::InsertTo("tt_banned", ["banned" => $ip,
+                                                            "type" => 2,
+                                                            "banned_time" => Engine::GetSiteTime(),
+                                                            "unban_time" => $time != 0 ? Engine::GetSiteTime() + $time : 0,
+                                                            "reason" => $reason,
+                                                            "author" => $author]);
+            if ($result >= 0)
                 return true;
-            }
-
-            return false;
-
+            else
+                return false;
         }
         public static function Unban($id)
         {
@@ -141,25 +81,9 @@ namespace Guards {
                 return ErrorManager::GetError();
             }
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            $result = DataKeeper::Delete("tt_banned", ["banned"=> $id, "type" => 1]);
 
-            if (mysqli_connect_errno()) {
-                printf("Не удалось подключиться: %s\n", mysqli_connect_error());
-                exit();
-            }
-
-            if ($stmt = $mysqli->prepare("DELETE FROM `tt_banned` WHERE `banned` = ? AND `type`=?")) {
-                $type = "1";
-                $stmt->bind_param("ii", $id, $type);
-                $stmt->execute();
-                if (mysqli_stmt_errno($stmt)) {
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                return True;
-            }
-
-            return False;
+            return $result == 0 ? false : true;
         }
         public static function UnbanIP($ip)
         {
@@ -168,58 +92,16 @@ namespace Guards {
                 return ErrorManager::GetError();
             }
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            $result = DataKeeper::Delete("tt_banned", ["banned" => $ip, "type" => 2]);
 
-            if (mysqli_connect_errno()) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("DELETE FROM `tt_banned` WHERE `banned` = ? AND `type`=?")) {
-                $type = 2;
-                $stmt->bind_param("si", $ip, $type);
-                $stmt->execute();
-                if ($stmt->errno) {
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-
-                }
-                return True;
-            }
-
-            return False;
+            return $result == 0 ? false : true;
         }
         public static function GetBanUserList($page = 1)
         {
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
             $lowBorder = ($page - 1) * 50;
             $highBorder = $page * 50;
-            $type = 1;
-            $query = "SELECT `banned` FROM `tt_banned` WHERE `type`=? LIMIT $lowBorder, $highBorder";
 
-            if ($stmt = $mysqli->prepare($query)) {
-                $stmt->bind_param("i", $type);
-                $stmt->execute();
-                if (mysqli_stmt_errno($stmt)) {
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                $stmt->bind_result($id);
-                $result = array();
-                while ($stmt->fetch()) {
-                    array_push($result, $id);
-                }
-                return $result;
-            } else {
-                ErrorManager::GenerateError(9);
-                return $mysqli->error;
-            }
+            return DataKeeper::MakeQuery("SELECT `banned` FROM `tt_banned` WHERE `type`=? LIMIT $lowBorder, $highBorder", ["1"], true);
         }
         public static function GetBanUserParam($idUser, $param)
         {
@@ -228,60 +110,10 @@ namespace Guards {
                 return ErrorManager::GetError();
             }
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if (mysqli_connect_errno()) {
-                printf("Не удалось подключиться: %s\n", mysqli_connect_error());
-                exit();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT $param FROM `tt_banned` WHERE `banned`=? AND `type`=?")) {
-                $type = 1;
-                $stmt->bind_param("ii", $idUser, $type);
-                $stmt->execute();
-                if (mysqli_stmt_errno($stmt)) {
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                $stmt->bind_result($paramProp);
-                $stmt->fetch();
-                return $paramProp;
-            }
-
-            return False;
-        }
-        public static function GetBanListByParam($param, $page = 1)
-        {
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            $lowBorder = ($page - 1) * 50;
-            $highBorder = $page * 50;
-            $query = $mysqli->query("SELECT * FROM `tt_banned` WHERE `banned` LIKE ? AND `type` = '1' LIMIT $lowBorder, $highBorder");
-            if ($stmt = $mysqli->prepare($query)) {
-                $stmt->bind_param("s", $param);
-                $stmt->execute();
-                $stmt->bind_result($response);
-                $result = array();
-                while ($stmt->fetch()) {
-                    array_push($result, $response);
-                }
-                return $result;
-            }
-            return false;
+            return DataKeeper::Get("tt_banned", [$param], ["banned" => $idUser, "type" => 1])[0][$param];
         }
         public static function GetBanListByParams($params, $page = 1)
         {
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
             $lowBorder = ($page - 1) * 50;
             $highBorder = $page * 50;
 
@@ -292,46 +124,22 @@ namespace Guards {
             if ($params["reason"] == "") $params["reason"] = "%";
             else $params["reason"] = str_replace("*", "%", $params["reason"]);
 
-            if ($stmt = $mysqli->prepare("SELECT `banned` FROM `tt_banned` WHERE `reason` LIKE ? AND `type` = 1 LIMIT $lowBorder, $highBorder")){
-                $stmt->bind_param("s", $params["reason"]);
-                $stmt->execute();
-                $result = array();
-                $stmt->bind_result($response);
-                while ($stmt->fetch()) {
-                    if (isset($usersId)) {
-                        if (in_array($response, $usersId))
-                            array_push($result, $response);
-                    }
-                    else array_push($result, $response);
-                }
-                return $result;
+            $queryResponse = DataKeeper::MakeQuery("SELECT `banned` FROM `tt_banned` WHERE `reason` LIKE ? AND `type` = ? LIMIT $lowBorder, $highBorder", [$params["reason"], 1], true);
+            $result = [];
+            foreach ($queryResponse as $response){
+                if (isset($usersId)){
+                    if (in_array($response, $usersId))
+                        $result[] = $response;
+                } else
+                    $result[] = $response;
             }
-            return false;
+            return $result;
         }
         public static function GetIPBanList($page = 1){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
             $lowBorder = ($page - 1) * 50;
             $highBorder = $page * 50;
 
-            if ($stmt = $mysqli->prepare("SELECT `banned` FROM `tt_banned` WHERE type=? LIMIT $lowBorder, $highBorder")){
-                $type = 2;
-                $stmt->bind_param("i", $type);
-                $stmt->execute();
-                $stmt->bind_result($resIP);
-                $result = array();
-                while ($stmt->fetch()){
-                    array_push($result, $resIP);
-                }
-                return $result;
-            }
-            $stmt->close();
-            $mysqli->close();
-            return false;
+            return DataKeeper::MakeQuery("SELECT `banned` FROM `tt_banned` WHERE `type` = ? LIMIT $lowBorder, $highBorder", [2], true);
         }
         public static function GetIPBanParam($ip, $param)
         {
@@ -340,27 +148,9 @@ namespace Guards {
                 return ErrorManager::GetError();
             }
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            $queryResponse = DataKeeper::MakeQuery("SELECT $param FROM `tt_banned` WHERE ? REGEXP `banned` AND `type` = ?", [$ip, 2])[$param];
 
-            if (mysqli_connect_errno()) {
-                printf("Не удалось подключиться: %s\n", mysqli_connect_error());
-                exit();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT $param FROM `tt_banned` WHERE ? REGEXP `banned` AND `type`=?")) {
-                $type = 2;
-                $stmt->bind_param("si", $ip, $type);
-                $stmt->execute();
-                if (mysqli_stmt_errno($stmt)) {
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                $stmt->bind_result($paramProp);
-                $stmt->fetch();
-                return $paramProp;
-            }
-
-            return False;
+            return $queryResponse;
         }
     }
 
@@ -390,51 +180,26 @@ namespace Guards {
         }
 
         public function __construct($reportId){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            $queryResponse = DataKeeper::Get("tt_reports", ["*"], ["id" => $reportId])[0];
 
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
+            $this->reportId = $queryResponse["id"];
+            $this->reportStatus = $queryResponse["status"];
+            $this->reportTheme = $queryResponse["theme"];
+            $this->reportAuthorId = $queryResponse["author"];
+            $this->reportShortMessage = $queryResponse["short_message"];
+            $this->reportMessage = $queryResponse["message"];
+            $this->reportAnswerId = $queryResponse["answerId"];
+            $this->reportCreateDate = $queryResponse["create_date"];
+            $this->reportCloseDate = $queryResponse["close_date"];
+            $this->reportIsViewed = $queryResponse["viewed"];
 
-            if ($stmt = $mysqli->prepare("SELECT * FROM `tt_reports` WHERE `id`=?")){
-                $stmt->bind_param("i", $reportId);
-                $stmt->execute();
-                if ($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                $stmt->bind_result($id, $status, $theme, $author, $shortMessage, $message,
-                    $answer, $createDate, $closeDate, $viewed);
-                $stmt->fetch();
-                $this->reportId = $reportId;
-                $this->reportStatus = $status;
-                $this->reportTheme = $theme;
-                $this->reportAuthorId = $author;
-                $this->reportShortMessage = $shortMessage;
-                $this->reportMessage = $message;
-                $this->reportAnswerId = $answer;
-                $this->reportCreateDate = $createDate;
-                $this->reportCloseDate = $closeDate;
-                $this->reportIsViewed = $viewed;
+            $this->reportAuthor = new User($this->reportAuthorId);
+            $this->reportAnswerAuthor = new User(self::GetAnswerParam($this->reportAnswerId, "authorId"));
 
-                $this->reportAuthor = new User($this->reportAuthorId);
-                $this->reportAnswerAuthor = new User(self::GetAnswerParam($answer, "authorId"));
+            $queryResponse = DataKeeper::Get("tt_reportda", ["addedUID"], ["reportId" => $this->reportId]);
 
-            }
-
-            $stmt->close();
-
-            if ($stmt = $mysqli->prepare("SELECT `addedUID` FROM `tt_reportda` WHERE `reportId`=?")){
-                $stmt->bind_param("i", $reportId);
-                $stmt->execute();
-                if ($stmt->errno){
-                    $this->reportAddedInDiscuse = $stmt->error;
-                }
-                $stmt->bind_result($var);
-                while($stmt->fetch()){
-                    array_push($this->reportAddedInDiscuse, $var);
-                }
+            foreach ($queryResponse as $reportDA){
+                $this->reportAddedInDiscuse[] = $reportDA["addedUID"];
             }
         }
 
@@ -485,9 +250,6 @@ namespace Guards {
         public function getCloseDate(){
             return $this->reportCloseDate;
         }
-        public function getMark(){
-            return $this->reportMark;
-        }
         public function getAnswerId(){
             return $this->reportAnswerId;
         }
@@ -498,57 +260,15 @@ namespace Guards {
             return $this->reportIsViewed;
         }
         public function getAnswersList($page = 1){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
             $lowBorder = ($page - 1) * 12;
             $highBorder = $page * 12;
 
-            if ($stmt = $mysqli->prepare("SELECT `id` FROM `tt_reportanswers` WHERE `reportId`=? AND `id` != (SELECT `answerId` FROM `tt_reports` WHERE `id`=?) LIMIT $lowBorder,$highBorder")){
-                $stmt->bind_param("ii", $this->reportId, $this->reportId);
-                $stmt->execute();
-                if ($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                $result = array();
-                $stmt->bind_result($answerId);
-                while ($stmt->fetch()){
-                    array_push($result, $answerId);
-                }
-                return $result;
-            }
-            return false;
-        }
-
-        public function setMark($markInt){
-            return self::ChangeReportParam($this->reportId, "mark", $markInt);
+            return DataKeeper::MakeQuery("SELECT `id` FROM `tt_reportanswers` WHERE `reportId`=? AND `id` != (SELECT `answerId` FROM `tt_reports` WHERE `id`=?) LIMIT $lowBorder,$highBorder",
+                                                [$this->reportId, $this->reportId], true);
         }
         public function setViewed(){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("UPDATE `tt_reports` SET `viewed`=?, `status`=? WHERE `id`=?")){
-                $v = 1;
-                $stmt->bind_param("iii", $v, $v, $this->reportId);
-                $stmt->execute();
-                if ($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                return true;
-            }
-            return false;
+            return DataKeeper::Update("tt_reports", ["viewed" => 1, "status" => 1], ["id" => $this->reportId]);
         }
-
         public function isAdded($userId){
             if (in_array($userId, $this->getAddedToDiscuse())) return true;
             else return false;
@@ -570,35 +290,20 @@ namespace Guards {
         private $lastEditor;
 
         public function __construct($commentId){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            $params = DataKeeper::Get("tt_reportanswers", ["*"], ["id" => $commentId])[0];
 
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
+            $this->answerId = $params["id"];
+            $this->parentReportId = $params["reportId"];
+            $this->answerAuthorId = $params["authorId"];
+            $this->answerCreateDate = $params["create_date"];
+            $this->answerMessage = $params["message"];
+            $this->answerEditDate = $params["edit_date"];
+            $this->answerEditReason = $params["edit_reason"];
+            $this->answerLastEditorId = $params["last_editorId"];
 
-            if ($stmt = $mysqli->prepare("SELECT * FROM `tt_reportanswers` WHERE `id`=?")){
-                $stmt->bind_param("i", $commentId);
-                $stmt->execute();
-                if ($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                $stmt->bind_result($ansId, $reportId, $authorId, $createDate, $message, $edit_date, $reason_edit, $lasteditor);
-                $stmt->fetch();
-                $this->answerId = $ansId;
-                $this->answerAuthorId = $authorId;
-                $this->parentReportId = $reportId;
-                $this->answerCreateDate = $createDate;
-                $this->answerMessage = $message;
-                $this->answerEditDate = $edit_date;
-                $this->answerEditReason = $reason_edit;
-                $this->answerLastEditorId = $lasteditor;
-                $this->parentReport = new Report($reportId);
-                $this->authorUser = new User($authorId);
-                if ($lasteditor != 0) $this->lastEditor = new User($lasteditor);
-            }
-            return false;
+            $this->parentReport = new Report($this->parentReportId);
+            $this->authorUser = new User($this->answerAuthorId);
+            if ($this->answerLastEditorId != 0) $this->lastEditor = new User($this->answerLastEditorId);
         }
         public function getAnswerId(){
             return $this->answerId;
@@ -631,50 +336,16 @@ namespace Guards {
             return $this->lastEditor;
         }
         public function changeText($newText, $editorId, $reason = ''){
-
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("UPDATE `tt_reportanswers` SET `message`=?, `edit_date`=?, `reason_edit`=?, `last_editorId`=? WHERE `id`=?")){
-                $date = date("Y-m-d", time());
-                $stmt->bind_param("si", $newText, $date, $reason, $editorId, $this->answerId);
-                $stmt->execute();
-                if ($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                return true;
-            }
-            return false;
+            return DataKeeper::Update("tt_reportanswers", ["message" => $newText, "edit_date" => date("Y-m-d", Engine::GetSiteTime()),
+                                                                "reason_edit" => $editorId], ["id" => $this->answerId]);
         }
     }
 
     class ReportAgent
     {
         private static function isAnswerExists($answerId){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            return DataKeeper::MakeQuery("SELECT count(*) FROM `tt_reportanswers` WHERE `id` = ?", ["$answerId"])["count(*)"];
 
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT count(*) FROM `tt_reportanswers` WHERE `id`=?")){
-                $stmt->bind_param("i", $answerId);
-                $stmt->execute();
-                if ($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                $stmt->bind_result($result);
-                $stmt->fetch();
-                return $result;
-            }
-            return false;
         }
         private static function isAnswerSolve($answerId){
             if (!self::isAnswerExists($answerId)){
@@ -682,70 +353,22 @@ namespace Guards {
                 return ErrorManager::GetError();
             }
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT `id` FROM `tt_reports` WHERE `answerId`=?")){
-                $stmt->bind_param("i", $answerId);
-                $stmt->execute();
-                if ($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                $stmt->bind_result($result);
-                $stmt->fetch();
-                if (!empty($result)) return true;
-                else return false;
-            }
-            return false;
+            $queryResponse = DataKeeper::Get("tt_reports", ["id"], [$answerId])[0]["id"];
+            if ($queryResponse > 0)
+                return true;
+            else
+                return false;
         }
 
         public static function isAddedToDiscusse($reportId, $id){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT count(*) FROM `tt_reportda` WHERE `addedUID` = ? AND `reportId` = ?")){
-                $stmt->bind_param("ii", $id, $reportId );
-                $stmt->execute();
-                if ($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                $stmt->bind_result($v);
-                $stmt->fetch();
-                if ($v) return true;
-                else return false;
-            }
-            return false;
+            $queryResponse = DataKeeper::MakeQuery("SELECT count(*) FROM `tt_reportda` WHERE `addedUID` = ? AND `reportId` = ?", [$id, $reportId])["count(*)"];
+            if ($queryResponse)
+                return true;
+            else
+                return false;
         }
         public static function isReportExists($reportId){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT count(*) FROM `tt_reports` WHERE `id`=?")){
-                $stmt->bind_param("i", $reportId);
-                $stmt->execute();
-                if ($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                $stmt->bind_result($result);
-                $stmt->fetch();
-                return $result;
-            }
-            return false;
+            return DataKeeper::MakeQuery("SELECT count(*) FROM `tt_reports` WHERE `id` = ?", [$reportId])["count(*)"];
         }
 
         public static function CreateAnswer($authorId, $text, $reportId){
@@ -753,26 +376,12 @@ namespace Guards {
                 ErrorManager::GenerateError(29);
                 return ErrorManager::GetError();
             }
+            DataKeeper::InsertTo("tt_reportanswers", ["reportId" => $reportId,
+                                                                   "authorId" => $authorId,
+                                                                   "create_date" => date("Y-m-d", Engine::GetSiteTime()),
+                                                                    "message" => $text]);
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("INSERT INTO `tt_reportanswers` (`id`, `reportId`, `authorId`, `create_date`, `message`) VALUE (NULL,?,?,?,?)")){
-                $date = date("Y-m-d", time());
-                $stmt->bind_param("iiss", $reportId, $authorId, $date, $text);
-                $stmt->execute();
-                if ($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                self::ChangeReportParam($reportId, "viewed", 0);
-                return true;
-            }
-            return false;
+            return self::ChangeReportParam($reportId, "viewed", 0) == true ? true : false;
         }
         public static function DeleteAnswer($answerId){
             if (!self::isAnswerExists($answerId)){
@@ -785,23 +394,7 @@ namespace Guards {
                 return ErrorManager::GetError();
             }
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("DELETE FROM `tt_reportanswers` WHERE `id`=?")){
-                $stmt->bind_param("i", $answerId);
-                $stmt->execute();
-                if ($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                return true;
-            }
-            return false;
+            return DataKeeper::Delete("tt_reportanswers", ["id" => $answerId]);
         }
         public static function ChangeAnswerText($answerId, $newText, $reasonEdit, $editorId){
             if (!self::isAnswerExists($answerId)){
@@ -813,24 +406,8 @@ namespace Guards {
                 ErrorManager::GenerateError(31);
                 return ErrorManager::GetError();
             }
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
 
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("UPDATE `tt_reportanswers` SET `message`=?, `edit_date`=?, `reason_edit`=?, `last_editorId`=? WHERE `id`=?")){
-                $date = date("Y-m-d H:m:s", Engine::GetSiteTime());
-                $stmt->bind_param("sssii", $newText, $date, $reasonEdit, $editorId, $answerId);
-                $stmt->execute();
-                if ($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                return true;
-            }
-            return false;
+            return DataKeeper::Update("tt_reportanswers", ["message" => $newText, "edit_date" => date("Y-m-d H:m:s", Engine::GetSiteTime()), "reason_edit" => $reasonEdit, "last_editorId" => $editorId], ["id" => $answerId]);
         }
         public static function SetAsSolveOfReportTheAnswer($idReport, $answerId){
             if (!self::isAnswerExists($answerId)){
@@ -842,73 +419,24 @@ namespace Guards {
                 return ErrorManager::GetError();
             }
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("UPDATE `tt_reports` SET `answerId`=?, `status`=?, `close_date`=? WHERE `id`=?")){
-                $stat = 2;
-                $date = date("Y-m-d", time());
-                $stmt->bind_param("iisi", $answerId, $stat, $date, $idReport);
-                $stmt->execute();
-                if ($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                return true;
-            }
-            return false;
+            return DataKeeper::Update("tt_reports", ["answerId" => $answerId, "status" => 2, "close_data" => date("Y-m-d", Engine::GetSiteTime())], ["id" => $idReport]);
         }
         public static function GetAnswerParam($answerId, $param){
             if (!self::isAnswerExists($answerId)){
                 ErrorManager::GenerateError(30);
                 return ErrorManager::GetError();
             }
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
 
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT `$param` FROM `tt_reportanswers` WHERE `id` = ? ")){
-                $stmt->bind_param("i", $answerId);
-                $stmt->execute();
-                if($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                $stmt->bind_result($result);
-                $stmt->fetch();
-                return $result;
-            }
-            return false;
-
+            return DataKeeper::Get("tt_reportanswers", [$param], ["id" => $answerId])[0][$param];
         }
 
         public static function CreateReport($author, $theme, $shortMessage, $message){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
+            return DataKeeper::InsertTo("tt_reports", ["theme" => $theme,
+                                                             "author" => $author,
+                                                             "short_message" => $shortMessage,
+                                                             "message" => $message,
+                                                             "create_date" => date("Y-m-d", Engine::GetSiteTime())]);
 
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ( $stmt = $mysqli->prepare("INSERT INTO `tt_reports` (`theme`, `author`, `short_message`, `message`, `create_date`) VALUE (?,?,?,?,?)")){
-                $date = date("Y-m-d", time());
-                $message = nl2br($message);
-                $stmt->bind_param("sisss", $theme, $author, $shortMessage, $message, $date);
-                $stmt->execute();
-                if ($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                return $stmt->insert_id;
-            }
-            return false;
         }
         public static function DeleteReport($reportId){
             if (!self::isReportExists($reportId)){
@@ -916,27 +444,9 @@ namespace Guards {
                 return ErrorManager::GetError();
             }
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("DELETE FROM `tt_reports` WHERE `id`=?")) {
-                $stmt->bind_param("i", $reportId);
-                $stmt->execute();
-                $stmt->close();
-            }
-            if ($stmt = $mysqli->prepare("DELETE FROM `tt_reportanswers` WHERE `reportId`=?")){
-                $stmt->bind_param("i", $reportId);
-                $stmt->execute();
-                if ($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                return True;
-            }
+            $firstQuery = DataKeeper::Delete("tt_reports", ["id" => $reportId]);
+            if ($firstQuery)
+                return DataKeeper::Delete("tt_reportanswers", ["reportId" => $reportId]);
             return false;
         }
 
@@ -948,67 +458,13 @@ namespace Guards {
                 return ErrorManager::GetError();
             }
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("UPDATE `tt_reports` SET $param=? WHERE `id`=?")){
-                $stmt->bind_param("si", $newValue, $idReport);
-                $stmt->execute();
-                if ($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                return true;
-            }
-            $stmt->close();
-            $mysqli->close();
-
-            return false;
+            return DataKeeper::Update("tt_reports", [$param => $newValue], ["id" => $idReport]);
         }
         public static function GetReportsCount(){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT count(*) FROM `tt_reports`")){
-                $stmt->execute();
-                if ($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                $stmt->bind_result($var);
-                $stmt->fetch();
-                return $var;
-            }
-            return 0;
+            return DataKeeper::MakeQuery("SELECT count(*) FROM `tt_reports`")["count(*)"];
         }
         public static function GetReportsCountWithUser($authorId){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT (SELECT count(*) FROM `tt_reports` WHERE `author`=?) + (SELECT count(*) FROM `tt_reportda` WHERE `addedUID`=?)")){
-                $stmt->bind_param("ii", $authorId, $authorId);
-                $stmt->execute();
-                if ($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                $stmt->bind_result($var);
-                $stmt->fetch();
-                return $var;
-            }
-            return 0;
+            return DataKeeper::MakeQuery("SELECT (SELECT count(*) FROM `tt_reports` WHERE `author`=$authorId) + (SELECT count(*) FROM `tt_reportda` WHERE `addedUID`=$authorId) AS `result`")["result"];
         }
         public static function GetReportsList($page = 1){
             if ($page < 1)
@@ -1016,99 +472,21 @@ namespace Guards {
 
             $lowBorder = ($page - 1) * 50;
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT `id` FROM `tt_reports` ORDER BY `id` DESC LIMIT $lowBorder,50")){
-                $stmt->execute();
-                if ($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                $result = array();
-                $stmt->bind_result($ids);
-                while ($stmt->fetch()){
-                    array_push($result, $ids);
-                }
-                return $result;
-            }
-            return false;
+            return DataKeeper::MakeQuery("SELECT `id` FROM `tt_reports` ORDER BY `id` DESC LIMIT $lowBorder,50", null, true);
         }
         public static function GetReportsListByAuthor($authorId, $page = 1){
             {
                 $lowBorder = ($page - 1) * 20;
 
-                $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-                if ($mysqli->errno){
-                    ErrorManager::GenerateError(2);
-                    return ErrorManager::GetError();
-                }
-
-                if ($stmt = $mysqli->prepare("(SELECT `id` FROM `tt_reports` WHERE `author` = ?) UNION (SELECT `reportId` FROM `tt_reportda` WHERE `addedUID` = ?) ORDER BY `id` DESC LIMIT $lowBorder, 20")){
-                    $stmt->bind_param("ii", $authorId,$authorId);
-                    $stmt->execute();
-                    if ($stmt->errno){
-                        ErrorManager::GenerateError(9);
-                        return ErrorManager::GetError();
-                    }
-                    $result = array();
-                    $stmt->bind_result($ids);
-                    while ($stmt->fetch()){
-                        array_push($result, $ids);
-                    }
-                    return $result;
-                }
-                return false;
+                return DataKeeper::MakeQuery("(SELECT `id` FROM `tt_reports` WHERE `author` = ?) UNION (SELECT `reportId` FROM `tt_reportda` WHERE `addedUID` = ?) ORDER BY `id` DESC LIMIT $lowBorder, 20",
+                                                    [$authorId, $authorId], true);
             }
         }
         public static function GetReportParam($reportId, $param){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT `$param` FROM `tt_reports` WHERE `id` = ? ")){
-                $stmt->bind_param("i", $reportId);
-                $stmt->execute();
-                if($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                $stmt->bind_result($result);
-                $stmt->fetch();
-                return $result;
-            }
-            return false;
-
+            return DataKeeper::Get("tt_reports", [$param], ["id" => $reportId])[0][$param];
         }
         public static function GetUnreadedReportsCount(){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT count(*) FROM `tt_reports` WHERE `viewed`=?")){
-                $v = 0;
-                $stmt->bind_param("i", $v);
-                $stmt->execute();
-                if ($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                $stmt->bind_result($r);
-                $stmt->fetch();
-                return $r;
-            }
-            return false;
+            return DataKeeper::MakeQuery("SELECT count(*) FROM `tt_reports` WHERE `viewed` = ?", [0])[0]["count(*)"];
         }
         public static function GetReport($reportId){
             if (!ReportAgent::isReportExists($reportId)) return false;
@@ -1117,53 +495,18 @@ namespace Guards {
 
         public static function AddToDiscusse($reportId, $id, $addedBy){
             if (ReportAgent::isAddedToDiscusse($reportId, $id)) return false;
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
 
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("INSERT INTO `tt_reportda` (`reportId`, `addedUID`, `addedByUID`) VALUE (?,?,?)")){
-                $stmt->bind_param("iii", $reportId, $id, $addedBy);
-                $stmt->execute();
-                if ($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                return true;
-            }
-            return false;
+            return DataKeeper::InsertTo("tt_reportda", ["reportId" => $reportId, "addedUID" => $id, "addedByUID" => $addedBy]);
         }
         public static function RemoveFromDiscusse($reportId, $id){
             if (!ReportAgent::isAddedToDiscusse($reportId, $id)) return false;
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
 
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("DELETE FROM `tt_reportda` WHERE `reportId`=? AND `addedUID`=?")){
-                $stmt->bind_param("ii", $reportId, $id);
-                $stmt->execute();
-                if ($stmt->errno){
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-                return true;
-            }
-            return false;
+            return DataKeeper::Delete("tt_reportda", ["reportId" => $reportId, "addedUID" => $id]);
         }
 
     }
 
     class CaptchaMen{
-
-        /* Первым делом используем GenerateCaptcha, чтобы сгенерировать код.
-         * Затем используем FetchCaptcha, чтобы внести капчу в бд.
-         * Только затем (!) используем GenerateImage.
-         */
         private static $captchaHash;
         private static $captchaIDHash;
         private static $captchaFetched = False;
@@ -1172,29 +515,10 @@ namespace Guards {
         private static function GetCaptcha($id, $type){
             if (empty($id)) exit;
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-            if (mysqli_connect_errno()) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            $result1 = '';
-            $stmt = $mysqli->prepare("SELECT `captcha` FROM `tt_captcha` WHERE id_hash=? and `type`=?");
-            $stmt->bind_param("ss", $id, $type);
-            $stmt->execute();
-            $stmt->bind_result($result);
-            $stmt->fetch();
-            if ($result != '') $result1 = $result;
-            else{ ErrorManager::GenerateError(8); $result = False;}
-
-            $stmt->close();
-            $mysqli->close();
-
-            if ($result == False) return ErrorManager::GetError();
-            else return $result1;
-
+            $queryResponse = DataKeeper::Get("tt_captcha", ["captcha"], ["id_hash" => $id, "type" => $type])[0]["captcha"];
+            if ($queryResponse != '') return $queryResponse;
+            else return false;
         }
-        //Function to generate captcha.
         public static function GenerateCaptcha(){
 
             self::$captchaFetched = False;
@@ -1216,33 +540,13 @@ namespace Guards {
             if (empty(self::$captchaHash) || empty($type)){ ErrorManager::GenerateError(8); return ErrorManager::GetError(); }
 
             self::$captchaType = $type;
+            $imageName = Engine::RandomGen(8);
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-            if (mysqli_connect_errno()) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("INSERT INTO `tt_captcha` (`id_hash`, `captcha`, `type`, `createTime`, `picName`) VALUE (?,?,?,?,?)")) {
-                $time = time();
-                $imageName = Engine::RandomGen(8);
-                $stmt->bind_param("sssis", self::$captchaIDHash, self::$captchaHash, $type, $time, $imageName);
-                $stmt->execute();
-
-                if (mysqli_stmt_errno($stmt)) {
-                    $stmt->close();
-                    $mysqli->close();
-                    ErrorManager::GenerateError(9);
-                    return ErrorManager::GetError();
-                }
-
-            } else {
-                ErrorManager::GenerateError(9);
-                return ErrorManager::GetError();
-            }
-
-            $stmt->close();
-            $mysqli->close();
+            DataKeeper::InsertTo("tt_captcha", ["id_hash" => self::$captchaIDHash,
+                                                             "captcha" => self::$captchaHash,
+                                                             "type" => $type,
+                                                             "createTime" => Engine::GetSiteTime(),
+                                                             "picName" => $imageName]);
             self::$captchaFetched = True;
             return $imageName;
 
@@ -1268,80 +572,37 @@ namespace Guards {
         public static function CheckCaptcha($typedCaptcha, $captchaID, $type){
             if (empty($captchaID) || empty($type) || empty($typedCaptcha)) return false;
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-            if (mysqli_connect_errno()) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT count(*) FROM `tt_captcha` WHERE `type`=? AND `captcha` LIKE ? AND `id_hash`=?")){
-                $stmt->bind_param("iss", $type, $typedCaptcha, $captchaID);
-                $stmt->execute();
-                $stmt->bind_result($r);
-                $stmt->fetch();
-                if ($r == 0) return false;
-                else return true;
-            }
-            return false;
+            return DataKeeper::MakeQuery("SELECT count(*) FROM `tt_captcha` WHERE `type` = ? AND `captcha` LIKE ? AND `id_hash` = ?", [$type, $typedCaptcha, $captchaID])["count(*)"] == 0 ? false : true;
         }
-
         public static function RemoveCaptcha(){
+            $time = Engine::GetSiteTime() - 600;
+            $queryResponse = DataKeeper::MakeQuery("SELECT `picName` FROM `tt_captcha` WHERE `createTime` < ?", [$time], true);
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-            if (mysqli_connect_errno()) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
+            foreach ($queryResponse as $captcha) {
+                unlink("../engine/captchas/" . $captcha["picName"] . ".png");
             }
 
-            $time = time()-600;
-            if ($stmt = $mysqli->prepare("SELECT picName FROM `tt_captcha` WHERE createTime < ?")) {
-                $stmt->bind_param("s", $time);
-                $stmt->execute();
-                $stmt->bind_result($picName);
-                while ($stmt->fetch()) {
-                    unlink("../engine/captchas/" . $picName . ".png");
-                }
-                $stmt->close();
-            }
-
-            if ($stmt = $mysqli->prepare("DELETE FROM `tt_captcha` WHERE createTime < ?")) {
-                $stmt->bind_param("s", $time);
-                $stmt->execute();
-                $stmt->close();
-            }
-
-            if (mysqli_stmt_errno($stmt)){
-                $stmt->close();
-                $mysqli->close();
-                ErrorManager::GenerateError(9);
-                return ErrorManager::GetError();
-            }
-
-            $stmt->close();
-            $mysqli->close();
-            return True;
+            return DataKeeper::Delete("tt_captcha", ["createTime" => $time]);
         }
-
     }
 
     class Logger{
         public static function LogAction($authorId, $log_text){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-            if (mysqli_connect_errno()) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-            $dataTime = Engine::GetSiteTime();
-
-            if ($stmt = $mysqli->prepare("INSERT INTO tt_logs (authorId, log_text, `datetime`) VALUE (?,?,?)")){
-                $stmt->bind_param("isi", $authorId,$log_text, $dataTime);
-                $stmt->execute();
-                return true;
-            }
-            return false;
+            return DataKeeper::InsertTo("tt_logs", ["authorId" => $authorId, "log_text" => $log_text, "datetime" => Engine::GetSiteTime()]);
         }
 
         public static function GetLogged(){
+            $queryResponse = DataKeeper::MakeQuery("SELECT * FROM `tt_logs` ORDER BY `datetime` DESC", null, true);
+            $result = [];
+            foreach ($queryResponse as $log){
+                $result[] = [
+                    "id" => $log["id"],
+                    "authorId" => $log["authorId"],
+                    "log_text" => $log["log_text"],
+                    "datetime" => $log["datetime"]
+                ];
+            }
+
             $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
             if (mysqli_connect_errno()) {
                 ErrorManager::GenerateError(2);

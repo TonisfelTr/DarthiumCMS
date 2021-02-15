@@ -85,7 +85,7 @@ if (isset($_GET["filter"])){
                         <tr>
                             <td><input type="checkbox" data-fid-selected="<?=$fileList[$i]["id"]?>"</td>
                             <td><?=$fileList[$i]["id"]?></td>
-                            <td><?=$fileList[$i]["name"]?></td>
+                            <td><a href="<?=$fileList[$i]["file_path"]?>/<?=$fileList[$i]["name"]?>"><?=$fileList[$i]["name"]?></a></td>
                             <td><?=\Engine\Engine::DateFormatToRead($fileList[$i]["upload_date"])?></td>
                             <td><?=$fileList[$i]["file_path"]?></td>
                             <td><?=\Users\UserAgent::GetUserNick($fileList[$i]["author"])?></td>

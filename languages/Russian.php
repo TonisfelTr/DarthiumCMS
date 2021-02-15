@@ -640,6 +640,7 @@ $languagePack = [
             "table_answered" => "Ответил",
             "empty_table" => "Нет ни одной жалобы.",
             "see_btn" => "Просмотреть",
+            "wait_for_answer" => "Ждёт ответа"
         ],
         "discussion_page" => [
             "panel_description" => "Обсуждение жалобы пользователя.",
