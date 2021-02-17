@@ -550,6 +550,7 @@ namespace Engine {
 
         public static function PretendToBeDied($lastText, \Exception $exception)
         {
+            ob_end_flush();
             ob_start();
             include_once Engine::ConstructTemplatePath("main", "error", "html");
             $excCatcher = getBrick();
@@ -927,6 +928,11 @@ namespace Engine {
             }
         }
 
+        /** Delete record from table.
+         * @param string $table Name of table
+         * @param array $whereArr Associative array where key is name of column and value is value of column.
+         * @return int Count of affected rows.
+         */
         public static function Delete($table, array $whereArr)
         {
             $pdo = self::connect();
@@ -949,7 +955,7 @@ namespace Engine {
          * @param string $table Name of table
          * @param array $whatArr Array with name of necessary row.
          * @param array $whereArr
-         * @return array
+         * @return array Array with results. First record has number 0 in resultative response.
          */
         public static function Get($table, array $whatArr, array $whereArr = null, int $limit = -1)
         {

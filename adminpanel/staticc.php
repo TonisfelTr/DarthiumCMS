@@ -122,19 +122,16 @@ if ($editSContentPerm){
                             </tr>
                         <?php } else ?>
                         <?php foreach($tablePage as $item){
-                            $p = new \Forum\StaticPage($item); ?>
+                            $p = new \Forum\StaticPage($item["id"]); ?>
                             <tr>
-                                <td><input type="checkbox" data-spi="<?php echo $p->getPageID(); ?>"></td>
-                                <td><a href="/?sp=<?php echo $p->getPageID(); ?>"><?php echo $p->getPageName(); ?></a></td>
-                                <td><?php echo $p->getPageDescription(); ?></td>
-                                <?php $nickname = "";
-                                if (!\Users\UserAgent::IsUserExist($p->getPageAuthorId())){
-                                    $nickname = "Автор удалён";
-                                }
-                                else
-                                    $nickname = \Users\UserAgent::GetUserNick($p->getPageAuthorId()); ?>
+                                <td><input type="checkbox" data-spi="<?= $p->getPageID(); ?>"></td>
+                                <td><a href="/?sp=<?= $p->getPageID(); ?>"><?= $p->getPageName(); ?></a></td>
+                                <td><?= $p->getPageDescription(); ?></td>
+                                <?php $nickname = (!\Users\UserAgent::IsUserExist($p->getPageAuthorId())) ?
+                                                    \Engine\LanguageManager::GetTranslation("staticc_panel.pages_managment.deleted_author") :
+                                                    \Users\UserAgent::GetUserNick($p->getPageAuthorId()); ?>
                                 <td><?=$nickname?></td>
-                                <td><?php echo \Engine\Engine::DateFormatToRead($p->getPageCreateDate()); ?></td>
+                                <td><?= \Engine\Engine::DateFormatToRead($p->getPageCreateDate()); ?></td>
                                 <td><button class="btn btn-default alert-info" name="staticc-page-edit-btn" type="submit" formaction="adminpanel/scripts/staticc.php?id=<?php echo $p->getPageID(); ?>" style="width: 100%;"><?=\Engine\LanguageManager::GetTranslation("edit")?></button></td>
                             </tr>
                             <?php } ?>

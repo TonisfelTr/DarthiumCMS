@@ -58,7 +58,7 @@ if (count($categories) == 0){
 }
 else {
     foreach($categories as $c){
-        $c = new \Forum\Category($c);
+        $c = new \Forum\Category($c["id"]);
         $categoryMenu .= "<li><a href=\"?category=". $c->getId() . "\" title=\"". $c->getDescription()."\">". $c->getName() ."</a></li>" . PHP_EOL;
     }
 }
@@ -96,7 +96,11 @@ elseif (!empty($_GET["sp"])){
     }
 elseif (!empty($_GET["topic"])){
         if (\Forum\ForumAgent::isTopicExists($_GET["topic"])) {
-            include_once "./site/newsviewer.php";
+            $topic = new \Forum\Topic($_GET["topic"]);
+            if ($topic->getCategory()->isPublic() || (!$topic->getCategory()->isPublic() && $user !== false && $user->UserGroup()->getPermission("category_see_unpublic")))
+                include_once "./site/newsviewer.php";
+            else
+                include_once "./site/errors/forbidden.php";
         }
         else include_once "./site/errors/notfound.php";
     }
@@ -276,7 +280,7 @@ if (empty($lastTopics)){
 } else {
     $ltText = "<ul>";
     foreach ($lastTopics as $topicId){
-        $topic = new \Forum\Topic($topicId);
+        $topic = new \Forum\Topic($topicId["id"]);
         $ltText .= "<li><a class=\"alert-link\" href=\"?topic=$topicId\">" . $topic->getName() . "</a></li>";
     }
     $ltText .= "</ul>";

@@ -10,7 +10,7 @@ include_once "site/uploader.php";
 
 $categoriesList = "";
 foreach ($categories as $c){
-    $category = new \Forum\Category($c);
+    $category = new \Forum\Category($c["id"]);
     if ($category->isPublic() || (!$category->isPublic() && $user->UserGroup()->getPermission("category_see_unpublic")))
         $categoriesList .= "<option value=\"" . $category->getId() . "\">" . $category->getName() . "</option>";
 }
@@ -33,7 +33,7 @@ if (empty($lastTopics)){
 } else {
     $lastTopicsText = "<ol>";
     foreach ($lastTopics as $topicId){
-        $topic = new \Forum\Topic($topicId);
+        $topic = new \Forum\Topic($topicId["id"]);
         $lastTopicsText .= "<li><a href=\"?topic=$topicId\">" . $topic->getName() . "</a> [<a href=\"profile.php?uid=" . $topic->getAuthorId() . "\">" .$topic->getAuthor()->getNickname() . "</a>]</li>";
     }
     $lastTopicsText .= "</ol>";

@@ -22,8 +22,8 @@ if (empty($results)){
     foreach ($results as $result){
         include "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/searchform.html";
         $form = getBrick();
-        $author = new \Users\User($result[0]);
-        $topic = new \Forum\Topic(\Forum\ForumAgent::GetTopicId($result[1])[0]["id"]);
+        $author = new \Users\User($result["authorId"]);
+        $topic = new \Forum\Topic(\Forum\ForumAgent::GetTopicId($result["name"]));
         $form = str_replace_once("{AUTHOR_TOPIC_AVATAR}", $author->getAvatar(), $form);
         $form = str_replace_once("{AUTHOR_TOPIC_ID}", $author->getId(), $form);
         $form = str_replace_once("{AUTHOR_TOPIC_NICKNAME}", $author->getNickname(), $form);

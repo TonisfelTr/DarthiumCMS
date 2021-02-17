@@ -21,8 +21,12 @@ if (isset($_GET["category"])) {
 if ($topicCount == 0)
     include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/news_empty.html";
 else {
-    for ($i = 0; $i < count($topicList); $i++){
-        $topic = new \Forum\Topic($topicList[$i]);
+    foreach ($topicList as $topic){
+        $topic = new \Forum\Topic($topic["id"]);
+        if ((!$topic->getCategory()->isPublic() && $user === false) ||
+            (!$topic->getCategory()->isPublic() && $user !== false && !$user->UserGroup()->getPermission("category_see_unpublic"))
+        )
+            continue;
         include "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/news/preview.html";
         $newBody = getBrick();
         $newBody = str_replace_once("{TOPIC_AUTHOR_AVATAR}", $topic->getAuthor()->getAvatar(), $newBody);
