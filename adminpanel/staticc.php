@@ -559,18 +559,18 @@ if ($editSContentPerm){
                                 <div class="btn-group">
                                     <?php
                                     $navbarbtns = \SiteBuilders\NavbarAgent::GetElements();
-                                    for ($i = 0; $i < count($navbarbtns); $i++){
-                                        if ($navbarbtns[$i][0] == "nav-btn"){
-                                            $data_href = $navbarbtns[$i][2];
-                                            $content = $navbarbtns[$i][1];
-                                            $id = $navbarbtns[$i][3];
+                                    foreach ($navbarbtns as $navbarbtn){
+                                        if ($navbarbtn["type"] == "nav-btn"){
+                                            $data_href = $navbarbtn["action"];
+                                            $content = $navbarbtn["content"];
+                                            $id = $navbarbtn["id"];
                                             echo "<button class=\"btn btn-default\" type=\"button\" data-href=\"$data_href\" data-id=\"$id\">$content</button>";
                                         }
-                                        if ($navbarbtns[$i][1] == "nav-list"){
-                                            $children = \SiteBuilders\NavbarAgent::GetElementsOfList($navbarbtns[$i][0]);
-                                            $data_content = $navbarbtns[$i][3];
-                                            $content = $navbarbtns[$i][2];
-                                            $id = $navbarbtns[$i][0]; ?>
+                                        if ($navbarbtn["type"] == "nav-list"){
+                                            $children = \SiteBuilders\NavbarAgent::GetElementsOfList($navbarbtn["id"]);
+                                            $data_content = $navbarbtn["action"];
+                                            $content = $navbarbtn["content"];
+                                            $id = $navbarbtns["id"]; ?>
                                             <div class="btn-group">
                                                 <button type="button" class="btn btn-default" data-id="<?=$id?>" data-content="<?=$data_content?>"><?=$content?></button>
                                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

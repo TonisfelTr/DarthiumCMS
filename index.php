@@ -189,17 +189,18 @@ if (isset($_GET["res"])){
 
 $navbtns = \SiteBuilders\NavbarAgent::GetElements();
 $ul = "";
-for($i = 0; $i < count($navbtns); $i++){
-    if ($navbtns[$i][0] == "nav-btn") {
-        $data_href = $navbtns[$i][2];
-        $content = $navbtns[$i][1];
+
+foreach ($navbtns as $navbtn){
+    if ($navbtn["type"] == "nav-btn") {
+        $data_href = $navbtn["action"];
+        $content = $navbtn["content"];
         $ul .= "<li><a href=\"$data_href\">$content</a></li>";
     }
-    if ($navbtns[$i][1] == "nav-list") {
-        $children = \SiteBuilders\NavbarAgent::GetElementsOfList($navbtns[$i][0]);
-        $data_content = $navbtns[$i][3];
-        $content = $navbtns[$i][2];
-        $id = $navbtns[$i][0];
+    if ($navbtn["type"] == "nav-list") {
+        $children = \SiteBuilders\NavbarAgent::GetElementsOfList($navbtn["id"]);
+        $data_content = $navbtn["action"];
+        $content = $navbtn["content"];
+        $id = $navbtn["id"];
         $ul .= "<li class=\"dropdown\"><a aria-expanded=\"false\" aria-haspopup=\"true\" role=\"button\" data-toggle=\"dropdown\" class=\"dropdown-toggle\" href=\"#\">$content <span class=\"caret\"></span></a>";
         if ($data_content != "")
             $ul .= "<ul class=\"dropdown-menu\">$data_content</ul>";

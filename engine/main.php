@@ -526,6 +526,7 @@ namespace Engine {
             /****************************************/
             37 => "Plugin with that constant already exists!",
             38 => "Plugin has no languages files.",
+            40 => "Plugin doesn't have configuration file.",
             /*-------------------------------------*/
             39 => "Syntax error in SQL code"
         );
@@ -1067,7 +1068,11 @@ namespace Engine {
             foreach ($keymap as $hostFolder) {
                 if (is_file("addons/$hostFolder/bin/main.php")) {
                     $conf = include "addons/$hostFolder/config/config.php";
-                    //TODO: Сделать работу, при отсутствии файла конфигурации.
+                    if (!$conf) {
+                        ErrorManager::GenerateError(40);
+                        ErrorManager::PretendToBeDied(ErrorManager::GetErrorCode(2), new \Exception("Configuration file doesn't exist."));
+                        return 2;
+                    }
                     self::$plugins[$hostFolder]["config"] = $conf;
                 }
                 continue;

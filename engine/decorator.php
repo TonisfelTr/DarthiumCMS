@@ -6,8 +6,7 @@ namespace SiteBuilders {
     use Engine\ErrorManager;
     use Users\PrivateMessager;
     use Engine\Engine;
-    //@TODO: Убрать названия таблиц,
-    //       Возможно, префикс у таблиц можно будет указать при установке.
+
     const SB_TABLE = "tt_staticcomponents";
     const SB_NAVIGATOR = "tt_navbar";
     const SB_RIGHTSIDE = 3;
@@ -113,7 +112,6 @@ namespace SiteBuilders {
     }
 
     class BannerAgent{
-        //TODO: Проверить, возможно тут будет ошибка с тем, что контент пустой.
         public static function AddSmallBanner($name, $content = null){
             $result = DataKeeper::InsertTo(SB_TABLE, array("type" => "smallbanner",
                                                                               "name" => $name,
@@ -268,131 +266,28 @@ namespace SiteBuilders {
 
         public static function GetElements()
         {
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT * FROM tt_navbar")) {
-                $stmt->execute();
-                $stmt->bind_result($id, $type, $content, $parent, $action);
-                $result = [];
-                while ($stmt->fetch()) {
-                    if ($type == "nav-btn") {
-                        array_push($result, [$type, $content, $action, $id]);
-                    } elseif ($type == "nav-list") {
-                        array_push($result, [$id, $type, $content, $action]);
-                    }
-                }
-                return $result;
-            }
+            return DataKeeper::Get(SB_NAVIGATOR, ["*"], []);
         }
         public static function GetElementsOfList($parentId){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("SELECT id,content, action FROM tt_navbar WHERE parent = ?")){
-                $stmt->bind_param("i", $parentId);
-                $stmt->execute();
-                $result = [];
-                $stmt->bind_result($id, $content, $action);
-                while($stmt->fetch()){
-                    array_push($result, [$id, $content, $action]);
-                }
-                return $result;
-            }
-            return false;
+            return DataKeeper::Get("tt_navbar", ["id", "content", "action"], ["parent" => $parentId]);
         }
         public static function AddButton($text, $link){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("INSERT INTO `tt_navbar` (type, content, parent, action) VALUE (?,?,?,?)")){
-                $button = "nav-btn";
-                $parent = 0;
-                $stmt->bind_param("ssis", $button, $text, $parent, $link);
-                $stmt->execute();
-
-                return true;
-            }
-
-            return false;
+            return DataKeeper::InsertTo(SB_NAVIGATOR, ["type" => "nav-btn", "content" => $text, "parent" => 0, "action" => $link]);
         }
         public static function AddList($name, $content){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("INSERT INTO `tt_navbar` (type, content, parent,action) VALUE (?,?,?,?)")){
-                $button = "nav-list";
-                $parent = 0;
-                $stmt->bind_param("ssis", $button, $name, $parent, $content);
-                $stmt->execute();
-                return true;
-            }
-            return false;
+            return DataKeeper::InsertTo(SB_NAVIGATOR, ["type" => "nav-list", "content" => $name, "parent" => 0, "action" => $content]);
         }
         public static function AddListElement($parentListId, $content, $action){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("INSERT INTO tt_navbar (type, content, parent, action) VALUE (?,?,?,?)")){
-                $type = "nav-list-element";
-                $stmt->bind_param("ssis", $type, $content, $parentListId, $action);
-                $stmt->execute();
-                return $stmt->insert_id;
-            }
-            return false;
+            return DataKeeper::InsertTo("tt_navbar", ["type" => "nav-list-element", "content" => $content, "parent" => $parentListId, "action" => $action]);
         }
         public static function RemoveElement($id){
             if ($id == 0 || empty($id) || is_null($id))
                 return false;
 
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("DELETE FROM tt_navbar WHERE id = ? OR parent = ?")){
-                $stmt->bind_param("ii", $id, $id);
-                $stmt->execute();
-                return true;
-            }
-            return false;
+            return DataKeeper::MakeQuery("DELETE FROM `tt_navbar` WHERE `id` = ? OR `parent` = ?", [$id, $id]);
         }
         public static function ChangeElement($id, $content, $action){
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno){
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
-            if ($stmt = $mysqli->prepare("UPDATE tt_navbar SET content = ?, action = ? WHERE id = ?")){
-                $stmt->bind_param("ssi", $content, $action, $id);
-                $stmt->execute();
-                return true;
-            }
-            return false;
+            return DataKeeper::Update("tt_navbar", ["content" => $content, "action" => $action], [$id]);
         }
     }
 }
