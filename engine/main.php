@@ -551,9 +551,21 @@ namespace Engine {
 
         public static function PretendToBeDied($lastText, \Exception $exception)
         {
+            function getBrick(){
+                $e = ob_get_contents();
+                ob_clean();
+                return $e;
+            }
+
+            function str_replace_once($search, $replace, $text){
+                $pos = strpos($text, $search);
+                return $pos!==false ? substr_replace($text, $replace, $pos, strlen($search)) : $text;
+            }
+
             ob_end_flush();
             ob_start();
             include_once Engine::ConstructTemplatePath("main", "error", "html");
+
             $excCatcher = getBrick();
             ob_end_flush();
             $excCatcher = str_replace("{ERROR_CODE}", ErrorManager::GetError(), $excCatcher);

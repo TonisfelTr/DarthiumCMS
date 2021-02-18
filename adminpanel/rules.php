@@ -51,7 +51,7 @@ if (isset($_SESSION["result"])) $resultSave = $_SESSION["result"]; ?>
                 </select>
             </div>
             <hr/>
-            <textarea class="form-control" placeholder="<?= \Engine\LanguageManager::GetTranslation("editor_functions.enter_rules_text") ?>" style="width: 100%; min-height: 250px; resize: vertical; " id="rules_texter" name="rules_texter"><?php echo $rulesText; ?></textarea>
+            <textarea class="form-control" placeholder="<?= \Engine\LanguageManager::GetTranslation("rules_panel.enter_rules_text") ?>" style="width: 100%; min-height: 250px; resize: vertical; " id="rules_texter" name="rules_texter"><?php echo $rulesText; ?></textarea>
             <hr/>
             <div class="center">
                 <div class="btn-group">
