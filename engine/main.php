@@ -1089,17 +1089,14 @@ namespace Engine {
                 return ErrorManager::GetError();
             }
 
-            if ($stmt = $mysqli->prepare("INSERT INTO `tt_plugins` (`name`, `codename`, `description`, `status`) VALUE (?, ?, ?, ?)")) {
-                $stmt->bind_param("sssi", $name, $codeName, $description, $status);
-                $stmt->execute();
-                if ($stmt->affected_rows > 0) {
+            $insertInto = DataKeeper::InsertTo("tt_plugins", ["name" => $name, "codename" => $codeName, "description" => $description, "status" => $status]);
+            if ($insertInto > 0) {
                     self::$installed[$codeName] = ["name" => $name,
                         "codeName" => $codeName,
                         "description" => $description,
                         "status" => $status];
-                }
-                $lastId = $stmt->insert_id;
-                $stmt->close();
+
+                $lastId = $insertInto;
             }
 
             if (is_file( "../../../addons/$codeName/config/traces.php")) {
