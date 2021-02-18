@@ -724,7 +724,10 @@ namespace Engine {
          */
         public static function load()
         {
-            $languageFile = $_SERVER["DOCUMENT_ROOT"] . "/languages/" . Engine::GetEngineInfo("sl") . ".php";
+            if (Engine::GetEngineInfo("sl") == "")
+                $languageFile = $_SERVER["DOCUMENT_ROOT"] . "/languages/English.php";
+            else
+                $languageFile = $_SERVER["DOCUMENT_ROOT"] . "/languages/" . Engine::GetEngineInfo("sl") . ".php";
             if (!file_exists($languageFile))
                 throw new \Error("Language file is not exist");
             require $languageFile;
