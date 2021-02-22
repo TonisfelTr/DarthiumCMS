@@ -68,9 +68,9 @@ if (!$user->UserGroup()->getPermission("change_engine_settings")) {
         if ($_POST["domain"] != \Engine\Engine::GetEngineInfo("dm"))
             \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.domain_site_log") . "[" . \Engine\Engine::GetEngineInfo("dm") . " -> " . $_POST["domain"] . "]");
         if ($_POST["sitename"] != \Engine\Engine::GetEngineInfo("sn"))
-            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.site_name_log") ."[" . \Engine\Engine::GetEngineInfo("sn") . " -> " . $_POST["sitename"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_name_log") ."[" . \Engine\Engine::GetEngineInfo("sn") . " -> " . $_POST["sitename"] . "]");
         if ($_POST["sitetagline"] != \Engine\Engine::GetEngineInfo("stl"))
-            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.site_tagline_log") . "[" . \Engine\Engine::GetEngineInfo("stl") . " -> " . $_POST["sitetagline"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_tagline_log") . "[" . \Engine\Engine::GetEngineInfo("stl") . " -> " . $_POST["sitetagline"] . "]");
         if ($_POST["sitestatus"] != \Engine\Engine::GetEngineInfo("ss")) {
             $siteStatusFrom = (\Engine\Engine::GetEngineInfo("ss") == 0) ? \Engine\LanguageManager::GetTranslation("off") : \Engine\LanguageManager::GetTranslation("on");
             $siteStatusTo = ($_POST["sitestatus"] == 0) ? \Engine\LanguageManager::GetTranslation("off") : \Engine\LanguageManager::GetTranslation("on");

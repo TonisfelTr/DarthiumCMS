@@ -104,40 +104,40 @@ if ($editSContentPerm){
                         </div><?php } ?>
                     <div class="alert alert-info" id="staticc-selected-div" style="display: none;"><strong><?=\Engine\LanguageManager::GetTranslation("staticc_panel.pages_managment.selected_pages")?></strong> <span>0</span></div>
                     <div class="table-responsive">
-                    <table class="table" id="staticc-pages-table">
-                        <thead>
-                        <tr class="staticc-table-header">
-                            <td><input type="checkbox" id="staticc-table-select-all-checkbox"></td>
-                            <td><?=\Engine\LanguageManager::GetTranslation("staticc_panel.pages_managment.table_name")?></td>
-                            <td><?=\Engine\LanguageManager::GetTranslation("staticc_panel.pages_managment.table_description")?></td>
-                            <td><?=\Engine\LanguageManager::GetTranslation("staticc_panel.pages_managment.table_author")?></td>
-                            <td><?=\Engine\LanguageManager::GetTranslation("staticc_panel.pages_managment.table_time_creation")?></td>
-                            <td><?php if ($createPPerm) { ?><button class="btn btn-default" type="button" id="staticc-page-create-btn" data-div="staticc-page-create-div" style="width: 100%;"><span class="glyphicons glyphicons-file-plus"></span> <?=\Engine\LanguageManager::GetTranslation("staticc_panel.pages_managment.create_new_static_page")?></button><?php } ?></td>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <?php if ($tablePageCount == 0) { ?>
-                            <tr>
-                                <td colspan="6" class="alert-info" style="text-align: center;"><span class="glyphicons glyphicons-info-sign"></span> <?=\Engine\LanguageManager::GetTranslation("staticc_panel.pages_managment.no_static_pages")?></td>
+                        <table class="table" id="staticc-pages-table">
+                            <thead>
+                            <tr class="staticc-table-header">
+                                <td><input type="checkbox" id="staticc-table-select-all-checkbox"></td>
+                                <td><?=\Engine\LanguageManager::GetTranslation("staticc_panel.pages_managment.table_name")?></td>
+                                <td><?=\Engine\LanguageManager::GetTranslation("staticc_panel.pages_managment.table_description")?></td>
+                                <td><?=\Engine\LanguageManager::GetTranslation("staticc_panel.pages_managment.table_author")?></td>
+                                <td><?=\Engine\LanguageManager::GetTranslation("staticc_panel.pages_managment.table_time_creation")?></td>
+                                <td><?php if ($createPPerm) { ?><button class="btn btn-default" type="button" id="staticc-page-create-btn" data-div="staticc-page-create-div" style="width: 100%;"><span class="glyphicons glyphicons-file-plus"></span> <?=\Engine\LanguageManager::GetTranslation("staticc_panel.pages_managment.create_new_static_page")?></button><?php } ?></td>
                             </tr>
-                        <?php } else ?>
-                        <?php foreach($tablePage as $item){
-                            $p = new \Forum\StaticPage($item["id"]); ?>
-                            <tr>
-                                <td><input type="checkbox" data-spi="<?= $p->getPageID(); ?>"></td>
-                                <td><a href="/?sp=<?= $p->getPageID(); ?>"><?= $p->getPageName(); ?></a></td>
-                                <td><?= $p->getPageDescription(); ?></td>
-                                <?php $nickname = (!\Users\UserAgent::IsUserExist($p->getPageAuthorId())) ?
-                                                    \Engine\LanguageManager::GetTranslation("staticc_panel.pages_managment.deleted_author") :
-                                                    \Users\UserAgent::GetUserNick($p->getPageAuthorId()); ?>
-                                <td><?=$nickname?></td>
-                                <td><?= \Engine\Engine::DateFormatToRead($p->getPageCreateDate()); ?></td>
-                                <td><button class="btn btn-default alert-info" name="staticc-page-edit-btn" type="submit" formaction="adminpanel/scripts/staticc.php?id=<?php echo $p->getPageID(); ?>" style="width: 100%;"><?=\Engine\LanguageManager::GetTranslation("edit")?></button></td>
-                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php if ($tablePageCount == 0) { ?>
+                                <tr>
+                                    <td colspan="6" class="alert-info" style="text-align: center;"><span class="glyphicons glyphicons-info-sign"></span> <?=\Engine\LanguageManager::GetTranslation("staticc_panel.pages_managment.no_static_pages")?></td>
+                                </tr>
+                            <?php } else ?>
+                            <?php foreach($tablePage as $item){
+                                $p = new \Forum\StaticPage($item["id"]); ?>
+                                <tr>
+                                    <td><input type="checkbox" data-spi="<?= $p->getPageID(); ?>"></td>
+                                    <td><a href="/?sp=<?= $p->getPageID(); ?>"><?= $p->getPageName(); ?></a></td>
+                                    <td><?= $p->getPageDescription(); ?></td>
+                                    <?php $nickname = (!\Users\UserAgent::IsUserExist($p->getPageAuthorId())) ?
+                                        \Engine\LanguageManager::GetTranslation("staticc_panel.pages_managment.deleted_author") :
+                                        \Users\UserAgent::GetUserNick($p->getPageAuthorId()); ?>
+                                    <td><?=$nickname?></td>
+                                    <td><?= \Engine\Engine::DateFormatToRead($p->getPageCreateDate()); ?></td>
+                                    <td><button class="btn btn-default alert-info" name="staticc-page-edit-btn" type="submit" formaction="adminpanel/scripts/staticc.php?id=<?php echo $p->getPageID(); ?>" style="width: 100%;"><?=\Engine\LanguageManager::GetTranslation("edit")?></button></td>
+                                </tr>
                             <?php } ?>
 
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
                     </div>
                     <input type="hidden" id="staticc-page-delete" name="staticc-page-delete">
                     <?php if (\Forum\StaticPagesAgent::GetPagesCount() > 0) { ?>
@@ -394,8 +394,8 @@ if ($editSContentPerm){
                                         <div class="input-group-btn">
                                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.sidepanels_panel.actions")?> <span class="caret"></span></button>
                                             <ul class="dropdown-menu dropdown-menu-right">
-                                                <li><a id="staticc-panels-add" title="Добавить панель."><span class="glyphicons glyphicons-plus"></span> <?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.sidepanels_panel.create_panel")?></a></li>
-                                                <li><a id="staticc-panels-remove" title="Удалить панель."><span class="glyphicons glyphicons-erase"></span> <?=\Engine\LanguageManager::GetTranslation("remove")?></a></li>
+                                                <li><a id="staticc-panels-add" title="<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.sidepanels_panel.create_panel")?>"><span class="glyphicons glyphicons-plus"></span> <?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.sidepanels_panel.create_panel")?></a></li>
+                                                <li><a id="staticc-panels-remove" title="<?=\Engine\LanguageManager::GetTranslation("remove")?>"><span class="glyphicons glyphicons-erase"></span> <?=\Engine\LanguageManager::GetTranslation("remove")?></a></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -588,7 +588,7 @@ if ($editSContentPerm){
                                                 </ul>
                                             </div>
 
-                                       <?php }
+                                        <?php }
                                     } ?>
                                 </div>
                             </div>
@@ -601,7 +601,7 @@ if ($editSContentPerm){
 </div>
 <script type="text/javascript">
     $(document).ready(function (){
-       $("#btn-operation-container > p").hide();
+        $("#btn-operation-container > p").hide();
     });
 
     $("#btn-manager-div > button").on("click", function () {
@@ -612,7 +612,7 @@ if ($editSContentPerm){
 
     if ($("#navbar-group-box > div").children().length > 1)
         $("#navbar-group-box > div > span").hide();
-// Creation default button ///////////////////////////////////////////////////
+    // Creation default button ///////////////////////////////////////////////////
     $("#link-create-input").on("click", function() {
         $("#link-create-input").removeClass("alert alert-danger");
         $("#link-create-input").attr("placeholder", "");
@@ -627,338 +627,338 @@ if ($editSContentPerm){
         if ($("#name-create-input").val() == ""){
             $("#name-create-input").addClass("alert alert-danger");
             $("#name-create-input").attr("placeholder", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.enter_button_text")?>");
-                                    return;
-                                }
-                                if ($("#link-create-input").val() == ""){
-                                    $("#link-create-input").addClass("alert alert-danger");
-                                    $("#link-create-input").attr("placeholder", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.enterlink")?>");
-                                    return;
-                                }
-                                if ($("#navbar-group-box > div").children().length == 7){
-                                    ShowSCErrorBox("error", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.button_limit")?>");
-                                    return;
-                                }
-                                var btn = document.createElement("button");
-                                $(btn).addClass("btn");
-                                $(btn).addClass("btn-default");
-                                $(btn).attr("type", "button");
-                                $(btn).attr("data-href", $("#link-create-input").val());
-                                $(btn).append($("#name-create-input").val());
-                                $("#navbar-group-box > div").append(btn);
-                                $.ajax({
-                                    url: "adminpanel/scripts/ajax/navbarajax.php",
-                                    type: "POST",
-                                    data: "create_btn&text=" + $("#name-create-input").val() +
-                                          "&link=" + $("#link-create-input").val(),
-                                    success: function(data){
-                                        if (data === "okey")
-                                            ShowSCErrorBox("okey", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.button_creation_success")?>");
-                                    }
-                                });
-                            });
-                        /////////////////////////////////////////////////////////////////////////////////////////
-                        /// Create list /////////////////////////////////////////////////////////////////////////
-                            $("#list-name-create-input").on("click", function() {
-                                $("#list-name-create-input").removeClass("alert alert-danger");
-                                $("#list-name-create-input").attr("placeholder", "");
-                            });
+            return;
+        }
+        if ($("#link-create-input").val() == ""){
+            $("#link-create-input").addClass("alert alert-danger");
+            $("#link-create-input").attr("placeholder", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.enterlink")?>");
+            return;
+        }
+        if ($("#navbar-group-box > div").children().length == 7){
+            ShowSCErrorBox("error", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.button_limit")?>");
+            return;
+        }
+        var btn = document.createElement("button");
+        $(btn).addClass("btn");
+        $(btn).addClass("btn-default");
+        $(btn).attr("type", "button");
+        $(btn).attr("data-href", $("#link-create-input").val());
+        $(btn).append($("#name-create-input").val());
+        $("#navbar-group-box > div").append(btn);
+        $.ajax({
+            url: "adminpanel/scripts/ajax/navbarajax.php",
+            type: "POST",
+            data: "create_btn&text=" + $("#name-create-input").val() +
+                "&link=" + $("#link-create-input").val(),
+            success: function(data){
+                if (data === "okey")
+                    ShowSCErrorBox("okey", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.button_creation_success")?>");
+            }
+        });
+    });
+    /////////////////////////////////////////////////////////////////////////////////////////
+    /// Create list /////////////////////////////////////////////////////////////////////////
+    $("#list-name-create-input").on("click", function() {
+        $("#list-name-create-input").removeClass("alert alert-danger");
+        $("#list-name-create-input").attr("placeholder", "");
+    });
 
-                            $("#create-list-btn-btn").on("click", function () {
-                               if ($("#list-name-create-input").val() == ""){
-                                   $("#list-name-create-input").addClass("alert alert-danger");
-                                   $("#list-name-create-input").attr("placeholder", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.enter_list_name")?>");
-                                   return;
-                               }
-                                if ($("#navbar-group-box > div > span").is(":hidden") == false)
-                                    $("#navbar-group-box > div > span").hide();
+    $("#create-list-btn-btn").on("click", function () {
+        if ($("#list-name-create-input").val() == ""){
+            $("#list-name-create-input").addClass("alert alert-danger");
+            $("#list-name-create-input").attr("placeholder", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.enter_list_name")?>");
+            return;
+        }
+        if ($("#navbar-group-box > div > span").is(":hidden") == false)
+            $("#navbar-group-box > div > span").hide();
 
-                                if ($("#navbar-group-box > div").children().length >= 7){
-                                    ShowSCErrorBox("error", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.button_limit")?>");
-                                    return;
-                                }
-                               var div_group = document.createElement("div");
-                               var div_btn = document.createElement("button");
-                               var div_btn_dropdown = document.createElement("button");
-                               var span = document.createElement("span");
-                               var span_sr = document.createElement("span");
-                               var ul = document.createElement("ul");
-                               $(span).addClass("caret");
-                               $(span_sr).addClass("sr-only");
-                               $(span_sr).append("Toggle Dropdown");
-                               $(div_group).addClass("btn-group");
-                               $(div_btn).addClass("btn btn-default");
-                               if ($("#list-text-create-input").val() != "")
-                                   $(div_btn).attr("data-content", $("#list-text-create-input").val());
-                               $(div_btn).attr("type", "button");
-                               $(div_btn_dropdown).addClass("btn btn-default dropdown-toggle");
-                               $(div_btn_dropdown).attr("data-toggle", "dropdown");
-                               $(ul).addClass("dropdown-menu");
-                               $(div_btn_dropdown).append(span);
-                               $(div_btn_dropdown).append(span_sr);
-                               $(div_btn).append($("#list-name-create-input").val());
-                               $(div_group).append(div_btn);
-                               $(div_group).append(div_btn_dropdown);
-                               $(div_group).append(ul);
-                               $("#navbar-group-box > div").append(div_group);
-                                $.ajax({
-                                url: "adminpanel/scripts/ajax/navbarajax.php",
-                                type: "POST",
-                                data: "create_list&text=" + $("#list-name-create-input").val() +
-                                    "&action=" + $("#list-text-create-input").val(),
-                                success: function(data){
-                                    if (data === "okey")
-                                        ShowSCErrorBox("okey", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.list_created_success")?>");
-                                }
-                                });
-                            });
-                        /////////////////////////////////////////////////////////////////////////////////////////
-                        /// Create editor ///////////////////////////////////////////////////////////////////////
-                            $("#navbar-edit-btn").on("click", function() {
-                                if ($(this).hasClass("active")) {
-                                    $("#btn-operation-container > div").hide();
-                                    $("#btn-operation-container > p").show();
-                                    $("#navbar-group-box").css("background", "darkgrey");
-                                    $("#navbar-group-box > div > button").on("click", function() {
-                                        if (!$("#navbar-edit-btn").hasClass("active"))
-                                            return;
+        if ($("#navbar-group-box > div").children().length >= 7){
+            ShowSCErrorBox("error", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.button_limit")?>");
+            return;
+        }
+        var div_group = document.createElement("div");
+        var div_btn = document.createElement("button");
+        var div_btn_dropdown = document.createElement("button");
+        var span = document.createElement("span");
+        var span_sr = document.createElement("span");
+        var ul = document.createElement("ul");
+        $(span).addClass("caret");
+        $(span_sr).addClass("sr-only");
+        $(span_sr).append("Toggle Dropdown");
+        $(div_group).addClass("btn-group");
+        $(div_btn).addClass("btn btn-default");
+        if ($("#list-text-create-input").val() != "")
+            $(div_btn).attr("data-content", $("#list-text-create-input").val());
+        $(div_btn).attr("type", "button");
+        $(div_btn_dropdown).addClass("btn btn-default dropdown-toggle");
+        $(div_btn_dropdown).attr("data-toggle", "dropdown");
+        $(ul).addClass("dropdown-menu");
+        $(div_btn_dropdown).append(span);
+        $(div_btn_dropdown).append(span_sr);
+        $(div_btn).append($("#list-name-create-input").val());
+        $(div_group).append(div_btn);
+        $(div_group).append(div_btn_dropdown);
+        $(div_group).append(ul);
+        $("#navbar-group-box > div").append(div_group);
+        $.ajax({
+            url: "adminpanel/scripts/ajax/navbarajax.php",
+            type: "POST",
+            data: "create_list&text=" + $("#list-name-create-input").val() +
+                "&action=" + $("#list-text-create-input").val(),
+            success: function(data){
+                if (data === "okey")
+                    ShowSCErrorBox("okey", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.list_created_success")?>");
+            }
+        });
+    });
+    /////////////////////////////////////////////////////////////////////////////////////////
+    /// Create editor ///////////////////////////////////////////////////////////////////////
+    $("#navbar-edit-btn").on("click", function() {
+        if ($(this).hasClass("active")) {
+            $("#btn-operation-container > div").hide();
+            $("#btn-operation-container > p").show();
+            $("#navbar-group-box").css("background", "darkgrey");
+            $("#navbar-group-box > div > button").on("click", function() {
+                if (!$("#navbar-edit-btn").hasClass("active"))
+                    return;
 
-                                        $("#edit-list-bar").hide();
-                                        $("#edit-btn-bar").show();
-                                        $("#name-edit-input").val($(this).text());
-                                        $("#link-edit-input").val($(this).attr("data-href"));
-                                        $("#btn-operation-container > p").hide();
-                                        var btn = $(this);
-                                        $("#edit-btn-btn").on("click", function() {
-                                            if ($("#name-edit-input").val() == "")
-                                                return;
-                                            btn.text($("#name-edit-input").val());
-                                            btn.attr("data-href", $("#link-edit-input").val());
-                                        });
-                                    });
-                                    $("#navbar-group-box > div > div.btn-group > :first-child").on("click", function() {
-                                        if (!$("#navbar-edit-btn").hasClass("active"))
-                                            return;
+                $("#edit-list-bar").hide();
+                $("#edit-btn-bar").show();
+                $("#name-edit-input").val($(this).text());
+                $("#link-edit-input").val($(this).attr("data-href"));
+                $("#btn-operation-container > p").hide();
+                var btn = $(this);
+                $("#edit-btn-btn").on("click", function() {
+                    if ($("#name-edit-input").val() == "")
+                        return;
+                    btn.text($("#name-edit-input").val());
+                    btn.attr("data-href", $("#link-edit-input").val());
+                });
+            });
+            $("#navbar-group-box > div > div.btn-group > :first-child").on("click", function() {
+                if (!$("#navbar-edit-btn").hasClass("active"))
+                    return;
 
-                                        $("#edit-btn-bar").hide();
-                                        $("#edit-list-bar").show();
-                                        $("#list-name-edit-input").val($(this).text());
-                                        $("#list-text-edit-input").val($(this).attr("data-content"));
-                                        //Clear selector
-                                        $("#list-edit-btns-selected").find("option").remove();
-                                        var std_option = document.createElement("option");
-                                        $(std_option).append("Не указано");
-                                        //Add standart option to selector
-                                        $("#list-edit-btns-selected").append(std_option);
+                $("#edit-btn-bar").hide();
+                $("#edit-list-bar").show();
+                $("#list-name-edit-input").val($(this).text());
+                $("#list-text-edit-input").val($(this).attr("data-content"));
+                //Clear selector
+                $("#list-edit-btns-selected").find("option").remove();
+                var std_option = document.createElement("option");
+                $(std_option).append("Не указано");
+                //Add standart option to selector
+                $("#list-edit-btns-selected").append(std_option);
 
-                                        var ul = $(this).parent("div").children("ul");
-                                        $(ul).children("li").each(function() {
-                                           var option = document.createElement("option");
-                                           $(option).attr("data-href", $(this).attr("data-href"));
-                                           $(option).append($(this).text());
-                                           $("#list-edit-btns-selected").append(option);
-                                        });
+                var ul = $(this).parent("div").children("ul");
+                $(ul).children("li").each(function() {
+                    var option = document.createElement("option");
+                    $(option).attr("data-href", $(this).attr("data-href"));
+                    $(option).append($(this).text());
+                    $("#list-edit-btns-selected").append(option);
+                });
 
-                                        var edit_btn = $(this);
-                                        $("#edit-list-btn-btn").on("click", function() {
-                                            if ($("#list-name-edit-input").val() == "")
-                                                return;
-                                            $(edit_btn).text($("#list-name-edit-input").val());
-                                            $(edit_btn).attr("data-content", $("#list-text-edit-input").val());
-                                            $.ajax({
-                                                url: "adminpanel/scripts/ajax/navbarajax.php",
-                                                type: "POST",
-                                                data: "change_list_param&content=" + $("#list-name-edit-input").val() +
-                                                    "&action=" + $("#list-text-edit-input").val() +
-                                                    "&id=" + $(edit_btn).attr("data-id")
-                                            });
-                                        });
+                var edit_btn = $(this);
+                $("#edit-list-btn-btn").on("click", function() {
+                    if ($("#list-name-edit-input").val() == "")
+                        return;
+                    $(edit_btn).text($("#list-name-edit-input").val());
+                    $(edit_btn).attr("data-content", $("#list-text-edit-input").val());
+                    $.ajax({
+                        url: "adminpanel/scripts/ajax/navbarajax.php",
+                        type: "POST",
+                        data: "change_list_param&content=" + $("#list-name-edit-input").val() +
+                            "&action=" + $("#list-text-edit-input").val() +
+                            "&id=" + $(edit_btn).attr("data-id")
+                    });
+                });
 
-                                        $("#edit-li").on("click", function() {
-                                            if ($("#li-text-input").val() == ""){
-                                                $("#li-text-input").attr("placeholder", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.enter_button_name")?>");
-                                                return;
-                                            }
-                                            if ($("#li-link-input").val() == ""){
-                                                $("#li-link-input").attr("placeholder", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.enter_link")?>");
-                                                return;
-                                            }
-                                            var li = document.createElement("li");
-                                            var option = document.createElement("option");
-                                            $.ajax({
-                                                url: "adminpanel/scripts/ajax/navbarajax.php",
-                                                type: "POST",
-                                                data: "create_list_element&text=" + $("#li-text-input").val() +
-                                                    "&action=" + $("#li-link-input").val() +
-                                                    "&id=" + $(edit_btn).attr("data-id"),
-                                                success: function(data){
-                                                    $(li).attr("data-id", data);
-                                                }
-                                            });
-                                            $(li).append($("#li-text-input").val());
-                                            $(option).append($("#li-text-input").val());
-                                            $(option).attr("data-href", $("#li-link-input").val());
-                                            $(li).attr("data-href", $("#li-link-input").val());
-                                            $(ul).append(li);
-                                            $("#list-edit-btns-selected").append(option);
-                                            $("#li-text-input").val("");
-                                            $("#li-link-input").val("");
-                                            $("#li-div-creator").hide();
-                                        });
+                $("#edit-li").on("click", function() {
+                    if ($("#li-text-input").val() == ""){
+                        $("#li-text-input").attr("placeholder", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.enter_button_name")?>");
+                        return;
+                    }
+                    if ($("#li-link-input").val() == ""){
+                        $("#li-link-input").attr("placeholder", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.enter_link")?>");
+                        return;
+                    }
+                    var li = document.createElement("li");
+                    var option = document.createElement("option");
+                    $.ajax({
+                        url: "adminpanel/scripts/ajax/navbarajax.php",
+                        type: "POST",
+                        data: "create_list_element&text=" + $("#li-text-input").val() +
+                            "&action=" + $("#li-link-input").val() +
+                            "&id=" + $(edit_btn).attr("data-id"),
+                        success: function(data){
+                            $(li).attr("data-id", data);
+                        }
+                    });
+                    $(li).append($("#li-text-input").val());
+                    $(option).append($("#li-text-input").val());
+                    $(option).attr("data-href", $("#li-link-input").val());
+                    $(li).attr("data-href", $("#li-link-input").val());
+                    $(ul).append(li);
+                    $("#list-edit-btns-selected").append(option);
+                    $("#li-text-input").val("");
+                    $("#li-link-input").val("");
+                    $("#li-div-creator").hide();
+                });
 
-                                        $("#list-edit-btns-selected").on("change", function() {
-                                            if ($("#list-edit-btns-selected option:selected").text() == "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.not_setted")?>"){
-                                                $("#li-div-editor").hide();
-                                                return;
-                                            }
-                                            $("#li-div-editor").show();
-                                            $("#li-div-creator").hide();
-                                            $("#li-edit-text-input").val($(this).val());
-                                            $("#li-edit-link-input").val($("#list-edit-btns-selected option:selected").attr("data-href"));
-                                        });
+                $("#list-edit-btns-selected").on("change", function() {
+                    if ($("#list-edit-btns-selected option:selected").text() == "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.not_setted")?>"){
+                        $("#li-div-editor").hide();
+                        return;
+                    }
+                    $("#li-div-editor").show();
+                    $("#li-div-creator").hide();
+                    $("#li-edit-text-input").val($(this).val());
+                    $("#li-edit-link-input").val($("#list-edit-btns-selected option:selected").attr("data-href"));
+                });
 
-                                        $("#save-changes-btn").on("click", function () {
-                                            if ($("#li-edit-text-input").val() == ""){
-                                                $("#li-edit-text-input").attr("placeholder", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.enter_button_name")?>");
-                                                return;
-                                            }
-                                            if ($("#li-edit-link-input").val() == ""){
-                                                $("#li-edit-link-input").attr("placeholder", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.enter_link")?>");
-                                                return;
-                                            }
-                                            //Change text
-                                            var id_link = 0;
-                                            $(ul).children("li").each(function() {
-                                               if ($(this).text() == $("#list-edit-btns-selected").val()) {
-                                                   id_link = $(this).attr("data-id");
-                                               }
-                                            });
-                                            $.ajax({
-                                                url: "adminpanel/scripts/ajax/navbarajax.php",
-                                                type: "POST",
-                                                data: "change_list_element&content=" + $("#li-edit-text-input").val() +
-                                                    "&action=" + $("#li-edit-link-input").val() +
-                                                    "&id=" + id_link,
-                                                success: function(data){
-                                                    if (data === "okey")
-                                                        ShowSCErrorBox("okey", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.list_updated_success")?>");
-                                                }
-                                            });
-                                            //End change text.
-                                            $("#li-div-editor").hide();
-                                            $("#list-edit-btns-selected option:selected").text($("#li-edit-text-input").val());
-                                            $("#list-edit-btns-selected option:selected").attr("data-href", $("#li-edit-link-input").val());
-                                            $("#li-edit-text-input").val("");
-                                            $("#li-edit-link-input").val("");
-                                            $("#list-edit-btns-selected").val("<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.not_setted")?>");
-                                        });
+                $("#save-changes-btn").on("click", function () {
+                    if ($("#li-edit-text-input").val() == ""){
+                        $("#li-edit-text-input").attr("placeholder", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.enter_button_name")?>");
+                        return;
+                    }
+                    if ($("#li-edit-link-input").val() == ""){
+                        $("#li-edit-link-input").attr("placeholder", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.enter_link")?>");
+                        return;
+                    }
+                    //Change text
+                    var id_link = 0;
+                    $(ul).children("li").each(function() {
+                        if ($(this).text() == $("#list-edit-btns-selected").val()) {
+                            id_link = $(this).attr("data-id");
+                        }
+                    });
+                    $.ajax({
+                        url: "adminpanel/scripts/ajax/navbarajax.php",
+                        type: "POST",
+                        data: "change_list_element&content=" + $("#li-edit-text-input").val() +
+                            "&action=" + $("#li-edit-link-input").val() +
+                            "&id=" + id_link,
+                        success: function(data){
+                            if (data === "okey")
+                                ShowSCErrorBox("okey", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.list_updated_success")?>");
+                        }
+                    });
+                    //End change text.
+                    $("#li-div-editor").hide();
+                    $("#list-edit-btns-selected option:selected").text($("#li-edit-text-input").val());
+                    $("#list-edit-btns-selected option:selected").attr("data-href", $("#li-edit-link-input").val());
+                    $("#li-edit-text-input").val("");
+                    $("#li-edit-link-input").val("");
+                    $("#list-edit-btns-selected").val("<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.not_setted")?>");
+                });
 
-                                        $("#create-new-li-btn").on("click", function() {
-                                            if ($(ul).children("li").length >= 10){
-                                                ShowSCErrorBox("error", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.list_limit")?>");
-                                                return;
-                                            }
-                                            $("#li-div-creator").show();
-                                            $("#li-text-input").val("");
-                                            $("#li-link-input").val("");
-                                            $("#li-div-editor").hide();
-                                        });
+                $("#create-new-li-btn").on("click", function() {
+                    if ($(ul).children("li").length >= 10){
+                        ShowSCErrorBox("error", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.list_limit")?>");
+                        return;
+                    }
+                    $("#li-div-creator").show();
+                    $("#li-text-input").val("");
+                    $("#li-link-input").val("");
+                    $("#li-div-editor").hide();
+                });
 
-                                        $("#remove-li-btn").on("click", function() {
-                                            if ($("#list-edit-btns-selected").val() != "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.not_setted")?>"){
-                                                var id_link = 0;
-                                                $(ul).children("li").each(function() {
-                                                    if ($(this).text() == $("#list-edit-btns-selected").val()) {
-                                                        id_link = $(this).attr("data-id");
-                                                    }
-                                                });
-                                                $.ajax({
-                                                    url: "adminpanel/scripts/ajax/navbarajax.php",
-                                                    type: "POST",
-                                                    data: "remove_list_element&id=" + id_link,
-                                                    success: function(data){
-                                                        if (data === "okey")
-                                                            ShowSCErrorBox("okey", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.element_removed")?>");
-                                                    }
-                                                });
-                                                $(ul).children("li").each(function() {
-                                                   if ($(this).text() == $("#list-edit-btns-selected").val())
-                                                       $(this).remove();
-                                                });
-                                                $("#list-edit-btns-selected option:selected").remove();
-                                                $("#li-div-editor").hide();
-                                                $("#li-div-creator").hide();
-                                            }
-                                        });
-                                    });
+                $("#remove-li-btn").on("click", function() {
+                    if ($("#list-edit-btns-selected").val() != "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.not_setted")?>"){
+                        var id_link = 0;
+                        $(ul).children("li").each(function() {
+                            if ($(this).text() == $("#list-edit-btns-selected").val()) {
+                                id_link = $(this).attr("data-id");
+                            }
+                        });
+                        $.ajax({
+                            url: "adminpanel/scripts/ajax/navbarajax.php",
+                            type: "POST",
+                            data: "remove_list_element&id=" + id_link,
+                            success: function(data){
+                                if (data === "okey")
+                                    ShowSCErrorBox("okey", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.element_removed")?>");
+                            }
+                        });
+                        $(ul).children("li").each(function() {
+                            if ($(this).text() == $("#list-edit-btns-selected").val())
+                                $(this).remove();
+                        });
+                        $("#list-edit-btns-selected option:selected").remove();
+                        $("#li-div-editor").hide();
+                        $("#li-div-creator").hide();
+                    }
+                });
+            });
 
-                                }
-                                else {
-                                    $("#btn-operation-container > div").hide();
-                                    $("#btn-operation-container > p").hide();
-                                    $("#navbar-group-box").css("background", "white");
-                                }
-                            });
-                        ////////////////////////////////////////////////////////////////////////////////////////
-                        /// Create removing.
-                            $("#navbar-remove-btn").on("click", function (){
-                                $("#btn-operation-container > p").show();
-                                $("#btn-operation-container > div").hide();
-                                $("#navbar-group-box").css("background", "gray");
-                                $("#btn-manager-div > button").removeClass("active");
-                                $(this).addClass("active");
-                                $("#navbar-group-box > div > button").on("click", function() {
-                                   if ($("#navbar-remove-btn").hasClass("active")) {
-                                       var id_link = $(this).attr("data-id");
-                                       $.ajax({
-                                           url: "adminpanel/scripts/ajax/navbarajax.php",
-                                           type: "POST",
-                                           data: "remove_list_element&id=" + id_link,
-                                           success: function(data){
-                                               if (data === "okey")
-                                                   ShowSCErrorBox("okey", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.button_removed")?>");
-                                           }
-                                       });
-                                       $(this).remove();
-                                   }
-                                });
-                                $("#navbar-group-box > div > div > button").on("click", function() {
-                                    if ($("#navbar-remove-btn").hasClass("active")) {
-                                        var id_link = $(this).attr("data-id");
-                                        $.ajax({
-                                            url: "adminpanel/scripts/ajax/navbarajax.php",
-                                            type: "POST",
-                                            data: "remove_list_element&id=" + id_link,
-                                            success: function(data){
-                                                if (data === "okey")
-                                                    ShowSCErrorBox("okey", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.button_removed")?>");
-                                            }
-                                        });
-                                        $(this).parent().remove();
-                                    }
-                                });
-                            });
+        }
+        else {
+            $("#btn-operation-container > div").hide();
+            $("#btn-operation-container > p").hide();
+            $("#navbar-group-box").css("background", "white");
+        }
+    });
+    ////////////////////////////////////////////////////////////////////////////////////////
+    /// Create removing.
+    $("#navbar-remove-btn").on("click", function (){
+        $("#btn-operation-container > p").show();
+        $("#btn-operation-container > div").hide();
+        $("#navbar-group-box").css("background", "gray");
+        $("#btn-manager-div > button").removeClass("active");
+        $(this).addClass("active");
+        $("#navbar-group-box > div > button").on("click", function() {
+            if ($("#navbar-remove-btn").hasClass("active")) {
+                var id_link = $(this).attr("data-id");
+                $.ajax({
+                    url: "adminpanel/scripts/ajax/navbarajax.php",
+                    type: "POST",
+                    data: "remove_list_element&id=" + id_link,
+                    success: function(data){
+                        if (data === "okey")
+                            ShowSCErrorBox("okey", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.button_removed")?>");
+                    }
+                });
+                $(this).remove();
+            }
+        });
+        $("#navbar-group-box > div > div > button").on("click", function() {
+            if ($("#navbar-remove-btn").hasClass("active")) {
+                var id_link = $(this).attr("data-id");
+                $.ajax({
+                    url: "adminpanel/scripts/ajax/navbarajax.php",
+                    type: "POST",
+                    data: "remove_list_element&id=" + id_link,
+                    success: function(data){
+                        if (data === "okey")
+                            ShowSCErrorBox("okey", "<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.button_removed")?>");
+                    }
+                });
+                $(this).parent().remove();
+            }
+        });
+    });
 
 
 
-                        ////////////////////////////////////////////////////////////////////////////////////////
-                            $("#btn-operation-container > div").hide();
+    ////////////////////////////////////////////////////////////////////////////////////////
+    $("#btn-operation-container > div").hide();
 
-                            $("#navbar-add-btn").on("click", function() {
-                                $("#btn-operation-container > div").hide();
-                                $("#btn-operation-container > p").hide();
-                                $("#create-btn-bar").show();
-                            });
+    $("#navbar-add-btn").on("click", function() {
+        $("#btn-operation-container > div").hide();
+        $("#btn-operation-container > p").hide();
+        $("#create-btn-bar").show();
+    });
 
-                            $("#navbar-add-list-btn").on("click", function(){
-                                $("#btn-operation-container > div").hide();
-                                $("#btn-operation-container > p").hide();
-                                $("#create-list-bar").show();
-                            });
+    $("#navbar-add-list-btn").on("click", function(){
+        $("#btn-operation-container > div").hide();
+        $("#btn-operation-container > p").hide();
+        $("#create-list-bar").show();
+    });
 
-                            $("#staticc-panel :first-child").show();
-                            $("#staticc-btn-panel :first-child").addClass("active");
+    $("#staticc-panel :first-child").show();
+    $("#staticc-btn-panel :first-child").addClass("active");
 
-                            <?php if ($isEditMode && $editPPerm) { ?>
+    <?php if ($isEditMode && $editPPerm) { ?>
     $("#staticc-btn-panel > button").removeClass("active");
     $("#staticc-page-edit-btn").addClass("active");
     $("#staticc-panel > div").css("display", "none");
@@ -1330,7 +1330,7 @@ if ($editSContentPerm){
     $("#staticc-panels-add").on("click", function() {
         EditorClear();
         HideSidePanels();
-        $(this).val("none");
+        $("#staticc-panels-selector").val("none");
         $("div#staticc-panel-editor-div").show();
         $("div#staticc-left-panel-div").show();
         $("span#staticc-panel-editor-send-btn-content").text("<?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.js.create_panel")?>");
