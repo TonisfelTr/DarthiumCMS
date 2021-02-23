@@ -898,7 +898,7 @@ namespace Engine {
             }
             $keys = rtrim($keys, ",");
             $values = rtrim($values, ",");
-            $query = "INSERT INTO $table ($keys) VALUE ($values)";
+            $query = "INSERT INTO $table ($keys) VALUES ($values)";
             $preparedQuery = $pdo->prepare($query);
             $execute = $preparedQuery->execute($varsArrToSend);
             if ($execute) {
