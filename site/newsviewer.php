@@ -97,10 +97,12 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
         $new = str_replace_once("{TOPIC_AUTHOR_ID}", $topic->getAuthorId(), $new);
         $new = str_replace_once("{TOPIC_AUTHOR_LAST_ONLINE}", ((\Engine\Engine::GetSiteTime() > $author->getLastTime() + 15 * 60) ? "заходил" . (($author->getSex() == 2) ? "а" : "")
             . " в " . \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s", $author->getLastTime())) : "<span style=\"color: #00dd00;\">онлайн</span>"), $new);
-        $new = str_replace_once("{TOPIC_AUTHOR_SEX}", \Engine\LanguageManager::GetTranslation("newsviewer.sex") . " " . (($author->getSex() == 2) ? "<span class=\"glyphicons glyphicons-gender-female\"></span> " . \Engine\LanguageManager::GetTranslation("gender_female")
-                : ($author->getSex() == 1)
-                    ? "<span class=\"glyphicons glyphicons-gender-male\"></span> " . \Engine\LanguageManager::GetTranslation("gender_male") : "") . "<br>", $new);
-        $new = str_replace_once("{TOPIC_AUTHOR_REGDATE}", (($author->getSex() == 2) ? \Engine\LanguageManager::GetTranslation("newsviewer.she_registered") . " " :  \Engine\LanguageManager::GetTranslation("newsviewer.he_registered") . " ") . \Engine\Engine::DateFormatToRead($author->getRegDate()), $new);
+        $new = str_replace_once("{TOPIC_AUTHOR_SEX}",
+            \Engine\LanguageManager::GetTranslation("newsviewer.sex") . " " .
+            (($author->getSex() == 3) ? "<span class=\"glyphicons glyphicons-gender-female\"></span> " . \Engine\LanguageManager::GetTranslation("gender_female") :
+            (($author->getSex() == 2) ? "<span class=\"glyphicons glyphicons-gender-male\"></span> " . \Engine\LanguageManager::GetTranslation("gender_male") :
+            "<span class=\"glyphicons glyphicons-gender-intersex\"></span> " . \Engine\LanguageManager::GetTranslation("not_setted"))) . "<br>", $new);
+        $new = str_replace_once("{TOPIC_AUTHOR_REGDATE}", (($author->getSex() == 3) ? \Engine\LanguageManager::GetTranslation("newsviewer.she_registered") . " " :  \Engine\LanguageManager::GetTranslation("newsviewer.he_registered") . " ") . \Engine\Engine::DateFormatToRead($author->getRegDate()), $new);
         $new = str_replace_once("{TOPICS_AUTHOR_COUNT}", \Forum\ForumAgent::GetCountTopicOfAuthor($topic->getAuthorId()), $new);
         $new = str_replace_once("{TOPICS_AUTHOR_RATE}", $author->getReputation()->getReputationPoints(), $new);
         $new = str_replace_once("{TOPIC_CREATE_DATETIME}", \Engine\Engine::DatetimeFormatToRead($topic->getCreateDate()), $new);
@@ -114,14 +116,14 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
         $new = str_replace_once("{TOPIC_AUTHOR_VK}", (($author->IsVKPublic()) ? "VK: <a href=\"https://vk.com/" . $author->getVK() . "\">" . htmlentities($author->getVK()) . "</a><br>" : ""), $new);
         $new = str_replace_once("{TOPIC_CONTENT}", Engine\Engine::ChatFilter(\Engine\Engine::CompileMentions(html_entity_decode(\Engine\Engine::CompileBBCode($topic->getText())))), $new);
         $new = str_replace_once("{TOPIC_FOOTER_LIKE_CLASS}", (($topic->getLikes() > $topic->getDislikes()) ? "positive" : (($topic->getDislikes() > $topic->getLikes()) ? "negative" : "")), $new);
-        //First condition:
+    //First condition:
         $isAuthorized = ($user !== FALSE);
-        //Second condition
+    //Second condition
         $isUserIsAuthor = ($isAuthorized && $user->getId() == $author->getId());
-        //Third condition
+    //Third condition
         $permToComment = $isAuthorized && (($user->UserGroup()->getPermission("comment_create") && $topic->getCategory()->CanCreateComments()) ||
                 ($user->UserGroup()->getPermission("comment_create") && !$topic->getCategory()->CanCreateComments() && $user->UserGroup()->getPermission("category_params_ignore")));
-        //Other
+    //Other
         $hasPermToEdit = ($isAuthorized && (($isUserIsAuthor && $user->UserGroup()->getPermission("topic_edit")) || $user->UserGroup()->getPermission("topic_foreign_edit")));
         $hasPermToDelete = ($isAuthorized && (($isUserIsAuthor && $user->UserGroup()->getPermission("topic_delete")) || $user->UserGroup()->getPermission("topic_foreign_delete")));
         $hasPermToComment = ($isAuthorized && ($isUserIsAuthor || $permToComment));
@@ -165,30 +167,30 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
     }
     $comments = array();
     $topicComments = \Forum\ForumAgent::GetCommentsOfTopic($topic->getId(), isset($_GET["p"]) ? $_GET["p"] : 1);
-    for ($i = 0; $i < count($topicComments); $i++){
+    foreach ($topicComments as $topicElement){
         include "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/news/comment.html";
         $currentComment = getBrick();
-        $comment = new \Forum\TopicComment($topicComments[$i]);
+        $comment = new \Forum\TopicComment($topicElement);
         $currentComment = str_replace_once("{COMMENT_AUTHOR_NICKNAME}", $comment->author()->getNickname(), $currentComment);
         $currentComment = str_replace_once("{COMMENT_AUTHOR_ID}", $comment->author()->getId(), $currentComment);
         $currentComment = str_replace_once("{COMMENT_AUTHOR_GROUP_NAME}", $comment->author()->UserGroup()->getName(), $currentComment);
         $currentComment = str_replace_once("{COMMENT_AUTHOR_GROUP_ID}", $comment->author()->UserGroup()->getId(), $currentComment);
         $currentComment = str_replace_once("{COMMENT_AUTHOR_GROUP_COLOR}", $comment->author()->UserGroup()->getColor(), $currentComment);
         switch ($comment->author()->getSex()){
-            case 1:
+            case 2:
                 $sexAuthorComment = \Engine\LanguageManager::GetTranslation("gender_male");
                 break;
-            case 2:
+            case 3:
                 $sexAuthorComment = \Engine\LanguageManager::GetTranslation("gender_female");
                 break;
-            case 0:
+            case 1:
                 $sexAuthorComment = \Engine\LanguageManager::GetTranslation("not_setted");
                 break;
         }
         $currentComment = str_replace_once("{COMMENT_AUTHOR_SEX}", $sexAuthorComment, $currentComment);
         $currentComment = str_replace_once("{COMMENT_AUTHOR_REPUTATION}", $comment->author()->getReputation()->getReputationPoints(), $currentComment);
         $currentComment = str_replace_once("{COMMENT_AUTHOR_COMMENTS}", \Forum\ForumAgent::GetCountOfCommentOfUser($comment->getAuthorId()), $currentComment);
-        $currentComment = str_replace_once("{COMMENT_AUTHOR_TO_PM}", "<a class=\"pm-href\" href=\"http://tonisfeltavern.com/profile.php?page=wm&sendTo=" . $comment->author()->getNickname() . "\">" . \Engine\LanguageManager::GetTranslation("newsviewer.write_upper_case") . "</a>", $currentComment);
+        $currentComment = str_replace_once("{COMMENT_AUTHOR_TO_PM}", "<a class=\"pm-href\" href=\"profile.php?page=wm&sendTo=" . $comment->author()->getNickname() . "\">" . \Engine\LanguageManager::GetTranslation("newsviewer.write_upper_case") . "</a>", $currentComment);
         $currentComment = str_replace("{COMMENT_ID}", $comment->getId(), $currentComment);
         $currentComment = str_replace_once("{COMMENT_AUTHOR_AVATAR}", $comment->author()->getAvatar(), $currentComment);
         $currentComment = str_replace_once("{COMMENT_TEXT}", \Engine\Engine::CompileMentions(html_entity_decode(Engine\Engine::ChatFilter(Engine\Engine::CompileBBCode($comment->getText())))), $currentComment);
@@ -229,9 +231,9 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
             $dateEdit = $comment->getChangeInfo()["editDate"];
             $currentComment = str_replace_once("{COMMENT_EDIT_INFO}", \Engine\LanguageManager::GetTranslation("newsviewer.last_edited_comment") . " by " . \Users\UserAgent::GetUserNick($userEditor) . " " .
                     \Engine\LanguageManager::GetTranslation("in") . " " . \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s", $dateEdit)) .
-                    ((strlen($reasonEdit) > 0) ? \Engine\LanguageManager::GetTranslation("newsviewer.last_edited_comment_reason") . " : " . htmlentities($reasonEdit) : ""), $currentComment) . "";
-        } else
-            $currentComment = str_replace_once("{COMMENT_EDIT_INFO}", "", $currentComment);
+                ((strlen($reasonEdit) > 0) ? \Engine\LanguageManager::GetTranslation("newsviewer.last_edited_comment_reason") . " : " . htmlentities($reasonEdit) : ""), $currentComment) . "";
+            } else
+                $currentComment = str_replace_once("{COMMENT_EDIT_INFO}", "", $currentComment);
         array_push($comments, $currentComment);
     }
     $new = str_replace_once("{TOPIC_COMMENTS}", implode($comments), $new);

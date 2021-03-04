@@ -995,7 +995,7 @@ namespace Users {
                 session_start();
                 $authResult = self::Authorization($_SESSION["email"] == null ? $_SESSION["nickname"] : $_SESSION["email"], $_SESSION["passhash"], true);
                 if ($authResult === True) return self::AfterAuth();
-                elseif ($authResult === False) return self::NotValidPWD();
+                elseif ($authResult === False){ return self::NotValidPWD();}
                 else return $authResult;
             }
             return false;

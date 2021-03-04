@@ -43,7 +43,7 @@ for ($i = 0; $i < count($templates); $i++)
                             if (strstr($filesIn[$i], ".phtml"))
                                 echo "<option style='color: #40a1a1'> $filesIn[$i]</option>";
                             if (strstr($filesIn[$i], ".png") || strstr($filesIn[$i], ".ico")
-                                || strstr($filesIn[$i], ".jpeg" || strstr($filesIn[$i], ".jpg")))
+                            || strstr($filesIn[$i], ".jpeg" || strstr($filesIn[$i], ".jpg")))
                                 echo "<option style='color: #833180'> $filesIn[$i]</option>";
                         }
                     }

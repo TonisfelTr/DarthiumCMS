@@ -3,7 +3,6 @@ include "engine/main.php";
 \Engine\Engine::LoadEngine();
 $session = Users\UserAgent::SessionContinue();
 $user = false;
-
 function getBrick(){
     $e = ob_get_contents();
     ob_clean();

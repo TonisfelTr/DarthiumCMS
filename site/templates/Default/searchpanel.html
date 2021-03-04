@@ -7,9 +7,6 @@
             <button class="btn btn-default active" type="button" title="Поиск по названию темы" id="search-by-topic">
                 <span class="glyphicon glyphicon-font"></span>
             </button>
-            <button class="btn btn-default" type="button" title="Поиск по названию опроса" id="search-by-quize">
-                <span class="glyphicon glyphicon-signal"></span>
-            </button>
             <button class="btn btn-default" type="button" title="Поиск по автору" id="search-by-author">
                 <span class="glyphicon glyphicon-user"></span>
             </button>
@@ -20,7 +17,6 @@
         </span>
     </div><!-- /input-group -->
 </form>
-<hr class="search-separator">
 <script type="text/javascript">
     $("button#search-by-topic").on("click", function() {
        $("input#search-param").val("name");
@@ -32,11 +28,5 @@
         $("div#search-type-btns > button").removeClass("active");
         $(this).addClass("active");
     });
-    $("button#search-by-quize").on("click", function() {
-        $("input#search-param").val("quize");
-        $("div#search-type-btns > button").removeClass("active");
-        $(this).addClass("active");
-    });
-
     {INDEX_SEARCHING_TYPE}
 </script>

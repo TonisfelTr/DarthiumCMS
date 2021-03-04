@@ -87,23 +87,23 @@ if (!empty($_GET["page"])){
     }
     else include_once "./site/errors/notfound.php"; }
 elseif (!empty($_GET["sp"])){
-        //Here load keywords for site
-        $keywords = \Forum\StaticPagesAgent::GetPageKeyWords($_GET["sp"]);
-        $main = str_replace_once("{ENGINE_META:KEYWORDS}", $keywords, $main);
-        /////////////////////////////
-        echo nl2br(\Engine\Engine::CompileBBCode(file_get_contents("./site/statics/" . $_GET["sp"] . ".txt", FILE_USE_INCLUDE_PATH)));
-        $pageName = \Forum\StaticPagesAgent::GetPage($_GET["sp"])->getPageName();
-    }
+    //Here load keywords for site
+    $keywords = \Forum\StaticPagesAgent::GetPageKeyWords($_GET["sp"]);
+    $main = str_replace_once("{ENGINE_META:KEYWORDS}", $keywords, $main);
+    /////////////////////////////
+    echo nl2br(\Engine\Engine::CompileBBCode(file_get_contents("./site/statics/" . $_GET["sp"] . ".txt", FILE_USE_INCLUDE_PATH)));
+    $pageName = \Forum\StaticPagesAgent::GetPage($_GET["sp"])->getPageName();
+}
 elseif (!empty($_GET["topic"])){
-        if (\Forum\ForumAgent::isTopicExists($_GET["topic"])) {
-            $topic = new \Forum\Topic($_GET["topic"]);
-            if ($topic->getCategory()->isPublic() || (!$topic->getCategory()->isPublic() && $user !== false && $user->UserGroup()->getPermission("category_see_unpublic")))
-                include_once "./site/newsviewer.php";
-            else
-                include_once "./site/errors/forbidden.php";
-        }
-        else include_once "./site/errors/notfound.php";
+    if (\Forum\ForumAgent::isTopicExists($_GET["topic"])) {
+        $topic = new \Forum\Topic($_GET["topic"]);
+        if ($topic->getCategory()->isPublic() || (!$topic->getCategory()->isPublic() && $user !== false && $user->UserGroup()->getPermission("category_see_unpublic")))
+            include_once "./site/newsviewer.php";
+        else
+            include_once "./site/errors/forbidden.php";
     }
+    else include_once "./site/errors/notfound.php";
+}
 elseif (!empty($_GET["search"])){
     include_once "./site/search.php";
 } elseif (!empty($_GET["group"])){
@@ -282,7 +282,7 @@ if (empty($lastTopics)){
     $ltText = "<ul>";
     foreach ($lastTopics as $topicId){
         $topic = new \Forum\Topic($topicId["id"]);
-        $ltText .= "<li><a class=\"alert-link\" href=\"?topic=$topicId\">" . $topic->getName() . "</a></li>";
+        $ltText .= "<li><a class=\"alert-link\" href=\"?topic=" . $topicId["id"] . "\">" . $topic->getName() . "</a></li>";
     }
     $ltText .= "</ul>";
 }
@@ -324,8 +324,5 @@ if (\Engine\Engine::GetEngineInfo("smt")){
 ob_end_clean();
 
 \Engine\PluginManager::Integration($main);
-
-
-
 
 ?>

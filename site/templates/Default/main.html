@@ -9,7 +9,6 @@
     <meta name="keywords" content="{ENGINE_META:KEYWORDS}">
     <script src="../../../libs/js/ie-emulator.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="../../../libs/bootstrap/js/bootstrap.min.js"></script>
     <script src="../../../libs/bootstrap/js/bootstrap.bundle.js"></script>
     <script src="../../../libs/bootstrap/js/jquery-ui.min.js"></script>
@@ -20,17 +19,18 @@
     <link href="../../../libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="../../../libs/bootstrap/css/glyphicons-regular.css" rel="stylesheet">
     <link href="../../../libs/lightbox/css/lightbox.css" rel="stylesheet">
-    <link href="../../../site/templates/Tonisfel/css/ap-style.css" rel="stylesheet">
-    <link href="../../../site/templates/Tonisfel/css/sp-style.css" rel="stylesheet">
-    <link href="../../../site/templates/Tonisfel/icon.ico" rel="icon">
+    <link href="../../../site/templates/Default/css/ap-style.css" rel="stylesheet">
+    <link href="../../../site/templates/Default/css/sp-style.css" rel="stylesheet">
+    <link href="../../../site/templates/Default/css/carousel.css" rel="stylesheet">
+    <link href="../../../site/templates/Default/icon.ico" rel="icon">
     {PLUGINS_STYLESHEETS}
     {PROFILE_UPLOADER:STYLESHEET}
 </head>
 <body class="index-body">
     {PROFILE_UPLOADER_BLOCK}
+    {INDEX_PAGE_NAVBAR}
+    {INDEX_PAGE_HEADER}
     <div class="wrapper">
-        {INDEX_PAGE_NAVBAR}
-        {INDEX_PAGE_HEADER}
         {INDEX_PAGE_OFFLINE}
         <div class="container-fluid">
             {INDEX_PAGE_INFORMATOR}
@@ -39,12 +39,9 @@
             </div>
             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
                 <div class="content-block row">
-                    <div class="bgbanner-container">
-                        {MAIN_PAGE:FIRST_BIG_BANNER}
-                    </div>
-                    <hr class="search-separator">
                     {INDEX_CATEGORY_HINT}
                     {INDEX_SEARCHING}
+                    <hr>
                     {INDEX_PAGE_NEWSPAPER}
                 </div>
             </div>

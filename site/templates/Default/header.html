@@ -1,6 +1,46 @@
-<div class="container">
-    <div class="header">
-        <h1 class="h1-header">{ENGINE_META:SITE_NAME}</h1>
-        <p class="h1-helper">{ENGINE_META:SITE_TAGLINE}</p>
+<div id="myCarousel" class="carousel slide" data-ride="carousel">
+    <!-- Indicators -->
+    <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class=""></li>
+        <li data-target="#myCarousel" data-slide-to="1" class="active"></li>
+        <li data-target="#myCarousel" data-slide-to="2" class=""></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="item">
+            <img class="first-slide" src="site/templates/Default/css/slide-1.jpg" alt="Первый слайд">
+            <div class="container">
+                <div class="carousel-caption">
+                    <h1>{ENGINE_META:SITE_NAME}</h1>
+                    <p>{ENGINE_META:SITE_TAGLINE}</p>
+                    <p><a class="btn btn-lg btn-primary" href="profile.php" role="button">Опробовать</a></p>
+                </div>
+            </div>
+        </div>
+        <div class="item active">
+            <img class="second-slide" src="site/templates/Default/css/slide-2.jpg" alt="Второй слайд">
+            <div class="container">
+                <div class="carousel-caption">
+                    <h1>{ENGINE_META:SITE_NAME}</h1>
+                    <p>Обладает интуитивным интерфейсом, который понятен даже не программисту.</p>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <img class="third-slide" src="site/templates/Default/css/slide-3.jpg" alt="Third slide">
+            <div class="container">
+                <div class="carousel-caption">
+                    <h1>{ENGINE_META:SITE_NAME}</h1>
+                    <p>Удобна в настройке и редактировании. Простой API позволяет быстро писать плагины для системы за короткое время.</p>
+                </div>
+            </div>
+        </div>
     </div>
+    <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Предыдущий</span>
+    </a>
+    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Следующий</span>
+    </a>
 </div>

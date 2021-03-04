@@ -12,7 +12,7 @@ else
 
 if ($user->UserGroup()->getPermission("change_template_design")){
     if (isset($_POST["get_content"])){
-        $json = json_encode(scandir("../../../site/templates/" . $_POST["template_name"] . "/" . $_POST["enddir"]));
+        $json = json_encode(scandir("../../../site/templates/" . $_POST["template_name"] . "/" . (($_POST["enddir"] != "/undefined") ? $_POST["enddir"] : "")));
         echo $json;
         exit;
     }

@@ -1106,10 +1106,10 @@ namespace Engine {
 
             $insertInto = DataKeeper::InsertTo("tt_plugins", ["name" => $name, "codename" => $codeName, "description" => $description, "status" => $status]);
             if ($insertInto > 0) {
-                    self::$installed[$codeName] = ["name" => $name,
-                        "codeName" => $codeName,
-                        "description" => $description,
-                        "status" => $status];
+                self::$installed[$codeName] = ["name" => $name,
+                    "codeName" => $codeName,
+                    "description" => $description,
+                    "status" => $status];
 
                 $lastId = $insertInto;
             }

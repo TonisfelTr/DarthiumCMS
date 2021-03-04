@@ -6,11 +6,6 @@ body{
 }
 
 @font-face {
-    font-family: "My Passion";
-    src: url(../../../../libs/styles/font.otf);
-}
-
-@font-face {
     font-family: "Trebuchet MS";
     src: url("../../../../libs/styles/site-font.ttf");
 }
@@ -18,9 +13,9 @@ body{
 body{
     padding: 0;
     margin: 0;
-    background: url(profile-bground.jpeg) center no-repeat fixed;
+    background: radial-gradient(at center, #999, #333);
     font: 14px "Trebuchet MS";
-    color: white;
+    color: #eee;
     background-size: cover;
 }
 
@@ -39,32 +34,12 @@ div {
     line-height: 15px;
 
 }
-@media(min-width: 320px){
-    .profile-footer-angle{
-        margin-top: 140px;
-    }
-}
-@media(min-width: 425px){
-    .profile-footer-angle{
-        margin-top: 140px;
-    }
-}
-@media(min-width: 768px){
-    .profile-footer-angle{
-        margin-top: 140px;
-    }
-}
-@media(min-width: 1024px){
-    .profile-footer-angle{
-        position: fixed;
-    }
-}
+
 
 .profile-container {
     position: absolute;
     right: 0;
     min-height: 100%;
-    background: rgba(0, 0, 0, 0.9);
     padding: 10px;
     overflow-y: auto;
 }
@@ -93,12 +68,12 @@ div {
 }
 
 .profile-header h1{
-    font-family: "My Passion";
     font-size: 50px;
 }
 
 .profile-body{
     min-height: 75%;
+    padding-left: 15px;
 }
 
 #profile-profile-panels{
@@ -108,9 +83,9 @@ div {
 }
 
 .profile-input{
-    border: 1px solid #3d3d3d;
+    border: 1px solid #000000;
     color: white;
-    background: radial-gradient(at left, #2b2c2b, #626263);
+    background: radial-gradient(at left, #151515, #626263);
     padding: 6px;
     border-radius: 5px;
     width: 30%;
@@ -263,17 +238,16 @@ a.profile-profile-btn{
 }
 
 .profile-profile-header{
-    text-align: right;
 }
 
 .profile-avatar {
-    float: right;
+    float: left;
     margin: 0 10px 0 10px;
 }
 
 .profile-avatar-div{
     min-height: 120px;
-    background: radial-gradient(at left, #748f94, #266764);
+    background: radial-gradient(at left, #000000, #565252);
     border-radius: 5px;
     padding: 10px;
 }
@@ -290,10 +264,11 @@ a.profile-profile-btn{
 
 .profile-profile-body{
     min-height: 75%;
+    margin-top: 50px;
 }
 
 h3.profile-nickname{
-    font: 40px "My Passion";
+
 }
 
 div[data-div-title=info]{
@@ -395,7 +370,7 @@ div[data-div-title=info]{
     border-top: 1px solid #3d3d3d;
     border-bottom: 1px solid #3d3d3d;
     margin-top: 5px;
-    background: radial-gradient(at left, #9b9b9b, #444);
+    background: radial-gradient(at left, #9b9b9b, #333);
 }
 
 .profile-profile-edit-group input[type=text].profile-input ~ button.profile-input-btn:hover{
@@ -468,8 +443,7 @@ div[data-div-title=info]{
     resize: none;
     border-radius: 7px;
     border: none;
-    color: white;
-    background: radial-gradient(at left, #a5a5a5, #3c3d54);
+    color: black;
     padding: 10px;
     margin-bottom: 5px;
 }
@@ -711,6 +685,11 @@ span.profile-btn-new-counter{
 .profile-notification-body{
     padding: 10px;
     font-size: 16px;
+}
+
+.profile-notification-body > a {
+    color: black;
+    text-decoration: underline;
 }
 
 .profile-notification-time{

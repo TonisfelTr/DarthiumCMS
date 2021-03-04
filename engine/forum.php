@@ -78,10 +78,10 @@ namespace Forum {
 
         public static function CreatePage($name, $authorId, $description, $text, $keywords = ""){
             $fetchedRows = DataKeeper::InsertTo("tt_staticpages", ["name" => $name,
-                "description" => $description,
-                "authorId" => $authorId,
-                "createDate" => date("Y-m-d", Engine::GetSiteTime()),
-                "keywords => $keywords"]);
+                                                                         "description" => $description,
+                                                                         "authorId" => $authorId,
+                                                                         "createDate" => date("Y-m-d", Engine::GetSiteTime()),
+                                                                         "keywords => $keywords"]);
             if ($fetchedRows > 0) {
                 if (StaticPagesAgent::CreateBTMLFile($fetchedRows, $text))
                     return true;
@@ -250,7 +250,7 @@ namespace Forum {
             $this->topicCreateDate = $queryResponse["createDate"];
             $this->topicPreviewText = $queryResponse["preview"];
             $this->topicLastEditor = $queryResponse["lastEditor"];
-            $this->topicLastEditDatetime = $queryResponse["lastEditDatetime"];
+            $this->topicLastEditDatetime = $queryResponse["lastEditDateTime"];
             $this->topicStatus = $queryResponse["status"];
         }
         public function getId(){
@@ -357,7 +357,7 @@ namespace Forum {
 
         public function __construct(int $commentId)
         {
-            $queryResponse = DataKeeper::Get("tt_topiccoments", ["*"], ["id" => $commentId])[0];
+            $queryResponse = DataKeeper::Get("tt_topiccomments", ["*"], ["id" => $commentId])[0];
 
             $this->id = $commentId;
             $this->topicParentId = $queryResponse["topicId"];
@@ -388,8 +388,8 @@ namespace Forum {
         }
         public function getChangeInfo(){
             return ["editDate" => $this->changeDateTime,
-                "editReason" => $this->changeReason,
-                "editorId" => $this->changerId];
+                    "editReason" => $this->changeReason,
+                    "editorId" => $this->changerId];
         }
     }
 
@@ -467,8 +467,8 @@ namespace Forum {
         }
         public static function VoteInQuize(int $voterId, int $quizId, int $answer){
             if (DataKeeper::InsertTo("tt_quizesanswers", ["userId" => $voterId,
-                "quizeId" => $quizId,
-                "varId" => $answer]))
+                                                               "quizeId" => $quizId,
+                                                                "varId" => $answer]))
                 return true;
             else
                 return false;
@@ -481,11 +481,11 @@ namespace Forum {
 
         public static function CreateCategory($name, $descript, $keywords, $public = true, $no_comments = false, $no_new_topics = false){
             return DataKeeper::InsertTo("tt_categories", ["name" => $name,
-                "descript" => $descript,
-                "public" => (int)$public,
-                "no_comment" => (int)$no_comments,
-                "no_new_topics" => (int)$no_new_topics,
-                "keywords" => $keywords]);
+                                                                "descript" => $descript,
+                                                                "public" => (int)$public,
+                                                                "no_comment" => (int)$no_comments,
+                                                                "no_new_topics" => (int)$no_new_topics,
+                                                                "keywords" => $keywords]);
         }
         public static function ChangeCategoryParams($idCategory, $paramName, $newValue){
             if ($paramName == "id") return false;
@@ -657,12 +657,12 @@ namespace Forum {
         public static function CreateComment(int $authorId, int $topicId, string $text){
 
             return DataKeeper::InsertTo("tt_topiccomments",
-                ["id" => null,
+                    ["id" => null,
                     "authorId" => $authorId,
                     "topicId" => $topicId,
                     "text" => $text,
                     "createDate" => Engine::GetSiteTime()
-                ]);
+                    ]);
         }
         public static function EditComment(int $commentId, int $editorId, string $editReason, int $editTime, string $newText){
             return DataKeeper::Update("tt_topiccomments", [
