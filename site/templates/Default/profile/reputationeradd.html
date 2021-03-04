@@ -1,0 +1,21 @@
+<form action="site/scripts/reputationer.php?uid={PROFILE_REPUTATIONER:UID}" method="post" id="reputation-changer-form">
+    <div class="reputation-footer">
+        <div class="reputation-btn-group">
+            <button type="button" id="reputation-change-form-btn"><span class="glyphicons glyphicons-pen"></span> Изменить репутацию</button>
+        </div>
+        <div id="reputation-edit-form" hidden>
+            <input class="form-control" type="text" placeholder="Комментарий" name="reputation-comment" id="reputation-comment">
+            <select class="form-control" name="reputation-type" id="reputation-type">
+                <option value="n">Выберите тип оценки</option>
+                <option value="0">Отрицательная</option>
+                <option value="1">Положительная</option>
+            </select>
+            <input class="form-control" type="text" placeholder="Капча" name="reputation-captcha" id="reputation-captcha-input" autocomplete="new-password">
+            <img style="float: right;" src="{PROFILE_REPUTATIONER:CAPTCHA_IMG}">
+            <input type="hidden" value="{PROFILE_REPUTATIONER:CAPTCHA_ID}" name="reputation-captcha-id">
+            <div class="reputation-btn-group">
+                <button type="button" id="reputation-change-btn"><span class="glyphicons glyphicons-ok"></span> Добавить оценку</button>
+            </div>
+        </div>
+    </div>
+</form>

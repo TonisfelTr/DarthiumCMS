@@ -1,0 +1,193 @@
+<form action="site/scripts/topicer.php" method="post">
+    <h3><span class="glyphicons glyphicons-file-plus"></span> Создание новой темы</h3>
+    {NEWTOPIC_ERRORS}
+    {NEWTOPIC_QUIZE}
+    <div class="btn-group сol-lg-12" style="margin-bottom: 10px;">
+        <p>Включение опроса:</p>
+        <button class="btn btn-default col-lg-6" id="quize-create-btn" type="button"><span class="glyphicon glyphicon-list-alt"></span> Добавить опрос</button>
+        <button class="btn btn-default col-lg-6" id="quize-remove-btn" type="button" disabled><span class="glyphicon glyphicon-trash"></span> Удалить опрос</button>
+    </div>
+    <div class="input-group">
+        <div class="input-group-addon">Название темы</div>
+        <input class="form-control" type="text" name="topic-name-input" placeholder="Внезапная новость" maxlength="100">
+    </div>
+    <br>
+    <div class="input-group">
+        <div class="input-group-addon">Категория</div>
+        <select class="form-control" name="topic-category-select">
+            <option value="none">Не выбрано...</option>
+            {NEWTOPIC_PAGE:CATEGORIES_OPTION}
+        </select>
+    </div>
+    <br>
+    <div class="btn-group">
+        <button class="btn btn-default" title="Выделить жирным" type="button" onclick="insertBBCode('b', false, document.getElementById('topic-descript-textarea'));"><strong>B</strong></button>
+        <button class="btn btn-default" title="Курсив" type="button" onclick="insertBBCode('i', false, document.getElementById('topic-descript-textarea'));"><em>I</em></button>
+        <button class="btn btn-default" title="Подчёркивание" type="button" onclick="insertBBCode('u', false, document.getElementById('topic-descript-textarea'));"><ins>U</ins></button>
+        <button class="btn btn-default" title="Перечеркнуть" type="button" onclick="insertBBCode('s', false, document.getElementById('topic-descript-textarea'));"><s>S</s></button>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-default" title="Выровнять влево" type="button" onclick="insertBBCode('align=left', 'align', document.getElementById('topic-descript-textarea'));"><span class="glyphicon glyphicon-align-left"></span></button>
+        <button class="btn btn-default" title="Выровнять по центру" type="button" onclick="insertBBCode('align=center', 'align', document.getElementById('topic-descript-textarea'));"><span class="glyphicon glyphicon-align-center"></span></button>
+        <button class="btn btn-default" title="Выровнять вправо" type="button" onclick="insertBBCode('align=right', 'align', document.getElementById('topic-descript-textarea'));"><span class="glyphicon glyphicon-align-right"></span></button>
+    </div>
+    <div class="btn-group">
+        <select class="btn btn-default" title="Цвет шрифта" id="topic-preview-font-filler">
+            <option value="black" style="color: black;">Чёрный</option>
+            <option value="red" style="color: red;">Красный</option>
+            <option value="green" style="color: green;">Зелёный</option>
+            <option value="yellow" style="color: yellow;">Жёлтый</option>
+            <option value="orange" style="color: orange;">Оранжевый</option>
+            <option value="blue" style="color: blue;">Синий</option>
+            <option value="grey" style="color: grey;">Серый</option>
+            <option value="darkgrey" style="color: #545454;">Тёмносерый</option>
+            <option value="white" style="color: white; text-shadow: 1px 1px 1px black;">Белый</option>
+        </select>
+        <select class="btn btn-default" title="Размер шрифта" id="topic-preview-font-sizer">
+            <option value="12">12</option>
+            <option value="14">14</option>
+            <option value="16">16</option>
+            <option value="18">18</option>
+            <option value="20">20</option>
+            <option value="22">22</option>
+        </select>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-default" title="Вставить ролик YouTube" type="button" onclick="insertBBCode('youtube=', true, document.getElementById('topic-descript-textarea'));"><span class="glyphicon glyphicon-play btn-youtube"></span></button>
+        <button class="btn btn-default" title="Вставить картинку" type="button" onclick="insertBBCode('img=', true, document.getElementById('topic-descript-textarea'));"><span class="glyphicon glyphicon-picture"></span></button>
+        <button class="btn btn-default" title="Загрузить файл" type="button" onclick="$('#uploader-main').show();"><span class="glyphicon glyphicon-upload"></span> Загрузить файл</button>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-default" title="Вставить разделитель" type="button" onclick="insertBBCode('hr', true, document.getElementById('topic-descript-textarea'));"><span class="glyphicons glyphicons-vector-path-line"></span></button>
+        <button class="btn btn-default" title="Спойлер" type="button" onclick="insertBBCode('spoiler', false, document.getElementById('topic-descript-textarea'));"><span class="glyphicons glyphicons-note-empty"></span></button>
+        <button class="btn btn-default" title="Цитата" type="button" onclick="insertBBCode('quote', 'quote', document.getElementById('topic-descript-textarea'));"><span class="glyphicons glyphicons-user-conversation"></span></button>
+    </div>
+    <textarea class="form-control non-resize" id="topic-descript-textarea" name="topic-descript-textarea" placeholder="Обложка темы." maxlength="255"></textarea>
+    <hr>
+    <div class="btn-group">
+        <button class="btn btn-default" title="Выделить жирным" type="button" onclick="insertBBCode('b', false, document.getElementById('topic-content-textarea'));"><strong>B</strong></button>
+        <button class="btn btn-default" title="Курсив" type="button" onclick="insertBBCode('i', false, document.getElementById('topic-content-textarea'));"><em>I</em></button>
+        <button class="btn btn-default" title="Подчёркивание" type="button" onclick="insertBBCode('u', false, document.getElementById('topic-content-textarea'));"><ins>U</ins></button>
+        <button class="btn btn-default" title="Перечеркнуть" type="button" onclick="insertBBCode('s', false, document.getElementById('topic-content-textarea'));"><s>S</s></button>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-default" title="Выровнять влево" type="button" onclick="insertBBCode('align=left', 'align', document.getElementById('topic-content-textarea'));"><span class="glyphicon glyphicon-align-left"></span></button>
+        <button class="btn btn-default" title="Выровнять по центру" type="button" onclick="insertBBCode('align=center', 'align', document.getElementById('topic-content-textarea'));"><span class="glyphicon glyphicon-align-center"></span></button>
+        <button class="btn btn-default" title="Выровнять вправо" type="button" onclick="insertBBCode('align=right', 'align', document.getElementById('topic-content-textarea'));"><span class="glyphicon glyphicon-align-right"></span></button>
+    </div>
+    <div class="btn-group">
+        <select class="btn btn-default" title="Цвет шрифта" id="topic-text-font-filler">
+            <option value="black" style="color: black;">Чёрный</option>
+            <option value="red" style="color: red;">Красный</option>
+            <option value="green" style="color: green;">Зелёный</option>
+            <option value="yellow" style="color: yellow;">Жёлтый</option>
+            <option value="orange" style="color: orange;">Оранжевый</option>
+            <option value="blue" style="color: blue;">Синий</option>
+            <option value="grey" style="color: grey;">Серый</option>
+            <option value="darkgrey" style="color: #545454;">Тёмносерый</option>
+            <option value="white" style="color: white; text-shadow: 1px 1px 1px black;">Белый</option>
+        </select>
+        <select class="btn btn-default" title="Размер шрифта" id="topic-text-font-sizer">
+            <option value="12">12</option>
+            <option value="14">14</option>
+            <option value="16">16</option>
+            <option value="18">18</option>
+            <option value="20">20</option>
+            <option value="22">22</option>
+        </select>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-default" title="Вставить ролик YouTube" type="button" onclick="insertBBCode('youtube=', true, document.getElementById('topic-content-textarea'));"><span class="glyphicon glyphicon-play btn-youtube"></span></button>
+        <button class="btn btn-default" title="Вставить картинку" type="button" onclick="insertBBCode('img=', true, document.getElementById('topic-content-textarea'));"><span class="glyphicon glyphicon-picture"></span></button>
+        <button class="btn btn-default" title="Загрузить файл" type="button" onclick="$('#uploader-main').show();"><span class="glyphicon glyphicon-upload"></span> Загрузить файл</button>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-default" title="Вставить разделитель" type="button" onclick="insertBBCode('hr', true, document.getElementById('topic-content-textarea'));"><span class="glyphicons glyphicons-vector-path-line"></span></button>
+        <button class="btn btn-default" title="Спойлер" type="button" onclick="insertBBCode('spoiler', false, document.getElementById('topic-content-textarea'));"><span class="glyphicons glyphicons-note-empty"></span></button>
+        <button class="btn btn-default" title="Цитата" type="button" onclick="insertBBCode('quote', 'quote', document.getElementById('topic-content-textarea'));"><span class="glyphicons glyphicons-user-conversation"></span></button>
+    </div>
+    <textarea class="form-control non-resize" id="topic-content-textarea" name="topic-content-textarea" placeholder="Текст Вашей темы."></textarea>
+    <hr>
+    <div class="btn-group">
+        <button class="btn btn-default" type="submit" name="topic-create-btn"><span class="glyphicons glyphicons-ok"></span> Создать тему</button>
+        <button class="btn btn-default" type="button" id="topic-preview-btn"><span class="glyphicons glyphicons-eye-open"></span> Предварительный просмотр</button>
+    </div>
+    <hr>
+    <strong>Последние добавленные Вами темы:</strong> <br>
+    {TOPICS:LAST_CREATED_AUTHOR_TOPICS}
+    <hr>
+    <strong>Последние добавленные темы:</strong> <br>
+    {TOPICS:LAST_CREATED_TOPICS}
+    <div id="newtopic-preview" hidden>
+
+    </div>
+</form>
+<script type="text/javascript">
+    function insertBBCode(openTag, notNeedClose = false, texterElement = null){
+        if (texterElement == null)
+            var texter = document.getElementById("report-add-message");
+        else
+            var texter = texterElement;
+        startText = texter.value.substring(0, texter.selectionStart);
+        endText = texter.value.substring(texter.selectionEnd, texter.value.length);
+        tagingText = texter.value.substring(texter.selectionStart, texter.selectionEnd);
+        startPos = texter.selectionStart;
+        endPos = texter.selectionEnd;
+        startText += '[' + openTag + ']';
+        if (notNeedClose === false) endText = '[\/' + openTag + ']' + endText;
+        if (notNeedClose !== false && notNeedClose !== true) endText = '[\/' + notNeedClose + ']' + endText;
+        texter.value = startText + tagingText + endText;
+        texter.focus();
+        texter.setSelectionRange(startPos + (2 + openTag.length), endPos + (2 + openTag.length));
+
+        //texter.value.insert
+    }
+    $("button#topic-preview-btn").on("click", function()
+    {
+        $.ajax({
+            url: "/site/scripts/ajax/newtopicpreviewajax.php",
+            type: "POST",
+            data: "text=" + $("textarea#topic-content-textarea").val(),
+            success: function (data) {
+                $("div#newtopic-preview").html(data);
+                var span = document.createElement("h3");
+                $(span).html("Предварительный просмотр");
+                $("div#newtopic-preview").prepend(span);
+                $("div#newtopic-preview").prepend(document.createElement("hr"));
+                $("div#newtopic-preview").show();
+                $('html, body').animate({
+                    scrollTop: $("div#newtopic-preview").offset().top + 'px'
+                }, 'fast');
+            }
+        });
+    });
+
+    $("select#topic-preview-font-filler").on("change", function(){
+       insertBBCode("color=" + $(this).val(), "color", document.getElementById("topic-descript-textarea"));
+    });
+    $("select#topic-preview-font-sizer").on("change", function(){
+        insertBBCode("size=" + $(this).val(), "size", document.getElementById("topic-descript-textarea"));
+    });
+    $("select#topic-text-font-filler").on("change", function(){
+        insertBBCode("color=" + $(this).val(), "color", document.getElementById("topic-content-textarea"));
+    });
+    $("select#topic-text-font-sizer").on("change", function(){
+        insertBBCode("size=" + $(this).val(), "size", document.getElementById("topic-content-textarea"));
+    });
+    $("button#quize-create-btn").on("click", function() {
+        if ($("div.quize-frame").is(":hidden")) {
+            $("div.quize-frame").show();
+            $(this).prop("disabled", true);
+            $("#quize-remove-btn").prop("disabled", false);
+            $("#quizer-status").val("1");
+        }
+    });
+
+    $("button#quize-remove-btn").on("click", function() {
+        $("div.quize-frame").hide();
+        $(this).prop("disabled", true);
+        $("#quize-create-btn").prop("disabled", false);
+        $("#quizer-status").val("0");
+    });
+
+</script>

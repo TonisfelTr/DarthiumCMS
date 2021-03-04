@@ -1,0 +1,152 @@
+<div class="quize-frame" hidden>
+    <input type="hidden" id="quizer-status" name="quizer-status" value="0">
+    <input type="hidden" id="quizer-answers" name="quizer-answers" value="">
+    <div class="quize-header">
+        <div class="input-group">
+            <div class="input-group-addon">Тема опроса</div>
+            <input type="text" name="quize-question-input" class="form-control" value="{QUIZE_QUESTION}">
+        </div>
+    </div>
+    <div class="quize-body">
+        <div class="input-group" id="quize-answer-div-1" hidden>
+            <input class="form-control" type="text" name="quize-answer-1">
+            <span class="input-group-btn">
+                <button class="btn btn-default deleter" type="button">
+                    <span class="glyphicons glyphicons-minus"></span> Удалить
+                </button>
+            </span>
+        </div>
+        <div class="input-group" id="quize-answer-div-2" hidden>
+            <input class="form-control" type="text" name="quize-answer-2">
+            <span class="input-group-btn">
+                <button class="btn btn-default deleter" type="button">
+                    <span class="glyphicons glyphicons-minus"></span> Удалить
+                </button>
+            </span>
+        </div>
+        <div class="input-group" id="quize-answer-div-3" hidden>
+            <input class="form-control" type="text" name="quize-answer-3">
+            <span class="input-group-btn">
+                <button class="btn btn-default deleter" type="button">
+                    <span class="glyphicons glyphicons-minus"></span> Удалить
+                </button>
+            </span>
+        </div>
+        <div class="input-group" id="quize-answer-div-4" hidden>
+            <input class="form-control" type="text" name="quize-answer-4">
+            <span class="input-group-btn">
+                <button class="btn btn-default deleter" type="button">
+                    <span class="glyphicons glyphicons-minus"></span> Удалить
+                </button>
+            </span>
+        </div>
+        <div class="input-group" id="quize-answer-div-5" hidden>
+            <input class="form-control" type="text" name="quize-answer-5">
+            <span class="input-group-btn">
+                <button class="btn btn-default deleter" type="button">
+                    <span class="glyphicons glyphicons-minus"></span> Удалить
+                </button>
+            </span>
+        </div>
+        <div class="input-group" id="quize-answer-div-6" hidden>
+            <input class="form-control" type="text" name="quize-answer-6">
+            <span class="input-group-btn">
+                <button class="btn btn-default deleter" type="button">
+                    <span class="glyphicons glyphicons-minus"></span> Удалить
+                </button>
+            </span>
+        </div>
+        <div class="input-group" id="quize-answer-div-7" hidden>
+            <input class="form-control" type="text" name="quize-answer-7">
+            <span class="input-group-btn">
+                <button class="btn btn-default deleter" type="button">
+                    <span class="glyphicons glyphicons-minus"></span> Удалить
+                </button>
+            </span>
+        </div>
+        <div class="input-group" id="quize-answer-div-8" hidden>
+            <input class="form-control" type="text" name="quize-answer-8">
+            <span class="input-group-btn">
+                <button class="btn btn-default deleter" type="button">
+                    <span class="glyphicons glyphicons-minus"></span> Удалить
+                </button>
+            </span>
+        </div>
+        <div class="input-group" id="quize-answer-div-9" hidden>
+            <input class="form-control" type="text" name="quize-answer-9">
+            <span class="input-group-btn">
+                <button class="btn btn-default deleter" type="button">
+                    <span class="glyphicons glyphicons-minus"></span> Удалить
+                </button>
+            </span>
+        </div>
+        <div class="input-group" id="quize-answer-div-10" hidden>
+            <input class="form-control" type="text" name="quize-answer-10">
+            <span class="input-group-btn">
+                <button class="btn btn-default deleter" type="button">
+                    <span class="glyphicons glyphicons-minus"></span> Удалить
+                </button>
+            </span>
+        </div>
+    </div>
+    <br>
+    <div class="quize-footer">
+        <button class="btn btn-info col-lg-12" id="quizer-add-answer-btn" type="button"><span class="glyphicons glyphicons-plus"></span> Добавить ответ</button>
+    </div>
+</div>
+<script type="text/javascript">
+    var countAnswersInTopic = 1;
+    $("div.quize-body > div").hide();
+    $("#quizer-add-answer-btn").on("click", function() {
+        if (countAnswersInTopic < 10) {
+            $("#quize-answer-div-" + countAnswersInTopic).show();
+            countAnswersInTopic += 1;
+        } else {
+            $("#quizer-add-answer-btn").prop("disabled", true);
+        }
+        ConstructAnswersId();
+    });
+
+    $("button.deleter").on("click", function() {
+       $(this).parent().parent().hide();
+       countAnswersInTopic -= 1;
+        $("#quizer-add-answer-btn").prop("disabled", false);
+        ConstructAnswersId();
+    });
+
+    function ConstructAnswersId(){
+        ids = "";
+        if (!$("#quize-answer-div-1").is(":hidden")){
+            ids += "1,";
+        }
+        if (!$("#quize-answer-div-2").is(":hidden")){
+            ids += "2,";
+        }
+        if (!$("#quize-answer-div-3").is(":hidden")){
+            ids += "3,";
+        }
+        if (!$("#quize-answer-div-4").is(":hidden")){
+            ids += "4,";
+        }
+        if (!$("#quize-answer-div-5").is(":hidden")){
+            ids += "5,";
+        }
+        if (!$("#quize-answer-div-6").is(":hidden")){
+            ids += "6,";
+        }
+        if (!$("#quize-answer-div-7").is(":hidden")){
+            ids += "7,";
+        }
+        if (!$("#quize-answer-div-8").is(":hidden")){
+            ids += "8,";
+        }
+        if (!$("#quize-answer-div-9").is(":hidden")){
+            ids += "9,";
+        }
+        if (!$("#quize-answer-div-10").is(":hidden")){
+            ids += "10,";
+        }
+        ids = ids.substring(0, ids.length -1);
+        $("#quizer-answers").val(ids);
+    }
+</script>

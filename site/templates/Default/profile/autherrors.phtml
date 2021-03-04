@@ -1,0 +1,43 @@
+<div class="profile-reg-message-div">
+    <?php if (!empty($_REQUEST["res"])) {
+             if ($_REQUEST["res"] == "sr"){ ?>
+
+    <div class="profile-reg-success-div">
+        <?php if (\Engine\Engine::GetEngineInfo("na")){ ?>
+            <span class="glyphicon glyphicon-ok"></span> Аккаунт был успешно зарегистрирован. Однако, Администрация требует активации
+            аккаунтов, поэтому Вам на указанный в регистрации электронный адрес было отправлено письмо с инструкцией по активации. До
+            этой процедуры Вы не сможете воспользоваться зарегистрированным аккаунтом.
+        <?php } else { ?>
+            <span class="glyphicon glyphicon-ok"></span> Аккаунт был успешно зарегистрирован. Вы можете войти, используя данные,
+            введённые при регистрации.
+        <?php } } ?>
+        <?php if ($_REQUEST["res"] == "nsuid"){ ?>
+
+            <div class="profile-reg-error-div" >
+            <span class="glyphicon glyphicon-warning-sign"></span> Вы не ввели ваш {AUTH_PAGE:UID_INPUT_PLACEHOLDER}.
+
+            <?php } if ($_REQUEST["res"] == "nsi"){ ?>
+
+                <div class="profile-reg-error-div">
+                <span class="glyphicon glyphicon-warning-sign"></span> Вы не авторизировались.
+            <?php } if ($_REQUEST["res"] == "nspwd"){ ?>
+
+                <div class="profile-reg-error-div">
+                <span class="glyphicon glyphicon-warning-sign"></span> Вы не ввели пароль.
+            <?php } if ($_REQUEST["res"] == "iad"){ ?>
+
+                <div class="profile-reg-error-div">
+                <span class="glyphicon glyphicon-remove-circle"></span> Вы ввели неправильный логин или пароль.
+
+            <?php } if ($_REQUEST["res"] == "iuid"){ ?>
+                <div class="profile-reg-error-div">
+                <span class="glyphicon glyphicon-remove-circle"></span> Аккаунта с такими данными точно нет в системе: {AUTH_PAGE:UID_INPUT_PLACEHOLDER} имеет недопустимые символы.
+
+            <?php } if ($_REQUEST["res"] == "dbe"){ ?>
+                <div class="profile-reg-error-div">
+                <span class="glyphicon glyphicon-warning-sign"></span> Авторизация не удалась. Обратитесь к Администрации через форму жалоб на главной странице портала.
+            <?php } ?>
+                <hr>
+                <p style="color: lightblue; text-decoration: underline;" onclick="$(this).parent('div').hide();">Закрыть сообщение</p>
+            </div>
+<?php } ?>

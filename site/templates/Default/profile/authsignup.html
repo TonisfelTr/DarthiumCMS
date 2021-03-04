@@ -1,0 +1,68 @@
+<div data-div-title="signup" hidden>
+    <div data-div-title="body">
+        <div id="profile-reg-rules" hidden>
+            {AUTH_PAGE:RULES}
+            <hr>
+            <div class="profile-btn-group">
+                <button type="button" id="profile_reg_rules_confirm_btn">Я согласен с правилами</button>
+                <button type="button" id="profile_reg_rules_reject_btn">Вернуться к авторизации</button>
+            </div>
+        </div>
+        <div data-div-title="registration" hidden>
+            {AUTH_PAGE:REGISTER_ERRORS}
+            <form method="post" id="profile-reg-form-form" action="/site/scripts/signup.php">
+                <p>Все поля помеченные звёздочкой обязательны для заполнения.</p>
+                <div>
+                    <input class="profile-input" type="text" id="profile-reg-nickname-input" name="profile-reg-nickname-input" placeholder="Никнейм*" autocomplete="new-password" maxlength="16">
+                    <span class="helper"><span class="glyphicon glyphicon-info-sign"></span> Длина никнейма не может быть меньше 4 и больше 16 символов.</span>
+                </div>
+                <div>
+                    <input class="profile-input" type="password" id="profile-reg-password-input" name="profile-reg-password-input" placeholder="Пароль*" autocomplete="new-password">
+                    <span class="helper"><span class="glyphicon glyphicon-info-sign"></span> Подбирайте сложный пароль. Минимальная длина - 7 символов. <strong>Пароли asdf1 и Asdf1 - разные пароли!</strong></span>
+                </div>
+                <div>
+                    <input class="profile-input" type="password" id="profile-reg-repassword-input" name="profile-reg-repassword-input" placeholder="Повторите пароль*" autocomplete="new-password">
+                </div>
+                <div>
+                    <input class="profile-input" type="email" id="profile-reg-email-input" name="profile-reg-email-input" placeholder="Email*" autocomplete="new-password">
+                    <span class="helper"><span class="glyphicon glyphicon-info-sign"></span>{AUTH_PAGE:EMAIL_TIP}</span>
+                </div>
+                <hr>
+                <div>
+                    <input class="profile-input" type="text" id="profile-reg-referer-input" name="profile-reg-referer-input" placeholder="Реферер" autocomplete="new-password">
+                    <span class="helper"><span class="glyphicon glyphicon-info-sign"></span> Если Вы пришли на сайт по направлению какого-то пользователя, пожалуйста, напишите его никнейм.</span>
+                </div>
+                {AUTH_PAGE:NECESSARY_ADDITIVE_FIELDS}
+                <hr>
+                <h3>Дополнительная информация</h3>
+                <p>Данные поля не обязательны к заполнению.</p>
+                <div>
+                    <input class="profile-input" type="text" name="profile-reg-realname-input" placeholder="Как Вас зовут?" autocomplete="new-password">
+                </div>
+                <div>
+                    <input class="profile-input" type="text" name="profile-reg-city-input" placeholder="Откуда Вы?" autocomplete="new-password">
+                </div>
+                <div>
+                    <select class="profile-input" name="profile-reg-sex-input">
+                        <option value="1">Пол не выбран</option>
+                        <option value="2">Мужской</option>
+                        <option value="3">Женский</option>
+                    </select>
+                </div>
+                {AUTH_PAGE:NOT_NECESSARY_ADDITIVE_FIELDS}
+                <hr>
+                <div>
+                    <p>Введите то, что написано на картинке.</p>
+                    <input class="profile-input" type="text" id="profile-reg-captcha-input" name="profile-reg-captcha-input" placeholder="Капча*" autocomplete="new-password">
+                    {AUTH_PAGE:CAPTCHA_PIC}
+                    <input type="hidden" value="{AUTH_PAGE:CAPTCHA_ID}" name="profile-reg-captcha-id">
+                </div>
+                <div class="profile-btn-group">
+                    <button type="button" name="profile-reg-reg-btn" id="profile-reg-reg-btn">Зарегистрироваться</button>
+                    <button type="reset" name="profile-reg-clear-btn">Отчистить форму</button>
+                    <button type="button" id="profile-reg-toauth-btn">Назад к авторизации</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

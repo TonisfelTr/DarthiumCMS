@@ -1,0 +1,43 @@
+<div class="uploader-background" id="uploader-main" {PROFILE_UPLOADER:HIDDEN_ATTR}>
+    <div class="uploader-form">
+        <div class="uploader-header">
+            <span class="glyphicons glyphicons-download"></span> Загрузка файлов
+            <button type="button" id="uploader-close-btn">X</button>
+        </div>
+        <div class="uploader-body">
+            <form method="post" action="site/scripts/uploader.php" enctype="multipart/form-data">
+                {PROFILE_UPLOADER:RESPONSE}
+                <p>Вы можете загрузить форматы: {PROFILE_UPLOADER:FILES_ACCEPTED_EXTS}.<br>
+                    Максимальный размер файла: {PROFILE_UPLOADER:FILES_ACCEPTED_MAX_SIZE}.</p>
+                <hr>
+                Загрузка:
+                <input class="uploader-input" type="file" name="uploader-file">
+                <hr>
+                <div class="btn-group">
+                    <button class="btn btn-default" type="submit" name="uploader-upload-file"><span class="glyphicon glyphicon-upload"></span> Загрузить файл</button>
+                    <button class="btn btn-default" type="submit" name="uploader-delete-file" id="uploader-delete-file" disabled><span class="glyphicons glyphicons-delete"></span> Удалить файл(-ы)</button>
+                </div>
+                <hr>
+                <h4>История загрузок</h4>
+                <div class="alert alert-info" id="uploader-selected-count-div" hidden><strong>Выделенно файлов:</strong> <span id="uploader-selected-counter-span"></span></div>
+                <div class="table-container">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr style="background: black; color: white;">
+                                <td><input type="checkbox" id="uploader-select-all" title="Выделить всё"></td>
+                                <td>Имя файла</td>
+                                <td>Ссылка</td>
+                                <td>Дата загрузки</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {PROFILE_UPLOADER:FILES_TABLE}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

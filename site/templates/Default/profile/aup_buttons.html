@@ -1,0 +1,11 @@
+<div class="profile-panel-bottom-group-btn">
+    <form method="post" action="/site/scripts/deauthorizator.php">
+        <button class="profile-profile-btn" type="submit" name="profile-btn-log-out"><span class="profile-btn-span"></span> Выйти</button>
+    </form>
+    <a class="profile-profile-btn" href="index.php"><span class="profile-btn-span"></span> На главную</a>
+    <button class="profile-profile-btn" type="button" id="profile-news-panel-btn" onclick="showPanel('notifications');"><span class="profile-btn-span"></span> <span id="profile-btn-notifications-counter-span" class="{PROFILE_NOTIFICS_SPAN_CLASS}">{PROFILE_NOTIFICS_SPAN_COUNT}</span> Уведомления</button>
+    <button class="profile-profile-btn" type="button" id="profile-pm-panel-btn" onclick="showPanel('pm');"><span class="profile-btn-span"></span> <span class="{PROFILE_PM_SPAN_CLASS}">{PROFILE_PM_SPAN_COUNT}</span> Личные сообщения</button>
+    <button class="profile-profile-btn" type="button" id="profile-edit-panel-btn" onclick="showPanel('edit');"><span class="profile-btn-span"></span> Редактирование</button>
+    <button class="profile-profile-btn" type="button" id="profile-custom-panel-btn" onclick="showPanel('info');"><span class="profile-btn-span"></span> Основная информация</button>
+    {PROFILE_AUTH_ADMINPANEL_BTN}
+</div>

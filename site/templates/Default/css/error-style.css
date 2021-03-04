@@ -1,0 +1,55 @@
+html,
+body{
+    height: 100%;
+    width: 100%;
+    overflow-x: auto;
+    padding: 0;
+    margin: 0;
+
+}
+
+@font-face {
+    font-family: "My Passion";
+    src: url("../../../../libs/styles/font.otf");
+}
+
+@font-face {
+    font-family: "Trebuchet MS";
+    src: url("../../../../libs/styles/site-font.ttf");
+}
+
+body{
+    position: fixed;
+    color: white;
+    font: 13px "Trebuchet MS";
+    background: linear-gradient(250deg, #666, #111),
+                linear-gradient(200deg, #555, #111),
+                linear-gradient(150deg, #444, #111),
+                linear-gradient(100deg, #222, #111);
+}
+
+div.header{
+    background: radial-gradient(at left center, #FF9600, #eec187);
+    color: #0e1d1b;
+    text-align: left;
+    padding: 25px;
+}
+
+p.helper{
+    padding: 20px;
+}
+
+.error-code-analyzator,
+.error-informer,
+.error-stacktrace {
+    margin: 5px;
+    border: 1px white solid;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.error-stacktrace,
+.error-code-analyzator {
+    background: black;
+    color: white;
+}

@@ -1,0 +1,31 @@
+<div class="topic-wrapper col-xs-12 col-sm-12 col-md-12 col-lg-5">
+    <div class="topic-header">
+        {TOPIC_STATUS_ICON}
+        <a class="topic-head-link" href="?topic={TOPIC_ID}">{TOPIC_NAME}</a>
+    </div>
+    <div class="topic-breadcrumbs">
+        Лента &raquo; {TOPIC_CATEGORY}
+    </div>
+    <div class="topic-body">
+        {TOPIC_BODY}
+    </div>
+    <div class="topic-footer-neutral">
+        <div class="topic-author-header">
+            <img src="{TOPIC_AUTHOR_AVATAR}" width="20" height="20">
+            <a class="topic-author-link" href="profile.php?uid={TOPIC_AUTHOR_ID}">{TOPIC_AUTHOR_NICKNAME}</a>
+            »
+            <a class="topic-author-link" style="color: {TOPIC_AUTHOR_GROUP_COLOR}" href="?group={TOPIC_AUTHOR_GROUP_ID}">{TOPIC_AUTHOR_GROUP_NAME}</a>
+        </div>
+        <div class="topic-likes-panel">
+            <div>
+                <span class="glyphicons glyphicons-thumbs-up"></span> <span id="topic-likes-{TOPIC_ID}">{TOPIC_LIKES_COUNT}</span>
+            </div>
+            <div class="topic-delimiter">
+                {TOPIC_MARKS_COUNT}
+            </div>
+            <div>
+                <span class="glyphicons glyphicons-thumbs-down"></span> <span id="topic-dislikes-{TOPIC_ID}">{TOPIC_DISLIKES_COUNT}</span>
+            </div>
+        </div>
+    </div>
+</div>

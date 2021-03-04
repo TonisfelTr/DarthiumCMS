@@ -1,0 +1,4 @@
+<div class="alert alert-info">
+    <span class="glyphicons glyphicons-info-sign"></span> <strong><?=\Engine\LanguageManager::GetTranslation("category")?>:</strong>
+    <?=\Forum\ForumAgent::GetCategoryParam($_GET["category"], "name")?>
+</div>

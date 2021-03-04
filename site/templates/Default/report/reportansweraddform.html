@@ -1,0 +1,54 @@
+<div class="report-answer-add-form">
+    <div class="btn-group">
+        <button class="btn btn-default" title="Выделить жирным" type="button"
+                onclick="insertBBCode('b', false, document.getElementById('report-answer-text'));">
+            <strong>B</strong></button>
+        <button class="btn btn-default" title="Курсив" type="button"
+                onclick="insertBBCode('i', false, document.getElementById('report-answer-text'));"><em>I</em>
+        </button>
+        <button class="btn btn-default" title="Подчёркивание" type="button"
+                onclick="insertBBCode('u', false, document.getElementById('report-answer-text'));">
+            <ins>U</ins>
+        </button>
+        <button class="btn btn-default" title="Перечеркнуть" type="button"
+                onclick="insertBBCode('s', false, document.getElementById('report-answer-text'));"><s>S</s></button>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-default" title="Выровнять влево" type="button"
+                onclick="insertBBCode('align=left', 'align', document.getElementById('report-answer-text'));"><span
+                class="glyphicon glyphicon-align-left"></span></button>
+        <button class="btn btn-default" title="Выровнять по центру" type="button"
+                onclick="insertBBCode('align=center', 'align', document.getElementById('report-answer-text'));">
+            <span class="glyphicon glyphicon-align-center"></span></button>
+        <button class="btn btn-default" title="Выровнять вправо" type="button"
+                onclick="insertBBCode('align=right', 'align', document.getElementById('report-answer-text'));"><span
+                class="glyphicon glyphicon-align-right"></span></button>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-default" title="Вставить ролик YouTube" type="button"
+                onclick="insertBBCode('youtube=', true, document.getElementById('report-answer-text'));"><span
+                class="glyphicon glyphicon-play btn-youtube"></span></button>
+        <button class="btn btn-default" title="Вставить картинку" type="button"
+                onclick="insertBBCode('img=', true, document.getElementById('report-answer-text'));"><span
+                class="glyphicon glyphicon-picture"></span></button>
+        <button class="btn btn-default" title="Загрузить файл" type="button" onclick="$('#uploader-main').show();">
+            <span class="glyphicon glyphicon-upload"></span> Загрузить файл
+        </button>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-default" title="Вставить разделитель" type="button"
+                onclick="insertBBCode('hr', true, document.getElementById('report-answer-text'));"><span
+                class="glyphicons glyphicons-vector-path-line"></span></button>
+        <button class="btn btn-default" title="Цитата" type="button"
+                onclick="insertBBCode('quote', 'quote', document.getElementById('report-answer-text'));"><span
+                class="glyphicons glyphicons-user-conversation"></span></button>
+    </div>
+    <textarea class="form-control" id="report-answer-text" name="reports-answer-text"
+              style="resize: none; height: 300px;"
+              placeholder="Здесь Вы можете оставить свой комментарий..."></textarea>
+
+    <div class="btn-group">
+        <button class="btn btn-default" type="submit" name="reports-answer-send">Опубликовать комментарий</button>
+        <button class="btn btn-default" type="reset">Очистить форму</button>
+    </div>
+</div>

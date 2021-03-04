@@ -1,0 +1,33 @@
+<form method="post" action="site/scripts/reports.php" name="reports-form">
+    <h3>Жалобы</h3>
+    <hr>
+    <p class="helper">Здесь Вы можете общаться с Администрацией. Этот раздел что-то на подобии обратной связи: Вы
+        задаёте вопрос представителю
+        Администрации портала, а он на него отвечает. Отметим, что Администрация оставляет за собой право подключать
+        к решению проблемы других
+        пользователей и членов Администрации.</p>
+    <div class="btn-group" style="width: 100%;">
+        <button class="btn btn-default" type="submit" name="reports-create" style="width: 100%;"><span class="glyphicons glyphicons-user-alert"></span> Создать жалобу</button>
+    </div>
+    <hr>
+    <div class="table-responsive">
+        <table class="table">
+            <thead id="thead-reports">
+            <tr>
+                <td>Статус</td>
+                <td>Тема</td>
+                <td>Краткое описание</td>
+                <td>Дата создания</td>
+                <td>Отвечающий</td>
+                <td>Дата закрытия</td>
+            </tr>
+            </thead>
+            <tbody>
+                {REPORTS_PAGE:TABLE}
+            </tbody>
+        </table>
+    </div>
+    <div class="btn-group">
+        {REPORT_PAGE:TABLE_PAGE_BTNS}
+    </div>
+</form>
