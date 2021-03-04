@@ -34,16 +34,16 @@ for ($i = 0; $i < count($templates); $i++)
                             echo "<option class='templates_list_folder'> $filesIn[$i]</option>";
                         }
                         else {
-                            if (strstr($filesIn[$i], "html"))
+                            if (strstr($filesIn[$i], ".html"))
                                 echo "<option style='color: #2c832e'> $filesIn[$i]</option>";
-                            if (strstr($filesIn[$i], "css"))
+                            if (strstr($filesIn[$i], ".css"))
                                 echo "<option style='color: #4b65ff'> $filesIn[$i]</option>";
-                            if (strstr($filesIn[$i], "js"))
+                            if (strstr($filesIn[$i], ".js"))
                                 echo "<option style='color: #834624'> $filesIn[$i]</option>";
-                            if (strstr($filesIn[$i], "phtml"))
+                            if (strstr($filesIn[$i], ".phtml"))
                                 echo "<option style='color: #40a1a1'> $filesIn[$i]</option>";
-                            if (strstr($filesIn[$i], "png") || strstr($filesIn[$i], "ico")
-                            || strstr($filesIn[$i], "jpeg" || strstr($filesIn[$i], "jpg")))
+                            if (strstr($filesIn[$i], ".png") || strstr($filesIn[$i], ".ico")
+                                || strstr($filesIn[$i], ".jpeg" || strstr($filesIn[$i], ".jpg")))
                                 echo "<option style='color: #833180'> $filesIn[$i]</option>";
                         }
                     }
@@ -79,12 +79,13 @@ for ($i = 0; $i < count($templates); $i++)
         $.ajax({
             url: "adminpanel/scripts/ajax/filemanagerajax.php",
             type: "POST",
-            data: "get_content&template_name=" + $("#templates_select").text().trim() + "&enddir=" + $("#template_path").val() + "/" + $("#template_files_edit_selector").children("option:selected").val(),
+            data: "get_content&template_name=" + $("#templates_select :selected").val() + "&enddir=" + $("#template_path").val() + "/" + $("#template_files_edit_selector").children("option:selected").val(),
             success: function (data) {
                 var result = $.parseJSON(data);
                 if (result === false)
                     return;
                 result = result.toString().split(',');
+                result.splice(0, 1);
                 $("#template_path").val($("#template_files_edit_selector").children("option:selected").val());
                 $("#template_files_edit_selector").children().remove();
                 for (i = 1; i < result.length; i++) {
@@ -119,7 +120,7 @@ for ($i = 0; $i < count($templates); $i++)
             $.ajax({
                 url: "adminpanel/scripts/ajax/filemanagerajax.php",
                 type: "POST",
-                data: "get_content&template_name=" + $("#templates_select").text().trim() + "&enddir=" + $("#template_path").val() + "/" + $("#template_files_edit_selector").children("option:selected").val(),
+                data: "get_content&template_name=" + $("#templates_select :selected").val().trim() + "&enddir=" + $("#template_path").val() + "/" + $("#template_files_edit_selector").children("option:selected").val(),
                 success: function (data) {
                     var result = $.parseJSON(data);
                     if (result === false)
@@ -156,7 +157,7 @@ for ($i = 0; $i < count($templates); $i++)
             $.ajax({
                 url: "adminpanel/scripts/ajax/filemanagerajax.php",
                 type: "POST",
-                data: "get_file_content&template_name=" + $("#templates_select").text().trim() + "&filename=" + $("#template_path").val() + "/" + $("#template_files_edit_selector").children("option:selected").val(),
+                data: "get_file_content&template_name=" + $("#templates_select :selected").val() + "&filename=" + $("#template_path").val() + "/" + $("#template_files_edit_selector").children("option:selected").val(),
                 success: function (data){
                     var currentFile = $("#template_files_edit_selector").children("option:selected").val();
                     if (currentFile.split('.').indexOf("png") == -1 &&

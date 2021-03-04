@@ -35,7 +35,7 @@ if (isset($_POST["category-add-btn"])){
             (isset($_POST["category_add_public"])) ? 1 : 0,
             (isset($_POST["category_add_nocomments"])) ? 1 : 0,
             (isset($_POST["category_add_notopics"])) ? 1 : 0);
-        if ($result === TRUE){
+        if ($result > 0){
             \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("categories_panel.create_new_category_log") . "\"" . $_POST["category-add-name"] . "\"");
             header("Location: ../../adminpanel.php?p=categories&res=6scc");
             exit;

@@ -114,14 +114,14 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
         $new = str_replace_once("{TOPIC_AUTHOR_VK}", (($author->IsVKPublic()) ? "VK: <a href=\"https://vk.com/" . $author->getVK() . "\">" . htmlentities($author->getVK()) . "</a><br>" : ""), $new);
         $new = str_replace_once("{TOPIC_CONTENT}", Engine\Engine::ChatFilter(\Engine\Engine::CompileMentions(html_entity_decode(\Engine\Engine::CompileBBCode($topic->getText())))), $new);
         $new = str_replace_once("{TOPIC_FOOTER_LIKE_CLASS}", (($topic->getLikes() > $topic->getDislikes()) ? "positive" : (($topic->getDislikes() > $topic->getLikes()) ? "negative" : "")), $new);
-    //First condition:
+        //First condition:
         $isAuthorized = ($user !== FALSE);
-    //Second condition
+        //Second condition
         $isUserIsAuthor = ($isAuthorized && $user->getId() == $author->getId());
-    //Third condition
+        //Third condition
         $permToComment = $isAuthorized && (($user->UserGroup()->getPermission("comment_create") && $topic->getCategory()->CanCreateComments()) ||
                 ($user->UserGroup()->getPermission("comment_create") && !$topic->getCategory()->CanCreateComments() && $user->UserGroup()->getPermission("category_params_ignore")));
-    //Other
+        //Other
         $hasPermToEdit = ($isAuthorized && (($isUserIsAuthor && $user->UserGroup()->getPermission("topic_edit")) || $user->UserGroup()->getPermission("topic_foreign_edit")));
         $hasPermToDelete = ($isAuthorized && (($isUserIsAuthor && $user->UserGroup()->getPermission("topic_delete")) || $user->UserGroup()->getPermission("topic_foreign_delete")));
         $hasPermToComment = ($isAuthorized && ($isUserIsAuthor || $permToComment));
@@ -229,9 +229,9 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
             $dateEdit = $comment->getChangeInfo()["editDate"];
             $currentComment = str_replace_once("{COMMENT_EDIT_INFO}", \Engine\LanguageManager::GetTranslation("newsviewer.last_edited_comment") . " by " . \Users\UserAgent::GetUserNick($userEditor) . " " .
                     \Engine\LanguageManager::GetTranslation("in") . " " . \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s", $dateEdit)) .
-                ((strlen($reasonEdit) > 0) ? \Engine\LanguageManager::GetTranslation("newsviewer.last_edited_comment_reason") . " : " . htmlentities($reasonEdit) : ""), $currentComment) . "";
-            } else
-                $currentComment = str_replace_once("{COMMENT_EDIT_INFO}", "", $currentComment);
+                    ((strlen($reasonEdit) > 0) ? \Engine\LanguageManager::GetTranslation("newsviewer.last_edited_comment_reason") . " : " . htmlentities($reasonEdit) : ""), $currentComment) . "";
+        } else
+            $currentComment = str_replace_once("{COMMENT_EDIT_INFO}", "", $currentComment);
         array_push($comments, $currentComment);
     }
     $new = str_replace_once("{TOPIC_COMMENTS}", implode($comments), $new);
@@ -284,8 +284,9 @@ elseif (isset($_GET["edit"])) {
         $editor = str_replace_once("{TOPIC_ERRORS}", $editorResponse, $editor);
 
         $categoriesList = "";
+        $categories = \Forum\ForumAgent::GetCategoryList();
         foreach ($categories as $c) {
-            $category = new \Forum\Category($c);
+            $category = new \Forum\Category($c["id"]);
             if ($topic->getCategoryId() == $category->getId())
                 $atr = " selected";
             else
