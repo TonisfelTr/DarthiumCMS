@@ -314,14 +314,14 @@ namespace Forum {
             $this->QuizeId = $quizeQuery["id"];
             $this->QuizeQuest = $quizeQuery["quest"];
 
-            $quizeQuery = DataKeeper::Get("tt_quizesvars", ["id", "var"], ["quizeId" => $quizeId]);
+            $quizeQuery = DataKeeper::Get("tt_quizesvars", ["id", "var"], ["quizId" => $quizeId]);
             foreach ($quizeQuery as $var){
                 $this->QuizeVars[] = [$var["id"], $var["var"]];
             }
 
-            $quizeQuery = DataKeeper::Get("tt_quizesanswers", ["*"], ["quizeId" => $quizeId]);
+            $quizeQuery = DataKeeper::Get("tt_quizesanswers", ["*"], ["quizId" => $quizeId]);
             foreach ($quizeQuery as $answer) {
-                $this->QuizeAnswers[] = [$answer["userId"], $answer["quizeId"], $answer["varId"]];
+                $this->QuizeAnswers[] = [$answer["userId"], $answer["quizId"], $answer["varId"]];
             }
 
             $this->QuizeAnswersCount = count($this->QuizeAnswers);
@@ -404,7 +404,7 @@ namespace Forum {
             return DataKeeper::MakeQuery("SELECT count(*) FROM `tt_quizes` WHERE `topicId` = ?", [$topicId])["count(*)"] > 0 ? true : false;
         }
         public static function IsVoted(int $userId, int $quizeId){
-            return DataKeeper::MakeQuery("SELECT count(*) FROM `tt_quizesanswers` WHERE `userId` = ? AND `quizeId` = ?", [$userId, $quizeId])["count(*)"] > 0 ? true : false;
+            return DataKeeper::MakeQuery("SELECT count(*) FROM `tt_quizesanswers` WHERE `userId` = ? AND `quizId` = ?", [$userId, $quizeId])["count(*)"] > 0 ? true : false;
         }
 
         public static function SearchByTopicName($topicName, int $page = 1){
@@ -455,19 +455,19 @@ namespace Forum {
         }
 
         public static function GetQuizeByTopic(int $topicId){
-            return DataKeeper::Get("tt_quizes", ["id"], [$topicId]);
+            return DataKeeper::Get("tt_quizes", ["id"], ["topicId" => $topicId])[0];
         }
         public static function CreateQuize(int $topicId, string $quest, array $answers){
             if ($lastId = DataKeeper::InsertTo("tt_quizes", ["topicId" => $topicId,"quest" => $quest])){
                 foreach ($answers as $answer){
-                    DataKeeper::InsertTo("tt_quizesvars", ["var" => $answer, "quizeId" => $lastId]);
+                    DataKeeper::InsertTo("tt_quizesvars", ["var" => $answer, "quizId" => $lastId]);
                 }
             }
 
         }
         public static function VoteInQuize(int $voterId, int $quizId, int $answer){
             if (DataKeeper::InsertTo("tt_quizesanswers", ["userId" => $voterId,
-                                                               "quizeId" => $quizId,
+                                                               "quizId" => $quizId,
                                                                 "varId" => $answer]))
                 return true;
             else

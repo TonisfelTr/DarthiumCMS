@@ -42,7 +42,8 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
         if (\Forum\ForumAgent::IsExistQuizeInTopic($topic->getId())) {
             include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/news/quizeframe.html";
             $quizeFrame = getBrick();
-            $quize = new \Forum\Quize(\Forum\ForumAgent::GetQuizeByTopic($topic->getId()));
+            $quize = new \Forum\Quize(\Forum\ForumAgent::GetQuizeByTopic($topic->getId())["id"]);
+
             if ($user !== false && \Forum\ForumAgent::IsVoted($user->getId(), $quize->getId())) {
                 $quizeFrame = str_replace_once("{QUIZE_QUIZER_HIDDEN}", "hidden", $quizeFrame);
                 $quizeFrame = str_replace_once("{QUIZE_RESULTS_HIDDEN}", "", $quizeFrame);
