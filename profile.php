@@ -1147,7 +1147,7 @@ if (!$session || empty($user)){
     $authSignUpForm = str_replace_once("{AUTH_PAGE:NECESSARY_ADDITIVE_FIELDS}", $additionalFieldsInputNecessaryString, $authSignUpForm);
     $authSignUpForm = str_replace_once("{AUTH_PAGE:NOT_NECESSARY_ADDITIVE_FIELDS}", $additionalFieldsInputString, $authSignUpForm);
     ///////////////////////////////////////
-    $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}", (!empty($_REQUEST["res"]) && !in_array($_REQUEST["res"], ["ic", "nc", "nr"])) ? $authErrors : "", $main);
+    $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}", (!empty($_REQUEST["res"]) && !in_array($_REQUEST["res"], ["ic", "nc", "nr", "ns", "nsnp", "nvn", "nve", "nvr", "neen", "nen", "nvi"])) ? $authErrors : "", $main);
     $main = str_replace_once("{PROFILE_MAIN_BODY}", $authForm, $main);
     $main = str_replace_once("{PROFILE_PAGE_GUI_SCRIPT}", "", $main);
     $main = str_replace_once("{AUTH_PAGE:SIGN_UP}", $authSignUpForm, $main);
@@ -1166,7 +1166,7 @@ if (!$session || empty($user)){
     $main = str_replace("{AUTH_REMAINDER}", $authRemaind, $main);
 
     if (!empty($_REQUEST["res"])){
-        if (in_array($_REQUEST["res"], ["ic", "nc", "nr"]))
+        if (in_array($_REQUEST["res"], ["ic", "nc", "nr", "ns", "nsnp", "nvn", "nve", "nvr", "neen", "nen", "nvi"]))
             $authJS .= "showPanel('signup'); showSubpanel('signup', 2);";
     }
 

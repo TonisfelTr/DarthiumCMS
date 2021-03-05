@@ -572,6 +572,7 @@ namespace Engine {
             $excCatcher = str_replace("{SITE_NAME}", Engine::GetEngineInfo("sn"), $excCatcher);
             $excCatcher = str_replace("{ERROR_MANAGER:EXCEPTION_FORMATED_TEXT}", nl2br($exception->getTraceAsString()), $excCatcher);
             $excCatcher = str_replace("{ERROR_MANAGER:MESSAGE}", $exception->getMessage(), $excCatcher);
+            $excCatcher = str_replace("{ERROR_MANAGER:LASTTEXT}", $lastText, $excCatcher);
             echo $excCatcher;
 
         }
@@ -939,7 +940,7 @@ namespace Engine {
                 return true;
             else {
                 ErrorManager::GenerateError(33);
-                ErrorManager::PretendToBeDied("Cannot execute UPDATE query: " . $preparedQuery->errorInfo()[2], new \PDOException($preparedQuery->errorInfo()[2]));
+                ErrorManager::PretendToBeDied("$query", new \PDOException($preparedQuery->errorInfo()[2]));
                 return false;
             }
         }

@@ -103,15 +103,16 @@ if ($nicknameResult.$passwordResult.$emailResult.$refererResult == ("ok,ok,ok;ok
         exit;
     }
 
-    if (\Users\UserAgent::AddUser($nickname, $password, $email, $referer,
-            true, @$_POST["profile-reg-realname-input"], @$_POST["profile-reg-city-input"], @$_POST["profile-reg-sex-input"]) === TRUE) {
+    $result = \Users\UserAgent::AddUser($nickname, $password, $email, $referer,
+        true, @$_POST["profile-reg-realname-input"], @$_POST["profile-reg-city-input"], @$_POST["profile-reg-sex-input"]);
+    if ($result === TRUE) {
         $additionalFields = \Users\UserAgent::GetAdditionalFieldsList();
-        for ($i = 0; $i < count($additionalFields); $i++){
+        for ($i = 0; $i < count($additionalFields); $i++) {
             $fieldProp = $additionalFields[$i];
-            if ($fieldProp["inRegister"] == 1){
+            if ($fieldProp["inRegister"] == 1) {
                 echo 1;
                 if ($fieldProp["isRequied"] == 1) {
-                    if (empty($_POST["profile-adfield-" . $fieldProp["id"]])){
+                    if (empty($_POST["profile-adfield-" . $fieldProp["id"]])) {
                         header("Location: ../../profile.php?signup&res=nsnp");
                         exit;
                     } else {
@@ -122,11 +123,28 @@ if ($nicknameResult.$passwordResult.$emailResult.$refererResult == ("ok,ok,ok;ok
                     echo 3;
                     \Users\UserAgent::SetAdditionalFieldContent(\Engine\DataKeeper::getMax("tt_users", "id"), $fieldProp["id"], $_POST["profile-adfield-" . $fieldProp["id"]]);
                 }
-            }
-            else
+            } else
                 continue;
         }
         header("Location: ../../profile.php?res=sr");
+        exit;
+    } elseif ($result == 21){
+        header("Location: ../../profile.php?res=nvn");
+        exit;
+    } elseif ($result == 22){
+        header("Location: ../../profile.php?res=nve");
+        exit;
+    } elseif ($result == 23){
+        header("Location: ../../profile.php?res=nvr");
+        exit;
+    } elseif ($result == 3){
+        header("Location: ../../profile.php?res=neen");
+        exit;
+    } elseif ($result == 4){
+        header("Location: ../../profile.php?res=nen");
+        exit;
+    } elseif ($result == 36){
+        header("Location: ../../profile.php?res=nvi");
         exit;
     } else {
         header("Location: ../../profile.php?signup&res=nr");

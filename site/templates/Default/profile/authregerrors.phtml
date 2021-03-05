@@ -7,5 +7,17 @@
         <span class="glyphicon glyphicon-remove" ></span> Не получилось зарегистрировать нового пользователя. Обратитесь к Администратору.
     <?php } if (@$_REQUEST["res"] == "nsnp"){ ?>
         <span class="glyphicon glyphicon-remove" ></span> Не заполнены все обязательные поля.
+    <?php } if (@$_REQUEST["res"] == "nvn"){ ?>
+        <span class="glyphicon glyphicon-remove" ></span> Вы ввели некорректный никнейм.
+    <?php } if (@$_REQUEST["res"] == "nve"){ ?>
+        <span class="glyphicon glyphicon-remove" ></span> Вы ввели некорректный адрес электронной почты.
+    <?php } if (@$_REQUEST["res"] == "nvr"){ ?>
+        <span class="glyphicon glyphicon-remove" ></span> Вы ввели несуществующего реферера.
+    <?php } if (@$_REQUEST["res"] == "neen"){ ?>
+        <span class="glyphicon glyphicon-remove" ></span> Данные никнейм или адрес электронной почты уже зарегистрированы в системе.
+    <?php } if (@$_REQUEST["res"] == "nen"){ ?>
+        <span class="glyphicon glyphicon-remove" ></span> Данный никнейм уже зарегистрирован в системе.
+    <?php } if (@$_REQUEST["res"] == "nvi"){ ?>
+        <span class="glyphicon glyphicon-remove" ></span> С Вашего IP адреса уже есть зарегистрированый аккаунт.
     <?php } ?>
 </div>

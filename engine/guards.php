@@ -579,7 +579,8 @@ namespace Guards {
             $queryResponse = DataKeeper::MakeQuery("SELECT `picName` FROM `tt_captcha` WHERE `createTime` < ?", [$time], true);
 
             foreach ($queryResponse as $captcha) {
-                unlink("../engine/captchas/" . $captcha["picName"] . ".png");
+                if (!unlink("../engine/captchas/" . $captcha["picName"] . ".png"))
+                    continue;
             }
 
             return DataKeeper::Delete("tt_captcha", ["createTime" => $time]);

@@ -913,6 +913,10 @@ namespace Users {
 
             return $queryString["count(*)"] == 0 ? false : $queryString["count(*)"];
         }
+        private static function str_replace_once($search, $replace, $text){
+            $pos = strpos($text, $search);
+            return $pos!==false ? substr_replace($text, $replace, $pos, strlen($search)) : $text;
+        }
 
         public static function Get10OnlineUsers(){
             $queryResponse = DataKeeper::MakeQuery("SELECT `id` FROM `tt_users` WHERE NOT `lasttime` < ? LIMIT 0,10", [Engine::GetSiteTime() - 60*5], true);
@@ -944,11 +948,10 @@ namespace Users {
             if ($queryResponse["count(*)"] == 0)
                 return false;
 
-
             if ($id != null) {
-                DataKeeper::Update("tt_users", ["active" => "TRUE"], [$id, $code]);
+                DataKeeper::Update("tt_users", ["active" => "TRUE"], ["id" => $id, "active" => $code]);
             } else {
-                DataKeeper::Update("tt_users", ["active" => "TRUE"], [$code]);
+                DataKeeper::Update("tt_users", ["active" => "TRUE"], ["active" => $code]);
             }
             return true;
         }
@@ -1095,8 +1098,8 @@ namespace Users {
                 if (Engine::GetEngineInfo("na") &&  $unforce != false) {
                     $bodyMain = LanguageManager::GetTranslation("mail_need_activation");
                     $bodyMain = str_replace("{EMAIL:ACTIVATION_LINK}", $link, $bodyMain);
-                    $bodyMain = str_replace_once("{EMAIL:NICKNAME}", $nick, $bodyMain);
-                    $bodyMain = str_replace_once("{EMAIL:ACTIVATION_CODE}", $randomWord, $bodyMain);
+                    $bodyMain = self::str_replace_once("{EMAIL:NICKNAME}", $nick, $bodyMain);
+                    $bodyMain = self::str_replace_once("{EMAIL:ACTIVATION_CODE}", $randomWord, $bodyMain);
                     $body = str_replace("{MAIL_TITLE}", LanguageManager::GetTranslation("mail_activation_topic") . " \"" . Engine::GetEngineInfo("sn") . "\"", $body);
                     $body = str_replace("{MAIL_SITENAME}", Engine::GetEngineInfo("sn") , $body);
                     $body = str_replace("{MAIL_NICKNAME_TO}", LanguageManager::GetTranslation("mail_hello") . " " . $nick . "!" , $body);
