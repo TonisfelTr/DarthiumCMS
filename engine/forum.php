@@ -54,13 +54,7 @@ namespace Forum {
 
     class StaticPagesAgent{
         private static function CreateBTMLFile($name, $text){
-            function writeTitle($name){
-                $title = StaticPagesAgent::GetPage($name)->getPageName();
-                if (file_put_contents("../../site/statics/" . $name . ".html", "<title>$title</title>",FILE_USE_INCLUDE_PATH | FILE_APPEND))
-                    return true;
-                else return false;
-            }
-            if (file_put_contents("../../site/statics/" . $name . ".txt", self::FilterText($text),FILE_USE_INCLUDE_PATH) && writeTitle($name))
+            if (file_put_contents("../../site/statics/" . $name . ".txt", self::FilterText($text),FILE_USE_INCLUDE_PATH))
                 return true;
             else return false;
         }
@@ -73,7 +67,7 @@ namespace Forum {
         }
 
         public static function isPageExists($idPage){
-            return DataKeeper::Get("tt_staticpages", ["id"], ["id" => $idPage])[0]["id"] == "" ? false : true;
+            return DataKeeper::Get("tt_staticpages", ["id"], ["id" => $idPage])[0]["id"] <= 0 ? false : true;
         }
 
         public static function CreatePage($name, $authorId, $description, $text, $keywords = ""){
@@ -81,7 +75,7 @@ namespace Forum {
                                                                          "description" => $description,
                                                                          "authorId" => $authorId,
                                                                          "createDate" => date("Y-m-d", Engine::GetSiteTime()),
-                                                                         "keywords => $keywords"]);
+                                                                         "keywords" => $keywords]);
             if ($fetchedRows > 0) {
                 if (StaticPagesAgent::CreateBTMLFile($fetchedRows, $text))
                     return true;
@@ -96,7 +90,7 @@ namespace Forum {
             if (!self::isPageExists($idPage)) return false;
 
             if (DataKeeper::Delete("tt_staticpages", ["id" => $idPage]) > 0)
-                if (unlink("../../site/statics/$idPage.html")) return true;
+                if (unlink("../../site/statics/$idPage.txt")) return true;
                 else return false;
             else return false;
         }
@@ -490,7 +484,7 @@ namespace Forum {
         public static function ChangeCategoryParams($idCategory, $paramName, $newValue){
             if ($paramName == "id") return false;
 
-            return DataKeeper::Update("tt_categories", [$paramName], [$newValue, $idCategory]);
+            return DataKeeper::Update("tt_categories", [$paramName => $newValue], ["id" => $idCategory]);
         }
         public static function DeleteCategory($idCategory){
             if (!self::isCategoryExists($idCategory)){

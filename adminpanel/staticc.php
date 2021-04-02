@@ -167,13 +167,6 @@ if ($editSContentPerm){
                     <p class="helper"><?=\Engine\LanguageManager::GetTranslation("staticc_panel.creator_pages.panel_description")?></p>
                     <hr>
                     <p><?=\Engine\LanguageManager::GetTranslation("staticc_panel.creator_pages.panel_tip")?></p>
-                    <div class="alert alert-info">
-                        <p><span class="glyphicons glyphicons-info-sign"></span> <?=\Engine\LanguageManager::GetTranslation("staticc_panel.creator_pages.address")?></p>
-                        <hr>
-                        <input class="form-control" type="text" readonly value="http://<?php echo $_SERVER["HTTP_HOST"]; ?>/?sp=<?php echo \Forum\StaticPagesAgent::GetLastPageID()+1; ?>">
-                        <hr>
-                        <p><?=\Engine\LanguageManager::GetTranslation("staticc_panel.creator_pages.address_tip")?></p>
-                    </div>
                     <input class="form-control" name="staticc-page-create-name-input" type="text" maxlength="25" placeholder="<?=\Engine\LanguageManager::GetTranslation("staticc_panel.creator_pages.page_name")?>">
                     <br>
                     <input class="form-control" name="staticc-page-create-keywords" type="text" maxlength="255" placeholder="<?=\Engine\LanguageManager::GetTranslation("staticc_panel.creator_pages.page_keyword")?>">

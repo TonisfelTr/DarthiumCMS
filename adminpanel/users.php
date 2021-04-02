@@ -95,8 +95,7 @@ if ($canSeeProfiles){
     $groupCount = count($groupList)-1;
     $groupNames = array();
     foreach ($groupList as $gl) {
-        $var = \Users\GroupAgent::GetGroupNameById($gl);
-        array_push($groupNames, $var);
+        $groupNames[] = \Users\GroupAgent::GetGroupNameById($gl["id"]);
     }
     #############################################################################
     # Составление таблицы пользователей для поиска.
@@ -210,8 +209,8 @@ if ($canSigns){
                     <select class="form-control" name="fgroup" id="user-group-selector">
                         <option value="0"><?=\Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.not_selected")?></option>
                         <?php for ($i = 0; $i <= $groupCount; $i++){
-                                print("<option value='" . $groupList[$i] . "'");
-                                if (isset($_REQUEST["fgroup"])) if ($groupList[$i] == $_REQUEST["fgroup"]) print(" selected");
+                                print("<option value='" . $groupList[$i]["id"] . "'");
+                                if (isset($_REQUEST["fgroup"])) if ($groupList[$i]["id"] == $_REQUEST["fgroup"]) print(" selected");
                                 print(">" . htmlentities($groupNames[$i]) . "</option>");
                               } ?>
                     </select>
@@ -520,10 +519,10 @@ if ($canSigns){
                     <div class="input-group-addon"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.group")?></div>
                     <select class="form-control" name="user-edit-group">
                         <option value="0"><?=\Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.select_group")?></option>
-                        <?php for($i = 0; $i < count($groupList = \Users\GroupAgent::GetGroupList()); $i++){
-                            echo "<option value=\"".$groupList[$i]."\"";
-                            if ($USER->getGroupId() == $groupList[$i]) echo "selected";
-                            echo ">" . \Users\GroupAgent::GetGroupNameById($groupList[$i]) . "</option>";
+                        <?php for ($i = 0; $i <= $groupCount; $i++){
+                            print("<option value='" . $groupList[$i]["id"] . "'");
+                            if ($USER->getGroupId() == $groupList[$i]["id"]) echo " selected";
+                            print(">" . htmlentities($groupNames[$i]) . "</option>");
                         } ?>
                     </select>
                 </div>

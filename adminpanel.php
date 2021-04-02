@@ -53,6 +53,7 @@ function str_replace_once($search, $replace, $text){
     <link href="adminpanel/css/ap-style.css" rel="stylesheet">
     <link href="adminpanel/css/uploader-style.css" rel="stylesheet">
     <link href="adminpanel/css/icon.ico" rel="icon">
+    {PLUGINS_STYLESHEETS}
     <script src="libs/bootstrap/js/bootstrap.min.js"></script>
     <script src="libs/codemirror/lib/codemirror.js"></script>
     <script src="libs/codemirror/mode/javascript/javascript.js"></script>
@@ -62,7 +63,7 @@ function str_replace_once($search, $replace, $text){
     <script src="libs/codemirror/mode/htmlembedded/htmlembedded.js"></script>
     <script src="libs/codemirror/mode/htmlmixed/htmlmixed.js"></script>
     <script src="libs/codemirror/mode/clike/clike.js"></script>
-    {PLUGINS_STYLESHEETS}
+    {PLUGIN_HEAD_JS}
     <?php if (@$_GET["p"] == "staticc")
     echo "<link href=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/css/sp-style.css\" rel=\"stylesheet\">";
     ?>
@@ -471,6 +472,10 @@ function str_replace_once($search, $replace, $text){
                     <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
                         <?php echo \Engine\LanguageManager::GetTranslation("no_page_name"); ?>
                     </div><?php }
+                if ($_GET["res"] == "7mdsp") { ?>
+                    <div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign"></span>
+                    <?php echo \Engine\LanguageManager::GetTranslation("page_deleted_success"); ?>
+                    </div><?php }
                 if ($_GET["res"] == "7nbn") { ?>
                     <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("page_name_too_small"); ?>
                     </div><?php }
@@ -760,8 +765,6 @@ function str_replace_once($search, $replace, $text){
             $plp = getBrick();
             ob_end_flush();
             echo \Engine\Engine::StripScriptTags($plp);
-//            $plp = getBrick();
-//            echo \Engine\Engine::StripScriptTags($plp);
         }
         else include_once "adminpanel/errors/notfound.php";?>
         </div>
@@ -785,6 +788,7 @@ function str_replace_once($search, $replace, $text){
 $obMain = ob_get_contents();
 $obMain = \Engine\PluginManager::IntegrateCSS($obMain);
 $obMain = \Engine\PluginManager::IntegrateFooterJS($obMain);
+$obMain = \Engine\PluginManager::IntegrateHeaderJS($obMain);
 ob_end_clean();
 echo $obMain;
 ?>

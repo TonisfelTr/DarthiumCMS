@@ -60,13 +60,13 @@ if (isset($_POST["staticc-page-create-create-btn"]) && $createSPPerm) {
         exit;
     }
 
-    if ($e = \Forum\StaticPagesAgent::CreatePage($_POST["staticc-page-create-name-input"], $user->getId(),
+    if (\Forum\StaticPagesAgent::CreatePage($_POST["staticc-page-create-name-input"], $user->getId(),
         (!empty($_POST["staticc-page-create-description-input"])) ? $_POST["staticc-page-create-description-input"] : "", $_POST["staticc-page-create-textarea"], $_POST["staticc-page-create-keywords"])) {
         \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("static_editor.logs.created_static_page_log") . "\"" . $_POST["staticc-page-create-name-input"] . "\"");
         header("Location: ../../adminpanel.php?p=staticc&res=7scp&reqtype=1");
         exit;
     } else {
-        //header("Location: ../../adminpanel.php?p=staticc&reqtype=1&res=7ncp");
+        header("Location: ../../adminpanel.php?p=staticc&reqtype=1&res=7ncp");
         exit;
     }
 }
@@ -102,14 +102,14 @@ elseif (isset($_POST["staticc-page-edit-btn"]) && $editSPPerm) {
     }
 }
 elseif (isset($_POST["staticc-page-edit-edit-btn"]) && $editSPPerm) {
-    if (!\Forum\StaticPagesAgent::isPageExists($_REQUEST["id"])) {
+    if (!\Forum\StaticPagesAgent::isPageExists($_POST["staticc-page-edit-id"])) {
         header("Location: ../../adminpanel.php?p=staticc&res=7npe");
         exit;
     }
     $pageId = $_POST["staticc-page-edit-id"];
     $result = \Forum\StaticPagesAgent::ChangePageData($pageId, "name", $_POST["staticc-page-edit-name-input"]);
     $result = \Forum\StaticPagesAgent::ChangePageData($pageId, "description", $_POST["staticc-page-edit-description-input"]);
-    $resukt = \Forum\StaticPagesAgent::ChangePageData($pageId, "keywords", $_POST["staticc-page-edit-keywords"]);
+    $result = \Forum\StaticPagesAgent::ChangePageData($pageId, "keywords", $_POST["staticc-page-edit-keywords"]);
     $result = \Forum\StaticPagesAgent::EditPage($pageId, $_POST["staticc-page-edit-textarea"]);
     if ($result) {
         \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("static_editor.logs.edited_static_page_log") . "\"" . $_POST["staticc-page-edit-name-input"] . "\".");

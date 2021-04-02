@@ -1206,6 +1206,11 @@ $main = str_replace_once("{PROFILE_MAIN_BODY}", $test, $main);
 include_once "./site/scripts/SpoilerController.js";
 $spoilerManager = getBrick();
 $main = str_replace_once("{SPOILER_CONTROLLER:JS}", $spoilerManager, $main);
-\Engine\PluginManager::Integration($main);
 
+$main = \Engine\PluginManager::IntegrateCSS($main);
+$main = \Engine\PluginManager::IntegrateHeaderJS($main);
+$main = \Engine\PluginManager::IntegrateFooterJS($main);
+$main = \Engine\PluginManager::Integration($main);
+
+echo $main;
 ?>

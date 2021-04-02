@@ -187,6 +187,7 @@ $languagePack = [
     "not_choice_group" => "Вы не выбрали группу.",
     "failed_to_move_users_group" => "Не получилось переместить членов удаляемой группы. Группа не была удалена.",
     "not_permited_remove_custom_group" => "Нельзя удалить начальную группу.",
+    "page_deleted_success" => "Страница была успешно удалена!",
 //Users
     "cannot_remove_yourself_or_main_admin" =>" Вы не можете удалить сами себя или профиль главного администратора.",
     "users_have_been_successfully_deleted"=>"Пользователи были успешно удалены!",

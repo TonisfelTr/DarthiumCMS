@@ -365,7 +365,7 @@ namespace Engine {
             $text = preg_replace("/\[\*\](.*)/", "<li>$1</li>", $text);
             $text = preg_replace("/\[quote\=(.+?)\]/", "<p class=\"message-quote-author-sign\">$1 " . LanguageManager::GetTranslation("quote_said") . ":</p><div class=\"message-quote-block\"><span style=\"font-size: 50px; display: inline-block;\">“</span>", $text);
             $text = preg_replace("/\[link\=(.+?)\](.*)\[\/link\]/", "<a href=\"$1\" class=\"profile-link\">$2</a>", $text);
-
+            PluginManager::ProcessingBBCodeFromDB($text);
 
             return $text;
         }
@@ -899,13 +899,12 @@ namespace Engine {
             }
             $keys = rtrim($keys, ",");
             $values = rtrim($values, ",");
-            $query = "INSERT INTO $table ($keys) VALUES ($values)";
+            $query = "INSERT INTO `$table` ($keys) VALUES ($values)";
             $preparedQuery = $pdo->prepare($query);
             $execute = $preparedQuery->execute($varsArrToSend);
             if ($execute) {
                 return $pdo->lastInsertId();
             } else {
-                self::$errMessage = $pdo->errorInfo();
                 return 0;
             }
         }
@@ -1098,13 +1097,6 @@ namespace Engine {
 
         public static function InstallPlugin(string $name, string $codeName, string $description, int $status)
         {
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
-
-            if ($mysqli->errno) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
-
             $insertInto = DataKeeper::InsertTo("tt_plugins", ["name" => $name, "codename" => $codeName, "description" => $description, "status" => $status]);
             if ($insertInto > 0) {
                 self::$installed[$codeName] = ["name" => $name,
@@ -1134,10 +1126,26 @@ namespace Engine {
                     foreach ($permissions as $permission => $value) {
                         DataKeeper::InsertTo("tt_plugin_permissions", ["codename" => $permission,
                             "value" => $value["default_value"],
-                            "ofGroup" => $group,
+                            "ofGroup" => $group["id"],
                             "ofPlugin" => $lastId,
                             "translate_path" => $value["translate_path"]]);
                     }
+                }
+            }
+
+            if (is_file("../../../addons/$codeName/config/dbtables.php")){
+                include "../../../addons/$codeName/config/dbtables.php";
+            }
+
+            if (is_file("../../../addons/$codeName/config/bbcodes.php")){
+                $bbcodes = include "../../../addons/$codeName/config/bbcodes.php";
+
+                foreach ($bbcodes as $bbcode){
+                    DataKeeper::InsertTo("tt_plugin_bbcode", ["ofPlugin" => self::GetPluginId($codeName),
+                                                                    "is_posix" => $bbcode["is_posix"],
+                                                                    "is_function" => $bbcode["is_function"],
+                                                                    "pattern" => $bbcode["pattern"],
+                                                                    "replacement" => $bbcode["replacement"]]);
                 }
             }
             return false;
@@ -1145,29 +1153,18 @@ namespace Engine {
 
         public static function GetInstalledPlugins(){
             self::$installed = [];
-            $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
 
-            if ($mysqli->errno) {
-                ErrorManager::GenerateError(2);
-                return ErrorManager::GetError();
-            }
+            $queryResponse = DataKeeper::Get("tt_plugins", ["id", "name", "codename", "description", "status"]);
+            foreach ($queryResponse as $response){
+                self::$installed[$response["codename"]] = [
+                    "id" => $response["id"],
+                    "name" => $response["name"],
+                    "codeName" => $response["codename"],
+                    "description" => $response["description"],
+                    "status" => $response["status"]];
 
-            if ($stmt = $mysqli->prepare("SELECT `id`,`name`, `codename`, `description`, `status` FROM `tt_plugins`")) {
-                $stmt->execute();
-                //if ($stmt->affected_rows > 0){
-                $stmt->bind_result($id,$name, $codeName, $description, $status);
-                while ($stmt->fetch()){
-                    self::$installed[$codeName] = [
-                        "id" => $id,
-                        "name" => $name,
-                        "codeName" => $codeName,
-                        "description" => $description,
-                        "status" => $status];
-                }
-                //}
-                return self::$installed;
             }
-            return [];
+            return self::$installed;
         }
 
         public static function DeletePlugin(string $codeName){
@@ -1175,6 +1172,7 @@ namespace Engine {
             DataKeeper::Delete("tt_plugins", ["id" => $id[0]["id"]]);
             DataKeeper::Delete("tt_plugin_trace", ["ofPlugin" => $id[0]["id"]]);
             DataKeeper::Delete("tt_plugin_permissions", ["ofPlugin" => $id[0]["id"]]);
+            DataKeeper::Delete("tt_plugin_bbcode", ["ofPlugin" => $id[0]["id"]]);
         }
 
         public static function Integration(string $main){
@@ -1188,32 +1186,30 @@ namespace Engine {
             $notStrict = [];
             $Strict    = [];
 
-            if ($stmt = $mysqli->prepare("SELECT `trace`.`ofPlugin`, 
+            if ($queryResponse = DataKeeper::MakeQuery("SELECT `trace`.`ofPlugin`, 
 			                                                      `trace`.`system_text`, 
                                                                   `trace`.`system_text_to`,
                                                                   `trace`.`strict`,  
                                                                   `plugins`.`codename`
                                                            FROM `tt_plugin_trace` AS `trace`
                                                            LEFT JOIN `tt_plugins` AS `plugins` ON `trace`.ofPlugin = `plugins`.`id`
-                                                           WHERE `plugins`.`status` = 1")) {
-                $stmt->execute();
-                $stmt->bind_result($ofPluginId, $system_text, $system_text_to, $strict, $codename);
-                while ($stmt->fetch()){
-                    if ($strict === 0)
-                        array_push($notStrict, ["ofPlugin" => $ofPluginId,
-                            "system_text" => $system_text,
-                            "system_text_to" => $system_text_to,
-                            "codename" => $codename]);
+                                                           ",[], true)) {
+                foreach ($queryResponse as $item){
+                    if ($item["strict"] === 0)
+                        array_push($notStrict, ["ofPlugin" => $item["ofPlugin"],
+                            "system_text" => $item["system_text"],
+                            "system_text_to" => $item["system_text_to"],
+                            "codename" => $item["codename"]]);
                     else {
-                        array_push($Strict, ["ofPlugin" => $ofPluginId,
-                            "system_text" => $system_text,
-                            "system_text_to" => $system_text_to,
-                            "codename" => $codename]);
+                        array_push($Strict, ["ofPlugin" => $item["ofPlugin"],
+                            "system_text" => $item["system_text"],
+                            "system_text_to" => $item["system_text_to"],
+                            "codename" => $item["codename"]]);
                     }
                 }
-                $stmt->close();
             }
 
+            /** @var $notStrict array use str_replace instead of str_replace_once */
             $forPage = "";
             foreach($notStrict as $value){
                 if (strstr($main, $value["system_text"]) !== false) {
@@ -1222,9 +1218,11 @@ namespace Engine {
                         $forPage = getBrick();
                     } else {
                         $forPage = "Тhis file does not exist.";
-                        $plugId = DataKeeper::Get("tt_plugins", ["id"], ["codename" => $codename]);
-                        DataKeeper::Delete("tt_plugins", ["codename" => $codename]);
+                        $plugId = DataKeeper::Get("tt_plugins", ["id"], ["codename" => $value["codename"]]);
+                        DataKeeper::Delete("tt_plugins", ["codename" => $value["codename"]]);
                         DataKeeper::Delete("tt_plugin_trace", ["ofPlugin" => $plugId]);
+                        DataKeeper::Delete("tt_plugin_permissions", ["ofPlugin" => $plugId]);
+                        DataKeeper::Delete("tt_plugin_bbcode", ["ofPlugin" => $plugId]);
                     }
 
                     $main = str_replace($value["system_text"], $forPage, $main);
@@ -1238,28 +1236,23 @@ namespace Engine {
                         $forPage = getBrick();
                     } else {
                         $forPage = "This file does not exist.";
-                        $plugId = DataKeeper::Get("tt_plugins", ["id"], ["codename" => $codename]);
-                        DataKeeper::Delete("tt_plugins", ["codename" => $codename]);
+                        $plugId = DataKeeper::Get("tt_plugins", ["id"], ["codename" => $value["codename"]]);
+                        DataKeeper::Delete("tt_plugins", ["codename" => $value["codename"]]);
                         DataKeeper::Delete("tt_plugin_trace", ["ofPlugin" => $plugId]);
+                        DataKeeper::Delete("tt_plugin_permissions", ["ofPlugin" => $plugId]);
+                        DataKeeper::Delete("tt_plugin_bbcode", ["ofPlugin" => $plugId]);
                     }
 
                     $main = str_replace_once($value["system_text"], $forPage, $main);
                 }
             }
 
-            $css = array_unique(self::$cssLines);
-            $headJS = array_unique(self::$jsHeadLines);
-            $footerJS = array_unique(self::$jsFooterLines);
-
-            $main = str_replace_once("{PLUGIN_HEAD_JS}", $headJS, $main);
-            $main = str_replace_once("{PLUGINS_STYLESHEETS}", $css, $main);
-            $main = str_replace_once("{PLUGIN_FOOTER_JS}", $footerJS, $main);
-
-            echo $main;
+            return $main;
         }
 
         public static function IntegrateCSS(string $string){
             $css = array_unique(self::$cssLines);
+            $css = implode("", $css);
             $string = str_replace_once("{PLUGINS_STYLESHEETS}", $css, $string);
 
             return $string;
@@ -1267,7 +1260,16 @@ namespace Engine {
 
         public static function IntegrateFooterJS(string $string){
             $footerJS = array_unique(self::$jsFooterLines);
+            $footerJS = implode("", $footerJS);
             $string = str_replace_once("{PLUGIN_FOOTER_JS}", $footerJS, $string);
+
+            return $string;
+        }
+
+        public static function IntegrateHeaderJS(string $string) {
+            $headerJS = array_unique(self::$jsHeadLines);
+            $headerJS = implode("", $headerJS);
+            $string = str_replace_once("{PLUGIN_HEAD_JS}", $headerJS, $string);
 
             return $string;
         }
@@ -1384,6 +1386,39 @@ namespace Engine {
                 return $array;
             else
                 return false;
+        }
+
+        public static function ProcessingBBCodeFromDB(string &$string){
+            $patterns = DataKeeper::MakeQuery("SELECT `bbcode`.* 
+                                                     FROM `tt_plugin_bbcode` AS `bbcode`
+                                                     LEFT JOIN `tt_plugins` AS `plugins` ON `bbcode`.`ofPlugin` = `plugins`.`id`
+                                                     WHERE `plugins`.`status` = ?", [1], true);
+
+            $plugins = PluginManager::GetInstalledPlugins();
+            foreach ($plugins as $plugin) {
+                if (!self::IsTurnOn($plugin["codeName"]))
+                    continue;
+                if (file_exists("addons/" . $plugin["codeName"] . "/config/functions.php"))
+                    include_once "addons/" . $plugin["codeName"] . "/config/functions.php";
+            }
+            foreach ($patterns as $pattern){
+                if ($pattern["is_posix"] == 1) {
+                    if ($pattern["is_function"] == 1) {
+                        $string = preg_replace_callback($pattern["pattern"], function ($id) use ($pattern){
+                            if (function_exists($pattern["replacement"])){
+                                return call_user_func($pattern["replacement"], $id);
+                            } else {
+                                echo 4;
+                                throw new \BadFunctionCallException("Function \"" . $pattern["replacement"] . "\" does not exist.");
+                            }
+                        }, $string);
+                    } else {
+                        $string = preg_replace($pattern["pattern"], $pattern["replacement"], $string);
+                    }
+                } else {
+                    $string = str_replace($pattern["pattern"], $pattern["replacement"], $string);
+                }
+            }
         }
     }
 }

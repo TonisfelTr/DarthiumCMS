@@ -87,12 +87,16 @@ if (!empty($_GET["page"])){
     }
     else include_once "./site/errors/notfound.php"; }
 elseif (!empty($_GET["sp"])){
-    //Here load keywords for site
-    $keywords = \Forum\StaticPagesAgent::GetPageKeyWords($_GET["sp"]);
-    $main = str_replace_once("{ENGINE_META:KEYWORDS}", $keywords, $main);
-    /////////////////////////////
-    echo nl2br(\Engine\Engine::CompileBBCode(file_get_contents("./site/statics/" . $_GET["sp"] . ".txt", FILE_USE_INCLUDE_PATH)));
-    $pageName = \Forum\StaticPagesAgent::GetPage($_GET["sp"])->getPageName();
+    if (\Forum\StaticPagesAgent::isPageExists($_GET["sp"])) {
+        //Here load keywords for site
+        $keywords = \Forum\StaticPagesAgent::GetPageKeyWords($_GET["sp"]);
+        $main = str_replace_once("{ENGINE_META:KEYWORDS}", $keywords, $main);
+        /////////////////////////////
+        echo nl2br(\Engine\Engine::CompileBBCode(file_get_contents("./site/statics/" . $_GET["sp"] . ".txt", FILE_USE_INCLUDE_PATH)));
+        $pageName = \Forum\StaticPagesAgent::GetPage($_GET["sp"])->getPageName();
+    } else {
+        include "./site/errors/notfound.php";
+    }
 }
 elseif (!empty($_GET["topic"])){
     if (\Forum\ForumAgent::isTopicExists($_GET["topic"])) {
@@ -108,6 +112,8 @@ elseif (!empty($_GET["search"])){
     include_once "./site/search.php";
 } elseif (!empty($_GET["group"])){
     include_once "./site/grouplist.php";
+} elseif (!empty($_GET["plp"])){
+    include_once "addons/" . $_GET["plp"] . "/bin/main.php";
 }
 else
     include_once "./site/news.php";
@@ -295,13 +301,14 @@ $main = str_replace("{ENGINE_META:SITE_TAGLINE}", \Engine\Engine::GetEngineInfo(
 $main = str_replace("{REPORT_PAGE:JS}", null, $main);
 
 if (!defined("TT_Uploader")) {
-    $main = str_replace("{PROFILE_UPLOADER:STYLESHEET}", null, $main);
-    $main = str_replace("{PROFILE_UPLOADER:JS}", null, $main);
-    $main = str_replace("{PROFILE_UPLOADER_BLOCK}", null, $main);
+    $main = str_replace("{PROFILE_UPLOADER:STYLESHEET}", "", $main);
+    $main = str_replace("{PROFILE_UPLOADER:JS}", "", $main);
+    $main = str_replace("{PROFILE_UPLOADER_BLOCK}", "", $main);
 }
 else {
     $main = str_replace("{PROFILE_UPLOADER:STYLESHEET}", "<link rel=\"stylesheet\" href=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/css/uploader-style.css\">", $main);
     $main = str_replace("{PROFILE_UPLOADER:JS}", $uploaderBlock, $main);
+    $main = str_replace("{PROFILE_UPLOADER_BLOCK}", "", $main);
 }
 
 include_once "./site/scripts/SpoilerController.js";
@@ -321,8 +328,14 @@ if (\Engine\Engine::GetEngineInfo("smt")){
 
 //$main = str_replace_once("{ENGINE_META:KEYWORDS}", \Engine\Engine::GetEngineInfo("sh"), $main);
 
-ob_end_clean();
+//ob_end_clean();
 
-\Engine\PluginManager::Integration($main);
+$main = \Engine\PluginManager::IntegrateCSS($main);
+$main = \Engine\PluginManager::IntegrateHeaderJS($main);
+$main = \Engine\PluginManager::IntegrateFooterJS($main);
+$main = \Engine\PluginManager::Integration($main);
+
+echo $main;
+
 
 ?>
