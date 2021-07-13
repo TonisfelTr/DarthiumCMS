@@ -493,7 +493,7 @@ namespace Forum {
 
             $toCategoryId = DataKeeper::Get("tt_categories", ["id"], [1]);
             DataKeeper::Delete("tt_categories", ["id" => $idCategory]);
-            return DataKeeper::Update("tt_topics", ["categoryId" => $toCategoryId], [$idCategory]);
+            return DataKeeper::Update("tt_topics", ["categoryId" => $toCategoryId], ["categoryId" => $idCategory]);
         }
         public static function GetCategoryList($public = true){
             if ($public == true) $query = "SELECT `id` FROM `tt_categories` WHERE `public`=?";

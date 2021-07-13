@@ -167,7 +167,6 @@ if (isset($_POST["categories-table-delete"])){
             header("Location: ../../adminpanel.php?p=categories&res=6ncid");
             exit;
         }
-
         $cids = explode(",", $_GET["cid"]);
         for ($y = 0; $y <= count($cids)-1; $y++){
             $categoryName = \Forum\ForumAgent::GetCategoryParam($_GET["cid"], "name");

@@ -234,16 +234,16 @@ else {
             }
         });
 
-        $("#categories-table-delete").on("click", function() {
+        $("#categories-table-delete").on("click", function(e) {
             var formActionLink = "adminpanel/scripts/categories.php?cid=";
             var comma = "";
-            $("input:checkbox:checked").each(function () {
-                if ($( this ).attr("data-cid-selected") != undefined){
+            $("table input[type=checkbox]:checked").each(function (i, element) {
+                if ($(element).data("cidSelected") != undefined){
                     if (formActionLink.charAt(formActionLink.length-1) != "=") comma = ",";
-                    formActionLink = formActionLink + comma + $( this ).attr("data-uid-selected");
+                    formActionLink += comma + $(element).data("cidSelected");
                 }
             });
-            $( "#categories-table-delete" ).attr("formaction", formActionLink);
+            $( "#categories-table-delete").attr("formaction", formActionLink);
             $( "#categories-table-delete").attr("type", "submit");
             $( "#categories-table-delete").click();
         });
