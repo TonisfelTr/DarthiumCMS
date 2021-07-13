@@ -574,6 +574,7 @@ namespace Engine {
             $excCatcher = str_replace("{ERROR_MANAGER:MESSAGE}", $exception->getMessage(), $excCatcher);
             $excCatcher = str_replace("{ERROR_MANAGER:LASTTEXT}", $lastText, $excCatcher);
             echo $excCatcher;
+            exit(1);
 
         }
     }
