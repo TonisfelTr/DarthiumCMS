@@ -2,6 +2,7 @@
 
 namespace Engine {
 
+    use SiteBuilders\NavbarAgent;
     use Users\GroupAgent;
     use Users\User;
     use Users\UserAgent;
@@ -1056,6 +1057,38 @@ namespace Engine {
         private static $jsHeadLines = [];
         private static $jsFooterLines = [];
 
+        private static function AddNavbarBtn(int $ofPlugin, string $type, string $content, int $parentId = 0, string $action = "") : int {
+            return DataKeeper::InsertTo("tt_plugin_navbar", ["ofPlugin" => $ofPlugin,
+                "type" => $type,
+                "content" => $content,
+                "action" => $action,
+                "parent" => $parentId]);
+        }
+
+        public static function GetNavbarBtns(){
+            $result = [];
+
+            $btns = DataKeeper::Get("tt_plugin_navbar", ["*"], ["parent" => 0]);
+
+            foreach ($btns as $btn) {
+                $result[] = $btn;
+            }
+
+            return $result;
+        }
+
+        public static function GetNavbarListBtns(int $parentId){
+            $result = [];
+
+            $btns = DataKeeper::Get("tt_plugin_navbar", ["*"], ["parent" => $parentId]);
+
+            foreach ($btns as $btn){
+                $result[] = $btn;
+            }
+
+            return $result;
+        }
+
         public static function CSSRegister(string $link){
             self::$cssLines[] = '<link href="'. $link . '" rel="stylesheet">' . PHP_EOL;
         }
@@ -1149,6 +1182,18 @@ namespace Engine {
                                                                     "replacement" => $bbcode["replacement"]]);
                 }
             }
+
+            if (is_file("../../../addons/$codeName/config/navbar.php")){
+                include "../../../addons/$codeName/config/navbar.php";
+
+                foreach ($navButtons as $button){
+                    $parent = DataKeeper::Get("tt_plugin_navbar", ["parent"],
+                            ["content" => $button["parent"] ?? ""])[0]["parent"] ?? 0;
+
+                    echo
+                    "\"" . self::AddNavbarBtn($lastId, $button["type"], $button["content"], $parent, $button["action"]) . "\"";
+                }
+            }
             return false;
         }
 
@@ -1174,6 +1219,7 @@ namespace Engine {
             DataKeeper::Delete("tt_plugin_trace", ["ofPlugin" => $id[0]["id"]]);
             DataKeeper::Delete("tt_plugin_permissions", ["ofPlugin" => $id[0]["id"]]);
             DataKeeper::Delete("tt_plugin_bbcode", ["ofPlugin" => $id[0]["id"]]);
+            DataKeeper::Delete("tt_plugin_navbar", ["ofPlugin" => $id[0]["id"]]);
         }
 
         public static function Integration(string $main){
@@ -1224,6 +1270,7 @@ namespace Engine {
                         DataKeeper::Delete("tt_plugin_trace", ["ofPlugin" => $plugId]);
                         DataKeeper::Delete("tt_plugin_permissions", ["ofPlugin" => $plugId]);
                         DataKeeper::Delete("tt_plugin_bbcode", ["ofPlugin" => $plugId]);
+                        DataKeeper::Delete("tt_plugin_navbar", ["ofPlugin" => $plugId]);
                     }
 
                     $main = str_replace($value["system_text"], $forPage, $main);
@@ -1242,6 +1289,7 @@ namespace Engine {
                         DataKeeper::Delete("tt_plugin_trace", ["ofPlugin" => $plugId]);
                         DataKeeper::Delete("tt_plugin_permissions", ["ofPlugin" => $plugId]);
                         DataKeeper::Delete("tt_plugin_bbcode", ["ofPlugin" => $plugId]);
+                        DataKeeper::Delete("tt_plugin_navbar", ["ofPlugin" => $plugId]);
                     }
 
                     $main = str_replace_once($value["system_text"], $forPage, $main);
@@ -1364,9 +1412,14 @@ namespace Engine {
                     "ofPlugin" => $ofPlugin]);
         }
 
-        public static function IsTurnOn(string $codeName) : bool {
-            $result = DataKeeper::Get("tt_plugins", ["status"], ["codename" => $codeName])[0];
-            return (bool) $result["status"];
+        public static function IsTurnOn($identificator) : bool {
+            if (gettype($identificator) == "string") {
+                $result = DataKeeper::Get("tt_plugins", ["status"], ["codename" => $identificator])[0];
+            }
+            if (gettype($identificator) == "integer"){
+                $result = DataKeeper::Get("tt_plugins", ["status"], ["id" => $identificator])[0];
+            }
+            return (bool)$result["status"];
         }
 
         /** Return associative array with codename and value of permissions of group.

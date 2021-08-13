@@ -280,9 +280,6 @@ namespace SiteBuilders {
         public static function AddListElement($parentListId, $content, $action){
             return DataKeeper::InsertTo("tt_navbar", ["type" => "nav-list-element", "content" => $content, "parent" => $parentListId, "action" => $action]);
         }
-        public static function AddEndButton($text, $link){
-            return DataKeeper::InsertTo("tt_navbar", ["type" => "end-nav-btn", "content" => $text, "parent" => 0, "action" => $link]);
-        }
         public static function RemoveElement($id){
             if ($id == 0 || empty($id) || is_null($id))
                 return false;
