@@ -714,7 +714,7 @@ namespace Engine {
 
         public static function DeleteFile($fId)
         {
-            if (!unlink($_SERVER["DOCUMENT_ROOT"] . "/" . self::GetUploadInfo($fId, "file_path")[0]["file_path"] . self::GetUploadInfo($fId, "name")[0]["name"]))
+            if (!unlink($_SERVER["DOCUMENT_ROOT"] . "/" . self::GetUploadInfo($fId, "file_path") . self::GetUploadInfo($fId, "name")))
                 return false;
 
             return DataKeeper::Delete("tt_uploads", ["id" => $fId]);
@@ -1007,11 +1007,7 @@ namespace Engine {
                 $preparedQuery = $pdo->prepare($query);
                 $preparedQuery->execute();
             }
-            if ($pdo->errorInfo()[3] != null){
-                ErrorManager::GenerateError(39);
-                ErrorManager::PretendToBeDied(ErrorManager::GetErrorCode(39), new \PDOException(LanguageManager::GetTranslation("sql_syntax_error")));
-                exit;
-            }
+
             return $preparedQuery->fetchAll($pdo::FETCH_ASSOC);
         }
 

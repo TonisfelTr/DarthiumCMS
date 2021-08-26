@@ -67,7 +67,7 @@ namespace Users {
                 'report_edit' => $result["report_edit"],
                 'report_foreign_edit' => $result["report_foreign_remove"],
                 'report_answer_edit' => $result["report_answer_edit"],
-                'report_foreign_answer_edit' => $result["report_anser_foreign_edit"],
+                'report_foreign_answer_edit' => $result["report_answer_foreign_edit"],
                 'report_close' => $result["report_close"],
 
                 /*************************************************************
@@ -108,7 +108,7 @@ namespace Users {
                 'comment_edit' => $result["comment_edit"],
                 'comment_foreign_edit' => $result["comment_foreign_edit"],
                 'comment_delete' => $result["comment_delete"],
-                'comment_foreign_delete' => $result["comment_foreing_delete"],
+                'comment_foreign_delete' => $result["comment_foreign_delete"],
 
                 /**************************************************************
                  * Permissions manage with static content              *
@@ -305,11 +305,11 @@ namespace Users {
             return $this->uLastTime;
         }
         public function getReportsCreatedCount(){
-            $queryResponse = DataKeeper::Get("tt_reports", ["count(*)"], ["author" => $this->getId()]);
+            $queryResponse = DataKeeper::MakeQuery("SELECT count(*) FROM `tt_reports` WHERE `author`=?", [$this->getId()]);
             if (empty($queryResponse))
                 return 0;
             else
-                return $queryResponse[0]["count(*)"];
+                return $queryResponse["count(*)"];
         }
         public function getAdditionalFields(){
             return $this->uAdditionFields;

@@ -302,10 +302,10 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
     $customAFJoined = implode("", $customAF);
     $contactAFJoined = implode("", $contactAF);
     //Display on change custom profile page.
-    @$infoAFEditJoined = implode("", $infoEditAF);
-    @$contactAFEditJoined = implode("", $contactEditAF);
+    @$infoAFEditJoined = implode([$infoEditAF]);
+    @$contactAFEditJoined = implode([$contactEditAF]);
     //Display on security profile page.
-    @$contactAFSecurityJoined = implode("", $contactSecurityAF);
+    @$contactAFSecurityJoined = implode([$contactSecurityAF]);
 
     $userInfo = str_replace_once("{PROFILE_PAGE:CUSTOM_ADDITIONALS}", $customAFJoined, $userInfo);
     $userInfo = str_replace_once("{PROFILE_PAGE:CONTACT_ADDITIONALS}", $contactAFJoined, $userInfo);

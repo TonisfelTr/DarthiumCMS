@@ -1,2 +1,2 @@
 DirectoryIndex index.php
-php_value upload_max_filesize 1
+php_value upload_max_filesize 10M
