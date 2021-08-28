@@ -112,7 +112,8 @@ div {
     color: white;
     background: radial-gradient(at left, #2b2c2b, #626263);
     padding: 6px;
-    border-radius: 5px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
     width: 30%;
     margin-bottom: 7px;
     text-shadow: 1px 2px 3px black;
@@ -391,7 +392,7 @@ div[data-div-title=info]{
     color: white;
     height: 35.2px;
     padding: 6px;
-    margin-left: -10px;
+    margin-left: -5px;
     border-top: 1px solid #3d3d3d;
     border-bottom: 1px solid #3d3d3d;
     margin-top: 5px;
