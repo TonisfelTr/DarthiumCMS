@@ -181,9 +181,9 @@ namespace Engine {
             define("TT_BAN", __DIR__ . "../banned.php");
 
 
-            @$htaccessGlobal = file_get_contents("../../.htaccess", true);
-            @$htaccessGlobal = preg_replace("/php_value upload_max_filesize [0-9]+/", "php_value upload_max_filesize " . self::GetEngineInfo("ups"), $htaccessGlobal);
-            @file_put_contents("../../.htaccess", $htaccessGlobal);
+            @$htaccessGlobal = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/.htaccess", true);
+            @$htaccessGlobal = preg_replace("/php_value upload_max_filesize [0-9A-Za-z]+/", "php_value upload_max_filesize " . self::GetEngineInfo("ups"), $htaccessGlobal);
+            file_put_contents($_SERVER["DOCUMENT_ROOT"] . "/.htaccess", $htaccessGlobal);
         }
 
         public static function SettingsSave($DomainSite, $siteName, $siteTagline, $siteStatus,

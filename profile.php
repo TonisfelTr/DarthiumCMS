@@ -14,7 +14,7 @@ function str_replace_once($search, $replace, $text){
     return $pos!==false ? substr_replace($text, $replace, $pos, strlen($search)) : $text;
 }
 
-//print_r($_COOKIE);
+$uploaderBlock = "";
 
 ###############################################
 # Менеджер пользователя.

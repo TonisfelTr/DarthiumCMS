@@ -38,6 +38,7 @@ else {
     }
 }
 
+$uploadResponse = "";
 if (!empty($_GET["res"])){
     switch($_GET["res"]) {
         case "1s":

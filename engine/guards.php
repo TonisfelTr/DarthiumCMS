@@ -486,7 +486,7 @@ namespace Guards {
             return DataKeeper::Get("tt_reports", [$param], ["id" => $reportId])[0][$param];
         }
         public static function GetUnreadedReportsCount(){
-            return DataKeeper::MakeQuery("SELECT count(*) FROM `tt_reports` WHERE `viewed` = ?", [0])[0]["count(*)"];
+            return DataKeeper::MakeQuery("SELECT count(*) FROM `tt_reports` WHERE `viewed` = ?", [0])["count(*)"];
         }
         public static function GetReport($reportId){
             if (!ReportAgent::isReportExists($reportId)) return false;

@@ -161,8 +161,8 @@ if ($bigBannersCount > 0) {
 $main = str_replace_once("{MAIN_PAGE:FIRST_BIG_BANNER}", $firstBigBanner, $main);
 $footer = str_replace_once("{MAIN_PAGE:SECOND_BIG_BANNER}", $secondBigBanner, $footer);
 
-$firstBanner = \SiteBuilders\BannerAgent::GetBannersByName("firstbanner")[0]["content"];
-$secondBanner = \SiteBuilders\BannerAgent::GetBannersByName("secondbanner")[0]["content"];
+$firstBanner = @\SiteBuilders\BannerAgent::GetBannersByName("firstbanner")[0]["content"];
+$secondBanner = @\SiteBuilders\BannerAgent::GetBannersByName("secondbanner")[0]["content"];
 if (empty($firstBanner))
     $firstBanner = "<img class=\"img-smbanner\" src=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/smallbanner.png\" title=\"" . \Engine\LanguageManager::GetTranslation("ad_is_free") . "\">";
 else

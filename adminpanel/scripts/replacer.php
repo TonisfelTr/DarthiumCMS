@@ -23,8 +23,8 @@ if (!$user->UserGroup()->getPermission("change_engine_settings")) {
             \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.site_mail_connection_type_log")
                 . "[". \Engine\Engine::GetEngineInfo("ecp") . " -> " . $_POST["emailconnecttype"] . "]");
         }
-        $ma = (\Engine\Engine::GetEngineInfo("map") == "y") ? 1 : 0;
-        if ($ma != $_POST["multiaccount"]) {
+        $multiAcc = (\Engine\Engine::GetEngineInfo("map") == "y") ? 1 : 0;
+        if ($multiAcc != $_POST["multiaccount"]) {
             if ($_POST["multiaccount"] == "1") {
                 \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.site_denied_multiacc_log"));
                 $multiAcc = "y";
