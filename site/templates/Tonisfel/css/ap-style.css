@@ -1073,3 +1073,8 @@ table.group-users-table > thead > tr
     height: 70px;
     cursor: pointer;
 }
+
+.img-unframed {
+    width: 100%;
+    height: 95%;
+}
