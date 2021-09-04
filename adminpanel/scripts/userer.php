@@ -241,7 +241,7 @@ if (isset ($_POST["user-add-add"])){
             exit;
         } else {
             $group = (!isset($_POST["user-add-group"]) || !$user->UserGroup()->getPermission("change_user_group")) ?
-                \Engine\Engine::GetEngineInfo("sg") : ($_POST["user-add-group"] == 0) ? \Engine\Engine::GetEngineInfo("sg") : $_POST["user-add-group"];
+                \Engine\Engine::GetEngineInfo("sg") : (($_POST["user-add-group"] == 0) ? \Engine\Engine::GetEngineInfo("sg") : $_POST["user-add-group"]);
             if (\Users\UserAgent::AddUser($_POST["user-add-nickname"], $_POST["user-add-password"], $_POST["user-add-email"], $user->getNickname()) === TRUE) {
                 $newUser = new \Users\User(\Users\UserAgent::GetUserId($_POST["user-add-nickname"]));
                 $newUser->groupChange($group);
