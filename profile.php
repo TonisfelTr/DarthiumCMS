@@ -154,6 +154,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
         $userEdit = str_replace_once("{PROFILE_PAGE:USER_EDITPANEL}", $profileEditCustomPanel, $userEdit);
     }
     include_once "./site/reputationer.php";
+    define("TT_Uploader", true);
     include_once "./site/uploader.php";
 
     $parentDivName = "";
