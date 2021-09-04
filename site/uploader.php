@@ -1,6 +1,6 @@
 <?php
 if (!defined("TT_Uploader")){
-    exit;
+   return;
 }
 if ($user != false) {
     $uploadList = \Engine\Uploader::GetUploadList($user->getId());
