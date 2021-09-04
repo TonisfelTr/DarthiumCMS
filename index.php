@@ -277,7 +277,7 @@ if (isset($_GET["category"]) && $_GET["category"] != "") {
 
 $main = str_replace_once("{INDEX_PAGE_NEWSPAPER}", $newsPaper, $main);
 
-if ($_GET["category"] == "" || isset($_GET["search"])) {
+if (empty($_GET["category"]) || isset($_GET["search"])) {
     include_once "./site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/searchpanel.html";
     $searchBlock = getBrick();
     if (isset($_GET["search"]) && $_GET["search"] != "") {
