@@ -360,7 +360,7 @@ namespace Engine {
                 $text = preg_replace("/\[img\=(.+?)\]/", "<div class=\"img-container\"><a href=\"$1\" data-lightbox=\"image\"><img class=\"img-for-frame\" src=\"$1\"></a><p>$sizes[0]x$sizes[1]</p></div>", $text, 1);
             }
             while (preg_match("/\[\!img\=(.?)+\]/", $text) != false) {
-                $text = preg_replace("/\[\!img\=(.+?)\]/", "<img class=\"img-unframed\" src=\"$1\">", $text, 1);
+                $text = preg_replace("/\[\!img\=(.+?)\]/", "<img class=\"img-unframed\" src=\"$1\" style=\"max-width: 90%; max-height: 90%; display: block; margin: -10px auto;\">", $text, 1);
             }
             $text = preg_replace("/\[align\=(.+?)\]/", "<p style=\"text-align: $1;\">", $text);
             $text = preg_replace("/\[color\=(.+?)\]/", "<span style=\"color: $1;\">", $text);
