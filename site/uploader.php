@@ -1,5 +1,7 @@
 <?php
-define("TT_Uploader", true);
+if (!defined("TT_Uploader")){
+    exit;
+}
 if ($user != false) {
     $uploadList = \Engine\Uploader::GetUploadList($user->getId());
     $uploadCount = count($uploadList);
