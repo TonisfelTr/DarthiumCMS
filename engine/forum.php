@@ -135,7 +135,7 @@ namespace Forum {
                 [$author], true);
         }
         public static function GetPagesCount(){
-            return DataKeeper::MakeQuery("SELECT count(*) FROM `tt_staticpages`")[0]["count(*)"];
+            return DataKeeper::MakeQuery("SELECT count(*) FROM `tt_staticpages`")["count(*)"];
         }
         public static function GetLastPageID(){
             return DataKeeper::getMax("tt_staticpages", "id");
