@@ -224,8 +224,8 @@ foreach ($navbtns as $navbtn) {
             else {
                 $ul .= "<ul class=\"dropdown-menu\">";
                 foreach ($children as $child) {
-                    $text = $child[1];
-                    $href = $child[2];
+                    $text = $child["content"];
+                    $href = $child["action"];
                     $ul .= "<li><a href=\"$href\">$text</a></li>";
                 }
                 $ul .= "</ul>";

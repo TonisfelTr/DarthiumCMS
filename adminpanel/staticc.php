@@ -25,6 +25,7 @@ if ($editPPerm || $createPPerm || $removePPerm) {
     $previousPage = (!isset($_REQUEST["pl"])) ? "#" : "#&pl=" . $_REQUEST["pl"] - 1;
     $nextPage = (isset($_REQUEST["pl"]) && $_REQUEST["pl"] != $tablePageCount) ? "#&pl=" . ($_REQUEST["pl"] + 1) : "#";
     $page = "";
+    $value = "";
     if (isset($_REQUEST["search-author"])) {
         $value = $_REQUEST["search-author"];
         $label = "Автор:";
@@ -43,8 +44,8 @@ if ($editPPerm && isset($_GET["editpage"]) && \Forum\StaticPagesAgent::isPageExi
 }
 
 if ($editSContentPerm){
-    $firstSmallBannerContent = \SiteBuilders\BannerAgent::GetBannersByName("firstbanner")["firstbanner"]["content"];
-    $secondSmallBannerContent = \SiteBuilders\BannerAgent::GetBannersByName("smallbanner")["smallbanner"]["content"];
+    $firstSmallBannerContent = @\SiteBuilders\BannerAgent::GetBannersByName("firstbanner")["firstbanner"]["content"];
+    $secondSmallBannerContent = @\SiteBuilders\BannerAgent::GetBannersByName("smallbanner")["smallbanner"]["content"];
     $bigbanners = \SiteBuilders\BannerAgent::GetBanners("banner");
     $buttons = array();
     foreach ($bigbanners as $bigbanner){
@@ -563,7 +564,7 @@ if ($editSContentPerm){
                                             $children = \SiteBuilders\NavbarAgent::GetElementsOfList($navbarbtn["id"]);
                                             $data_content = $navbarbtn["action"];
                                             $content = $navbarbtn["content"];
-                                            $id = $navbarbtns["id"]; ?>
+                                            $id = $navbarbtn["id"]; ?>
                                             <div class="btn-group">
                                                 <button type="button" class="btn btn-default" data-id="<?=$id?>" data-content="<?=$data_content?>"><?=$content?></button>
                                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -573,9 +574,9 @@ if ($editSContentPerm){
                                                 <ul class="dropdown-menu">
                                                     <?php
                                                     foreach ($children as $kid){
-                                                        $id = $kid[0];
-                                                        $data_href = $kid[2];
-                                                        $content = $kid[1];?>
+                                                        $id = $kid["id"];
+                                                        $data_href = $kid["action"];
+                                                        $content = $kid["content"];?>
                                                         <li data-href="<?=$data_href?>" data-id="<?=$id?>"><?=$content?></li>
                                                     <?php } ?>
                                                 </ul>
