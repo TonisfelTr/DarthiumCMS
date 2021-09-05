@@ -543,7 +543,7 @@ namespace Guards {
             $imageName = Engine::RandomGen(8);
 
             DataKeeper::InsertTo("tt_captcha", ["id_hash" => self::$captchaIDHash,
-                                                             "captcha" => self::$captchaHash,
+                                                             "captcha" => strtoupper(self::$captchaHash),
                                                              "type" => $type,
                                                              "createTime" => Engine::GetSiteTime(),
                                                              "picName" => $imageName]);
@@ -572,7 +572,7 @@ namespace Guards {
         public static function CheckCaptcha($typedCaptcha, $captchaID, $type){
             if (empty($captchaID) || empty($type) || empty($typedCaptcha)) return false;
 
-            return DataKeeper::MakeQuery("SELECT count(*) FROM `tt_captcha` WHERE `type` = ? AND `captcha` LIKE ? AND `id_hash` = ?", [$type, $typedCaptcha, $captchaID])["count(*)"] == 0 ? false : true;
+            return DataKeeper::MakeQuery("SELECT count(*) FROM `tt_captcha` WHERE `type` = ? AND `captcha` LIKE ? AND `id_hash` = ?", [$type, strtoupper($typedCaptcha), $captchaID])["count(*)"] == 0 ? false : true;
         }
         public static function RemoveCaptcha(){
             $time = Engine::GetSiteTime() - 600;
