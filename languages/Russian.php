@@ -1451,5 +1451,9 @@ $languagePack = [
     ],
     "plugins" => [
         "constant_exists" => "Плагин с таким кодовым именем уже зарегистрирован в системе."
+    ],
+    "uploader_panel" => [
+        "delete_files_log" => "удалил ",
+        "delete_files_log_2" => "файл(а) с сайтового хранилища."
     ]
 ];
