@@ -550,6 +550,12 @@ a.alert-link{
     text-shadow: 1px 3px 1px #111;
 }
 
+div.news-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
 div.topic-wrapper{
     border: 1px solid black;
     border-top-left-radius: 7px;
@@ -557,7 +563,6 @@ div.topic-wrapper{
     padding: 0;
     margin-bottom: 20px;
     height: 282px;
-    margin-left: 70px;
 }
 
 @media(max-width: 2560px){
@@ -574,14 +579,18 @@ div.topic-wrapper{
 
 @media(max-width: 1440px){
     div.topic-wrapper {
-        margin-left: 50px;
+        margin-left: 15px;
+        width: 585px;
+        margin: 0 auto;
     }
 }
+
 @media(max-width: 1024px){
     div.topic-wrapper {
         margin-left: 0;
     }
 }
+
 @media(max-width: 768px){
     div.topic-wrapper {
         margin-left: 0;
