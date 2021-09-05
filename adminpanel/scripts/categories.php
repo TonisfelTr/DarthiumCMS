@@ -36,7 +36,7 @@ if (isset($_POST["category-add-btn"])){
             (isset($_POST["category_add_nocomments"])) ? 1 : 0,
             (isset($_POST["category_add_notopics"])) ? 1 : 0);
         if ($result == TRUE){
-            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("categories_panel.create_new_category_log") . "\"" . $_POST["category-add-name"] . "\"");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("categories_panel.logs.create_new_category_log") . "\"" . $_POST["category-add-name"] . "\"");
             header("Location: ../../adminpanel.php?p=categories&res=6scc");
             exit;
         } else {
@@ -95,29 +95,29 @@ if (isset($_POST["category_edit_save"])){
         }
 
         if ($category->getName() != $_POST["category-edit-name"]) {
-            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("categories_panel.rename_category_log") ."[" . $category->getName() . " -> " . $_POST["category-edit-name"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("categories_panel.logs.rename_category_log") ."[" . $category->getName() . " -> " . $_POST["category-edit-name"] . "]");
             \Forum\ForumAgent::ChangeCategoryParams($_GET["cid"], "name", $_POST["category_edit_name"]);
         }
         if ($category->getDescription() != $_POST["category-edit-descript"]) {
-            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("categories_panel.change_description_log") . "[" . $category->getName() . " " . $category->getDescription() . " -> " . $_POST["category-edit-descript"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("categories_panel.logs.change_description_log") . "[" . $category->getName() . " " . $category->getDescription() . " -> " . $_POST["category-edit-descript"] . "]");
             \Forum\ForumAgent::ChangeCategoryParams($_GET["cid"], "descript", $_POST["category_edit_descript"]);
         }
         if ($category->isPublic() != $_POST["category_edit_public_checker"]) {
-            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("categories_panel.public_category_change_log_log") . "\"" . $category->getName() . "\" [" . $category->isPublic() . " -> " . (isset($_POST["category_edit_public_checker"]) ? "1" : "0") . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("categories_panel.logs.public_category_change_log_log") . "\"" . $category->getName() . "\" [" . $category->isPublic() . " -> " . (isset($_POST["category_edit_public_checker"]) ? "1" : "0") . "]");
             \Forum\ForumAgent::ChangeCategoryParams($_GET["cid"], "public", (isset($_POST["category_edit_public_checker"])) ? "1" : "0");
         }
         if ($category->CanCreateComments() != $_POST["category_edit_nocomments_checker"]) {
-            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("categories_panel.change_perm_for_comment_create_log") ."\"" . $category->getName() . "\" "
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("categories_panel.logs.change_perm_for_comment_create_log") ."\"" . $category->getName() . "\" "
                 . $category->CanCreateComments() . " -> " . (isset($_POST["category_edit_nocomments_checker"]) ? "1" : "0"));
             \Forum\ForumAgent::ChangeCategoryParams($_GET["cid"], "no_comment", (isset($_POST["category_edit_nocomments_checker"])) ? "1" : "0");
         }
         if ($category->CanCreateTopic() != $_POST["category_edit_notopics_checker"]) {
-            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("categories_panel.change_perm_for_topic_create_log") ."\"" . $category->getName() . "\" "
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("categories_panel.logs.change_perm_for_topic_create_log") ."\"" . $category->getName() . "\" "
                 . $category->CanCreateTopic() . " -> " . $_POST["category_edit_notopics_checker"]);
             \Forum\ForumAgent::ChangeCategoryParams($_GET["cid"], "no_new_topics", (isset($_POST["category_edit_notopics_checker"])) ? "1" : "0");
         }
         if ($category->getKeyWords() != $_POST["category_edit_keywords"]) {
-            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("categories_panel.change_keywords_log") ."\"" . $category->getName() . "\" "
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("categories_panel.logs.change_keywords_log") ."\"" . $category->getName() . "\" "
                 . $category->CanCreateTopic() . " -> " . $_POST["category_edit_notopics_checker"]);
             \Forum\ForumAgent::ChangeCategoryParams($_GET["cid"], "keywords", $_POST["category_edit_keywords"]);
         }
@@ -139,7 +139,7 @@ if (isset($_POST["category_edit_delete"])){
         $categoryName = \Forum\ForumAgent::GetCategoryParam($_GET["cid"], "name");
         $result = \Forum\ForumAgent::DeleteCategory($_GET["cid"]);
         if ($result === TRUE){
-            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("categories_panel.remove_category_log") ."\"$categoryName\".");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("categories_panel.logs.remove_category_log") ."\"$categoryName\".");
             header("Location: ../../adminpanel.php?p=categories&res=6scdt");
             exit;
         }
@@ -172,7 +172,7 @@ if (isset($_POST["categories-table-delete"])){
             $categoryName = \Forum\ForumAgent::GetCategoryParam($_GET["cid"], "name");
             $result = \Forum\ForumAgent::DeleteCategory($_GET["cid"]);
             if ($result === TRUE){
-                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("categories_panel.remove_category_log") ."\"$categoryName\".");
+                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("categories_panel.logs.remove_category_log") ."\"$categoryName\".");
                 continue;
             }
             elseif ($result == 32) {
