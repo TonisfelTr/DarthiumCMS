@@ -480,7 +480,7 @@ if ($canSigns){
                         $lastOnline = (\Engine\Engine::GetSiteTime() > $USER->getLastTime()+15*60) ?
                             (($USER->getSex() == 3) ? \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.she_signed_in") :
                             \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.he_signed_in"))
-                        . " " . \Engine\LanguageManager::GetTranslation("in") . " " . \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s",$USER->getLastTime())) : "<span style=\"color: #009900;\">" . \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.online") . "</span>";
+                        . " " . \Engine\LanguageManager::GetTranslation("in") . " " . \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s", strtotime($USER->getLastTime()))) : "<span style=\"color: #009900;\">" . \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.online") . "</span>";
                     echo $lastOnline; ?>
                     </div>
                 </div>
