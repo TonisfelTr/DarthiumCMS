@@ -723,9 +723,9 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
     $lastOnline = 0;
     if ($user->getLastTime() == 0){
         if ($user->getSex() == 3)
-            $lastOnline = \Engine\LanguageManager::GetTranslation("not_sign_in_she");
+            $lastOnline = \Engine\LanguageManager::GetTranslation("not_signed_in_she");
         else
-            $lastOnline = \Engine\LanguageManager::GetTranslation("not_sign_in_he");
+            $lastOnline = \Engine\LanguageManager::GetTranslation("not_signed_in_he");
     }
     else
     {
@@ -1016,9 +1016,9 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
     $lastOnline = 0;
     if ($user->getLastTime() == 0){
         if ($user->getSex() == 3)
-            $lastOnline = \Engine\LanguageManager::GetTranslation("not_sign_in_she");
+            $lastOnline = \Engine\LanguageManager::GetTranslation("not_signed_in_she");
         else
-            $lastOnline = \Engine\LanguageManager::GetTranslation("not_sign_in_he");
+            $lastOnline = \Engine\LanguageManager::GetTranslation("not_signed_in_he");
     }
     else
     {
