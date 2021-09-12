@@ -550,10 +550,12 @@ a.alert-link{
     text-shadow: 1px 3px 1px #111;
 }
 
-div.news-container {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
+@media(max-width: 1440px) {
+    div.news-container {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
 }
 
 div.topic-wrapper{
