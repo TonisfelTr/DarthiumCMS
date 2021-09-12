@@ -41,7 +41,6 @@ namespace Engine {
         static private $CanGuestsSeeProfiles = false;
         static private $CanUsersReputationVoteManyTimes;
 
-        static private $SiteMetricType;
         static private $SiteMetricStatus;
 
         public static function ConstructTemplatePath($loadingPage, $module = "", $ext = "php")
@@ -166,7 +165,6 @@ namespace Engine {
             self::$CanGuestsSeeProfiles = $a["guestsseeprofiles"];
             self::$CanUsersReputationVoteManyTimes = $a["multivoterep"];
 
-            self::$SiteMetricType = $a["metricType"];
             self::$SiteMetricStatus = $a["metricStatus"];
             LanguageManager::load();
 
@@ -192,7 +190,7 @@ namespace Engine {
                                             $siteSubscribe, $siteHashtags, $siteLang, $siteTemplate, $siteRegionTime,
                                             $emailAcc, $emailPass, $emailHost, $emailPort, $emailCP, $needActivate, $multiAccPermitted, $standartGroup,
                                             $avatarHeight, $avatarWidth, $uploadPermittedSize, $uploadPermittedFormats, $canGuestsSeeProfiles, $canMultiRepVote,
-                                            $siteMetricStatus, $siteMetricType)
+                                            $siteMetricStatus)
         {
             $settingsArray = array(
                 'domainSite' => $DomainSite,
@@ -218,7 +216,6 @@ namespace Engine {
                 'uploadPermFormats' => $uploadPermittedFormats,
                 'guestsseeprofiles' => $canGuestsSeeProfiles,
                 "multivoterep" => $canMultiRepVote,
-                'metricType' => $siteMetricType,
                 'metricStatus' => $siteMetricStatus
             );
             if (file_put_contents($_SERVER["DOCUMENT_ROOT"] . "/engine/config/config.sfc", serialize($settingsArray))) return True;
@@ -277,8 +274,6 @@ namespace Engine {
                     return self::$CanUsersReputationVoteManyTimes;
                 case "stp":
                     return self::$SiteTemplate;
-                case "smt":
-                    return self::$SiteMetricType;
                 case "sms":
                     return self::$SiteMetricStatus;
             }

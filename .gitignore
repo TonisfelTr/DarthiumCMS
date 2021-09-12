@@ -2,6 +2,7 @@
 /addons/*
 /engine/config/dbconf.sfc
 /engine/config/config.sfc
+/engine/config/analytic.js
 /tests/
 /uploads/
 /.idea/

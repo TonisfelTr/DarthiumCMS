@@ -135,14 +135,13 @@ if (!$user->UserGroup()->getPermission("change_engine_settings")) {
             "[$multiVoteRepNow -> $multiVoteRepPerm]");
         }
 
-        $metricStatusPass = (isset($_POST["metric-lever-btn"])) ? 1 : 0;
+        $metricStatusPass = (!empty($_POST["metric-lever-btn"])) ? 1 : 0;
         if (\Engine\Engine::GetEngineInfo("smt") != $metricStatusPass){
             $metricStatusParam = (\Engine\Engine::GetEngineInfo("smt") == 1) ? \Engine\LanguageManager::GetTranslation("on") :
                 \Engine\LanguageManager::GetTranslation("off");
             $metricStatusNow = ($metricStatusPass == 1) ? \Engine\LanguageManager::GetTranslation("on") :
                 \Engine\LanguageManager::GetTranslation("off");
             \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.statistic_panel.site_metric_log") . "[" . $metricStatusParam . " -> " . $metricStatusNow . "]");
-            $metricStatus = $metricStatusPass;
         }
 
         if (\Engine\Engine::SettingsSave($_POST["domain"], $_POST["sitename"], $_POST["sitetagline"],
@@ -151,7 +150,7 @@ if (!$user->UserGroup()->getPermission("change_engine_settings")) {
             $_POST["emaillogin"], $_POST["emailpassword"], $_POST["emailhost"], $_POST["emailport"], $type,
             $_POST["needactivate"], $multiAcc, $_POST["standartgroup"],
             $_POST["avatarmaxwidth"], $_POST["avatarmaxheight"], $_POST["maxfilesize"], $_POST["uploadformats"], (isset($_POST["guest_see_profiles"])) ? 1 : 0, (isset($_POST["multivote_rep"])) ? 1 : 0,
-            $metricStatus, $metricType)
+            $metricStatusPass)
         ) {
             if (\Engine\Engine::GetCensoredWords() != $_POST["chat-filter-words"]){
                 \Engine\Engine::SaveCensoredWords($_POST["chat-filter-words"]);

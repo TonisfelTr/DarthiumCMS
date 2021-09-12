@@ -632,7 +632,7 @@ if (!$user->UserGroup()->getPermission("change_engine_settings")) {
                         <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.statistic_panel.write_statistic"); ?></div>
                         <div class="form-control">
                             <input type="checkbox" name="metric-lever-btn"
-                                   id="metric-level-btn" <?php if (\Engine\Engine::GetEngineInfo("smt")) {
+                                   id="metric-level-btn" <?php if (\Engine\Engine::GetEngineInfo("sms")) {
                                 echo "checked";
                             } ?>>
                         </div>

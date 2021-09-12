@@ -11,15 +11,13 @@
  *  in /site/templates/<template_name> directory.
  * */
 
-function getBrick()
-{
+function getBrick() {
     $e = ob_get_contents();
     ob_clean();
     return $e;
 }
 
-function str_replace_once($search, $replace, $text)
-{
+function str_replace_once($search, $replace, $text) {
     $pos = strpos($text, $search);
     return $pos !== false ? substr_replace($text, $replace, $pos, strlen($search)) : $text;
 }
@@ -30,12 +28,18 @@ include "./engine/main.php";
 
 $user = false;
 $sessionRes = \Users\UserAgent::SessionContinue();
-if ($sessionRes == 1) $user = new \Users\User($_SESSION["uid"]);
+if ($sessionRes == 1) {
+    $user = new \Users\User($_SESSION["uid"]);
+}
 if ((\Engine\Engine::GetEngineInfo("ss") == 0 && !$user) ||
-    (\Engine\Engine::GetEngineInfo("ss") == 0 && $user->UserGroup()->getPermission("offline_visiter") != 1)) header("Location: offline.php");
-if ($user !== false) if ($user->isBanned()) {
-    header("Location: banned.php");
-    exit;
+    (\Engine\Engine::GetEngineInfo("ss") == 0 && $user->UserGroup()->getPermission("offline_visiter") != 1)) {
+    header("Location: offline.php");
+}
+if ($user !== false) {
+    if ($user->isBanned()) {
+        header("Location: banned.php");
+        exit;
+    }
 }
 if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)) {
     header("Location: banned.php");
@@ -46,17 +50,24 @@ if (!$user) {
     $categories = \Forum\ForumAgent::GetCategoryList(true);
 } elseif ($user->UserGroup()->getPermission("category_see_unpublic")) {
     $categories = \Forum\ForumAgent::GetCategoryList(false);
-} else
+} else {
     $categories = \Forum\ForumAgent::GetCategoryList(true);
+}
 ###############################################################################
 # Build profile menu.
 if ($user !== false) {
     $mailSpanClass = "nav-btn-" . (($user->MessageManager()->getNotReadCount() > 0) ? "new-" : "") . "counter";
-    $mailSpanCount = ($user->MessageManager()->getNotReadCount() > 10) ? "10+" : $user->MessageManager()->getNotReadCount();
-    $notificationSpanClass = "nav-btn-" . (($user->Notifications()->getNotificationsUnreadCount()) ? "new-" : "") . "counter";
-    $notificationSpanCount = ($user->Notifications()->getNotificationsUnreadCount() > 10) ? "10+" : $user->Notifications()->getNotificationsUnreadCount();
-    if ($user->UserGroup()->getPermission("enterpanel")) $canEnterToAP = true;
-    else $canEnterToAP = false;
+    $mailSpanCount = ($user->MessageManager()->getNotReadCount() > 10) ? "10+"
+        : $user->MessageManager()->getNotReadCount();
+    $notificationSpanClass = "nav-btn-" . (($user->Notifications()->getNotificationsUnreadCount()) ? "new-"
+            : "") . "counter";
+    $notificationSpanCount = ($user->Notifications()->getNotificationsUnreadCount() > 10) ? "10+"
+        : $user->Notifications()->getNotificationsUnreadCount();
+    if ($user->UserGroup()->getPermission("enterpanel")) {
+        $canEnterToAP = true;
+    } else {
+        $canEnterToAP = false;
+    }
 }
 ################################################################################
 # Build categories menu.
@@ -91,7 +102,9 @@ $main = getBrick();
 if (!empty($_GET["page"])) {
     if (file_exists("./site/" . $_GET["page"] . ".php")) {
         include_once "./site/" . $_GET["page"] . ".php";
-    } else include_once "./site/errors/notfound.php";
+    } else {
+        include_once "./site/errors/notfound.php";
+    }
 } elseif (!empty($_GET["sp"])) {
     if (\Forum\StaticPagesAgent::isPageExists($_GET["sp"])) {
         //Here load keywords for site
@@ -106,11 +119,14 @@ if (!empty($_GET["page"])) {
 } elseif (!empty($_GET["topic"])) {
     if (\Forum\ForumAgent::isTopicExists($_GET["topic"])) {
         $topic = new \Forum\Topic($_GET["topic"]);
-        if ($topic->getCategory()->isPublic() || (!$topic->getCategory()->isPublic() && $user !== false && $user->UserGroup()->getPermission("category_see_unpublic")))
+        if ($topic->getCategory()->isPublic() || (!$topic->getCategory()->isPublic() && $user !== false && $user->UserGroup()->getPermission("category_see_unpublic"))) {
             include_once "./site/newsviewer.php";
-        else
+        } else {
             include_once "./site/errors/forbidden.php";
-    } else include_once "./site/errors/notfound.php";
+        }
+    } else {
+        include_once "./site/errors/notfound.php";
+    }
 } elseif (!empty($_GET["search"])) {
     include_once "./site/search.php";
 } elseif (!empty($_GET["group"])) {
@@ -121,8 +137,9 @@ if (!empty($_GET["page"])) {
     } else {
         include_once "./site/errors/notfound.php";
     }
-} else
+} else {
     include_once "./site/news.php";
+}
 $newsPaper = getBrick();
 include_once "./site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/footer.html";
 $footer = getBrick();
@@ -137,7 +154,9 @@ $header = getBrick();
 if (\Engine\Engine::GetEngineInfo("ss") == 0) {
     include_once "./site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/offline.html";
     $offline = getBrick();
-} else $offline = "";
+} else {
+    $offline = "";
+}
 if ($user === false) {
     include_once "./site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/pam_unauth.html";
 } else {
@@ -163,14 +182,16 @@ $footer = str_replace_once("{MAIN_PAGE:SECOND_BIG_BANNER}", $secondBigBanner, $f
 
 $firstBanner = @\SiteBuilders\BannerAgent::GetBannersByName("firstbanner")[0]["content"];
 $secondBanner = @\SiteBuilders\BannerAgent::GetBannersByName("secondbanner")[0]["content"];
-if (empty($firstBanner))
+if (empty($firstBanner)) {
     $firstBanner = "<img class=\"img-smbanner\" src=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/smallbanner.png\" title=\"" . \Engine\LanguageManager::GetTranslation("ad_is_free") . "\">";
-else
+} else {
     $firstBanner = "<div class=\"img-smbanner\">" . $firstBanner . "</div>";
-if (empty($secondBanner))
+}
+if (empty($secondBanner)) {
     $secondBanner = "<img class=\"img-smbanner\" src=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/smallbanner.png\" title=\"" . \Engine\LanguageManager::GetTranslation("ad_is_free") . "\">";
-else
+} else {
     $secondBanner = "<div class=\"img-smbanner\">" . $secondBanner . "</div>";
+}
 $footer = str_replace_once("{MAIN_PAGE:FOOTER_FIRST_SMALL_BANNER}", $firstBanner, $footer);
 $footer = str_replace_once("{MAIN_PAGE:FOOTER_SECOND_SMALL_BANNER}", $secondBanner, $footer);
 
@@ -189,7 +210,9 @@ foreach ($panels as $panel) {
             $rightPanel = str_replace_once("{PANEL_CONTENT}", $panel->getContent(), $rightPanel);
             $rightPanels .= $rightPanel;
         }
-    } else continue;
+    } else {
+        continue;
+    }
 }
 
 $info = "";
@@ -203,7 +226,7 @@ $navbtns = array_merge(\SiteBuilders\NavbarAgent::GetElements(), \Engine\PluginM
 $ul = "";
 $ulEnd = "";
 foreach ($navbtns as $navbtn) {
-    if (isset($navbtn["ofPlugin"]) && !\Engine\PluginManager::IsTurnOn(intval($navbtn["ofPlugin"]))){
+    if (isset($navbtn["ofPlugin"]) && !\Engine\PluginManager::IsTurnOn(intval($navbtn["ofPlugin"]))) {
         continue;
     }
 
@@ -219,9 +242,9 @@ foreach ($navbtns as $navbtn) {
             $content = $navbtn["content"];
             $id = $navbtn["id"];
             $ul .= "<li class=\"dropdown\"><a aria-expanded=\"false\" aria-haspopup=\"true\" role=\"button\" data-toggle=\"dropdown\" class=\"dropdown-toggle\" href=\"#\">$content <span class=\"caret\"></span></a>";
-            if ($data_content != "")
+            if ($data_content != "") {
                 $ul .= "<ul class=\"dropdown-menu\">$data_content</ul>";
-            else {
+            } else {
                 $ul .= "<ul class=\"dropdown-menu\">";
                 foreach ($children as $child) {
                     $text = $child["content"];
@@ -242,9 +265,9 @@ foreach ($navbtns as $navbtn) {
             $data_href = $navbtn["action"];
             $content = $navbtn["content"];
             $ulEnd .= "<li class=\"dropdown\"><a aria-expanded=\"false\" aria-haspopup=\"true\" role=\"button\" data-toggle=\"dropdown\" class=\"dropdown-toggle\" href=\"#\">$content <span class=\"caret\"></span></a>";
-            if ($data_content != "")
+            if ($data_content != "") {
                 $ulEnd .= "<ul class=\"dropdown-menu\">$data_content</ul>";
-            else {
+            } else {
                 $ulEnd .= "<ul class=\"dropdown-menu\">";
                 foreach ($children as $child) {
                     $text = $child[1];
@@ -272,8 +295,9 @@ if (isset($_GET["category"]) && $_GET["category"] != "") {
     $main = str_replace_once("{INDEX_CATEGORY_HINT}", $categoryHint, $main);
     $keywords = \Forum\ForumAgent::GetCategoryParam($_GET["category"], "keywords");
     $main = str_replace_once("{ENGINE_META:KEYWORDS}", $keywords, $main);
-} else
+} else {
     $main = str_replace_once("{INDEX_CATEGORY_HINT}", "", $main);
+}
 
 $main = str_replace_once("{INDEX_PAGE_NEWSPAPER}", $newsPaper, $main);
 
@@ -283,14 +307,17 @@ if (empty($_GET["category"]) || isset($_GET["search"])) {
     if (isset($_GET["search"]) && $_GET["search"] != "") {
         $searchBlock = str_replace("{INDEX_SEARCHING_TEXT}", $_GET["search"], $searchBlock);
         if (isset($_GET["param"]) && $_GET["param"] != "") {
-            if ($_GET["param"] == "author")
+            if ($_GET["param"] == "author") {
                 $searchBlock = str_replace_once("{INDEX_SEARCHING_TYPE}", "$(\"button#search-by-author\").click()", $searchBlock);
-            if ($_GET["param"] == "quize")
+            }
+            if ($_GET["param"] == "quize") {
                 $searchBlock = str_replace_once("{INDEX_SEARCHING_TYPE}", "$(\"button#search-by-quize\").click()", $searchBlock);
+            }
         }
 
-    } else
+    } else {
         $searchBlock = str_replace("{INDEX_SEARCHING_TEXT}", "", $searchBlock);
+    }
     $main = str_replace_once("{INDEX_SEARCHING}", $searchBlock, $main);
 } else {
     $main = str_replace_once("{INDEX_SEARCHING}", "", $main);
@@ -308,10 +335,11 @@ if ($user !== false) {
     $main = str_replace("{INDEX_PROFILE_MENU:NOTIF_SPAN_CLASS}", $notificationSpanClass, $main);
     $main = str_replace("{INDEX_PROFILE_MENU:NOTIF_SPAN_COUNT}", $notificationSpanCount, $main);
     $main = str_replace("{INDEX_PROFILE_MENU:USER_NICKNAME}", $user->getNickname(), $main);
-    if ($canEnterToAP)
+    if ($canEnterToAP) {
         $main = str_replace_once("{INDEX_PROFILE_MENU:ADMPANEL_BUTTON}", "<li><a href=\"adminpanel.php\">" . \Engine\LanguageManager::GetTranslation("adminpanel-link") . "</a>", $main);
-    else
+    } else {
         $main = str_replace_once("{INDEX_PROFILE_MENU:ADMPANEL_BUTTON}", "", $main);
+    }
 }
 
 $lastTopics = \Forum\ForumAgent::GetTopicList(1, true);
@@ -348,14 +376,10 @@ $spoilerManager = getBrick();
 
 $main = str_replace_once("{SPOILER_CONTROLLER:JS}", $spoilerManager, $main);
 
-if (\Engine\Engine::GetEngineInfo("smt")) {
-    if (\Engine\Engine::GetEngineInfo("sms") == 0) {
-        $main = str_replace_once("{METRIC_JS}", null, $main);
-    } else {
-        $main = str_replace_once("{METRIC_JS}", \Engine\Engine::GetAnalyticScript(), $main);
-    }
-} else {
+if (\Engine\Engine::GetEngineInfo("sms") == 0) {
     $main = str_replace_once("{METRIC_JS}", null, $main);
+} else {
+    $main = str_replace_once("{METRIC_JS}", \Engine\Engine::GetAnalyticScript(), $main);
 }
 
 $main = \Engine\PluginManager::IntegrateCSS($main);
