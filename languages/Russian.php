@@ -1,6 +1,8 @@
 <?php
 $languagePack = [
 
+//Dates
+    "never" => "Никогда",
 //Switches
     "on" => "Включен",
     "off" => "Выключен",

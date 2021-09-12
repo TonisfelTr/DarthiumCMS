@@ -110,6 +110,10 @@ namespace Engine {
                 '12' => LanguageManager::GetTranslation("december_month"),
             );
 
+            if ($string == "1970-01-01 00:00:00"){
+                return LanguageManager::GetTranslation("never");
+            }
+
             $parts = explode(" ", $string);
             $date = explode("-", $parts[0]);
             $result = $parts[1] . " " . $date[2] . " " . $month[$date[1]] . " " . $date[0] . " " . LanguageManager::GetTranslation("year");

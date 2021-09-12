@@ -1027,7 +1027,7 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
                 $lastOnline =  \Engine\LanguageManager::GetTranslation("signed_in_she");
             else
                 $lastOnline =  \Engine\LanguageManager::GetTranslation("signed_in_he");
-            $lastOnline .= " ". \Engine\LanguageManager::GetTranslation("in") . " " .  \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s", $user->getLastTime()));
+            $lastOnline .= " ". \Engine\LanguageManager::GetTranslation("in") . " " .  \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s", strtotime($user->getLastTime())));
         } else {
             $lastOnline = "<span style=\"color: #00dd00;\">". \Engine\LanguageManager::GetTranslation("online"). "</span>";
         }
