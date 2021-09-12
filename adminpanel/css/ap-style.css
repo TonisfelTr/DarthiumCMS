@@ -59,6 +59,7 @@ body{
 .wrapper{
     min-height: 80%;
     position: relative;
+    margin-left: 75px;
 }
 
 .custom-group{
@@ -111,6 +112,7 @@ p.footer{
     font: 12px Trebuchet MS;
     text-align: left;
     padding-left: 10px;
+    margin-left: 75px;
 }
 
 .header-gum{
