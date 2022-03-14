@@ -59,8 +59,9 @@ body{
 .wrapper{
     min-height: 80%;
     position: relative;
-    margin-left: 75px;
+    /*margin-left: 75px;*/
 }
+
 
 .custom-group{
     position: relative;

@@ -83,7 +83,7 @@ function str_replace_once($search, $replace, $text) {
 </head>
 <body>
 <?php include "adminpanel/subpanels/uploader.php"; ?>
-<div class="side-navbar">
+<!--<div class="side-navbar">
     <button type="button" class="side-nav-btn" data-tooltip="Настройки сайта и движка" data-menu-block="settings-pm">
         <span class="glyphicon glyphicon-cog"></span></button>
     <button type="button" class="side-nav-btn" data-tooltip="Управление пользователями" data-menu-block="users-pm"><span
@@ -96,7 +96,7 @@ function str_replace_once($search, $replace, $text) {
         <button type="button" class="side-nav-btn" data-tooltip="Управление плагинами" data-menu-block="plugins-pm">
             <span class="glyphicon glyphicon-check"></span></button>
     <?php } ?>
-</div>
+</div>-->
 <div class="popup-menu" id="settings-pm">
     <a class="pm-btn" href="?p=settings">
         <span class="glyphicon glyphicon-cog"></span>
