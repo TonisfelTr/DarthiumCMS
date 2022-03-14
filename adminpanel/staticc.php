@@ -712,7 +712,7 @@ if ($editSContentPerm){
                                     $("#btn-operation-container > div").hide();
                                     $("#btn-operation-container > p").show();
                                     $("#navbar-group-box").css("background", "darkgrey");
-                                    $("#navbar-group-box > div > button").on("click", function() {
+                                    $("#navbar-group-box div button").on("click", function() {
                                         if (!$("#navbar-edit-btn").hasClass("active"))
                                             return;
 
@@ -720,6 +720,7 @@ if ($editSContentPerm){
                                         $("#edit-btn-bar").show();
                                         $("#name-edit-input").val($(this).text());
                                         $("#link-edit-input").val($(this).attr("data-href"));
+                                        $("#li-div-editor").hide();
                                         $("#btn-operation-container > p").hide();
                                         var btn = $(this);
                                         $("#edit-btn-btn").on("click", function() {
