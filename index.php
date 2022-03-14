@@ -194,6 +194,7 @@ if (empty($secondBanner)) {
 }
 $footer = str_replace_once("{MAIN_PAGE:FOOTER_FIRST_SMALL_BANNER}", $firstBanner, $footer);
 $footer = str_replace_once("{MAIN_PAGE:FOOTER_SECOND_SMALL_BANNER}", $secondBanner, $footer);
+$footer = str_replace_once("{CURRENT_YEAR}", date("Y"), $footer);
 
 $panels = \SiteBuilders\SidePanelsAgent::GetPanelsList();
 $rightPanels = "";
