@@ -406,11 +406,15 @@ namespace Forum {
             $highBorder = 15;
             $topicSubstrName = "%$topicName%";
 
-            return DataKeeper::MakeQuery("SELECT authorId, name FROM tt_topics WHERE name LIKE ? ORDER BY id DESC LIMIT $lowBorder,$highBorder", [$topicSubstrName], true);
+            return DataKeeper::MakeQuery("SELECT authorId, name FROM tt_topics WHERE name LIKE ? OR text LIKE ? OR preview LIKE ? ORDER BY id DESC LIMIT $lowBorder,$highBorder",
+                                         [$topicSubstrName, $topicSubstrName, $topicSubstrName],
+                                         true);
         }
         public static function GetCountTopicsByName($topicName){
             $topicNameForQuery = "%$topicName%";
-            return DataKeeper::MakeQuery("SELECT count(*) FROM `tt_topics` WHERE `name` LIKE ?", [$topicNameForQuery], false)["count(*)"];
+            return DataKeeper::MakeQuery("SELECT count(*) FROM `tt_topics` WHERE `name` LIKE ? OR text LIKE ? OR preview LIKE ? ",
+                                         [$topicNameForQuery, $topicNameForQuery, $topicNameForQuery],
+                                         false)["count(*)"];
         }
         public static function SearchByQuizeQuestion($quizeQuest, int $page = 1){
             $lowBorder = $page * 15 - 15;
