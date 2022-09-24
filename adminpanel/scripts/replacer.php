@@ -21,7 +21,7 @@ if (!$user->UserGroup()->getPermission("change_engine_settings")) {
 
         if (\Engine\Engine::GetEngineInfo("ecp") != $_POST["emailconnecttype"]){
             \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.site_mail_connection_type_log")
-                . "[". \Engine\Engine::GetEngineInfo("ecp") . " -> " . $_POST["emailconnecttype"] . "]");
+                . "[". (\Engine\Engine::GetEngineInfo("ecp") ?: "(пусто)") . " -> " . $_POST["emailconnecttype"] . "]");
         }
         $multiAcc = (\Engine\Engine::GetEngineInfo("map") == "y") ? 1 : 0;
         if ($multiAcc != $_POST["multiaccount"]) {
@@ -33,7 +33,6 @@ if (!$user->UserGroup()->getPermission("change_engine_settings")) {
                 $multiAcc = "n";
             }
         }
-
 
         $metricType = \Engine\Engine::GetEngineInfo("smt");
         $metricStatus = \Engine\Engine::GetEngineInfo("sms");
