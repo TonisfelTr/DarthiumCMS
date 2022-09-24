@@ -506,6 +506,16 @@ if (!$user->UserGroup()->getPermission("change_engine_settings")) {
                         <input class="form-control" type="text" name="chat-filter-words"
                                value="<?php echo \Engine\Engine::GetCensoredWords(); ?>">
                     </div>
+                    <div class="input-group">
+                        <div class="input-group-addon"><?= \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.replace_mechanism") ?></div>
+                        <select class="form-control" name="chat-filter-mechanism" id="chat-filter-mechanism">
+                            <option value="0" <?php if (\Engine\Engine::GetEngineInfo("cfm") == 0) echo "selected"; ?>><?= \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.replace_mechanism_type.standard") ?></option>
+                            <option value="1" <?php if (\Engine\Engine::GetEngineInfo("cfm") == 1) echo "selected"; ?>><?= \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.replace_mechanism_type.symbols") ?></option>
+                            <option value="2" <?php if (\Engine\Engine::GetEngineInfo("cfm") == 2) echo "selected"; ?>><?= \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.replace_mechanism_type.sentence") ?></option>
+                        </select>
+                        <input type="text" class="form-control" placeholder="<?= \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.replace_expression_placeholder") ?>" name="chat-filter-replace-container" value="<?= trim(\Engine\Engine::GetEngineInfo("cfrf"), "[]") ?>" <?php if (\Engine\Engine::GetEngineInfo("cfm") != 2) { ?>style="display: none;" <?php } ?>>
+                    </div>
+                    <div class="alert alert-info"><span class="glyphicons glyphicons-info-sign"></span> <?= \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.replace_mechanism_tip") ?></div>
                     <div class="alert alert-info"><span
                                 class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.words_for_censore_tip"); ?>
                     </div>
@@ -1087,6 +1097,14 @@ if (!$user->UserGroup()->getPermission("change_engine_settings")) {
 
         $("#plugin-status").on("click", function () {
             ChangeStatus();
+        });
+
+        $("#chat-filter-mechanism").on("change", function () {
+            if ($(this).val() == 2) {
+                $(this).siblings('input').show();
+            } else {
+                $(this).siblings('input').hide();
+            }
         });
 
         $("#metric-type-info").on("change", function () {

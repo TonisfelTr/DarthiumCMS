@@ -34,6 +34,8 @@ namespace Engine {
         static private $StandartGroup = 1;
         static private $MultiAccPermitted;
 
+        static private $ChatFilterMechanism = 0;
+        static private $ChatFilterReplaceFor;
         static private $AvatarHeight = 100;
         static private $AvatarWidth = 100;
         static private $UploadPermittedSize = 10 * 1024 * 1024;
@@ -158,6 +160,8 @@ namespace Engine {
             self::$MultiAccPermitted = $a["multiAccount"];
             self::$StandartGroup = $a["standartGroup"];
 
+            self::$ChatFilterMechanism = $a["chatFilterMechanism"];
+            self::$ChatFilterReplaceFor = $a["chatFilterReplaceFor"];
             self::$AvatarHeight = $a["avatarHeight"];
             self::$AvatarWidth = $a["avatarWidth"];
             self::$UploadPermittedSize = $a["uploadPermSize"];
@@ -186,10 +190,10 @@ namespace Engine {
             file_put_contents($_SERVER["DOCUMENT_ROOT"] . "/.htaccess", $htaccessGlobal);
         }
 
-        public static function SettingsSave($DomainSite, $siteName, $siteTagline, $siteStatus,
-                                            $siteSubscribe, $siteHashtags, $siteLang, $siteTemplate, $siteRegionTime,
-                                            $emailAcc, $emailPass, $emailHost, $emailPort, $emailCP, $needActivate, $multiAccPermitted, $standartGroup,
-                                            $avatarHeight, $avatarWidth, $uploadPermittedSize, $uploadPermittedFormats, $canGuestsSeeProfiles, $canMultiRepVote,
+        public static function SettingsSave($DomainSite, $siteName, $siteTagline, $siteStatus, $siteSubscribe, $siteHashtags, $siteLang, $siteTemplate, $siteRegionTime,
+                                            $emailAcc, $emailPass, $emailHost, $emailPort, $emailCP,
+                                            $needActivate, $multiAccPermitted, $standartGroup,
+                                            $chatFilterMechanism, $chatFilterReplaceFor, $avatarHeight, $avatarWidth, $uploadPermittedSize, $uploadPermittedFormats, $canGuestsSeeProfiles, $canMultiRepVote,
                                             $siteMetricStatus)
         {
             $settingsArray = array(
@@ -210,6 +214,8 @@ namespace Engine {
                 'needActivate' => $needActivate,
                 'multiAccount' => $multiAccPermitted,
                 'standartGroup' => $standartGroup,
+                'chatFilterMechanism' => $chatFilterMechanism,
+                'chatFilterReplaceFor' => $chatFilterReplaceFor,
                 'avatarHeight' => $avatarHeight,
                 'avatarWidth' => $avatarWidth,
                 'uploadPermSize' => $uploadPermittedSize,
@@ -276,6 +282,10 @@ namespace Engine {
                     return self::$SiteTemplate;
                 case "sms":
                     return self::$SiteMetricStatus;
+                case "cfm":
+                    return self::$ChatFilterMechanism;
+                case "cfrf":
+                    return self::$ChatFilterReplaceFor;
             }
 
             return false;
@@ -456,8 +466,19 @@ namespace Engine {
             $stext = $text;
             $censored = self::GetCensoredWords();
             $censored = explode(",", $censored);
+            switch (Engine::GetEngineInfo("cfm")) {
+                case 0:
+                    $censoredWord = "[" . LanguageManager::GetTranslation("censored") . "]";
+                    break;
+                case 1:
+                    $censoredWord = "!@#$%";
+                    break;
+                case 2:
+                    $censoredWord = "[" . Engine::GetEngineInfo("cfrf") . "]";
+                    break;
+            }
             foreach ($censored as $word) {
-                $stext = str_ireplace($word, "[цензура]", $stext);
+                $stext = preg_replace('/\b' . preg_quote($word, '/') . '\b/u', "$censoredWord", $stext);
             }
             $stext = str_replace("{", '&#123;', $stext);
             $stext = str_replace("}", '&#125;', $stext);

@@ -147,12 +147,44 @@ if (!$user->UserGroup()->getPermission("change_engine_settings")) {
             \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.statistic_panel.site_metric_log") . "[" . $metricStatusParam . " -> " . $metricStatusNow . "]");
         }
 
+        if (\Engine\Engine::GetEngineInfo("cfrf") != $_POST["chat-filter-replace-container"]) {
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.replace_expression_changed_log") . "[\"" . \Engine\Engine::GetEngineInfo("cfrf") . "\" -> \"{$_POST["chat-filter-replace-container"]}\"]");
+        }
+
+        if (\Engine\Engine::GetEngineInfo("cfm") != $_POST["chat-filter-mechanism"]) {
+            $oldMechanism = \Engine\Engine::GetEngineInfo("cfm");
+            switch ($oldMechanism) {
+                case 0:
+                    $oldMechanism = \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.replace_mechanism_type.standard");
+                    break;
+                case 1:
+                    $oldMechanism = \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.replace_mechanism_type.symbols");
+                    break;
+                case 2:
+                    $oldMechanism = \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.replace_mechanism_type.sentence");
+                    break;
+            }
+            $newMechanism = $_POST["chat-filter-mechanism"];
+            switch ($newMechanism) {
+                case 0:
+                    $newMechanism = \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.replace_mechanism_type.standard");
+                    break;
+                case 1:
+                    $newMechanism = \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.replace_mechanism_type.symbols");
+                    break;
+                case 2:
+                    $newMechanism = \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.replace_mechanism_type.sentence");
+                    break;
+            }
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.replace_mechanism_changed_log") . "[$oldMechanism -> $newMechanism]");
+        }
+
         if (\Engine\Engine::SettingsSave($_POST["domain"], $_POST["sitename"], $_POST["sitetagline"],
             $_POST["sitestatus"], $_POST["sitesubscribe"],
             $_POST["sitehashtags"], $_POST["sitelang"], $_POST["sitetemplate"], $_POST["siteregiontime"],
             $_POST["emaillogin"], $_POST["emailpassword"], $_POST["emailhost"], $_POST["emailport"], $type,
             $_POST["needactivate"], $multiAcc, $_POST["standartgroup"],
-            $_POST["avatarmaxwidth"], $_POST["avatarmaxheight"], $_POST["maxfilesize"], $_POST["uploadformats"], (isset($_POST["guest_see_profiles"])) ? 1 : 0, (isset($_POST["multivote_rep"])) ? 1 : 0,
+            $_POST["chat-filter-mechanism"], $_POST["chat-filter-replace-container"], $_POST["avatarmaxwidth"], $_POST["avatarmaxheight"], $_POST["maxfilesize"], $_POST["uploadformats"], (isset($_POST["guest_see_profiles"])) ? 1 : 0, (isset($_POST["multivote_rep"])) ? 1 : 0,
             $metricStatusPass)
         ) {
             if (\Engine\Engine::GetCensoredWords() != $_POST["chat-filter-words"]){

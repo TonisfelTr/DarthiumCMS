@@ -1,6 +1,8 @@
 <?php
 $languagePack = [
 
+//Chat
+"censored" => "censored",
 //Switches
 "on" => "Switched on",
 "off" => "Switched off",
@@ -818,6 +820,16 @@ by writing in the right place \" <a href=\"#\" id=\"field-add-to-textarea\"><str
 "censore_tip" => "The website has a system for censoring topics, comments, and captions ",
 "words_for_censore" => "Words for censoring ",
 "words_for_censore_tip" => "List the words you need for censorship separated by commas, without spaces.",
+    "replace_mechanism" => "Censore mechanism",
+    "replace_mechanism_tip" => "System may respond differently to censoring words. You can censor with an expression of your choice, symbols and the standard word \"[censored]\".",
+    "replace_mechanism_type" => [
+        "sentence" => "My expression",
+        "symbols" => "Symbols",
+        "standard" => "Standard"
+    ],
+"replace_expression_placeholder" => "Enter your expression to replace the censored words.",
+"replace_mechanism_changed_log" => " changed censoring mechanism ",
+"replace_expression_changed_log" => " changed censoring expression ",
 "reports" => "Reports ",
 "reports_reason" => "Possible reasons for reports",
 "reports_tip" => "List all possible reasons for user complaints. Each new reason must be on a new line.",
