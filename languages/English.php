@@ -153,6 +153,7 @@ through friends, perhaps this will help you in solving the conflict.",
 "to_site_home" => "To the website ",
 "header" => "Admin pannel",
 "header_info" => "Here you can manage the website.",
+"deleted_admin" => "[DELETED ADMINISTRATOR]",
 //Errors
 "not_permited" => "You don't have enough rights to perform this action.",
 "no_page_in_module" => "The specified subpage is not present in this module.",

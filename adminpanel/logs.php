@@ -15,10 +15,17 @@ if (!$user->UserGroup()->getPermission("logs_see")) { header("Location: ../admin
     <textarea class="form-control logger" style="resize: vertical; height: 500px;" readonly><?php
             $logger = \Guards\Logger::GetLogged();
             for ($i = 0; $i < count($logger); $i++){
-                echo "[" . \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s", $logger[$i]["datetime"])) . "] " .
-                        \Users\UserAgent::GetUser($logger[$i]["authorId"])->getNickname() .
-                        $logger[$i]["log_text"] . "\n";
-}
+                $log = "[" . \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s", $logger[$i]["datetime"])) . "] ";
+                if ($user = \Users\UserAgent::GetUser($logger[$i]["authorId"])) {
+                    if ($user === false) {
+                        $log .= "[{\Engine\LanguageManager::GetTranslation('deleted_admin')}]";
+                    } else {
+                        $log .= $user->getNickname();
+                    }
+                }
+                $log .= $logger[$i]["log_text"] . PHP_EOL;
+                echo $log;
+            }
         ?>
     </textarea>
     <hr>
