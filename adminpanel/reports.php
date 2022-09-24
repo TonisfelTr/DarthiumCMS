@@ -394,6 +394,7 @@ else {
 
         //texter.value.insert
     }
+    <?php if (!empty($_GET["rid"])){ ?>
     function addToReportDiscusse(){
         $.ajax({
             type: "POST",
@@ -454,7 +455,7 @@ else {
             }
         });
     }
-
+    <?php } ?>
     <?php include_once "adminpanel/scripts/uploaderscript.js"; ?>
 </script>
 <?php } ?>
