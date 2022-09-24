@@ -65,34 +65,34 @@ if (!$user->UserGroup()->getPermission("change_engine_settings")) {
         case "sms": return self::$SiteMetricStatus;
          */
         if ($_POST["domain"] != \Engine\Engine::GetEngineInfo("dm"))
-            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.domain_site_log") . "[" . \Engine\Engine::GetEngineInfo("dm") . " -> " . $_POST["domain"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.domain_site_log") . "[" . (\Engine\Engine::GetEngineInfo("dm") ?: "пусто") . " -> " . $_POST["domain"] . "]");
         if ($_POST["sitename"] != \Engine\Engine::GetEngineInfo("sn"))
-            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_name_log") ."[" . \Engine\Engine::GetEngineInfo("sn") . " -> " . $_POST["sitename"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_name_log") ."[" . (\Engine\Engine::GetEngineInfo("sn") ?: "пусто"). " -> " . $_POST["sitename"] . "]");
         if ($_POST["sitetagline"] != \Engine\Engine::GetEngineInfo("stl"))
-            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_tagline_log") . "[" . \Engine\Engine::GetEngineInfo("stl") . " -> " . $_POST["sitetagline"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_tagline_log") . "[" . (\Engine\Engine::GetEngineInfo("stl") ?: "пусто"). " -> " . $_POST["sitetagline"] . "]");
         if ($_POST["sitestatus"] != \Engine\Engine::GetEngineInfo("ss")) {
             $siteStatusFrom = (\Engine\Engine::GetEngineInfo("ss") == 0) ? \Engine\LanguageManager::GetTranslation("off") : \Engine\LanguageManager::GetTranslation("on");
             $siteStatusTo = ($_POST["sitestatus"] == 0) ? \Engine\LanguageManager::GetTranslation("off") : \Engine\LanguageManager::GetTranslation("on");
             \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_status_log") ."[$siteStatusFrom -> $siteStatusTo]");
         }
         if ($_POST["sitesubscribe"] != \Engine\Engine::GetEngineInfo("ssc"))
-            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_description_log") ."[" . \Engine\Engine::GetEngineInfo("ssc") . " -> " . $_POST["sitesubscribe"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_description_log") ."[" . (\Engine\Engine::GetEngineInfo("ssc") ?: "пусто"). " -> " . $_POST["sitesubscribe"] . "]");
         if ($_POST["sitehashtags"] != \Engine\Engine::GetEngineInfo("sh"))
-            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_hashtags_log") ."[" . \Engine\Engine::GetEngineInfo("sh") . " -> " . $_POST["sitehashtags"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_hashtags_log") ."[" . (\Engine\Engine::GetEngineInfo("sh") ?: "пусто"). " -> " . $_POST["sitehashtags"] . "]");
         if ($_POST["sitelang"] != \Engine\Engine::GetEngineInfo("sl"))
-            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_lang_log") ."[" . \Engine\Engine::GetEngineInfo("sl") . " -> " . $_POST["sitelang"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_lang_log") ."[" . (\Engine\Engine::GetEngineInfo("sl") ?: "пусто"). " -> " . $_POST["sitelang"] . "]");
         if ($_POST["sitetemplate"] != \Engine\Engine::GetEngineInfo("stp"))
-            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_template_log") ."[" . \Engine\Engine::GetEngineInfo("stp") . " -> " . $_POST["sitetemplate"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_template_log") ."[" . (\Engine\Engine::GetEngineInfo("stp") ?: "пусто"). " -> " . $_POST["sitetemplate"] . "]");
         if ($_POST["siteregiontime"] != \Engine\Engine::GetEngineInfo("srt"))
-            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_timezone_log") ."[" . \Engine\Engine::GetEngineInfo("srt") . " -> " . $_POST["siteregiontime"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_timezone_log") ."[" . (\Engine\Engine::GetEngineInfo("srt") ?: "пусто"). " -> " . $_POST["siteregiontime"] . "]");
         if ($_POST["emaillogin"] != \Engine\Engine::GetEngineInfo("el"))
-            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.site_mail_login_log") ."[" . \Engine\Engine::GetEngineInfo("el") . " -> " . $_POST["emaillogin"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.site_mail_login_log") ."[" . (\Engine\Engine::GetEngineInfo("el") ?: "пусто") . " -> " . $_POST["emaillogin"] . "]");
         if ($_POST["emailpassword"] != \Engine\Engine::GetEngineInfo("ep"))
             \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.site_mail_password_log"));
         if ($_POST["emailhost"] != \Engine\Engine::GetEngineInfo("eh"))
-            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.site_mail_address_log") ."[" . \Engine\Engine::GetEngineInfo("eh") . " -> " . $_POST["emailhost"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.site_mail_address_log") ."[" . (\Engine\Engine::GetEngineInfo("eh") ?: "пусто") . " -> " . $_POST["emailhost"] . "]");
         if ($_POST["emailport"] != \Engine\Engine::GetEngineInfo("ept"))
-            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.site_mail_port_log") ."[" . \Engine\Engine::GetEngineInfo("ept") . " -> " . $_POST["emailport"] . "]");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.site_mail_port_log") ."[" . (\Engine\Engine::GetEngineInfo("ept") ?: "пусто") . " -> " . $_POST["emailport"] . "]");
         if ($_POST["needactivate"] != \Engine\Engine::GetEngineInfo("na")) {
             $needActivation = (\Engine\Engine::GetEngineInfo("na") == 0) ? \Engine\LanguageManager::GetTranslation("off") : \Engine\LanguageManager::GetTranslation("on");
             $needActivationTo = ($_POST["needactivate"] == 0) ? \Engine\LanguageManager::GetTranslation("off") : \Engine\LanguageManager::GetTranslation("on");
@@ -105,19 +105,19 @@ if (!$user->UserGroup()->getPermission("change_engine_settings")) {
         }
         if (\Engine\Engine::GetEngineInfo("aw") != $_POST["avatarmaxwidth"]){
             \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.site_avatar_width_log") ."[" .
-                \Engine\Engine::GetEngineInfo("aw") . " -> " . $_POST["avatarmaxwidth"] . "]");
+                (\Engine\Engine::GetEngineInfo("aw") ?: "пусто") . " -> " . $_POST["avatarmaxwidth"] . "]");
         }
         if (\Engine\Engine::GetEngineInfo("ah") != $_POST["avatarmaxheight"]){
             \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.site_avatar_height_log") ."[" .
-                \Engine\Engine::GetEngineInfo("ah") . " -> " . $_POST["avatarmaxheight"] . "]");
+                (\Engine\Engine::GetEngineInfo("ah") ?: "пусто") . " -> " . $_POST["avatarmaxheight"] . "]");
         }
         if (\Engine\Engine::GetEngineInfo("ups") != $_POST["maxfilesize"]){
             \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.site_max_file_size_log") ."[" .
-                \Engine\Engine::GetEngineInfo("ups") . " -> " . $_POST["maxfilesize"] . "]");
+                (\Engine\Engine::GetEngineInfo("ups") ?: "пусто") . " -> " . $_POST["maxfilesize"] . "]");
         }
         if (\Engine\Engine::GetEngineInfo("upf") != $_POST["uploadformats"]){
             \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.site_allowed_file_for_upload_log") ."[" .
-                \Engine\Engine::GetEngineInfo("upf") . " -> " . $_POST["uploadformats"] . "]");
+                (\Engine\Engine::GetEngineInfo("upf") ?: "пусто") . " -> " . $_POST["uploadformats"] . "]");
         }
         $guestSeeProfileCond = (isset($_POST["guest_see_profiles"])) ? 1 : 0;
         if (\Engine\Engine::GetEngineInfo("gsp") != $guestSeeProfileCond){
