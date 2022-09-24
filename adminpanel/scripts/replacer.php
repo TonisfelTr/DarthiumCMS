@@ -23,8 +23,10 @@ if (!$user->UserGroup()->getPermission("change_engine_settings")) {
             \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.site_mail_connection_type_log")
                 . "[". (\Engine\Engine::GetEngineInfo("ecp") ?: "(пусто)") . " -> " . $_POST["emailconnecttype"] . "]");
         }
-        $multiAcc = (\Engine\Engine::GetEngineInfo("map") == "y") ? 1 : 0;
-        if ($multiAcc != $_POST["multiaccount"]) {
+
+        // Set multiaccount setting. If it is 1 as string or 0 as string...
+        $multiAcc = $_POST["multiaccount"] == "1" ? "y" : "n";
+        if ($multiAcc != \Engine\Engine::GetEngineInfo("map")) {
             if ($_POST["multiaccount"] == "1") {
                 \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.site_denied_multiacc_log"));
                 $multiAcc = "y";
@@ -134,12 +136,14 @@ if (!$user->UserGroup()->getPermission("change_engine_settings")) {
             "[$multiVoteRepNow -> $multiVoteRepPerm]");
         }
 
-        $metricStatusPass = (!empty($_POST["metric-lever-btn"])) ? 1 : 0;
-        if (\Engine\Engine::GetEngineInfo("smt") != $metricStatusPass){
-            $metricStatusParam = (\Engine\Engine::GetEngineInfo("smt") == 1) ? \Engine\LanguageManager::GetTranslation("on") :
-                \Engine\LanguageManager::GetTranslation("off");
-            $metricStatusNow = ($metricStatusPass == 1) ? \Engine\LanguageManager::GetTranslation("on") :
-                \Engine\LanguageManager::GetTranslation("off");
+        $metricStatusPass = !is_null($_POST["metric-lever-btn"]) ? 1 : 0;
+        if (\Engine\Engine::GetEngineInfo("sms") != $metricStatusPass){
+            $metricStatusParam = (\Engine\Engine::GetEngineInfo("sms") == 1)
+                ? \Engine\LanguageManager::GetTranslation("on")
+                : \Engine\LanguageManager::GetTranslation("off");
+            $metricStatusNow = ($metricStatusPass == 1)
+                ? \Engine\LanguageManager::GetTranslation("on")
+                : \Engine\LanguageManager::GetTranslation("off");
             \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("settings_panel.statistic_panel.site_metric_log") . "[" . $metricStatusParam . " -> " . $metricStatusNow . "]");
         }
 
