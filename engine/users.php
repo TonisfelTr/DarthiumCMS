@@ -1571,7 +1571,7 @@ namespace Users {
                 ErrorManager::GenerateError(7);
                 return ErrorManager::GetError();
             }
-            return DataKeeper::Get("tt_users", [$param], ['id' => $idUser])[$param];
+            return DataKeeper::Get("tt_users", [$param], ['id' => $idUser])[0][$param];
         }
 
         /**
