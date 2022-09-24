@@ -847,6 +847,18 @@ by writing in the right place \" <a href=\"#\" id=\"field-add-to-textarea\"><str
 "site_allow_guest_see_users" => " changed the visibility of user profiles for guests ",
 "site_allowed_multivote_rep_log" => " changed the setting for the ability to change the reputation of other users several times "
 ],
+    "plugins_panel" => [
+        "panel_name" => "Plugins",
+        "panel_description" => "Here you can manage for system addons.",
+        "additive_description" => "Content management systems provide modifications created separately - this means that third-party developers have tools for working with the content management system in their API set.",
+        "available_plugins" => "Available plugins:",
+        "enabled_plugins" => "Enabled plugins:",
+        "choose_plugin" => "Choose plugins",
+        "plugin_description" => "Description:",
+        "install_plugin" => "Install",
+        "uninstall_plugin" => "Uninstall",
+        "status_plugin" => "Plugin status:"
+    ],
 "statistic_panel" => [
 "panel_name" => " Statistics ",
 "panel_description" => "Here you can change the site statistics settings.",
