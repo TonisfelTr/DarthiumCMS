@@ -588,10 +588,22 @@ namespace Guards {
     }
 
     class Logger{
+        /**
+         * Add log string into database.
+         *
+         * @param $authorId
+         * @param $log_text
+         * @return int
+         */
         public static function LogAction($authorId, $log_text){
             return DataKeeper::InsertTo("tt_logs", ["authorId" => $authorId, "log_text" => $log_text, "datetime" => Engine::GetSiteTime()]);
         }
 
+        /**
+         * Returns all log string from database.
+         *
+         * @return array|false|int
+         */
         public static function GetLogged(){
             $queryResponse = DataKeeper::MakeQuery("SELECT * FROM `tt_logs` ORDER BY `datetime` DESC", null, true);
             $result = [];
