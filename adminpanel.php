@@ -31,16 +31,20 @@ if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)) {
     header("Location: banned.php");
     exit;
 }
-
-function getBrick() {
-    $e = ob_get_contents();
-    ob_clean();
-    return $e;
+if (!function_exists("getBrick")) {
+    function getBrick() {
+        ob_start();
+        $e = ob_get_contents();
+        ob_clean();
+        return $e;
+    }
 }
 
-function str_replace_once($search, $replace, $text) {
-    $pos = strpos($text, $search);
-    return $pos !== false ? substr_replace($text, $replace, $pos, strlen($search)) : $text;
+if (!function_exists("str_replace_once")) {
+    function str_replace_once($search, $replace, $text) {
+        $pos = strpos($text, $search);
+        return $pos !== false ? substr_replace($text, $replace, $pos, strlen($search)) : $text;
+    }
 }
 
 ?>
