@@ -231,15 +231,17 @@ foreach ($navbtns as $navbtn) {
         continue;
     }
 
-    switch($navbtn["visibility"]) {
-        case "only_authorized":
-            if ($user === false)
-                continue 2;
-            break;
-        case "only_guest":
-            if ($user !== false)
-                continue 2;
-            break;
+    if (isset($navbtn["visibility"])) {
+        switch ($navbtn["visibility"]) {
+            case "only_authorized":
+                if ($user === false)
+                    continue 2;
+                break;
+            case "only_guest":
+                if ($user !== false)
+                    continue 2;
+                break;
+        }
     }
 
     switch ($navbtn["type"]) {
