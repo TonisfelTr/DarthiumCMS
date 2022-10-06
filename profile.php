@@ -1186,7 +1186,7 @@ $main = str_replace_once("{PROFILE_UPLOADER_BLOCK}", $uploaderBlock, $main);
 $main = str_replace_once("{PROFILE_UPLOADER:STYLESHEET}", "", $main);
 $main = str_replace_once("{PROFILE_REPUTATIONER_BLOCK}", $reputationerBlock, $main);
 $main = str_replace_once("{PROFILE_PAGE_GUI_CUSTOM_SCRIPT}", $customScript, $main);
-$main = str_replace_once("{PROFILE_JS:SHOW_PANEL}", $authJS, $main);
+$main = str_replace_once("{PROFILE_JS:SHOW_PANEL}", $authJS ?? "", $main);
 
 if (\Engine\Engine::GetEngineInfo("smt")){
     if (\Engine\Engine::GetEngineInfo("sms") == 0) {
