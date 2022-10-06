@@ -708,7 +708,7 @@ namespace Guards {
          */
         public static function addErrorLog(string $logText) : bool {
             $nowTime = date('Y-m-d H:i:s');
-            $selfIdentificator = UserAgent::SessionContinue()
+            $selfIdentificator = UserAgent::IsSessionContinued()
                 ? (new \Users\User($_SESSION["uid"]))->getNickname()
                 : $_SERVER["REMOTE_ADDR"];
             $lastNumber = self::getLogCount(self::ERRORS_LOGS) == 1
@@ -732,7 +732,7 @@ namespace Guards {
          */
         public static function addAccessLog(string $logText) : bool {
             $nowTime = date('Y-m-d H:i:s');
-            $selfIdentificator = UserAgent::SessionContinue()
+            $selfIdentificator = UserAgent::SessionContinued()
                 ? (new \Users\User($_SESSION["uid"]))->getNickname()
                 : $_SERVER["REMOTE_ADDR"];
             $lastNumber = self::getLogCount(self::ACCESSES_LOGS) == 1
@@ -756,7 +756,7 @@ namespace Guards {
          */
         public static function addVisitLog(string $logText) : bool {
             $nowTime = date('Y-m-d H:i:s');
-            $selfIdentificator = UserAgent::SessionContinue()
+            $selfIdentificator = UserAgent::SessionContinued()
                 ? (new \Users\User($_SESSION["uid"]))->getNickname()
                 : $_SERVER["REMOTE_ADDR"];
             $lastNumber = self::getLogCount(self::VISITORS_LOGS) == 1

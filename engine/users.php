@@ -1156,6 +1156,10 @@ namespace Users {
             return true;
         }
 
+        public static function IsSessionContinued() : bool {
+            return isset($_COOKIE["PHPSESSID"]);
+        }
+
         public static function SessionCreate($param, $pass) {
             $authIs = self::Authorization($param, $pass);
             if ($authIs === True) {
