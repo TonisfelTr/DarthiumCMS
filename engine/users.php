@@ -1103,6 +1103,14 @@ namespace Users {
             return $pos !== false ? substr_replace($text, $replace, $pos, strlen($search)) : $text;
         }
 
+        public static function AddCookie(string $name, $content, int $lifeTime, string $whereCookieActive = "/") {
+            setcookie($name, $content, $lifeTime, $whereCookieActive, Engine::GetEngineInfo("dm"));
+        }
+
+        public static function RemoveCookie(string $name, string $whereCookieWasActive = "/") {
+            setcookie($name, "", 0, $whereCookieWasActive, Engine::GetEngineInfo("dm"));
+        }
+
         public static function Get10OnlineUsers() {
             $queryResponse = DataKeeper::MakeQuery("SELECT `id` FROM `tt_users` WHERE NOT `lasttime` < ? LIMIT 0,10", [Engine::GetSiteTime() - 60 * 5], true);
             $res = [];
