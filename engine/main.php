@@ -7,6 +7,9 @@ namespace Engine {
 
     class Engine
     {
+        public const REDIRECT_ABSOLUTE = 1;
+        public const REDIRECT_RELATIVE = 2;
+
         static private $DBName;
         static private $DBPass;
         static private $DBHost;
@@ -495,6 +498,17 @@ namespace Engine {
             $string = str_replace("<script", "&lt;script", $string);
             $string = str_replace("</script>", "&lt;/script&gt;", $string);
             return $string;
+        }
+
+        public static function redirect(string $path, int $flag = self::REDIRECT_RELATIVE) {
+            switch ($flag) {
+                case self::REDIRECT_ABSOLUTE:
+                    header("Location: $path");
+                    exit;
+                case self::REDIRECT_RELATIVE:
+                    header("Location: /$flag");
+                    exit;
+            }
         }
     }
 
