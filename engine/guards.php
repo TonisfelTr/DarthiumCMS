@@ -721,7 +721,7 @@ namespace Guards {
                 }
             }
 
-            return file_put_contents(self::ERRORS_PATH . "errors.log", "[$nowTime] $selfIdentificator says: $logText", FILE_APPEND);
+            return file_put_contents(self::ERRORS_PATH . "errors.log", "[$nowTime] $selfIdentificator says: $logText" . PHP_EOL, FILE_APPEND);
         }
 
         /**
@@ -745,7 +745,7 @@ namespace Guards {
                 }
             }
 
-            return file_put_contents(self::ACCESSES_PATH . "access.log", "[$nowTime] $selfIdentificator says: $logText", FILE_APPEND);
+            return file_put_contents(self::ACCESSES_PATH . "access.log", "[$nowTime] $selfIdentificator says: $logText" . PHP_EOL, FILE_APPEND);
         }
 
         /**
@@ -769,7 +769,7 @@ namespace Guards {
                 }
             }
 
-            return file_put_contents(self::VISITORS_PATH . "visitor.log", "[$nowTime] $selfIdentificator says: $logText", FILE_APPEND);
+            return file_put_contents(self::VISITORS_PATH . "visitor.log", "[$nowTime] $selfIdentificator says: $logText" . PHP_EOL, FILE_APPEND);
         }
     }
 }
