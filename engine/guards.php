@@ -593,9 +593,9 @@ namespace Guards {
         private const ERRORS_LOGS = 2;
         private const VISITORS_LOGS = 4;
 
-        private const ACCESSES_PATH = "logs/accesses/";
-        private const ERRORS_PATH = "logs/errors/";
-        private const VISITORS_PATH = "logs/visitors/";
+        private const ACCESSES_PATH = "engine/logs/accesses/";
+        private const ERRORS_PATH = "engine/logs/errors/";
+        private const VISITORS_PATH = "engine/logs/visitors/";
 
         /**
          * Get count of files in log folder.
