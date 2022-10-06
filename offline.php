@@ -26,3 +26,7 @@ if(\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Locat
      } ?>
 </body>
 </html>
+
+<?php
+
+\Guards\Logger::addVisitLog("I tried visit the site but it was offline...");

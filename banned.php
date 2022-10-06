@@ -60,3 +60,7 @@ elseif(\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)) {
     </div>
 </body>
 </html>
+<?php
+
+\Guards\Logger::addAccessLog("I tried visit the site but I have been banned.");
+\Guards\Logger::addVisitLog("I tried to visit the site... but saw only banned page.");

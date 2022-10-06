@@ -18,6 +18,7 @@ if ($sessionRes = \Users\UserAgent::SessionContinue()) {
 }
 //Проверка на наличие доступа в АП.
 if (!isset($user) || !$user->UserGroup()->getPermission("enterpanel")) {
+    \Guards\Logger::addAccessLog("I tried visit adminpanel but I do not have the permission for that.");
     header("Location: index.php?page=errors/forbidden");
     exit;
 }
@@ -1030,6 +1031,9 @@ $obMain = \Engine\PluginManager::IntegrateFooterJS($obMain);
 $obMain = \Engine\PluginManager::IntegrateHeaderJS($obMain);
 ob_end_clean();
 echo $obMain;
+
+\Guards\Logger::addVisitLog("I was in adminpanel page.");
+
 ?>
 </html>
 

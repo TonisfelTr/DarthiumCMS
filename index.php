@@ -33,6 +33,7 @@ if ($sessionRes == 1) {
 }
 if ((\Engine\Engine::GetEngineInfo("ss") == 0 && !$user) ||
     (\Engine\Engine::GetEngineInfo("ss") == 0 && $user->UserGroup()->getPermission("offline_visiter") != 1)) {
+    \Guards\Logger::addAccessLog("I tried visit the site but it's offline");
     header("Location: offline.php");
 }
 if ($user !== false) {
@@ -403,5 +404,6 @@ $main = \Engine\PluginManager::Integration($main);
 
 echo $main;
 
+\Guards\Logger::addVisitLog("I was in index page.");
 
 ?>

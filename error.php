@@ -37,4 +37,7 @@ $errorMain = str_replace_once("{ERROR_MANAGER:EXCEPTION_FORMATED_TEXT}", nl2br($
 echo $errorMain;
 
 ob_end_flush();
+
+\Guards\Logger::addVisitLog("I ran into an error. See the error log for details.");
+
 exit;

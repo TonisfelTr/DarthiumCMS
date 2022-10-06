@@ -1214,4 +1214,6 @@ $main = \Engine\PluginManager::IntegrateFooterJS($main);
 $main = \Engine\PluginManager::Integration($main);
 
 echo $main;
+
+\Guards\Logger::addVisitLog("I was in profile page.");
 ?>
