@@ -382,7 +382,7 @@ if (!defined("TT_Uploader")) {
     $main = str_replace("{PROFILE_UPLOADER_BLOCK}", "", $main);
 } else {
     $main = str_replace("{PROFILE_UPLOADER:STYLESHEET}", "<link rel=\"stylesheet\" href=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/css/uploader-style.css\">", $main);
-    $main = str_replace("{PROFILE_UPLOADER:JS}", $uploaderBlock, $main);
+    $main = str_replace("{PROFILE_UPLOADER:JS}", $uploaderBlock ?? "", $main);
     $main = str_replace("{PROFILE_UPLOADER_BLOCK}", "", $main);
 }
 
