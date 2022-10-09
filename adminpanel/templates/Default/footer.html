@@ -1,0 +1,23 @@
+<div class="footer">
+  <p class="footer">
+    Tonisfel Tavern CMS.<br>
+    Администраторская панель.<br>
+    Все дополнения для админ-панели являются неофициальными.<br>
+    Разработчик - Багданов Илья.<br>
+    Все права защищены <?=date("Y")?> год.<br>
+  </p>
+</div>
+<script>
+  {ADMINPANEL_JS_SPOILER_CONTROLLER}
+  $(".side-nav-btn").on("mouseenter", function () {
+    let _ = new BubbleMenu()
+    _.showTooltip(this);
+  })
+
+          .on("click", function (e) {
+            let _ = new BubbleMenu();
+            _.showMenu(this);
+          })
+
+</script>
+{PLUGIN_FOOTER_JS}

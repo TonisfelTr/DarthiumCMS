@@ -232,7 +232,7 @@ else {
                                 $editInfo =  "<span class=\"report-answer-edit-info\">" . \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.last_edit") . " " . $answer->getLastEditor()->getNickname() .
 
                                    " " . \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.in") . " " .  \Engine\Engine::DatetimeFormatToRead($answer->getEditDate());
-                                if ($answer->getEditReason()) $editInfo .= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.reason") . " " . htmlentities($answer->getEditReason());
+                                if ($answer->getEditReason()) $editInfo .= \Engine\LanguageManager::GetTranslation("reports_panel.discussion_page.reason") . " reports.php" . htmlentities($answer->getEditReason());
                                 echo $editInfo .= "</span>";
                             }
                                 ?>

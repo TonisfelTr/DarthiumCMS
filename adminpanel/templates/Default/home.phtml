@@ -1,0 +1,173 @@
+<div class="container-fluid">
+    <div class="center"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.settings_site_and_engine"); ?></div>
+    <hr/>
+    <div class="col-lg-6">
+        <?php if ($user->UserGroup()->getPermission("change_engine_settings")) { ?>
+            <div class="linker">
+                <a class="linkin" href="?p=settings"><span
+                            class="glyphicon glyphicon-cog"></span> <?php echo \Engine\LanguageManager::GetTranslation("adminpanel.settings"); ?>
+                </a>
+                <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.settings_description"); ?></p>
+            </div>
+        <?php } ?>
+    </div>
+    <div class="col-lg-6">
+        <?php if ($user->UserGroup()->getPermission("logs_see")) { ?>
+            <div class="linker">
+                <a class="linkin" href="?p=logs"><span
+                            class="glyphicon glyphicon-transfer"></span> <?php echo \Engine\LanguageManager::GetTranslation("adminpanel.logs"); ?>
+                </a>
+                <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.logs_description"); ?></p>
+            </div>
+        <?php } ?>
+    </div>
+</div>
+<br/>
+<div class="container-fluid">
+    <div class="center"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.users_managment"); ?></div>
+    <hr/>
+    <?php if ($user->UserGroup()->getPermission("user_add") ||
+        $user->UserGroup()->getPermission("user_remove") ||
+        $user->UserGroup()->getPermission("user_ban") ||
+        $user->UserGroup()->getPermission("user_unban") ||
+        $user->UserGroup()->getPermission("user_banip") ||
+        $user->UserGroup()->getPermission("user_unbanip")) { ?>
+        <div class="col-lg-6">
+            <div class="linker">
+                <a class="linkin" href="?p=users"><span
+                            class="glyphicon glyphicon-user"></span> <?php echo \Engine\LanguageManager::GetTranslation("adminpanel.users"); ?>
+                </a>
+                <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.users_description"); ?></p>
+            </div>
+        </div>
+    <?php } ?>
+    <?php if ($user->UserGroup()->getPermission("group_change") ||
+        $user->UserGroup()->getPermission("group_create") ||
+        $user->UserGroup()->getPermission("group_delete") ||
+        $user->UserGroup()->getPermission("change_perms")) { ?>
+        <div class="col-lg-6">
+            <div class="linker">
+                <a class="linkin" href="?p=groups"><span
+                            class="glyphicons glyphicons-group"></span> <?php echo \Engine\LanguageManager::GetTranslation("adminpanel.groups"); ?>
+                </a>
+                <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.groups_description"); ?></p>
+            </div>
+        </div>
+    <?php } ?>
+</div>
+<br/>
+<div class="container-fluid">
+    <div class="center"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.content_managment"); ?></div>
+    <hr/>
+    <div class="col-lg-6">
+        <?php if ($user->UserGroup()->getPermission("rules_edit")) { ?>
+            <div class="linker">
+                <a class="linkin" href="?p=rules"><span
+                            class="glyphicons glyphicons-list"></span> <?php echo \Engine\LanguageManager::GetTranslation("adminpanel.rules"); ?>
+                </a>
+                <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.rules_description"); ?></p>
+            </div> <?php }
+        if ($user->UserGroup()->getPermission("category_create") ||
+            $user->UserGroup()->getPermission("category_edit") ||
+            $user->UserGroup()->getPermission("category_delete")) { ?>
+            <div class="linker">
+                <a class="linkin" href="?p=categories"><span
+                            class="glyphicons glyphicons-show-thumbnails"></span> <?php echo \Engine\LanguageManager::GetTranslation("adminpanel.categories"); ?>
+                </a>
+                <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.categories_description"); ?></p>
+            </div>
+        <?php } ?>
+        <?php if ($user->UserGroup()->getPermission("upload_see_all")) { ?>
+            <div class="linker">
+                <a class="linkin" href="?p=uploadedlist"><span
+                            class="glyphicons glyphicons-file-cloud-upload"></span> <?= \Engine\LanguageManager::GetTranslation("adminpanel.uploader_list") ?>
+                </a>
+                <p class="helper"><?= \Engine\LanguageManager::GetTranslation("adminpanel.uploader_list_description") ?></p>
+            </div>
+        <?php } ?>
+    </div>
+    <div class="col-lg-6">
+        <?php if ($user->UserGroup()->getPermission("sc_create_pages") ||
+            $user->UserGroup()->getPermission("sc_edit_pages") ||
+            $user->UserGroup()->getPermission("sc_remove_pages") ||
+            $user->UserGroup()->getPermission("sc_design_edit")) { ?>
+            <div class="linker">
+                <a class="linkin" href="?p=staticc"><span
+                            class="glyphicons glyphicons-pen"></span> <?php echo \Engine\LanguageManager::GetTranslation("adminpanel.static_content_managment"); ?>
+                </a>
+                <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.static_content_managment_description"); ?></p>
+            </div>
+        <?php }
+        if ($user->UserGroup()->getPermission("report_talking") &&
+            $user->UserGroup()->getPermission("report_foreign_remove") &&
+            $user->UserGroup()->getPermission("report_foreign_edit") &&
+            $user->UserGroup()->getPermission("report_close")
+        ) { ?>
+            <div class="linker">
+                <a class="linkin" href="?p=reports"><span
+                            class="glyphicon glyphicon-fire"></span> <?php echo \Engine\LanguageManager::GetTranslation("adminpanel.reports"); ?>
+                </a>
+                <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.reports_description"); ?></p>
+            </div> <?php } ?>
+        <?php if ($user->UserGroup()->getPermission("change_template_design")) { ?>
+            <div class="linker">
+                <a class="linkin" href="?p=teditor"><span
+                            class="glyphicons glyphicons-brush"></span> <?= \Engine\LanguageManager::GetTranslation("site_design.panel_name") ?>
+                </a>
+                <p class="helper"><?= \Engine\LanguageManager::GetTranslation("site_design.description") ?></p>
+            </div>
+        <?php } ?>
+    </div>
+</div>
+<br/>
+<?php if ($user->UserGroup()->getPermission("bmail_sende") ||
+    $user->UserGroup()->getPermission("bmail_sends")) { ?>
+    <div class="container-fluid">
+        <div class="center"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.mail_sending"); ?></div>
+        <hr>
+        <div class="col-lg-6">
+            <?php if ($user->UserGroup()->getPermission("bmail_sende")) { ?>
+                <div class="linker">
+                    <a class="linkin" href="?p=emailsender"><span
+                                class="glyphicons glyphicons-file"></span> <?php echo \Engine\LanguageManager::GetTranslation("adminpanel.email_sender"); ?>
+                    </a>
+                    <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.email_sender_description"); ?></p>
+                </div>
+            <?php } ?>
+        </div>
+        <div class="col-lg-6">
+            <?php if ($user->UserGroup()->getPermission("bmail_sends")) { ?>
+                <div class="linker">
+                    <a class="linkin" href="?p=pmsender"><span
+                                class="glyphicons glyphicons-file-cloud"></span> <?php echo \Engine\LanguageManager::GetTranslation("adminpanel.pm_sender"); ?>
+                    </a>
+                    <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("adminpanel.pm_sender_description"); ?></p>
+                </div>
+            <?php } ?>
+        </div>
+    </div><br/>
+<?php }
+if ($user->UserGroup()->getPermission("plugins_control")) {
+    $installedPluginsCount = count(\Engine\PluginManager::GetInstalledPlugins()) > 0;
+    if ($installedPluginsCount){
+        $installedPlugins = \Engine\PluginManager::GetInstalledPlugins();
+        //Проверка на возможность редактирования плагина.
+        if (true) { ?>
+            <div class="container-fluid">
+            <div class="center"><?= \Engine\LanguageManager::GetTranslation("adminpanel.plugins_control") ?></div>
+            <hr>
+            <?php
+            foreach ($installedPlugins as $plugin) { ?>
+                <div class="col-lg-6">
+                    <div class="linker">
+                        <a class="linkin" href="?plp=<?= $plugin["codeName"] ?>"><span
+                                    class="glyphicons glyphicons-log-in"></span> <?= $plugin["name"] ?></a>
+                        <p class="helper"><?= (!\Engine\PluginManager::IsTurnOn($plugin["codeName"]) ?
+                                ("[" . \Engine\LanguageManager::GetTranslation("off") . "] ") : "") .
+                            \Engine\PluginManager::GetTranslation($plugin["codeName"] . ".plugin_description") ?></p>
+                    </div>
+                </div>
+            <?php }
+        }
+    }
+}
