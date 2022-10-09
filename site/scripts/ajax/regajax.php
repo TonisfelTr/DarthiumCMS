@@ -1,6 +1,6 @@
 <?php
 
-include "../../../engine/main.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/engine/classes/engine/Engine.php";;
 \Engine\Engine::LoadEngine();
 
 @$nickname = $_POST["nickname"];

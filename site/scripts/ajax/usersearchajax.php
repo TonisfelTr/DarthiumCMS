@@ -1,6 +1,6 @@
 <?php
 
-include "../../../engine/main.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/engine/classes/engine/Engine.php";;
 \Engine\Engine::LoadEngine();
 
 if (empty($_REQUEST["nickname"])){ exit;}
@@ -12,7 +12,7 @@ else $index = count($array)-1;
 
 if ($index >= 0){
     foreach ($array as $item) {
-        $user = new \Users\User($item["id"]);
+        $user = new \Users\Models\User($item["id"]);
         $result[] = [$user->getAvatar(), $user->getNickname(), $user->UserGroup()->getName(), "\"" . $user->getId() . "\""];
     }
     echo @serialize($result);

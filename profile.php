@@ -1,5 +1,5 @@
 <?php
-include "engine/main.php";
+include "engine/classes/engine/Engine.php";
 \Engine\Engine::LoadEngine();
 $session = Users\UserAgent::SessionContinue();
 $user = false;
@@ -24,7 +24,7 @@ else
     $seeProfile = false;
 
 if ($session === TRUE || $session === 26){
-    $user = new \Users\User($_SESSION["uid"]);
+    $user = new \Users\Models\User($_SESSION["uid"]);
     if (!empty($_REQUEST["res"])){
         $response = $_REQUEST["res"];
     }
@@ -33,7 +33,7 @@ if ($session === TRUE || $session === 26){
 
 if (!empty($_GET["uid"])){
     if (\Users\UserAgent::IsUserExist($_GET["uid"])) {
-        $user = new \Users\User($_GET["uid"]);
+        $user = new \Users\Models\User($_GET["uid"]);
     }
     else $user = false;
 }
@@ -42,7 +42,11 @@ if ($session !== true) {
     $captchaID = \Guards\CaptchaMen::GenerateCaptcha();
     $captchaImgPath = \Guards\CaptchaMen::GenerateImage(\Guards\CaptchaMen::FetchCaptcha(1));
 }
-
+//var_dump([
+//    "session" => $session,
+//    "id get request" => !empty($_GET["uid"])
+//]);
+//exit;
 ################################################
 #Менеджер управления панелями профайла:
 if ($session !== TRUE){
@@ -153,9 +157,9 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
         $profileEditCustomPanel = getBrick();
         $userEdit = str_replace_once("{PROFILE_PAGE:USER_EDITPANEL}", $profileEditCustomPanel, $userEdit);
     }
-    include_once "./site/reputationer.php";
+    include_once "site/reputationer.php";
     define("TT_Uploader", true);
-    include_once "./site/uploader.php";
+    include_once "site/uploader.php";
 
     $parentDivName = "";
     $subpanelDivNumber = "";
@@ -298,7 +302,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
         }
     }
 
-    //Display on main profile page.
+    //Display on engine profile page.
     $infoAFJoined = implode("", $infoAF);
     $customAFJoined = implode("", $customAF);
     $contactAFJoined = implode("", $contactAF);
@@ -340,7 +344,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
         $table = "";
         for ($k = 0; $k < $user->MessageManager()->getIncomeSize(); $k++) {
             $icon = ($user->MessageManager()->incomes()[$k]["isRead"] == false) ? "message-full" : "message-empty";
-            $sender = new \Users\User($user->MessageManager()->incomes()[$k]["senderUID"]);
+            $sender = new \Users\Models\User($user->MessageManager()->incomes()[$k]["senderUID"]);
             $subject = $user->MessageManager()->incomes()[$k]["subject"];
             $time = \Engine\Engine::DatetimeFormatToRead($user->MessageManager()->incomes()[$k]["receiveTime"]);
             $id = $user->MessageManager()->incomes()[$k]["id"];
@@ -367,7 +371,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
         $table = "";
         for ($k = 0; $k < $user->MessageManager()->getOutcomeSize(); $k++){
             $icon = "message-flag";
-            $receiver = new \Users\User($user->MessageManager()->outcomes()[$k]["receiverUID"]);
+            $receiver = new \Users\Models\User($user->MessageManager()->outcomes()[$k]["receiverUID"]);
             $subject = $user->MessageManager()->outcomes()[$k]["subject"];
             $time = \Engine\Engine::DatetimeFormatToRead($user->MessageManager()->outcomes()[$k]["receiveTime"]);
             $id = $user->MessageManager()->outcomes()[$k]["id"];
@@ -394,7 +398,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
         $table = "";
         for ($k = 0; $k < $user->MessageManager()->getSendedSize(); $k++) {
             $icon = "inbox-out";
-            $receiver = new \Users\User($user->MessageManager()->sended()[$k]["receiverUID"]);
+            $receiver = new \Users\Models\User($user->MessageManager()->sended()[$k]["receiverUID"]);
             $subject = $user->MessageManager()->sended()[$k]["subject"];
             $time = \Engine\Engine::DatetimeFormatToRead($user->MessageManager()->sended()[$k]["receiveTime"]);
             $id = $user->MessageManager()->sended()[$k]["id"];
@@ -420,8 +424,8 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
         $table = "";
         for ($k = 0; $k < $user->MessageManager()->getBinSize(); $k++) {
             $icon = "bin";
-            $sender = new \Users\User($user->MessageManager()->bin()[$k]["senderUID"]);
-            $receiver = new \Users\User($user->MessageManager()->bin()[$k]["receiverUID"]);
+            $sender = new \Users\Models\User($user->MessageManager()->bin()[$k]["senderUID"]);
+            $receiver = new \Users\Models\User($user->MessageManager()->bin()[$k]["receiverUID"]);
             $subject = $user->MessageManager()->bin()[$k]["subject"];
             $time = \Engine\Engine::DatetimeFormatToRead($user->MessageManager()->bin()[$k]["receiveTime"]);
             $id = $user->MessageManager()->bin()[$k]["id"];
@@ -478,7 +482,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
             $userNotificsTable .= "<hr><div class=\"profile-notification-body\">";
             if (!$ntf[$i]["isRead"])
                 $userNotificsTable .= "<span class=\"glyphicons glyphicons-info-sign\" style=\"font-size: 25px;\"></span>";
-            $userForNotification = new \Users\User($ntf[$i]["fromUid"]);
+            $userForNotification = new \Users\Models\User($ntf[$i]["fromUid"]);
             $userNotificsTable .= "<a class=\"profile-link\" href=\"profile.php?uid=" . $userForNotification->getId() . "\">" . $userForNotification->getNickname() . "</a>";
 
             switch ($ntf[$i]["type"]){
@@ -651,7 +655,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
                         $prefix = \Engine\LanguageManager::GetTranslation("has_mentioned_in_she");
                     else
                         $prefix = \Engine\LanguageManager::GetTranslation("has_mentioned_in_he");
-                    $comment = new \Forum\TopicComment($ntf[$i]["subject"]);
+                    $comment = new \Forum\Models\TopicComment($ntf[$i]["subject"]);
                     $commentId = $comment->getId();
                     $topicId = $comment->getTopicParentId();
                     $userNotificsTable .= " $prefix <a href=\"index.php?topic=$topicId#comment-$commentId\">" . \Engine\LanguageManager::GetTranslation("in_comment") . "</a>.";
@@ -683,7 +687,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
             $friendListTable .= "<tr><td colspan=\"4\" class=\"table-no-online-friends-td\">" . \Engine\LanguageManager::GetTranslation("no_online_friends") . "</td></tr>";
         } else
         foreach ($onlineList as $onlineUser) {
-            $friend = new \Users\User($onlineUser["friendId"]);
+            $friend = new \Users\Models\User($onlineUser["friendId"]);
             $friendListTable .= "<tr>
                                     <td><img class=\"profile-friends-avatar\" src=\"" . $friend->getAvatar() . "\"></td>
                                     <td><a class=\"profile-profile-link\" href=\"profile.php?uid=". $friend->getId() . "\">" . $friend->getNickname() ."</a>
@@ -697,7 +701,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
             $offlineList = $user->FriendList()->getFriendsList();
         }
         foreach ($offlineList as $offlineUser) {
-            $friend = new \Users\User($offlineUser["friendId"]);
+            $friend = new \Users\Models\User($offlineUser["friendId"]);
             $friendListTable .= "<tr>
                                     <td><img class=\"profile-friends-avatar\" src=\"".$friend->getAvatar() ."\"></td>
                                     <td><a class=\"profile-profile-link\" href=\"profile.php?uid=". $friend->getId() . "\">" . $friend->getNickname() ."</a></td>
@@ -955,7 +959,7 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
 
     }
 
-    //Display on main profile page.
+    //Display on engine profile page.
     $infoAFJoined = implode("", $infoAF);
     $customAFJoined = implode("", $customAF);
     $contactAFJoined = implode("", $contactAF);
@@ -1102,7 +1106,7 @@ if (($session !== true && !empty($user) && !\Engine\Engine::GetEngineInfo("gsp")
 
 /***********************************Block profile page if user is not exist.*****************/
 
-if (!$session || empty($user)){
+if (!$session || empty($user) ||$session === 25){
     $header = str_replace_once("{PROFILE_PAGE:PAGE_NAME}", \Engine\LanguageManager::GetTranslation("authorization"), $header);
 
     $main = str_replace_once("{PROFILE_PAGE_TITLE}", \Engine\LanguageManager::GetTranslation("authorization") . " - " . \Engine\Engine::GetEngineInfo("sn"), $main);
@@ -1148,7 +1152,11 @@ if (!$session || empty($user)){
     $authSignUpForm = str_replace_once("{AUTH_PAGE:NECESSARY_ADDITIVE_FIELDS}", $additionalFieldsInputNecessaryString, $authSignUpForm);
     $authSignUpForm = str_replace_once("{AUTH_PAGE:NOT_NECESSARY_ADDITIVE_FIELDS}", $additionalFieldsInputString, $authSignUpForm);
     ///////////////////////////////////////
-    $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}", (!empty($_REQUEST["res"]) && !in_array($_REQUEST["res"], ["ic", "nc", "nr", "ns", "nsnp", "nvn", "nve", "nvr", "neen", "nen", "nvi"])) ? $authErrors : "", $main);
+    $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}",
+        (!empty($_REQUEST["res"])
+                && !in_array($_REQUEST["res"], ["ic", "nc", "nr", "ns", "nsnp", "nvn", "nve", "nvr", "neen", "nen", "nvi", "iad"]))
+                ? $authErrors
+                : "", $main);
     $main = str_replace_once("{PROFILE_MAIN_BODY}", $authForm, $main);
     $main = str_replace_once("{PROFILE_PAGE_GUI_SCRIPT}", "", $main);
     $main = str_replace_once("{AUTH_PAGE:SIGN_UP}", $authSignUpForm, $main);
@@ -1159,19 +1167,15 @@ if (!$session || empty($user)){
         $emailTipText .= \Engine\LanguageManager::GetTranslation("activation_notify");
     $main = str_replace_once("{AUTH_PAGE:EMAIL_TIP}", $emailTipText, $main);
     $main = str_replace_once("{AUTH_PAGE:CAPTCHA_PIC}", "<img src=\"$captchaImgPath\" alt=\"Captcha\">", $main);
-    //<img src=\"$captchaImgPath\">
-//    print_r($captchaImgPath);
     $main = str_replace_once("{AUTH_PAGE:CAPTCHA_ID}", $captchaID, $main);
     $main = str_replace("{AUTH_PAGE:UID_INPUT_PLACEHOLDER}", \Engine\Engine::GetEngineInfo("na") ?
         \Engine\LanguageManager::GetTranslation("email_or_login") : \Engine\LanguageManager::GetTranslation("nickname"), $main);
     $main = str_replace("{AUTH_REMAINDER}", $authRemaind, $main);
-
+    $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}", $authErrors, $main);
     if (!empty($_REQUEST["res"])){
         if (in_array($_REQUEST["res"], ["ic", "nc", "nr", "ns", "nsnp", "nvn", "nve", "nvr", "neen", "nen", "nvi"]))
             $authJS .= "showPanel('signup'); showSubpanel('signup', 2);";
     }
-
-
 }
 
 /**********************************************************************************************/
@@ -1201,8 +1205,8 @@ if (\Engine\Engine::GetEngineInfo("smt")){
 ob_end_clean();
 $main = str_replace_once("{PROFILE_PAGE:PAGE_NAME}", "", $main);
 $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}", "", $main);
-//$main = str_replace_once("{PROFILE_MAIN_BODY}", $test, $main);
-//$main = str_replace_once("{PROFILE_MAIN_BODY}", \Engine\LanguageManager::GetTranslation("ua_info"), $main);
+//$engine = str_replace_once("{PROFILE_MAIN_BODY}", $test, $engine);
+//$engine = str_replace_once("{PROFILE_MAIN_BODY}", \Engine\LanguageManager::GetTranslation("ua_info"), $engine);
 
 include_once "./site/scripts/SpoilerController.js";
 $spoilerManager = getBrick();

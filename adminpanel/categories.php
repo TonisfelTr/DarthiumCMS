@@ -18,7 +18,7 @@ else {
             exit;
         }
 
-        $category = new \Forum\Category($_GET["cid"]);
+        $category = new \Forum\Models\Category($_GET["cid"]);
         if ($category === 32){
             header("Location: ../adminpanel.php?p=categories&res=6ntc");
             exit;
@@ -72,7 +72,7 @@ else {
                                 <tr><td class="alert-info" colspan="9" style="text-align: center;"><span class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_managment.no_categories"); ?></td></tr>
                             <?php } else {
                                 foreach ($categoryList as $c){
-                                    $category = new \Forum\Category($c["id"]); ?>
+                                    $category = new \Forum\Models\Category($c["id"]); ?>
                                     <tr>
                                         <td><input type="checkbox" data-cid-selected="<?php echo $category->getId(); ?>"></td>
                                         <td><?php echo $category->getId(); ?></td>
@@ -125,7 +125,7 @@ else {
                 <?php }
                 if ($canCategoryEdit){
                     if (!empty($_GET["reqtype"]) && $_GET["reqtype"] == 2){
-                        $category = new \Forum\Category($_GET["cid"]); ?>
+                        $category = new \Forum\Models\Category($_GET["cid"]); ?>
                         <div class="div-border" id="category_edit_div">
                             <h3><?php echo $category->getName(); ?></h3>
                             <p class="h-helper"><?php echo \Engine\LanguageManager::GetTranslation("categories_panel.category_edit.page_tip"); ?></p>

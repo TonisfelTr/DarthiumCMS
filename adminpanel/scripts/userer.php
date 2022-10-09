@@ -32,10 +32,10 @@
 function concateWithArrow($first, $second){
     return $first . " -> " . $second;
 }
-require_once "../../engine/main.php";
+require_once "../../engine/engine.php";
 \Engine\Engine::LoadEngine();
 
-if ($sessionRes = \Users\UserAgent::SessionContinue()) $user = new \Users\User($_SESSION["uid"]);
+if ($sessionRes = \Users\UserAgent::SessionContinue()) $user = new \Users\Models\User($_SESSION["uid"]);
 else { header("Location: ../../adminpanel.php?p=forbidden"); exit; }
 
 if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBanned()){
@@ -243,7 +243,7 @@ if (isset ($_POST["user-add-add"])){
             $group = (!isset($_POST["user-add-group"]) || !$user->UserGroup()->getPermission("change_user_group")) ?
                 \Engine\Engine::GetEngineInfo("sg") : (($_POST["user-add-group"] == 0) ? \Engine\Engine::GetEngineInfo("sg") : $_POST["user-add-group"]);
             if (\Users\UserAgent::AddUser($_POST["user-add-nickname"], $_POST["user-add-password"], $_POST["user-add-email"], $user->getNickname()) === TRUE) {
-                $newUser = new \Users\User(\Users\UserAgent::GetUserId($_POST["user-add-nickname"]));
+                $newUser = new \Users\Models\User(\Users\UserAgent::GetUserId($_POST["user-add-nickname"]));
                 $newUser->groupChange($group);
                 $newUser->Activate();
                 \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.reg_new_user_log") . $_POST["user-add-nickname"] . ".");
@@ -286,7 +286,7 @@ if (!empty ($_GET["uide"])){
 if (isset ($_POST["user-edit-save"])){
     if ($user->UserGroup()->getPermission("change_another_profiles")){
         $backRequest = "Location: ../../adminpanel.php?p=users&uid=" . $_POST["user-edit-id"];
-        $eUser = new \Users\User($_POST["user-edit-id"]);
+        $eUser = new \Users\Models\User($_POST["user-edit-id"]);
         //Change nickname
         if ($eUser->getNickname() != $_POST["user-edit-nickname"]) {
             $res = \Users\UserAgent::ChangeUserParams($eUser->getId(), "nickname", $_POST["user-edit-nickname"]);
@@ -428,7 +428,7 @@ if (isset ($_POST["user-edit-save"])){
 
 if (isset ($_POST["user-edit-activate"])){
     if ($user->UserGroup()->getPermission("change_another_profiles")){
-        $eUser = new \Users\User($_POST["user-edit-id"]);
+        $eUser = new \Users\Models\User($_POST["user-edit-id"]);
         if ($eUser->Activate()){
             \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.activate_user_log") . $eUser->getNickname() . ".");
             header("Location: ../../adminpanel.php?p=users&uid=". $eUser->getId() . "&res=4sua");

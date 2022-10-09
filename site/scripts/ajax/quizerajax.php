@@ -1,5 +1,5 @@
 <?php
-include "../../../engine/main.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/engine/classes/engine/Engine.php";;
 \Engine\Engine::LoadEngine();
 
 @$userId = $_POST["user_id"];

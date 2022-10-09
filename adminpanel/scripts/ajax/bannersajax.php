@@ -1,12 +1,12 @@
 <?php
 
-include_once "../../../engine/main.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/engine/classes/engine/Engine.php";
 \Engine\Engine::LoadEngine();
 
 
 $session = \Users\UserAgent::SessionContinue();
 if ($session === TRUE)
-    $user = new \Users\User($_SESSION["uid"]);
+    $user = new \Users\Models\User($_SESSION["uid"]);
 else
     $user = false;
 
@@ -14,15 +14,15 @@ else
 if ($user !== false && $user->UserGroup()->getPermission("sc_design_edit")){
     if (isset($_POST["savefsb"])){
         if (!empty($_POST["link"])) {
-            if (!\SiteBuilders\BannerAgent::IsBannerExists("name", "firstbanner")) {
-                $result = \SiteBuilders\BannerAgent::AddSmallBanner("firstbanner", $_POST["link"]);
+            if (!\Decorator\Controllers\BannerAgent::IsBannerExists("name", "firstbanner")) {
+                $result = \Decorator\Controllers\BannerAgent::AddSmallBanner("firstbanner", $_POST["link"]);
                 if ($result !== false)
                     Echo $result;
                 else
                     echo "failed";
                 exit;
             } else {
-                $result = \SiteBuilders\BannerAgent::EditSmallBanner("first", $_POST["link"]);
+                $result = \Decorator\Controllers\BannerAgent::EditSmallBanner("first", $_POST["link"]);
                 if ($result !== false)
                     Echo "okey";
                 else
@@ -37,7 +37,7 @@ if ($user !== false && $user->UserGroup()->getPermission("sc_design_edit")){
 
     if (isset($_POST["removefsb"])){
         if (!empty($_POST["id"])){
-            $result = \SiteBuilders\BannerAgent::RemoveBanner($_POST["id"]);
+            $result = \Decorator\Controllers\BannerAgent::RemoveBanner($_POST["id"]);
             if ($result === true)
                 echo "okey";
             else
@@ -50,15 +50,15 @@ if ($user !== false && $user->UserGroup()->getPermission("sc_design_edit")){
 
     if (isset($_POST["savessb"])){
         if (!empty($_POST["link"])) {
-            if (!\SiteBuilders\BannerAgent::IsBannerExists("name", "secondbanner")) {
-                $result = \SiteBuilders\BannerAgent::AddSmallBanner("secondbanner", $_POST["link"]);
+            if (!\Decorator\Controllers\BannerAgent::IsBannerExists("name", "secondbanner")) {
+                $result = \Decorator\Controllers\BannerAgent::AddSmallBanner("secondbanner", $_POST["link"]);
                 if ($result !== false)
                     Echo $result;
                 else
                     echo "failed";
                 exit;
             } else {
-                $result = \SiteBuilders\BannerAgent::EditSmallBanner("second", $_POST["link"]);
+                $result = \Decorator\Controllers\BannerAgent::EditSmallBanner("second", $_POST["link"]);
                 if ($result !== false)
                     Echo "okey";
                 else
@@ -73,7 +73,7 @@ if ($user !== false && $user->UserGroup()->getPermission("sc_design_edit")){
 
     if (isset($_POST["removessb"])){
         if (!empty($_POST["id"])){
-            $result = \SiteBuilders\BannerAgent::RemoveBanner($_POST["id"]);
+            $result = \Decorator\Controllers\BannerAgent::RemoveBanner($_POST["id"]);
             if ($result === true)
                 echo "okey";
             else
@@ -93,7 +93,7 @@ if ($user !== false && $user->UserGroup()->getPermission("sc_design_edit")){
             echo "cns";
             exit;
         }
-        $result = \SiteBuilders\BannerAgent::AddBigBanner($_POST["banner-name"], $_POST["banner-content"], $_POST["banner-visibility"]);
+        $result = \Decorator\Controllers\BannerAgent::AddBigBanner($_POST["banner-name"], $_POST["banner-content"], $_POST["banner-visibility"]);
         if ($result === false)
             echo "failed";
         else
@@ -110,9 +110,9 @@ if ($user !== false && $user->UserGroup()->getPermission("sc_design_edit")){
             echo "cns";
             exit;
         }
-        $result = \SiteBuilders\BannerAgent::EditBanner($_POST["banner-id"], "name", $_POST["banner-name"]);
-        $result = \SiteBuilders\BannerAgent::EditBanner($_POST["banner-id"], "content", $_POST["banner-content"]);
-        $result = \SiteBuilders\BannerAgent::EditBanner($_POST["banner-id"], "isVisible", $_POST["banner-visibility"]);
+        $result = \Decorator\Controllers\BannerAgent::EditBanner($_POST["banner-id"], "name", $_POST["banner-name"]);
+        $result = \Decorator\Controllers\BannerAgent::EditBanner($_POST["banner-id"], "content", $_POST["banner-content"]);
+        $result = \Decorator\Controllers\BannerAgent::EditBanner($_POST["banner-id"], "isVisible", $_POST["banner-visibility"]);
         if ($result === false)
             echo "failed";
         else
@@ -124,7 +124,7 @@ if ($user !== false && $user->UserGroup()->getPermission("sc_design_edit")){
             echo "failed";
             exit;
         }
-        $result = \SiteBuilders\BannerAgent::GetBannerHTML($_POST["banner-id"]);
+        $result = \Decorator\Controllers\BannerAgent::GetBannerHTML($_POST["banner-id"]);
         if ($result === false){
             echo "failed";
             exit;
@@ -140,7 +140,7 @@ if ($user !== false && $user->UserGroup()->getPermission("sc_design_edit")){
             echo "bne";
             exit;
         }
-        $result = \SiteBuilders\BannerAgent::RemoveBanner($_POST["banner-id"]);
+        $result = \Decorator\Controllers\BannerAgent::RemoveBanner($_POST["banner-id"]);
         if ($result) {
             echo "okey";
             exit;

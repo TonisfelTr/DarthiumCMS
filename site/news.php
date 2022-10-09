@@ -22,7 +22,7 @@ if ($topicCount == 0)
     include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/news_empty.html";
 else {
     foreach ($topicList as $topic){
-        $topic = new \Forum\Topic($topic["id"]);
+        $topic = new \Forum\Models\Topic($topic["id"]);
         if ((!$topic->getCategory()->isPublic() && $user === false) ||
             (!$topic->getCategory()->isPublic() && $user !== false && !$user->UserGroup()->getPermission("category_see_unpublic"))
         )

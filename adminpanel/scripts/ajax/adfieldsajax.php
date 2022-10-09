@@ -1,6 +1,6 @@
 <?php
 
-include "../../../engine/main.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/engine/classes/engine/Engine.php";;
 
 function BoolToInt($i){
     if ($i == "true") return 1;
@@ -15,7 +15,7 @@ function IsCorrectName($str){
 }
 
 function Add(){
-    if (true === \Engine\DataKeeper::isExistsIn("tt_adfields", "name", $_POST["field-name"])) {
+    if (true === \Engine\DataKeeper::exists("tt_adfields", "name", $_POST["field-name"])) {
         echo "fae"; //field already exists.
         return;
     }
@@ -35,7 +35,7 @@ function Add(){
 }
 
 function Edit(){
-    if (false === \Engine\DataKeeper::isExistsIn("tt_adfields", "id", $_POST["field-id"])) {
+    if (false === \Engine\DataKeeper::exists("tt_adfields", "id", $_POST["field-id"])) {
         echo "fne"; //field not exists.
         return;
     }
@@ -59,7 +59,7 @@ function Edit(){
 }
 
 function Remove() {
-    if (false === \Engine\DataKeeper::isExistsIn("tt_adfields", "id", $_POST["field-id"])) {
+    if (false === \Engine\DataKeeper::exists("tt_adfields", "id", $_POST["field-id"])) {
         echo "fne"; //field not exists.
         return;
     }
@@ -72,7 +72,7 @@ function Remove() {
 }
 
 function Get(){
-    if (false === \Engine\DataKeeper::isExistsIn("tt_adfields", "id", $_POST["field-id"])) {
+    if (false === \Engine\DataKeeper::exists("tt_adfields", "id", $_POST["field-id"])) {
         echo "fne"; //field not exists.
         return;
     }
@@ -82,7 +82,7 @@ function Get(){
 
 \Engine\Engine::LoadEngine();
 if (\Users\UserAgent::SessionContinue() === true) {
-    $user = new \Users\User($_SESSION["uid"]);
+    $user = new \Users\Models\User($_SESSION["uid"]);
     if ($user->UserGroup()->getPermission("change_engine_settings")){
         if ($_POST["action"] == "add"){
             if (!IsCorrectName($_POST["field-name"])) {

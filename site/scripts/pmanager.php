@@ -19,7 +19,7 @@
 // mhbs - message has been sended.
 // mhbr - message has been removed.
 
-include_once "../../engine/main.php";
+include_once "../../engine/engine.php";
 \Engine\Engine::LoadEngine();
 
 if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){
@@ -33,7 +33,7 @@ if ($session === false){
     exit;
 }
 
-$user = new \Users\User($_SESSION["uid"]);
+$user = new \Users\Models\User($_SESSION["uid"]);
 
 //Send message.
 if (isset($_REQUEST["send"])){

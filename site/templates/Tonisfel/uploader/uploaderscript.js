@@ -1,5 +1,5 @@
 $("#uploader-close-btn").click(function() {
-    $("#uploader-main").hide();
+    $("#uploader-engine").hide();
 });
 
 $('#uploader-select-all').change(function() {

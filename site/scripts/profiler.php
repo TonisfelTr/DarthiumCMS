@@ -1,6 +1,6 @@
 <?php
 
-include_once "../../engine/main.php";
+include_once "../../engine/engine.php";
 \Engine\Engine::LoadEngine();
 
 if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){
@@ -14,7 +14,7 @@ if ($session !== TRUE){
     exit;
 }
 
-$user = new \Users\User($_SESSION["uid"]);
+$user = new \Users\Models\User($_SESSION["uid"]);
 
 if ($user->UserGroup()->getPermission("change_profile")) {
 

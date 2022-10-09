@@ -59,7 +59,7 @@ function constructDiv($id, $name, $content, $link = null) {
 if (!empty($_GET["uid"])) {
     if (\Users\UserAgent::IsUserExist($_GET["uid"])) {
         $userExists = true;
-        $USER = new \Users\User($_GET["uid"]);
+        $USER = new \Users\Models\User($_GET["uid"]);
 
         ///////////////////////////////////////////////////////////////////////
         /// Build additional fields mechanism.
@@ -349,7 +349,7 @@ if ($canSigns) {
                             <?php }
                             # Создание таблицы при наличии в списке хотя бы одного пользователя.
                             foreach ($userList as $User) {
-                                $selUser = new \Users\User($User["id"]);
+                                $selUser = new \Users\Models\User($User["id"]);
                                 if ($selUser->isBanned() === true) {
                                     $selUserBan = \Engine\Engine::DateFormatToRead(date("Y-m-d", \Guards\SocietyGuard::GetBanUserParam($User["id"], "banned_time")));
                                 } else {

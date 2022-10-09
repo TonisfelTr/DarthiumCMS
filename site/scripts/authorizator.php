@@ -8,7 +8,7 @@
  * 2. If the account is banned - redirect to ban welcome page.
  * 3. If enter to the account have been successefuly redirect to profile page.
 **/
-require_once "../../engine/main.php";
+include "../../engine/classes/engine/Engine.php";
 \Engine\Engine::LoadEngine();
 
 /**

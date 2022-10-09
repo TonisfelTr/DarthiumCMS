@@ -23,13 +23,13 @@ function str_replace_once($search, $replace, $text) {
 }
 
 define("TT_Index", true);
-include "./engine/main.php";
+include "engine/classes/engine/Engine.php";
 \Engine\Engine::LoadEngine();
 
 $user = false;
 $sessionRes = \Users\UserAgent::SessionContinue();
 if ($sessionRes == 1) {
-    $user = new \Users\User($_SESSION["uid"]);
+    $user = new \Users\Models\User($_SESSION["uid"]);
 }
 if ((\Engine\Engine::GetEngineInfo("ss") == 0 && !$user) ||
     (\Engine\Engine::GetEngineInfo("ss") == 0 && $user->UserGroup()->getPermission("offline_visiter") != 1)) {
@@ -77,7 +77,7 @@ if (count($categories) == 0) {
     $categoryMenu = "<li class=\"dropdown-header\">" . \Engine\LanguageManager::GetTranslation("list_is_empty") . "</li>";
 } else {
     foreach ($categories as $c) {
-        $c = new \Forum\Category($c["id"]);
+        $c = new \Forum\Models\Category($c["id"]);
         $categoryMenu .= "<li><a href=\"?category=" . $c->getId() . "\" title=\"" . $c->getDescription() . "\">" . $c->getName() . "</a></li>" . PHP_EOL;
     }
 }
@@ -119,7 +119,7 @@ if (!empty($_GET["page"])) {
     }
 } elseif (!empty($_GET["topic"])) {
     if (\Forum\ForumAgent::isTopicExists($_GET["topic"])) {
-        $topic = new \Forum\Topic($_GET["topic"]);
+        $topic = new \Forum\Models\Topic($_GET["topic"]);
         if ($topic->getCategory()->isPublic() || (!$topic->getCategory()->isPublic() && $user !== false && $user->UserGroup()->getPermission("category_see_unpublic"))) {
             include_once "./site/newsviewer.php";
         } else {
@@ -134,7 +134,7 @@ if (!empty($_GET["page"])) {
     include_once "./site/grouplist.php";
 } elseif (!empty($_GET["plp"])) {
     if (\Engine\PluginManager::IsTurnOn($_GET["plp"])) {
-        include_once "addons/" . $_GET["plp"] . "/bin/main.php";
+        include_once "addons/" . $_GET["plp"] . "/bin/engine.php";
     } else {
         include_once "./site/errors/notfound.php";
     }
@@ -167,7 +167,7 @@ $authMenu = getBrick();
 /******************************************************************************************************
  * Banner constructor
  ******************************************************************************************************/
-$bigBanners = \SiteBuilders\BannerAgent::GetBanners("banner");
+$bigBanners = \Decorator\Controllers\BannerAgent::GetBanners("banner");
 $bigBannersCount = count($bigBanners);
 if ($bigBannersCount > 0) {
     $firstBigBanner = $bigBanners[rand(0, $bigBannersCount - 1)]["content"];
@@ -181,8 +181,8 @@ if ($bigBannersCount > 0) {
 $main = str_replace_once("{MAIN_PAGE:FIRST_BIG_BANNER}", $firstBigBanner, $main);
 $footer = str_replace_once("{MAIN_PAGE:SECOND_BIG_BANNER}", $secondBigBanner, $footer);
 
-$firstBanner = @\SiteBuilders\BannerAgent::GetBannersByName("firstbanner")[0]["content"];
-$secondBanner = @\SiteBuilders\BannerAgent::GetBannersByName("secondbanner")[0]["content"];
+$firstBanner = @\Decorator\Controllers\BannerAgent::GetBannersByName("firstbanner")[0]["content"];
+$secondBanner = @\Decorator\Controllers\BannerAgent::GetBannersByName("secondbanner")[0]["content"];
 if (empty($firstBanner)) {
     $firstBanner = "<img class=\"img-smbanner\" src=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/smallbanner.png\" title=\"" . \Engine\LanguageManager::GetTranslation("ad_is_free") . "\">";
 } else {
@@ -197,11 +197,11 @@ $footer = str_replace_once("{MAIN_PAGE:FOOTER_FIRST_SMALL_BANNER}", $firstBanner
 $footer = str_replace_once("{MAIN_PAGE:FOOTER_SECOND_SMALL_BANNER}", $secondBanner, $footer);
 $footer = str_replace_once("{CURRENT_YEAR}", date("Y"), $footer);
 
-$panels = \SiteBuilders\SidePanelsAgent::GetPanelsList();
+$panels = \Decorator\Controllers\SidePanelsAgent::GetPanelsList();
 $rightPanels = "";
 $leftPanels = "";
 foreach ($panels as $panel) {
-    $panel = new \SiteBuilders\SidePanel($panel["id"]);
+    $panel = new \Decorator\Models\SidePanel($panel["id"]);
     if ($panel->getVisibility()) {
         if ($panel->getType() == "leftside") {
             $leftPanel = str_replace_once("{PANEL_TITLE}", $panel->getName(), $leftSide);
@@ -224,7 +224,7 @@ if (isset($_GET["res"])) {
     }
 }
 
-$navbtns = array_merge(\SiteBuilders\NavbarAgent::GetElements(), \Engine\PluginManager::GetNavbarBtns());
+$navbtns = array_merge(\Decorator\Controllers\NavbarAgent::GetElements(), \Engine\PluginManager::GetNavbarBtns());
 $ul = "";
 $ulEnd = "";
 foreach ($navbtns as $navbtn) {
@@ -252,7 +252,7 @@ foreach ($navbtns as $navbtn) {
             $ul .= "<li><a href=\"$data_href\">$content</a></li>";
             break;
         case "nav-list":
-            $children = \SiteBuilders\NavbarAgent::GetElementsOfList($navbtn["id"]);
+            $children = \Decorator\Controllers\NavbarAgent::GetElementsOfList($navbtn["id"]);
             $data_content = $navbtn["action"];
             $content = $navbtn["content"];
             $id = $navbtn["id"];
@@ -363,7 +363,7 @@ if (empty($lastTopics)) {
 } else {
     $ltText = "<ul>";
     foreach ($lastTopics as $topicId) {
-        $topic = new \Forum\Topic($topicId["id"]);
+        $topic = new \Forum\Models\Topic($topicId["id"]);
         $ltText .= "<li><a class=\"alert-link\" href=\"?topic=" . $topicId["id"] . "\">" . $topic->getName() . "</a></li>";
     }
     $ltText .= "</ul>";

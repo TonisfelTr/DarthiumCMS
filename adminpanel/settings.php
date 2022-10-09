@@ -590,14 +590,14 @@ if (!$user->UserGroup()->getPermission("change_engine_settings")) {
                 </div>
                 <div class="div-border" id="plugin_panel" data-number="5" hidden>
                     <h3>
-                        <span class="glyphicons glyphicons-book"></span> <?= \Engine\LanguageManager::GetTranslation("plugins_panel.panel_name") ?>
+                        <span class="glyphicons glyphicons-book"></span> <?= \Engine\LanguageManager::GetTranslation("settings_panel.plugins_panel.panel_name") ?>
                     </h3>
-                    <p class="helper"><?= \Engine\LanguageManager::GetTranslation("plugins_panel.panel_description")?></p>
+                    <p class="helper"><?= \Engine\LanguageManager::GetTranslation("settings_panel.plugins_panel.panel_description")?></p>
                     <hr>
-                    <p><?= \Engine\LanguageManager::GetTranslation("plugins_panel.additive_description") ?></p>
+                    <p><?= \Engine\LanguageManager::GetTranslation("settings_panel.plugins_panel.additive_description") ?></p>
                     <div class="plugin-div">
                         <div class="plugins">
-                            <label for="template_ready_to_install"><?= \Engine\LanguageManager::GetTranslation("plugins_panel.available_plugins") ?></label>
+                            <label for="template_ready_to_install"><?= \Engine\LanguageManager::GetTranslation("settings_panel.plugins_panel.available_plugins") ?></label>
                             <select class="form-control template_list" id="template_ready_to_install" size="20">
                                 <?php foreach ($pluginList as $plagName => $plugin) {
                                     echo "<option value=\"$plagName\" data-codename=\"" . $plugin["config"]["codeName"] . "\">" . $plugin["config"]["name"] . "</option>";
@@ -605,7 +605,7 @@ if (!$user->UserGroup()->getPermission("change_engine_settings")) {
                             </select>
                         </div>
                         <div class="plugins">
-                            <label for="template_official"><?= \Engine\LanguageManager::GetTranslation("plugins_panel.enabled_plugins") ?></label>
+                            <label for="template_official"><?= \Engine\LanguageManager::GetTranslation("settings_panel.plugins_panel.enabled_plugins") ?></label>
                             <select class="form-control template_list" id="template_official" size="20">
                                 <?php foreach ($installedPluginList as $plagName => $plugin) {
                                     echo "<option value=\"$plagName\" data-codename=\"" . $plugin["codeName"] . "\">" . $plugin["name"] . "</option>";
@@ -613,17 +613,17 @@ if (!$user->UserGroup()->getPermission("change_engine_settings")) {
                             </select>
                         </div>
                         <div class="plugins-info">
-                            <h3 id="plugin-name"><?= \Engine\LanguageManager::GetTranslation("plugins_panel.choose_plugin") ?></h3>
-                            <b><?= \Engine\LanguageManager::GetTranslation("plugins_panel.plugin_description") ?> </b><span id="plugin-description"></span>
-                            <p id="btn-status-block"><b><?= \Engine\LanguageManager::GetTranslation("plugins_panel.status_plugin") ?> </b>
+                            <h3 id="plugin-name"><?= \Engine\LanguageManager::GetTranslation("settings_panel.plugins_panel.choose_plugin") ?></h3>
+                            <b><?= \Engine\LanguageManager::GetTranslation("settings_panel.plugins_panel.plugin_description") ?> </b><span id="plugin-description"></span>
+                            <p id="btn-status-block"><b><?= \Engine\LanguageManager::GetTranslation("settings_panel.plugins_panel.status_plugin") ?> </b>
                                 <button id="plugin-status" class="btn" type="button"><?= \Engine\LanguageManager::GetTranslation("off") ?></button>
                             </p>
                             <div class="btn-group" style="width: 100%; padding-top: 15px;">
                                 <button class="btn btn-default" type="button" id="btn-install" disabled><span
-                                            class="glyphicons glyphicons-settings"></span> <?= \Engine\LanguageManager::GetTranslation("plugins_panel.install_plugin") ?>
+                                            class="glyphicons glyphicons-settings"></span> <?= \Engine\LanguageManager::GetTranslation("settings_panel.plugins_panel.install_plugin") ?>
                                 </button>
                                 <button class="btn btn-default" type="button" id="btn-delete" disabled><span
-                                            class="glyphicons glyphicons-delete"></span> <?= \Engine\LanguageManager::GetTranslation("plugins_panel.uninstall_plugin") ?>
+                                            class="glyphicons glyphicons-delete"></span> <?= \Engine\LanguageManager::GetTranslation("settings_panel.plugins_panel.uninstall_plugin") ?>
                                 </button>
                             </div>
                         </div>

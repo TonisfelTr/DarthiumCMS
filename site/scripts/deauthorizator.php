@@ -1,6 +1,6 @@
 <?php
 
-include "../../engine/main.php";
+include "../../engine/engine.php";
 \Engine\Engine::LoadEngine();
 
 if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){

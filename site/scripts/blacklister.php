@@ -11,7 +11,7 @@
  *  7. uhbub - user has been unblocked;
  *  8. cnuu - cannot unblock user;
  */
-include_once "../../engine/main.php";
+include_once "../../engine/engine.php";
 \Engine\Engine::LoadEngine();
 
 $session = \Users\UserAgent::SessionContinue();
@@ -20,7 +20,7 @@ if ($session !== TRUE){
     exit;
 }
 
-$user = new \Users\User(@$_SESSION["uid"]);
+$user = new \Users\Models\User(@$_SESSION["uid"]);
 
 if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBanned()){
     header("Location: banned.php");

@@ -1,12 +1,12 @@
 <?php
 
-include_once "../../../engine/main.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/engine/classes/engine/Engine.php";
 \Engine\Engine::LoadEngine();
 
 
 $session = \Users\UserAgent::SessionContinue();
 if ($session === TRUE)
-    $user = new \Users\User($_SESSION["uid"]);
+    $user = new \Users\Models\User($_SESSION["uid"]);
 else
     $user = false;
 

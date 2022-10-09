@@ -10,7 +10,7 @@ include_once "site/uploader.php";
 
 $categoriesList = "";
 foreach ($categories as $c){
-    $category = new \Forum\Category($c["id"]);
+    $category = new \Forum\Models\Category($c["id"]);
     if ($category->isPublic() || (!$category->isPublic() && $user->UserGroup()->getPermission("category_see_unpublic")))
         $categoriesList .= "<option value=\"" . $category->getId() . "\">" . $category->getName() . "</option>";
 }
@@ -21,7 +21,7 @@ if (empty($lastAuthorsTopics)){
 } else {
     $lastAuthorsTopicsText = "<ol>";
     foreach ($lastAuthorsTopics as $topicId){
-        $topic = new \Forum\Topic($topicId["id"]);
+        $topic = new ForumModels$1
         $lastAuthorsTopicsText .= "<li><a href=\"?topic=$topicId[id]\">" . $topic->getName() . "</a></li>";
     }
     $lastAuthorsTopicsText .= "</ol>";
@@ -33,7 +33,7 @@ if (empty($lastTopics)){
 } else {
     $lastTopicsText = "<ol>";
     foreach ($lastTopics as $topicId){
-        $topic = new \Forum\Topic($topicId["id"]);
+        $topic = new ForumModels$1
         $lastTopicsText .= "<li><a href=\"?topic=$topicId\">" . $topic->getName() . "</a> [<a href=\"profile.php?uid=" . $topic->getAuthorId() . "\">" .$topic->getAuthor()->getNickname() . "</a>]</li>";
     }
     $lastTopicsText .= "</ol>";

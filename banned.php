@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <?php
-include_once "./engine/main.php";
+include_once "engine/classes/engine/Engine.php";
 \Engine\Engine::LoadEngine();
 if (isset($_REQUEST["banned-log-out"])) {
     \Users\UserAgent::SessionDestroy();
@@ -9,7 +9,7 @@ if (isset($_REQUEST["banned-log-out"])) {
 }
 
 $sessionRes = \Users\UserAgent::SessionContinue();
-if ($sessionRes === True) $user = new \Users\User($_SESSION["uid"]);
+if ($sessionRes === True) $user = new \Users\Models\User($_SESSION["uid"]);
 if (!$user->isBanned() && !\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)) { header("Location: index.php"); exit; }
 
 if ($user->isBanned()){

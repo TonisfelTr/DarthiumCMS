@@ -5,13 +5,13 @@
  * Date: 8/1/16
  * Time: 5:50 AM
  */
-include "engine/main.php";
+include "engine/classes/engine/Engine.php";
 define("TT_AP", true);
 ob_start();
 \Engine\Engine::LoadEngine();
 
 if ($sessionRes = \Users\UserAgent::SessionContinue()) {
-    $user = new \Users\User($_SESSION["uid"]);
+    $user = new \Users\Models\User($_SESSION["uid"]);
 } else {
     header("Location: profile.php");
     exit;

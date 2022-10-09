@@ -1,9 +1,9 @@
 <?php
 
-include "../../../engine/main.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/engine/classes/engine/Engine.php";;
 \Engine\Engine::LoadEngine();
 if (\Users\UserAgent::SessionContinue() === true){
-    $user = new \Users\User($_SESSION["uid"]);
+    $user = new \Users\Models\User($_SESSION["uid"]);
     if ($user->UserGroup()->getPermission("report_foreign_edit") || $user->UserGroup()->getPermission("report_edit")){
         if (isset($_POST["atd"])){
             if (!empty($_POST["uid"])){
@@ -24,7 +24,7 @@ if (\Users\UserAgent::SessionContinue() === true){
                     if (\Guards\ReportAgent::AddToDiscusse($_POST["rid"], $_POST["uid"], $user->getId()) === false) {
                         echo "User is added."; exit;
                     } else {
-                        $thisUser = new \Users\User($_POST["uid"]);
+                        $thisUser = new \Users\Models\User($_POST["uid"]);
                         $thisUser->Notifications()->createNotify(1, $user->getId(), $_POST["rid"]);
                         $report = new \Guards\Report($_POST["rid"]);
                         foreach ($report->getAddedToDiscuse() as $c){
@@ -57,7 +57,7 @@ if (\Users\UserAgent::SessionContinue() === true){
                     }
 
                     if (\Guards\ReportAgent::RemoveFromDiscusse($_POST["rid"], $_POST["uid"]) > 0){
-                        $thisUser = new \Users\User($_POST["uid"]);
+                        $thisUser = new \Users\Models\User($_POST["uid"]);
                         $thisUser->Notifications()->createNotify(1, $user->getId(), $_POST["rid"]);
                         $report = new \Guards\Report($_POST["rid"]);
                         foreach ($report->getAddedToDiscuse() as $c){

@@ -1,7 +1,7 @@
 <?php
 if (!defined("TT_Index")){ header("index.php?page=errors/forbidden"); exit; }
 if (\Users\GroupAgent::IsGroupExists($_GET["group"])) {
-    $group = new \Users\Group($_GET["group"]);
+    $group = new \Users\Models\Group($_GET["group"]);
 } else {
     include_once "./site/errors/notfound.php";
     $groupPage = getBrick();

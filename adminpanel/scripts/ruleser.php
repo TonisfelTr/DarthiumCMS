@@ -1,9 +1,9 @@
 <?php
 
-require_once "../../engine/main.php";
+require_once "../../engine/engine.php";
 \Engine\Engine::LoadEngine();
 
-if ($sessionRes = \Users\UserAgent::SessionContinue()) $user = new \Users\User($_SESSION["uid"]);
+if ($sessionRes = \Users\UserAgent::SessionContinue()) $user = new \Users\Models\User($_SESSION["uid"]);
 else { header("Location: ../../adminpanel.php?p=forbidden"); exit; }
 
 if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBanned()){

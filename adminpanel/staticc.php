@@ -37,16 +37,16 @@ if ($editPPerm || $createPPerm || $removePPerm) {
 }
 
 if ($editPPerm && isset($_GET["editpage"]) && \Forum\StaticPagesAgent::isPageExists($_GET["editpage"])){
-    $page = new \Forum\StaticPage($_GET["editpage"]);
+    $page = new \Forum\Models\StaticPage($_GET["editpage"]);
     $isEditMode = true;
 } else {
     $isEditMode = false;
 }
 
 if ($editSContentPerm){
-    $firstSmallBannerContent = @\SiteBuilders\BannerAgent::GetBannersByName("firstbanner")["firstbanner"]["content"];
-    $secondSmallBannerContent = @\SiteBuilders\BannerAgent::GetBannersByName("smallbanner")["smallbanner"]["content"];
-    $bigbanners = \SiteBuilders\BannerAgent::GetBanners("banner");
+    $firstSmallBannerContent = @\Decorator\Controllers\BannerAgent::GetBannersByName("firstbanner")["firstbanner"]["content"];
+    $secondSmallBannerContent = @\Decorator\Controllers\BannerAgent::GetBannersByName("smallbanner")["smallbanner"]["content"];
+    $bigbanners = \Decorator\Controllers\BannerAgent::GetBanners("banner");
     $buttons = array();
     foreach ($bigbanners as $bigbanner){
         $bannerId = $bigbanner["id"];
@@ -54,11 +54,11 @@ if ($editSContentPerm){
         $class = ($bigbanner["isVisible"] == 1) ? "btn-success" : "btn-danger";
         array_push($buttons, "<button class=\"btn $class\" type=\"button\" data-banner-id=\"$bannerId\">$bannerName</button>");
     }
-    $panels = \SiteBuilders\SidePanelsAgent::GetPanelsList();
+    $panels = \Decorator\Controllers\SidePanelsAgent::GetPanelsList();
     $panelsList = [];
     foreach ($panels as $panel){
         $id = $panel["id"];
-        $panel = \SiteBuilders\SidePanelsAgent::GetPanel($id);
+        $panel = \Decorator\Controllers\SidePanelsAgent::GetPanel($id);
         $side = ($panel["type"] == "leftside") ? \Engine\LanguageManager::GetTranslation("staticc_panel.left") : \Engine\LanguageManager::GetTranslation("staticc_panel.right");
         $panelsList[] = "<option value=\"$id\">[$side] " . $panel["name"] . "</option>";
     }
@@ -123,7 +123,7 @@ if ($editSContentPerm){
                             </tr>
                         <?php } else ?>
                         <?php foreach($tablePage as $item){
-                            $p = new \Forum\StaticPage($item["id"]); ?>
+                            $p = new \Forum\Models\StaticPage($item["id"]); ?>
                             <tr>
                                 <td><input type="checkbox" data-spi="<?= $p->getPageID(); ?>"></td>
                                 <td><a href="/?sp=<?= $p->getPageID(); ?>"><?= $p->getPageName(); ?></a></td>
@@ -341,7 +341,7 @@ if ($editSContentPerm){
                             <hr>
                             <div class="container-fluid">
                                 <div class="btn-group-vertical col-lg-3 col-md-6 col-sm-6 col-xs-12" id="staticc-banner-btns">
-                                    <?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.banners_panel.big_banners_count")?><span id="staticc-banners-counter"><?php echo \SiteBuilders\BannerAgent::GetBigBannersCount(); ?></span>
+                                    <?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.banners_panel.big_banners_count")?><span id="staticc-banners-counter"><?php echo \Decorator\Controllers\BannerAgent::GetBigBannersCount(); ?></span>
                                     <button class="btn btn-default" type="button" id="staticc-create-banner-btn"><span class="glyphicons glyphicons-plus-sign"></span> <?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.banners_panel.add_big_banner")?></button>
                                     <?php foreach($buttons as $b){
                                         echo $b;
@@ -552,7 +552,7 @@ if ($editSContentPerm){
                             <div class="navbar-group-box" id="navbar-group-box">
                                 <div class="btn-group">
                                     <?php
-                                    $navbarbtns = \SiteBuilders\NavbarAgent::GetElements();
+                                    $navbarbtns = \Decorator\Controllers\NavbarAgent::GetElements();
                                     foreach ($navbarbtns as $navbarbtn){
                                         if ($navbarbtn["type"] == "nav-btn"){
                                             $data_href = $navbarbtn["action"];
@@ -561,7 +561,7 @@ if ($editSContentPerm){
                                             echo "<button class=\"btn btn-default\" type=\"button\" data-href=\"$data_href\" data-id=\"$id\">$content</button>";
                                         }
                                         if ($navbarbtn["type"] == "nav-list"){
-                                            $children = \SiteBuilders\NavbarAgent::GetElementsOfList($navbarbtn["id"]);
+                                            $children = \Decorator\Controllers\NavbarAgent::GetElementsOfList($navbarbtn["id"]);
                                             $data_content = $navbarbtn["action"];
                                             $content = $navbarbtn["content"];
                                             $id = $navbarbtn["id"]; ?>

@@ -1,5 +1,5 @@
 <?php
-require_once "../../engine/main.php";
+require_once "../../engine/engine.php";
 \Engine\Engine::LoadEngine();
 
 if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){

@@ -1,5 +1,5 @@
 <?php
-require_once "../../engine/main.php";
+require_once "../../engine/engine.php";
 \Engine\Engine::LoadEngine();
 /* Errors code:
  * 3s - all changes have been saved [successfuly].
@@ -18,7 +18,7 @@ require_once "../../engine/main.php";
  * 3ngmm - [group] [member] have [not] been [moved].
  * 3ngsd - [standard] [group] can [not] been [deleted].
  */
-if ($sessionRes = \Users\UserAgent::SessionContinue()) $user = new \Users\User($_SESSION["uid"]);
+if ($sessionRes = \Users\UserAgent::SessionContinue()) $user = new \Users\Models\User($_SESSION["uid"]);
 else { header("Location: ../../adminpanel.php?p=forbidden"); exit; }
 
 if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBanned()){

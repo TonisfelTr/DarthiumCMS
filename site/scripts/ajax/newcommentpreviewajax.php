@@ -1,5 +1,5 @@
 <?php
-include_once "../../../engine/main.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/engine/classes/engine/Engine.php";
 
 $text = $_POST["text"];
 

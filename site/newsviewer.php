@@ -1,6 +1,6 @@
 <?php
 define("TT_Uploader", true);
-$topic = new \Forum\Topic($_GET["topic"]);
+$topic = new \Forum\Models\Topic($_GET["topic"]);
 $author = $topic->getAuthor();
 include_once "./site/uploader.php";
 
@@ -42,7 +42,7 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
         if (\Forum\ForumAgent::IsExistQuizeInTopic($topic->getId())) {
             include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/news/quizeframe.html";
             $quizeFrame = getBrick();
-            $quize = new \Forum\Quize(\Forum\ForumAgent::GetQuizeByTopic($topic->getId())["id"]);
+            $quize = new \Forum\Models\Quize(\Forum\ForumAgent::GetQuizeByTopic($topic->getId())["id"]);
 
             if ($user !== false && \Forum\ForumAgent::IsVoted($user->getId(), $quize->getId())) {
                 $quizeFrame = str_replace_once("{QUIZE_QUIZER_HIDDEN}", "hidden", $quizeFrame);
@@ -171,7 +171,7 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
     foreach ($topicComments as $topicElement){
         include "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/news/comment.html";
         $currentComment = getBrick();
-        $comment = new \Forum\TopicComment($topicElement);
+        $comment = new \Forum\Models\TopicComment($topicElement);
         $currentComment = str_replace_once("{COMMENT_AUTHOR_NICKNAME}", $comment->author()->getNickname(), $currentComment);
         $currentComment = str_replace_once("{COMMENT_AUTHOR_ID}", $comment->author()->getId(), $currentComment);
         $currentComment = str_replace_once("{COMMENT_AUTHOR_GROUP_NAME}", $comment->author()->UserGroup()->getName(), $currentComment);
@@ -289,7 +289,7 @@ elseif (isset($_GET["edit"])) {
         $categoriesList = "";
         $categories = \Forum\ForumAgent::GetCategoryList();
         foreach ($categories as $c) {
-            $category = new \Forum\Category($c["id"]);
+            $category = new \Forum\Models\Category($c["id"]);
             if ($topic->getCategoryId() == $category->getId())
                 $atr = " selected";
             else
@@ -313,7 +313,7 @@ elseif (isset($_GET["edit"])) {
     }
 }
 elseif (isset($_GET["cedit"])) {
-    $comment = new \Forum\TopicComment($_GET["cedit"]);
+    $comment = new \Forum\Models\TopicComment($_GET["cedit"]);
     if (($user->getId() == $comment->getAuthorId() && $user->UserGroup()->getPermission("comment_edit")) || $user->UserGroup()->getPermission("comment_foreign_edit")) {
         $pageName = \Engine\LanguageManager::GetTranslation("newsviewer.editor_comment");
         include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/news/commentedit.html";

@@ -1,6 +1,6 @@
 <?php
 
-include_once "../../../engine/main.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/engine/classes/engine/Engine.php";
 \Engine\Engine::LoadEngine();
 
 @$nickname = $_POST["profile-auth-for-nickname-input"];
@@ -15,7 +15,7 @@ function Encrypt($s){
 }
 
 if (!empty($nickname) && \Users\UserAgent::IsNicknameExists($nickname)) {
-    $user = new \Users\User(\Users\UserAgent::GetUserId($nickname));
+    $user = new \Users\Models\User(\Users\UserAgent::GetUserId($nickname));
     ob_start();
     include_once "../../../site/templates/" . Engine\Engine::GetEngineInfo("stp") . "/mailbody.html";
     $body = ob_get_contents();
@@ -44,7 +44,7 @@ if (!empty($nickname) && \Users\UserAgent::IsNicknameExists($nickname)) {
 }
 
 if (!empty($email) && Users\UserAgent::IsEmailExists($email)){
-    $user = new \Users\User(\Users\UserAgent::GetUserId($nickname));
+    $user = new \Users\Models\User(\Users\UserAgent::GetUserId($nickname));
     ob_start();
     include_once "../../../site/templates/" . Engine\Engine::GetEngineInfo("stp") . "/mailbody.html";
     $body = ob_get_contents();

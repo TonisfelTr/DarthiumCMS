@@ -1,11 +1,11 @@
 <?php
 
-include_once "../../engine/main.php";
+include_once "../../engine/engine.php";
 \Engine\Engine::LoadEngine();
 
 $session = \Users\UserAgent::SessionContinue();
 if ($session === TRUE) {
-    $user = new \Users\User($_SESSION["uid"]);
+    $user = new \Users\Models\User($_SESSION["uid"]);
 
     if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBanned()){
         header("Location: banned.php");
@@ -27,7 +27,7 @@ if ($session === TRUE) {
                     exit;
                 }
 
-                $category = new \Forum\Category($category);
+                $category = new \Forum\Models\Category($category);
                 if (!$category->CanCreateTopic() && !$user->UserGroup()->getPermission("category_params_ignore")) {
                     header("Location: ../../?page=newtopic&res=3np");
                     exit;
@@ -82,7 +82,7 @@ if ($session === TRUE) {
     }
 
     if (isset($_POST["topic-edit-btn"])) {
-        $topic = new \Forum\Topic($_POST["topic-edit-id"]);
+        $topic = new \Forum\Models\Topic($_POST["topic-edit-id"]);
         $id = $topic->getId();
         if ($user->getId() == $topic->getAuthorId()) {
             if (!$user->UserGroup()->getPermission("topic_edit")) {
@@ -163,7 +163,7 @@ if ($session === TRUE) {
             header("Location: ../../index.php");
             exit;
         }
-        $topic = new \Forum\Topic($_POST["topic-id"]);
+        $topic = new \Forum\Models\Topic($_POST["topic-id"]);
         if (($user->getId() == $topic->getAuthorId() && $user->UserGroup()->getPermission("topic_delete")) || $user->UserGroup()->getPermission("topic_foreign_delete")){
             $author = $topic->getAuthorId();
             if (\Forum\ForumAgent::DeleteTopic($_POST["topic-id"])){
@@ -180,7 +180,7 @@ if ($session === TRUE) {
 
     if (isset($_POST["topic-add-comment-btn"])){
 
-        $topic = new \Forum\Topic($_POST["topic-id"]);
+        $topic = new \Forum\Models\Topic($_POST["topic-id"]);
         if ($topic->getStatus() == 0) {
             header("Location: index.php?topic=" . $topic->getId());
             exit;
@@ -207,7 +207,7 @@ if ($session === TRUE) {
     if (isset($_POST["comment-delete-btn"])){
         $commentId = $_POST["comment-id"];
 
-        $comment = new \Forum\TopicComment($commentId);
+        $comment = new \Forum\Models\TopicComment($commentId);
         if (($user->getId() == $comment->getAuthorId() && $user->UserGroup()->getPermission("comment_delete")) ||
             $user->UserGroup()->getPermission("comment_foreign_delete")){
                 \Forum\ForumAgent::DeleteComment($commentId);
@@ -221,7 +221,7 @@ if ($session === TRUE) {
     }
 
     if (isset($_POST["comment-edit-btn"])){
-        $comment = new \Forum\TopicComment($_POST["comment-edit-id"]);
+        $comment = new \Forum\Models\TopicComment($_POST["comment-edit-id"]);
         if (($user->UserGroup()->getPermission("comment_edit") && $comment->getAuthorId() == $user->getId())
             || $user->UserGroup()->getPermission("comment_foreign_edit")) {
             if (strlen($_POST["comment-content-textarea"]) < 15){

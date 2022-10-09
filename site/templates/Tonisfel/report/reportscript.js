@@ -66,5 +66,5 @@ $("#report-btn-hr").click(function() {
     insertBBCode("hr", true);
 });
 $("#report-btn-upload").click(function() {
-    $("#uploader-main").show();
+    $("#uploader-engine").show();
 });
