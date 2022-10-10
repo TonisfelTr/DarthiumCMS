@@ -15,8 +15,7 @@ if (!function_exists("getBrick") && !function_exists("str_replace_once")) {
     }
 }
 
-include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/error/engine.html";
-
+include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/error/main.html";
 $errorMain = getBrick();
 
 $errorMain = str_replace_once("{ERROR_CODE}", \Engine\ErrorManager::GetError(), $errorMain);

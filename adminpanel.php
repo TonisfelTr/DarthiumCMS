@@ -6,11 +6,10 @@
  * Time: 5:50 AM
  */
 include "engine/classes/engine/Engine.php";
-define("TT_AP", true);
-define("ADMINPANEL_TEMPLATES", "adminpanel/templates/Default/");
-define("ADMINPANEL_ADDONS", "addons/");
-ob_start();
 \Engine\Engine::LoadEngine();
+define("TT_AP", true);
+define("ADMINPANEL_TEMPLATES", "adminpanel/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/");
+ob_start();
 
 if ($sessionRes = \Users\UserAgent::SessionContinue()) {
     $user = new \Users\Models\User($_SESSION["uid"]);
@@ -88,8 +87,12 @@ $mainNavbar = str_replace_once("{ADMINPANEL_NAV_LOGS_BTN_TEXT}", \Engine\Languag
 $mainNavbar = str_replace_once("{ADMINPANEL_NAV_RIGHT_TO_SITE_TEXT}", \Engine\LanguageManager::GetTranslation("to_site_home"), $mainNavbar);
 $mainNavbar = str_replace_once("{ADMINPANEL_NAV_RIGHT_NICKNAME}", $user->getNickname(), $mainNavbar);
 
-include_once ADMINPANEL_TEMPLATES . "errors.phtml";
-$mainErrors = getBrick();
+if (getOption("res")) {
+    include_once ADMINPANEL_TEMPLATES . "error/main.phtml";
+    $mainErrors = getBrick();
+} else {
+    $mainErrors = "";
+}
 
 if (getOption("p") === false && getOption("plp") === false) {
     include_once ADMINPANEL_TEMPLATES . "home.phtml";
@@ -98,7 +101,7 @@ if (getOption("p") === false && getOption("plp") === false) {
     include_once ADMINPANEL_TEMPLATES . "panels/" . getOption("p") . ".phtml";
     $mainFrame = getBrick();
 } elseif (getOption("plp") !== false) {
-    include_once ADMINPANEL_ADDONS . getOption("plp") . "/pages/adminpanel.html";
+    include_once ADDONS_ROOT . getOption("plp") . "/bin/adminpanel.php";
     $mainFrame = getBrick();
 }
 

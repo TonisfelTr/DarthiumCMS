@@ -76,8 +76,8 @@ class PluginManager
         }
 
         foreach ($keymap as $hostFolder) {
-            if (is_file("addons/$hostFolder/bin/engine.php")) {
-                $conf = include "addons/$hostFolder/config/config.php";
+            if (is_file(ADDONS_ROOT . "$hostFolder/bin/engine.php")) {
+                $conf = include ADDONS_ROOT . "$hostFolder/config/config.php";
                 if (!$conf) {
                     ErrorManager::GenerateError(40);
                     ErrorManager::PretendToBeDied(ErrorManager::GetErrorCode(2), new \Exception("Configuration file doesn't exist."));
@@ -102,8 +102,8 @@ class PluginManager
             $lastId = $insertInto;
         }
 
-        if (is_file( "../../../addons/$codeName/config/traces.php")) {
-            $traces = include "../../../addons/$codeName/config/traces.php";
+        if (is_file( ADDONS_ROOT . "$codeName/config/traces.php")) {
+            $traces = include_once ADDONS_ROOT . "$codeName/config/traces.php";
 
             foreach ($traces as $key => $value){
                 DataKeeper::InsertTo("tt_plugin_trace", ["ofPlugin" => $lastId,
@@ -114,8 +114,8 @@ class PluginManager
             }
         }
 
-        if (is_file("../../../addons/$codeName/config/permissions.php")){
-            $permissions = include "../../../addons/$codeName/config/permissions.php";
+        if (is_file(ADDONS_ROOT . "$codeName/config/permissions.php")){
+            $permissions = include_once ADDONS_ROOT . "$codeName/config/permissions.php";
 
             foreach (GroupAgent::GetGroupList() as $group) {
                 foreach ($permissions as $permission => $value) {
@@ -128,12 +128,12 @@ class PluginManager
             }
         }
 
-        if (is_file("../../../addons/$codeName/config/dbtables.php")){
-            include "../../../addons/$codeName/config/dbtables.php";
+        if (is_file(ADDONS_ROOT . "$codeName/config/dbtables.php")){
+            include_once ADDONS_ROOT . "$codeName/config/dbtables.php";
         }
 
-        if (is_file("../../../addons/$codeName/config/bbcodes.php")){
-            $bbcodes = include "../../../addons/$codeName/config/bbcodes.php";
+        if (is_file(ADDONS_ROOT . "$codeName/config/bbcodes.php")){
+            $bbcodes = include_once ADDONS_ROOT . "$codeName/config/bbcodes.php";
 
             foreach ($bbcodes as $bbcode){
                 DataKeeper::InsertTo("tt_plugin_bbcode", ["ofPlugin" => self::GetPluginId($codeName),
@@ -144,8 +144,8 @@ class PluginManager
             }
         }
 
-        if (is_file("../../../addons/$codeName/config/navbar.php")){
-            include "../../../addons/$codeName/config/navbar.php";
+        if (is_file(ADDONS_ROOT . "$codeName/config/navbar.php")){
+            include_once ADDONS_ROOT . "$codeName/config/navbar.php";
 
             foreach ($navButtons as $button){
                 $parent = DataKeeper::Get("tt_plugin_navbar", ["parent"],
@@ -221,8 +221,8 @@ class PluginManager
         $forPage = "";
         foreach($notStrict as $value){
             if (strstr($main, $value["system_text"]) !== false) {
-                if (file_exists("addons/" . $value["codename"] . "/bin/" . $value["system_text_to"])) {
-                    include_once "addons/" . $value["codename"] . "/bin/" . $value["system_text_to"];
+                if (file_exists(ADDONS_ROOT . "{$value["codename"]}/bin/{$value["system_text_to"]}")) {
+                    include_once ADDONS_ROOT . "{$value["codename"]}/bin/{$value["system_text_to"]}";
                     $forPage = getBrick();
                 } else {
                     $forPage = "Тhis file does not exist.";
@@ -240,8 +240,8 @@ class PluginManager
 
         foreach($Strict as $value) {
             if (strstr($main, $value["system_text"]) !== false) {
-                if (file_exists("addons/" . $value["codename"] . "/bin/" . $value["system_text_to"])) {
-                    include_once "addons/" . $value["codename"] . "/bin/" . $value["system_text_to"];
+                if (file_exists(ADDONS_ROOT . "{$value["codename"]}/bin/{$value["system_text_to"]}")) {
+                    include_once ADDONS_ROOT . "{$value["codename"]}/bin/{$value["system_text_to"]}";
                     $forPage = getBrick();
                 } else {
                     $forPage = "This file does not exist.";
@@ -291,7 +291,8 @@ class PluginManager
      * Return translation in dependence of site language.
      * If file with site language doesn't exist then return English version.
      *
-     * @param string $varPath
+     * @param string $pluginName Plugin's name
+     * @param string $translationLocate Translation path
      * @return array|mixed|string|null
      * @throws \Exception
      */
@@ -299,18 +300,18 @@ class PluginManager
         $path       = explode(".", $varPath);
         $pluginName = reset($path);
 
-        if (file_exists("addons/$pluginName/languages/" . Engine::GetEngineInfo("sl") . ".php")){
+        if (file_exists(ADDONS_ROOT . "$pluginName/languages/" . Engine::GetEngineInfo("sl") . ".php")){
             $languageFile = Engine::GetEngineInfo("sl");
-        } elseif (file_exists("addons/$pluginName/languages/English.php")){
+        } elseif (file_exists(ADDONS_ROOT . "$pluginName/languages/English.php")){
             $languageFile = "English";
         } else {
             ErrorManager::GenerateError(38);
             ErrorManager::PretendToBeDied("Plugin's name is $pluginName", new \Exception("Plugin has no language files."));
         }
 
-        if (!is_dir("addons/$pluginName"))
+        if (!is_dir(ADDONS_ROOT . "$pluginName"))
             throw new \Exception("Plugin with that name does not exist.");
-        require "addons/$pluginName/languages/$languageFile.php";
+        include ADDONS_ROOT . "$pluginName/languages/$languageFile.php";
         $language = $languagePack;
 
         unset($path[0]);
@@ -413,8 +414,8 @@ class PluginManager
         foreach ($plugins as $plugin) {
             if (!self::IsTurnOn($plugin["codeName"]))
                 continue;
-            if (file_exists("addons/" . $plugin["codeName"] . "/config/functions.php"))
-                include_once "addons/" . $plugin["codeName"] . "/config/functions.php";
+            if (file_exists(ADDONS_ROOT . "{$plugin["codeName"]}/config/functions.php"))
+                include_once ADDONS_ROOT . "{$plugin["codeName"]}/config/functions.php";
         }
         foreach ($patterns as $pattern){
             if ($pattern["is_posix"] == 1) {

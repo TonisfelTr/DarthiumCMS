@@ -3,10 +3,9 @@
 namespace Engine;
 
 define("HOME_ROOT", $_SERVER["DOCUMENT_ROOT"] . "/");
-define("__CONFIG__", "{$_SERVER["DOCUMENT_ROOT"]}/engine/config/");
+define("CONFIG_ROOT", "{$_SERVER["DOCUMENT_ROOT"]}/engine/config/");
+define("ADDONS_ROOT", "{$_SERVER["DOCUMENT_ROOT"]}/addons/");
 
-use Guards\Logger;
-use Decorator\Handler;
 use Users\UserAgent;
 
 class Engine
@@ -173,10 +172,10 @@ class Engine
 
     public static function LoadEngine()
     {
-        $file = file_get_contents(__CONFIG__ . "config.sfc");
+        $file = file_get_contents(CONFIG_ROOT . "config.sfc");
         $a = unserialize($file);
 
-        $engConf = json_decode(file_get_contents(__CONFIG__ . "dbconf.sfc"), true);
+        $engConf = json_decode(file_get_contents(CONFIG_ROOT . "dbconf.sfc"), true);
 
         self::$EmailAcc = $a["emailAcc"];
         self::$EmailPass = $a["emailPass"];
@@ -222,13 +221,6 @@ class Engine
 
         error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
 
-        //Definition constant for correct working.
-        define("TT_ADMINPANEL", __DIR__ . "../adminpanel.php");
-        define("TT_INDEX", __DIR__ . "../index.php");
-        define("TT_PROFILE", __DIR__ . "../profile.php");
-        define("TT_BAN", __DIR__ . "../banned.php");
-
-
         @$htaccessGlobal = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/.htaccess", true);
         @$htaccessGlobal = preg_replace("/php_value upload_max_filesize [0-9A-Za-z]+/", "php_value upload_max_filesize " . self::GetEngineInfo("ups"), $htaccessGlobal);
         file_put_contents($_SERVER["DOCUMENT_ROOT"] . "/.htaccess", $htaccessGlobal);
@@ -268,7 +260,7 @@ class Engine
             "multivoterep" => $canMultiRepVote,
             'metricStatus' => $siteMetricStatus
         );
-        if (file_put_contents(__CONFIG__ . "config.sfc", serialize($settingsArray))) return True;
+        if (file_put_contents(CONFIG_ROOT . "config.sfc", serialize($settingsArray))) return True;
         else {
             ErrorManager::GenerateError(14);
             return ErrorManager::GetError();
@@ -468,25 +460,25 @@ class Engine
 
     public static function GetReportReasons()
     {
-        $reasons = file_get_contents(__CONFIG__ . "represes.sfc", FILE_USE_INCLUDE_PATH);
+        $reasons = file_get_contents(CONFIG_ROOT . "represes.sfc", FILE_USE_INCLUDE_PATH);
         return $reasons;
     }
 
     public static function SaveReportReasons($text)
     {
-        $reasons = file_put_contents(__CONFIG__ . "represes.sfc", $text, FILE_USE_INCLUDE_PATH);
+        $reasons = file_put_contents(CONFIG_ROOT . "represes.sfc", $text, FILE_USE_INCLUDE_PATH);
         return $reasons;
     }
 
     public static function GetCensoredWords()
     {
-        $censors = file_get_contents(__CONFIG__ . "censore.sfc", FILE_USE_INCLUDE_PATH);
+        $censors = file_get_contents(CONFIG_ROOT . "censore.sfc", FILE_USE_INCLUDE_PATH);
         return $censors;
     }
 
     public static function SaveCensoredWords($text)
     {
-        $censored = file_put_contents(__CONFIG__ . "censore.sfc", $text, FILE_USE_INCLUDE_PATH);
+        $censored = file_put_contents(CONFIG_ROOT . "censore.sfc", $text, FILE_USE_INCLUDE_PATH);
         return $censored;
     }
 
@@ -497,12 +489,12 @@ class Engine
 
     public static function SaveAnalyticScript($text)
     {
-        return file_put_contents(__CONFIG__ . "analytic.js", $text, FILE_USE_INCLUDE_PATH);
+        return file_put_contents(CONFIG_ROOT . "analytic.js", $text, FILE_USE_INCLUDE_PATH);
     }
 
     public static function GetAnalyticScript()
     {
-        return file_get_contents(__CONFIG__ . "analytic.js", FILE_USE_INCLUDE_PATH);
+        return file_get_contents(CONFIG_ROOT . "analytic.js", FILE_USE_INCLUDE_PATH);
     }
 
     public static function ChatFilter($text)

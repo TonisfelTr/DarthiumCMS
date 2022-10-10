@@ -88,12 +88,10 @@ class ErrorManager
             return $pos!==false ? substr_replace($text, $replace, $pos, strlen($search)) : $text;
         }
 
-        ob_end_flush();
         ob_start();
-        include_once Engine::ConstructTemplatePath("engine", "error", "html");
-
+        include_once Engine::ConstructTemplatePath("main", "error", "html");
         $excCatcher = getBrick();
-        ob_end_flush();
+
         $excCatcher = str_replace("{ERROR_CODE}", ErrorManager::GetError(), $excCatcher);
         $excCatcher = str_replace("{SITE_NAME}", Engine::GetEngineInfo("sn"), $excCatcher);
         $excCatcher = str_replace("{ERROR_MANAGER:EXCEPTION_FORMATED_TEXT}", nl2br($exception->getTraceAsString()), $excCatcher);
@@ -101,6 +99,5 @@ class ErrorManager
         $excCatcher = str_replace("{ERROR_MANAGER:LASTTEXT}", $lastText, $excCatcher);
         echo $excCatcher;
         exit(1);
-
     }
 }

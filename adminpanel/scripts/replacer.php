@@ -136,7 +136,7 @@ if (!$user->UserGroup()->getPermission("change_engine_settings")) {
             "[$multiVoteRepNow -> $multiVoteRepPerm]");
         }
 
-        $metricStatusPass = !is_null($_POST["metric-lever-btn"]) ? 1 : 0;
+        $metricStatusPass = isset($_POST["metric-lever-btn"]) ? 1 : 0;
         if (\Engine\Engine::GetEngineInfo("sms") != $metricStatusPass){
             $metricStatusParam = (\Engine\Engine::GetEngineInfo("sms") == 1)
                 ? \Engine\LanguageManager::GetTranslation("on")
