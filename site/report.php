@@ -129,7 +129,7 @@ if (empty($_GET["preg"])) {
         }
     }
 
-    include_once \Engine\Engine::ConstructTemplatePath("reportmain", "report", "html");
+    include_once \Engine\Engine::ConstructTemplatePath("reportmain", "report");
     $reportMainBlock = getBrick();
 
     $reportMainBlock = str_replace_once("{REPORTS_PAGE:TABLE}", $reportsTable, $reportMainBlock);
@@ -145,7 +145,7 @@ if (empty($_GET["preg"])) {
 } else {
     switch($_GET["preg"]){
         case "add": {
-            include_once \Engine\Engine::ConstructTemplatePath("reportcreate", "report", "html");
+            include_once \Engine\Engine::ConstructTemplatePath("reportcreate", "report");
             $reportCreateBlock = getBrick();
 
             $reportCreateBlock = str_replace_once("{REPORT_PAGE:SUBJECTS_SELECTOR}", constructReasonsSelector(), $reportCreateBlock);
@@ -165,7 +165,7 @@ if (empty($_GET["preg"])) {
                 exit;
             }
 
-            include_once \Engine\Engine::ConstructTemplatePath("reportsee", "report", "html");
+            include_once \Engine\Engine::ConstructTemplatePath("reportsee", "report");
             $reportSeeBlock = getBrick();
 
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:SHORT_MESSAGE}", htmlentities($report->getShortMessage()), $reportSeeBlock);
@@ -185,7 +185,7 @@ if (empty($_GET["preg"])) {
             $reportSeeBlock = str_replace_once("{REPORT_ID}", $report->getId(), $reportSeeBlock);
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:BTNS_PANEL}", "", $reportSeeBlock);
             if (($report->ReportAuthor() == $user || $user->UserGroup()->getPermission("report_foreign_edit")) && !$report->isClosed()) {
-                include_once \Engine\Engine::ConstructTemplatePath("reportpanelbtn", "report", "html");
+                include_once \Engine\Engine::ConstructTemplatePath("reportpanelbtn", "report");
                 $reportBtnBlock = getBrick();
                 $reportBtnBlock = str_replace("{REPORT_PAGE:REPORT_ID}", $report->getId(), $reportBtnBlock);
 
@@ -194,13 +194,13 @@ if (empty($_GET["preg"])) {
                 $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_GROUP_NAME}", "", $reportSeeBlock);
 
             if (!$report->isClosed()){
-                include_once \Engine\Engine::ConstructTemplatePath("reportansweraddform", "report", "html");
+                include_once \Engine\Engine::ConstructTemplatePath("reportansweraddform", "report");
                 $reportAddAnswerForm = getBrick();
 
                 $reportSeeBlock = str_replace_once("{REPORT_PAGE:ANSWER_ADD_FORM}", $reportAddAnswerForm, $reportSeeBlock);
                 $reportSeeBlock = str_replace_once("{REPORT_PAGE:SOLVE_ANSWER}", "", $reportSeeBlock);
             } else {
-                include_once \Engine\Engine::ConstructTemplatePath("reportsolveanswer", "report", "html");
+                include_once \Engine\Engine::ConstructTemplatePath("reportsolveanswer", "report");
                 $reportSolveAnswer = getBrick();
 
                 $answer = new \Guards\ReportAnswer($report->getAnswerId());
@@ -237,7 +237,7 @@ if (empty($_GET["preg"])) {
                 foreach ($answerList as $answer) {
                     $answer = new \Guards\ReportAnswer($answer["id"]);
 
-                    include \Engine\Engine::ConstructTemplatePath("reportanswer", "report", "html");
+                    include \Engine\Engine::ConstructTemplatePath("reportanswer", "report");
                     $reportAnswer = getBrick();
 
                     $reportAnswer = str_replace_once("{REPORT_PAGE:AO_AVATAR}", $answer->getAuthor()->getAvatar() ,$reportAnswer);
@@ -264,7 +264,7 @@ if (empty($_GET["preg"])) {
 
                     $reportAnswerBtn = "";
                     if ($answer->getAuthor() == $user && !$report->isClosed()) {
-                        include \Engine\Engine::ConstructTemplatePath("reportpanelanswerbtn", "report", "html");
+                        include \Engine\Engine::ConstructTemplatePath("reportpanelanswerbtn", "report");
                         $reportAnswerBtn = getBrick();
 
                         $reportAnswerBtn = str_replace("{REPORT_PAGE:ID}", $report->getId(), $reportAnswerBtn);
@@ -321,7 +321,7 @@ if (empty($_GET["preg"])) {
                                         </div>";
             }
 
-            include_once \Engine\Engine::ConstructTemplatePath("reportedit", "report", "html");
+            include_once \Engine\Engine::ConstructTemplatePath("reportedit", "report");
             $reportEditBlock = getBrick();
 
             $reportEditBlock = str_replace_once("{REPORT_PAGE:EDIT_OF_LABEL}", $reportEditFormLabel, $reportEditBlock);

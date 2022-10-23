@@ -89,7 +89,7 @@ class Engine
         include_once "$path.php";
     }
 
-    public static function ConstructTemplatePath($loadingPage, $module = "", $ext = "php")
+    public static function ConstructTemplatePath($loadingPage, $module = "", $ext = "html")
     {
         return $_SERVER["DOCUMENT_ROOT"] . "/site/templates/" . Engine::$SiteTemplate . "/$module/$loadingPage.$ext";
     }

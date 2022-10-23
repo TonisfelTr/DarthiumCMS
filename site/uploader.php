@@ -74,7 +74,7 @@ if ($user != false) {
         }
     }
 
-    include_once \Engine\Engine::ConstructTemplatePath("uploadermain", "uploader", "html");
+    include_once \Engine\Engine::ConstructTemplatePath("uploadermain", "uploader");
     $uploaderBlock = getBrick();
 
     include_once \Engine\Engine::ConstructTemplatePath("uploaderscript", "uploader", "js");

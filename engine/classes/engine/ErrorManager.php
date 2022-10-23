@@ -89,7 +89,7 @@ class ErrorManager
         }
 
         ob_start();
-        include_once Engine::ConstructTemplatePath("main", "error", "html");
+        include_once Engine::ConstructTemplatePath("main", "error");
         $excCatcher = getBrick();
 
         $excCatcher = str_replace("{ERROR_CODE}", ErrorManager::GetError(), $excCatcher);

@@ -8,3 +8,4 @@
 /.idea/
 /.run/
 /engine/logs/
+/engine/migrations/
