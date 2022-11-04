@@ -4,8 +4,10 @@ namespace Decorator\Controllers;
 
 use Engine\DataKeeper;
 use Engine\ErrorManager;
+use Exceptions\Exemplars\SidePanelNotFoundError;
 
 class SidePanelsAgent{
+
     public static function AddSidePanel($side, $name, $content, $isVisible){
         if ($side == SB_LEFTSIDE) $side = "leftside";
         if ($side == SB_RIGHTSIDE) $side = "rightside";
@@ -20,10 +22,10 @@ class SidePanelsAgent{
         else
             return false;
     }
+
     public static function EditSidePanel($id, array $newContent){
         if (!DataKeeper::exists(\Decorator\SB_TABLE, "id", $id)){
-            ErrorManager::GenerateError(35);
-            return ErrorManager::GetError();
+            throw new SidePanelNotFoundError("Cannot find side panel with this ID");
         }
 
         $result = DataKeeper::Update(\Decorator\SB_TABLE, $newContent, ["id" => $id]);
@@ -34,8 +36,7 @@ class SidePanelsAgent{
     }
     public static function DeleteSidePanel($idPanel){
         if (!DataKeeper::exists(\Decorator\SB_TABLE, "id", $idPanel)){
-            ErrorManager::GenerateError(35);
-            return ErrorManager::GetError();
+            throw new SidePanelNotFoundError("Cannot find side panel with this ID");
         }
 
         $result = DataKeeper::Delete(\Decorator\SB_TABLE, ["id" => $idPanel]);
@@ -46,8 +47,7 @@ class SidePanelsAgent{
     }
     public static function GetPanel($idPanel){
         if (!DataKeeper::exists(\Decorator\SB_TABLE, "id", $idPanel)){
-            ErrorManager::GenerateError(35);
-            return ErrorManager::GetError();
+            throw new SidePanelNotFoundError("Cannot find side panel with this ID");
         }
 
         $result = DataKeeper::Get(\Decorator\SB_TABLE, array("name", "type", "content", "isVisible"), array("id" => $idPanel));

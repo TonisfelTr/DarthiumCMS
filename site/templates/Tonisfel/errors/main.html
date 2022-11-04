@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{ENGINE_META:DESCRIPTION}">
+    <meta name="keywords" content="{ENGINE_META:KEYWORDS}">
+    <title>{ERROR_PAGE_TITLE} - {SITE_NAME}</title>
+    <link rel="stylesheet" type="text/css" href="/site/templates/Tonisfel/css/error-style.css">
+    <link href="libs/bootstrap/css/bootstrap.css">
+    <link href="libs/bootstrap/css/bootstrap.min.css">
+    <link href="libs/codemirror/lib/codemirror.css" rel="stylesheet">
+    <link href="site/templates/Tonisfel/icon.ico" rel="icon">
+    <script src="libs/js/jquery-3.1.0.min.js"></script>
+    <script src="libs/bootstrap/js/bootstrap.js"></script>
+    <script src="libs/codemirror/v6/codemirror.js" type="module"></script>
+    <script type="text/javascript">
+        var exports = [];
+    </script>
+</head>
+<body>
+    <div class="fc-tip-hint hidden">
+        {ERROR_MANAGER:FUNCTION_TIP}
+        <div class="triangle-cursor"></div>
+    </div>
+    <div class="general-container">
+        <div class="header">
+            <h1>Таверна Тонисфели</h1>
+            <p>Обработчик ошибок</p>
+        </div>
+        <p class="helper">Эта страница предназначена для разработчиков и Администрации сайта. Здесь можно узнать подробности
+        об ошибке, внезапно появившейся из-за угла.</p>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="error-informer">
+                    <p class="helper">Текст ошибки:</p>
+                    <div class="double-separator">
+                        <span>{ERROR_MANAGER:MESSAGE}</span>
+                        <span>{ERROR_MANAGER:LASTTEXT}</span>
+                    </div>
+                </div>
+                <div class="div-spoiler">
+                    <div class="spoiler-header">
+                        <div class="arrow arrow-bottom"></div>
+                        Файл
+                    </div>
+                    <div class="spoiler-body hidden">
+                        <div class="double-separator">
+                            <div class="filepath-container">
+                                <span>Полный путь</span>
+                                <span>{ERROR_MANAGER:FULL_FILEPATH}</span>
+                            </div>
+                            <div class="filepath-container">
+                                <span>Относительный путь</span>
+                                <span>{ERROR_MANAGER:RELATIVE_FILEPATH}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="error-code-analyzator" id="error-code-analyzator-textarea">
+                    <p class="helper">Выполняемый код:</p>
+                    <textarea class="form-control error-code-textarea" id="error-code-textarea">{ERROR_MANAGER:CODE}</textarea>
+                </div>
+                <div class="error-function-block">
+                    Ошибка в функции: <span class="error-function-help fc-help-tip">{ERROR_MANAGER:FUNCTION_NAME}</span>
+                </div>
+                <div class="error-stacktrace">
+                    Stacktrace:
+                    <pre>{ERROR_MANAGER:STACKTRACE}</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="site/templates/Tonisfel/errors/codemirror.js" type="module"></script>
+    <script type="module">
+        import { changeActiveLine } from "./site/templates/Tonisfel/errors/codemirror.js";
+
+        changeActiveLine({ERROR_MANAGER:LINE});
+    </script>
+    <script type="text/javascript">
+        var hint = document.querySelector(".fc-tip-hint"),
+            phpDocExists = hint.textContent.trim().length != 0;
+
+        if (phpDocExists) {
+            $("span.fc-help-tip").on("mouseleave", function () {
+                $(hint).fadeOut(200);
+            });
+            $("span.fc-help-tip").on("mouseenter", function () {
+                $(hint).fadeIn(200);
+
+                hint.style.top = (this.getBoundingClientRect().top
+                    - hint.getBoundingClientRect().height
+                    - parseInt($(this).css("padding-top").split("px")[0]) - 5) + "px";
+                hint.style.left = (this.getBoundingClientRect().left + this.getBoundingClientRect().width / 2 - hint.getBoundingClientRect().width / 2) + "px";
+            });
+        } else {
+            $("span.fc-help-tip").removeClass("fc-help-tip");
+        }
+
+        $("div.div-spoiler div.spoiler-header").on("click", function() {
+            $("div.div-spoiler div.spoiler-body").slideToggle(300);
+        });
+    </script>
+</body>
+</html>

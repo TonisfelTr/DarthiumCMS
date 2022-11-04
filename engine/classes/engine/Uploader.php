@@ -2,6 +2,8 @@
 
 namespace Engine;
 
+use Exceptions\Exemplars\InvalidUploadFileError;
+use Exceptions\Exemplars\UserExistsError;
 use Users\UserAgent;
 
 class Uploader
@@ -17,26 +19,22 @@ class Uploader
     public static function UploadFile($idUser, $file)
     {
         if ($file['name'] == '') {
-            ErrorManager::GenerateError(28);
-            return ErrorManager::GetError();
+            throw new InvalidUploadFileError("No file received", 28);
         }
 
         if (!UserAgent::IsUserExist($idUser)) {
-            ErrorManager::GenerateError(7);
-            return ErrorManager::GetError();
+            throw new UserExistsError("User with that ID doesn't exist", 7);
         }
 
         $types = Engine::GetEngineInfo("upf");
         $maxsize = Engine::GetEngineInfo("ups");
 
         if (!strstr($types, self::ExtractType($file['name']))) {
-            ErrorManager::GenerateError(13);
-            return ErrorManager::GetError();
+            throw new InvalidUploadFileError("This file cannot be uploaded", 13);
         }
 
         if ($file['size'] >= $maxsize) {
-            ErrorManager::GenerateError(27);
-            return ErrorManager::GetError();
+            throw new InvalidUploadFileError("File is too big", 27);
         }
 
         $images = array();
@@ -77,8 +75,7 @@ class Uploader
         if (move_uploaded_file($file['tmp_name'], $uploadPath . $newName)) {
             return (bool) DataKeeper::InsertTo("tt_uploads", ["file_path" => $filePath, "name" => $newName, "author" => $idUser, "upload_date" => date("Y-m-d", Engine::GetSiteTime())]);
         } else {
-            ErrorManager::GenerateError(12);
-            return ErrorManager::GetError();
+            throw new InvalidUploadFileError("Cannot find the file in local storage", 12);
         }
     }
 

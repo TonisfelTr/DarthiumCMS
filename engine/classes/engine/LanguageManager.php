@@ -2,6 +2,8 @@
 
 namespace Engine;
 
+use Exceptions\Exemplars\LanguageFileNotFoundError;
+
 class LanguageManager
 {
     private static $languageArray = [];
@@ -18,7 +20,8 @@ class LanguageManager
         else
             $languageFile = $_SERVER["DOCUMENT_ROOT"] . "/languages/" . Engine::GetEngineInfo("sl") . ".php";
         if (!file_exists($languageFile))
-            throw new \Error("Language file is not exist");
+            throw new LanguageFileNotFoundError("Language file does not exist", 12);
+
         require $languageFile;
         self::$languageArray = $languagePack;
     }

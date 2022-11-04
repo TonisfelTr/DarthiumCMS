@@ -4,18 +4,18 @@ namespace Users;
 
 use Engine\DataKeeper;
 use Engine\ErrorManager;
+use Exceptions\Exemplars\GroupInvalidNameError;
+use Exceptions\Exemplars\GroupNotExistError;
 
 class GroupAgent {
 
     private static function CheckNameValid($name) {
         if (strlen($name) <= 4) {
-            ErrorManager::GenerateError(15);
-            return ErrorManager::GetError();
+            throw new GroupInvalidNameError("Group name is too short", 15);
         }
 
         if (strlen($name) >= 16) {
-            ErrorManager::GenerateError(16);
-            return ErrorManager::GetError();
+            throw new GroupInvalidNameError("Group name is too long", 16);
         }
 
         preg_match("/[a-zA-Zа-яА-Я]+/", $name, $arrPreg);
@@ -33,20 +33,25 @@ class GroupAgent {
     }
 
     public static function AddGroup($name, $color, $descript) {
+        try {
+            if (!self::CheckNameValid($name) == true) {
+                return DataKeeper::InsertTo("tt_groups", ["id"       => null,
+                    "name"     => $name,
+                    "color"    => $color,
+                    "descript" => $descript]);
+            }
+        } catch (GroupInvalidNameError $ex) {
+            if ($ex->getErrorCode() == 15) {
 
-        if (!self::CheckNameValid($name) == True) {
-            return ErrorManager::GetError();
+            } elseif ($ex->getErrorCode() == 16) {
+
+            }
         }
-
-        return DataKeeper::InsertTo("tt_groups", ["id"       => null,
-            "name"     => $name,
-            "color"    => $color,
-            "descript" => $descript]);
     }
 
     public static function RemoveGroup($id) {
         if (!self::IsGroupExists($id)) {
-            return ErrorManager::GetError();
+            throw new GroupNotExistError("Group doesn't exist");
         }
 
         return DataKeeper::Delete("tt_groups", ["id" => $id]);
@@ -58,8 +63,7 @@ class GroupAgent {
             exit;
         }
         if (!self::IsGroupExists($id)) {
-            ErrorManager::GenerateError(10);
-            return ErrorManager::GetError();
+            throw new GroupNotExistError("Group doesn't exist");
         }
 
         return DataKeeper::Update("tt_groups", ["$type" => $typeNew], ["id" => $id]);
@@ -72,17 +76,23 @@ class GroupAgent {
         }
 
         if ($type == 'name') {
-            if (!self::CheckNameValid($typeNew)) {
-                return ErrorManager::GetError();
+            try {
+                self::CheckNameValid($typeNew);
+
+                return DataKeeper::Update("tt_groups", ["$type" => $typeNew], ["id" => $id]);
+            } catch (GroupInvalidNameError $ex) {
+                if ($ex->getErrorCode() == 15) {
+
+                } elseif ($ex->getErrorCode() == 16) {
+
+                }
             }
         }
-
-        return DataKeeper::Update("tt_groups", ["$type" => $typeNew], ["id" => $id]);
     }
 
     public static function MoveGroupMembers($id, $toId) {
         if (!GroupAgent::IsGroupExists($toId)) {
-            return False;
+            throw new GroupNotExistError("Group doesn't exist");
         }
 
         return DataKeeper::Update("tt_users", ["group" => $toId], ["group" => $id]);

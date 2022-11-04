@@ -5,6 +5,7 @@ namespace Users;
 use Engine\DataKeeper;
 use Engine\Engine;
 use Engine\ErrorManager;
+use Exceptions\Exemplars\NotConnectedToDatabaseError;
 use Users\Models\User;
 
 class Reputationer {
@@ -46,8 +47,7 @@ class Reputationer {
         $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
 
         if ($mysqli->errno) {
-            ErrorManager::GenerateError(2);
-            return ErrorManager::GetError();
+            throw new NotConnectedToDatabaseError("Cannot connect to database");
         }
 
         if ($stmt = $mysqli->prepare("INSERT INTO `tt_reputation` (`id`, `uid`, `authorId`, `type`, `comment`, `createDate`) VALUE (NULL, ?,?,?,?,?)")) {
@@ -65,8 +65,7 @@ class Reputationer {
         $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
 
         if ($mysqli->errno) {
-            ErrorManager::GenerateError(2);
-            return ErrorManager::GetError();
+            throw new NotConnectedToDatabaseError("Cannot connect to database");
         }
 
         if ($stmt = $mysqli->prepare("SELECT count(*) FROM `tt_reputation` WHERE `authorId` = ? AND `uid` = ?")) {

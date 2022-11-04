@@ -8,6 +8,14 @@ use Engine\ErrorManager;
 use Engine\LanguageManager;
 use Engine\Mailer;
 use Engine\Uploader;
+use Exceptions\Exemplars\InvalidAvatarFileError;
+use Exceptions\Exemplars\InvalidEmailError;
+use Exceptions\Exemplars\InvalidNicknameError;
+use Exceptions\Exemplars\InvalidPictureSizeError;
+use Exceptions\Exemplars\InvalidUserCredentialsError;
+use Exceptions\Exemplars\NotActivatedUserError;
+use Exceptions\Exemplars\ReferrerNotExistError;
+use Exceptions\Exemplars\UserExistsError;
 use Forum\ForumAgent;
 use Users\Models\User;
 
@@ -84,8 +92,7 @@ class UserAgent {
 
             if (isset($autorizationResult["id"]) && !empty($autorizationResult["id"])) {
                 if (self::isActivated($autorizationResult["id"]) == false) {
-                    ErrorManager::GenerateError(26);
-                    return ErrorManager::GetError();
+                    throw new NotActivatedUserError("User account is not activated");
                 }
                 self::UpdateLastData($autorizationResult["id"]);
                 return true;
@@ -97,8 +104,7 @@ class UserAgent {
                 [$param, (($passIsHash) ? $pass : hash("sha256", $pass))]);
             if (isset($autorizationResult["id"])) {
                 if (self::isActivated($autorizationResult["id"]) == false) {
-                    ErrorManager::GenerateError(26);
-                    return ErrorManager::GetError();
+                    throw new NotActivatedUserError("User account is not activated");
                 }
                 self::UpdateLastData($autorizationResult["id"]);
                 return true;
@@ -115,9 +121,13 @@ class UserAgent {
         return True;
     }
 
+    /**
+     * Throw error of invalid password.
+     *
+     * @return mixed
+     */
     private static function NotValidPWD() {
-        ErrorManager::GenerateError(25);
-        return ErrorManager::GetError();
+        throw new InvalidUserCredentialsError("Invalid identifier or password");
     }
 
     private static function IsActivated($id) {
@@ -213,7 +223,11 @@ class UserAgent {
             $_SESSION["hostip"] = $_SERVER["REMOTE_ADDR"];
             return True;
         } elseif ($authIs === False) {
-            return self::NotValidPWD();
+            try {
+                return self::NotValidPWD();
+            } catch (InvalidUserCredentialsError $ex) {
+                echo "Invalid credentials";
+            }
         } elseif ($authIs == 26) {
             ini_set("session.gc_maxlifetime", 3600);
             ini_set("session.cookie_lifetime", 3600);
@@ -232,6 +246,11 @@ class UserAgent {
         }
     }
 
+    /**
+     * Continue the session with identifier from cookie.
+     *
+     * @return bool|int
+     */
     public static function SessionContinue() {
         if (isset($_COOKIE["PHPSESSID"])) {
             setcookie("reloadSession", true, time() + 31536000, "/", $_SERVER["SERVER_NAME"]);
@@ -241,7 +260,16 @@ class UserAgent {
             //ini_set("session.save_path", $_SERVER["DOCUMENT_ROOT"] . "/engine/sessions/");
             session_start();
 
+            if (empty($_SESSION)) {
+                self::SessionDestroy();
+                return false;
+            }
+
             $needUserActivating = Engine::GetEngineInfo("na");
+
+            $fstCredential = $needUserActivating ? $_SESSION["nickname"] : $_SESSION["email"];
+            $sndCredential = $_SESSION["passhash"];
+
             $authResult = self::Authorization(!$needUserActivating ? $_SESSION["nickname"] : $_SESSION["email"], $_SESSION["passhash"], true);
 
             if ($authResult === True) {
@@ -288,21 +316,18 @@ class UserAgent {
     public static function AddUser($nick, $password, $email, $referer, $unforce = False, $name = '', $city = '',
                                    $sex = 1) {
         if (!self::IsValidNick($nick)) {
-            ErrorManager::GenerateError(21);
-            return ErrorManager::GetError();
+            throw new InvalidNicknameError("Name contains invalid symbols");
         }
 
         if (!self::IsEmailValid($email)) {
-            ErrorManager::GenerateError(22);
-            return ErrorManager::GetError();
+            throw new InvalidEmailError("Email contains invalid symbols");
         }
 
         if ($referer != '') {
             $referer = self::GetUserId($referer);
 
             if ($referer === False) {
-                ErrorManager::GenerateError(23);
-                return ErrorManager::GetError();
+                throw new ReferrerNotExistError("Referrer with that nickname doesn't exist");
             }
         } else {
             $referer = 0;
@@ -312,22 +337,18 @@ class UserAgent {
             $query = "SELECT count(*) FROM `tt_users` WHERE nickname=? OR email=?";
             $sqlResult = DataKeeper::MakeQuery($query, array($nick, $email));
             if ($sqlResult["count(*)"] > 0) {
-                ErrorManager::GenerateError(3);
-                return ErrorManager::GetError();
+                throw new UserExistsError("User with these email or nickname already exists", ErrorManager::EC_FIRST_IDENTIFIER_EXISTS);
             }
         } else {
             if (DataKeeper::exists("tt_users", "nickname", $nick)) {
-                ErrorManager::GenerateError(4);
-                return ErrorManager::GetError();
+                throw new UserExistsError("User with that nickname already exists.", ErrorManager::EC_NICKNAME_EXISTS);
             }
         }
 
         if (Engine::GetEngineInfo("map") == "y") {
             if (self::IsIPRegistred($_SERVER["REMOTE_ADDR"])) {
-                ErrorManager::GenerateError(36);
-                return ErrorManager::GetError();
+                throw new UserExistsError("User with this IP already exists", ErrorManager::EC_IP_REGISTERED);
             }
-
         }
 
         $randomWord = Engine::RandomGen(10);
@@ -371,7 +392,7 @@ class UserAgent {
                     return false;
                 } else {
                     if ($referer !== false) {
-                        $notificator = new UserNotificator($referer);
+                        $notificator = new Notificator($referer);
                         $notificator->createNotify(14, $queryReqRequest);
                     }
                 }
@@ -390,7 +411,7 @@ class UserAgent {
                     return false;
                 } else {
                     if ($referer !== false) {
-                        $notificator = new UserNotificator($referer);
+                        $notificator = new Notificator($referer);
                         $notificator->createNotify(14, $queryReqRequest);
                     }
                 }
@@ -520,31 +541,26 @@ class UserAgent {
         }
 
         if (!self::IsUserExist($id)) {
-            ErrorManager::GenerateError(7);
-            return ErrorManager::GetError();
+            throw new UserExistsError("This user doesn't exist", 7);
         }
 
         if ($param == "nickname") {
             if (!self::IsValidNick($newparam)) {
-                ErrorManager::GenerateError(21);
-                return ErrorManager::GetError();
+                throw new InvalidNicknameError("Invalid nickname");
             }
 
             if (self::IsNicknameExists($newparam)) {
-                ErrorManager::GenerateError(4);
-                return ErrorManager::GetError();
+                throw new UserExistsError("User with that nickname already exists", 4);
             }
         }
 
         if ($param == "email") {
             if (!self::IsEmailValid($newparam)) {
-                ErrorManager::GenerateError(22);
-                return ErrorManager::GetError();
+                 throw new InvalidEmailError("Invalid email");
             }
 
             if (Engine::GetEngineInfo("na") && self::IsEmailExists($newparam)) {
-                ErrorManager::GenerateError(34);
-                ErrorManager::PretendToBeDied(ErrorManager::GetErrorCode(34), new \Exception("You cannot create user with duplicated email."));
+                throw new UserExistsError("User with that email already exists", 34);
             }
         }
 
@@ -553,8 +569,7 @@ class UserAgent {
 
     public static function ChangeUserPassword($id, $newPass, bool $relogin) {
         if (!self::IsUserExist($id)) {
-            ErrorManager::GenerateError(7);
-            return ErrorManager::GetError();
+            throw new UserExistsError("User does not exist", 7);
         }
 
         $resp = DataKeeper::Update("tt_users", array("password" => hash("sha256", $newPass)), array("id" => $id));
@@ -572,8 +587,7 @@ class UserAgent {
 
     public static function GetUserNick($id) {
         if (self::IsUserExist($id) === false) {
-            ErrorManager::GenerateError(7);
-            return ErrorManager::GetError();
+            throw new UserExistsError("User does not exist", 7);
         }
 
         return DataKeeper::Get("tt_users", ["nickname"], ["id" => $id])[0]["nickname"];
@@ -581,8 +595,7 @@ class UserAgent {
 
     public static function GetUserGroupId($idUser) {
         if (!self::IsUserExist($idUser)) {
-            ErrorManager::GenerateError(7);
-            return ErrorManager::GetError();
+            throw new UserExistsError("User does not exist", 7);
         }
 
         return DataKeeper::Get("tt_users", ["group"], ["id" => $idUser])["group"];
@@ -597,8 +610,7 @@ class UserAgent {
 
     public static function GetUserRefererForCount($idUser) {
         if (!self::IsUserExist($idUser)) {
-            ErrorManager::GenerateError(7);
-            return ErrorManager::GetError();
+            throw new UserExistsError("User does not exist", 7);
         }
 
         return DataKeeper::MakeQuery("SELECT count(*) FROM `tt_users` WHERE `referer` = ?", [$idUser])["count(*)"];
@@ -619,15 +631,14 @@ class UserAgent {
         }
 
         if (!self::IsUserExist($idUser)) {
-            ErrorManager::GenerateError(7);
-            return ErrorManager::GetError();
+            throw new UserExistsError("User does not exist", 7);
         }
         return DataKeeper::Get("tt_users", [$param], ['id' => $idUser])[0][$param];
     }
 
     /**
-     * Return a array with ids users have a nickname like a shedule.
-     * @param $Snickname Shedule of nickname.
+     * Return a array with ids users have a nickname like a schedule.
+     * @param $Snickname string Schedule of nickname.
      * @return array|int
      * In shedule you can use * symbol for unknown substring.
      */
@@ -645,9 +656,9 @@ class UserAgent {
 
     public static function UploadAvatar($idUser, $fileFormName) {
         if (!UserAgent::IsUserExist($idUser)) {
-            ErrorManager::GenerateError(11);
-            return ErrorManager::GetError();
+            throw new UserExistsError("User does not exist", 7);
         }
+
         $imgtypes = array(
             0 => "jpg",
             1 => "png",
@@ -655,24 +666,23 @@ class UserAgent {
             3 => "jpeg",
             4 => "gif"
         );
+
         echo Uploader::ExtractType($_FILES[$fileFormName]['name']) . "<br>";
         echo $_FILES[$fileFormName]['name'];
         if (in_array(Uploader::ExtractType($_FILES[$fileFormName]['name']), $imgtypes)) {
             $uploaddir = $_SERVER["DOCUMENT_ROOT"] . "/uploads/avatars/";
         } else {
-            ErrorManager::GenerateError(18);
-            return ErrorManager::GetError();
+            throw new InvalidAvatarFileError("Failed uploading the avatar file", 18);
         }
 
         if (getimagesize($_FILES[$fileFormName]['tmp_name'])[0] != Engine::GetEngineInfo("aw") ||
             getimagesize($_FILES[$fileFormName]['tmp_name'])[1] != Engine::GetEngineInfo("ah")) {
-            ErrorManager::GenerateError(19);
-            return ErrorManager::GetError();
+            throw new InvalidPictureSizeError("This avatar picture is too big", 19);
         }
 
+        /** todo: поправить разме; в админке можно указать коэфициент вместо шестёрки. */
         if ($_FILES[$fileFormName]['size'] > 6 * 1024 * 1024) {
-            ErrorManager::GenerateError(20);
-            return ErrorManager::GetError();
+            throw new InvalidAvatarFileError("Picture has too big sizes", 20);
         }
 
         if (file_exists("../uploads/avatars/" . UserAgent::GetUserParam($idUser, "avatar"))) {
@@ -717,11 +727,11 @@ class UserAgent {
             return false;
         }
         return DataKeeper::MakeQuery("SELECT `users`.`id` AS `friendId`,
-                                                        `friends`.`fhost` AS `fhost`,
-                                                        `friends`.`regdate` AS `regdate`            
-                                                 FROM `tt_users` AS `users`
-                                                 LEFT JOIN `tt_friends` AS `friends` ON `users`.`id` = `friends`.`friendId`   
-                                                 WHERE `users`.`id` IN (SELECT `friendId` FROM `tt_friends` WHERE `fhost`=?) AND `users`.`lasttime` > ?",
+                                                   `friends`.`fhost` AS `fhost`,
+                                                   `friends`.`regdate` AS `regdate`            
+                                             FROM `tt_users` AS `users`
+                                             LEFT JOIN `tt_friends` AS `friends` ON `users`.`id` = `friends`.`friendId`   
+                                             WHERE `users`.`id` IN (SELECT `friendId` FROM `tt_friends` WHERE `fhost`=?) AND `users`.`lasttime` > ?",
             [$ofUserId, Engine::GetSiteTime() - 60 * 15], true);
     }
 

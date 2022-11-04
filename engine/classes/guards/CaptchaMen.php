@@ -5,6 +5,9 @@ namespace Guards;
 use Engine\DataKeeper;
 use Engine\Engine;
 use Engine\ErrorManager;
+use Exceptions\Exemplars\CaptchaGenerationError;
+use Exceptions\Exemplars\CaptchaNotExistError;
+use Exceptions\Exemplars\ForbiddenError;
 
 class CaptchaMen{
     private static $captchaHash;
@@ -19,6 +22,7 @@ class CaptchaMen{
         if ($queryResponse != '') return $queryResponse;
         else return false;
     }
+
     public static function GenerateCaptcha(){
 
         self::$captchaFetched = False;
@@ -29,6 +33,7 @@ class CaptchaMen{
             else return False;
 
     }
+
     public static function FetchCaptcha($type){
 
         /* Types:
@@ -37,7 +42,9 @@ class CaptchaMen{
          * 3. Send message.
          * 4. Reputation change
          */
-        if (empty(self::$captchaHash) || empty($type)){ ErrorManager::GenerateError(8); return ErrorManager::GetError(); }
+        if (empty(self::$captchaHash) || empty($type)){
+            throw new CaptchaNotExistError("Cannot find captcha string");
+        }
 
         self::$captchaType = $type;
         $imageName = Engine::RandomGen(8);
@@ -51,15 +58,14 @@ class CaptchaMen{
         return $imageName;
 
     }
+
     public static function GenerateImage($imageName){
         if (empty(self::$captchaIDHash) || self::$captchaFetched == False){
-            ErrorManager::GenerateError(8);
-            return ErrorManager::GetError();
+            throw new CaptchaNotExistError("Cannot find captcha string");
         }
 
         if (!$image = imagecreatetruecolor(100,35)){
-            ErrorManager::GenerateError(14);
-            return ErrorManager::GetError();
+            throw new CaptchaGenerationError("Failed to generate captcha picture", 8);
         }
 
         imagefill($image, 0, 0, imagecolorallocate($image, 255,255,255));
@@ -69,11 +75,13 @@ class CaptchaMen{
         imagepng($image, $_SERVER["DOCUMENT_ROOT"]."/engine/captchas/".$imageName.".png");
         return "/engine/captchas/".$imageName.".png";
     }
+
     public static function CheckCaptcha($typedCaptcha, $captchaID, $type){
         if (empty($captchaID) || empty($type) || empty($typedCaptcha)) return false;
 
         return DataKeeper::MakeQuery("SELECT count(*) FROM `tt_captcha` WHERE `type` = ? AND `captcha` LIKE ? AND `id_hash` = ?", [$type, strtoupper($typedCaptcha), $captchaID])["count(*)"] == 0 ? false : true;
     }
+
     public static function RemoveCaptcha(){
         $time = Engine::GetSiteTime() - 600;
         $queryResponse = DataKeeper::MakeQuery("SELECT `picName` FROM `tt_captcha` WHERE `createTime` < ?", [$time], true);

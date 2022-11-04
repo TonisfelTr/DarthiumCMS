@@ -2,6 +2,9 @@
 
 namespace Engine;
 
+use Exceptions\Exemplars\NotConnectedToDatabaseError;
+use Exceptions\Exemplars\PluginError;
+use Exceptions\Exemplars\PluginNotFoundError;
 use Users\GroupAgent;
 
 /**
@@ -79,9 +82,7 @@ class PluginManager
             if (is_file(ADDONS_ROOT . "$hostFolder/bin/engine.php")) {
                 $conf = include ADDONS_ROOT . "$hostFolder/config/config.php";
                 if (!$conf) {
-                    ErrorManager::GenerateError(40);
-                    ErrorManager::PretendToBeDied(ErrorManager::GetErrorCode(2), new \Exception("Configuration file doesn't exist."));
-                    return 2;
+                    throw new PluginError("Config file of plugin \"$hostFolder\" does not exist");
                 }
                 self::$plugins[$hostFolder]["config"] = $conf;
             }
@@ -187,8 +188,7 @@ class PluginManager
         $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
 
         if ($mysqli->errno) {
-            ErrorManager::GenerateError(2);
-            return ErrorManager::GetError();
+            throw new NotConnectedToDatabaseError("Cannot connect to database");
         }
 
         $notStrict = [];
@@ -305,12 +305,11 @@ class PluginManager
         } elseif (file_exists(ADDONS_ROOT . "$pluginName/languages/English.php")){
             $languageFile = "English";
         } else {
-            ErrorManager::GenerateError(38);
-            ErrorManager::PretendToBeDied("Plugin's name is $pluginName", new \Exception("Plugin has no language files."));
+            throw new PluginError("Language file for plugin does not find", 38);
         }
 
         if (!is_dir(ADDONS_ROOT . "$pluginName"))
-            throw new \Exception("Plugin with that name does not exist.");
+            throw new PluginNotFoundError("Plugin with name \"$pluginName\" did not found", 39);
         include ADDONS_ROOT . "$pluginName/languages/$languageFile.php";
         $language = $languagePack;
 

@@ -2,6 +2,9 @@
 
 namespace Engine;
 
+use Exceptions\Exemplars\InSqlQueryError;
+use Exceptions\Exemplars\NotConnectedToDatabaseError;
+
 class DataKeeper
 {
     private static $errMessage = "";
@@ -15,9 +18,9 @@ class DataKeeper
             $pdo = new \PDO($dsn, $dblogin, $dbpass);
             return $pdo;
         } catch (\PDOException $pdoExcp) {
-            ErrorManager::GenerateError(2);
-            ErrorManager::PretendToBeDied(ErrorManager::GetErrorCode(2), $pdoExcp);
+            throw new NotConnectedToDatabaseError("Cannot connect to database: {$pdoExcp->getMessage()}");
         }
+
         return false;
     }
 
@@ -134,8 +137,7 @@ class DataKeeper
         if ($preparedQuery->execute($varsArrToSend))
             return true;
         else {
-            ErrorManager::GenerateError(33);
-            ErrorManager::PretendToBeDied("$query", new \PDOException($preparedQuery->errorInfo()[2]));
+            throw new InSqlQueryError($preparedQuery->errorInfo()[2]);
             return false;
         }
     }
@@ -222,10 +224,9 @@ class DataKeeper
         else
             $result = $preparedQuery->execute();
         if (!$result) {
-            ErrorManager::GenerateError(33);
-            ErrorManager::PretendToBeDied("Cannot make special SQL query: [" . $preparedQuery->errorInfo()[0] . "] " . $preparedQuery->errorInfo()[2], new \PDOException("Cannot make special SQL query."));
-            return false;
+            throw new InSqlQueryError($preparedQuery->errorInfo()[2]);
         }
+
         if ($multiResponse)
             return $preparedQuery->fetchAll($pdo::FETCH_ASSOC);
         else

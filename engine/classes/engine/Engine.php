@@ -6,6 +6,7 @@ define("HOME_ROOT", $_SERVER["DOCUMENT_ROOT"] . "/");
 define("CONFIG_ROOT", "{$_SERVER["DOCUMENT_ROOT"]}/engine/config/");
 define("ADDONS_ROOT", "{$_SERVER["DOCUMENT_ROOT"]}/addons/");
 
+use Exceptions\Exemplars\NotLoadedEngineConfigError;
 use Users\UserAgent;
 
 class Engine
@@ -224,6 +225,9 @@ class Engine
         @$htaccessGlobal = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/.htaccess", true);
         @$htaccessGlobal = preg_replace("/php_value upload_max_filesize [0-9A-Za-z]+/", "php_value upload_max_filesize " . self::GetEngineInfo("ups"), $htaccessGlobal);
         file_put_contents($_SERVER["DOCUMENT_ROOT"] . "/.htaccess", $htaccessGlobal);
+
+        include_once "engine/classes/engine/ErrorManager.php";
+        set_exception_handler("Engine\ErrorManager::throwHandlerHtml");
     }
 
     public static function SettingsSave($DomainSite, $siteName, $siteTagline, $siteStatus, $siteSubscribe, $siteHashtags, $siteLang, $siteTemplate, $siteRegionTime,
@@ -262,8 +266,7 @@ class Engine
         );
         if (file_put_contents(CONFIG_ROOT . "config.sfc", serialize($settingsArray))) return True;
         else {
-            ErrorManager::GenerateError(14);
-            return ErrorManager::GetError();
+            throw new NotLoadedEngineConfigError("Cannot load config file.");
         }
     }
 
@@ -546,5 +549,20 @@ class Engine
                 header("Location: /$flag");
                 exit;
         }
+    }
+
+    /**
+     * Changing service tags for necessary text.
+     *
+     * @param $search string Replacing text
+     * @param $replace string New text instead searching.
+     * @param $text string Text of page.
+     * @return string Output buffer content with replaced service tag.
+     */
+    public static function replaceFirst($search, $replace, $text) : string {
+        //Find position of first mention...
+        $pos = strpos($text, $search);
+        //If mention exists, we replace its content.
+        return $pos!==false ? substr_replace($text, $replace, $pos, strlen($search)) : $text;
     }
 }

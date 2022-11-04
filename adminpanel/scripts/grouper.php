@@ -162,23 +162,17 @@ if ((!$user->UserGroup()->getPermission("group_create")) &&
 
     if (isset($_POST["save_group_button"])) {
         if ($user->UserGroup()->getPermission("group_change")) {
-            if (strlen($_POST["groupname"]) <= 4) {
-                \Engine\ErrorManager::GenerateError(15);
-                { header("Location: ../../adminpanel.php?p=groups&res=3nlfs&visible&group=" . $_POST["group-id-input"]); exit; }
-            } elseif (strlen($_POST["groupname"]) >= 50) {
-                \Engine\ErrorManager::GenerateError(16);
-                { header("Location: ../../adminpanel.php?p=groups&res=3nmfts&visible&group=" . $_POST["group-id-input"]); exit; }
-            } else {
                 \Users\GroupAgent::ChangeGroupData($_POST["group-id-input"], "name", $_POST["groupname"]);
                 \Users\GroupAgent::ChangeGroupData($_POST["group-id-input"], "descript", $_POST["groupsubscribe"]);
                 \Users\GroupAgent::ChangeGroupData($_POST["group-id-input"], "color", $_POST["groupcolor"]);
-                {
-                    \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("group_panel.logs.change_custom_group_info_log") . "\"$groupName\"");
-                    header("Location: ../../adminpanel.php?p=groups&res=3se&visible&group=" . $_POST["group"]);
-                    exit;
-                }
+                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("group_panel.logs.change_custom_group_info_log") . "\"$groupName\"");
+                header("Location: ../../adminpanel.php?p=groups&res=3se&visible&group=" . $_POST["group"]);
+                exit;
             }
-        } else { header("Location: ../../adminpanel.php?p=groups&res=3ne&visible&group=" . $_POST["group"]); exit; }
+        } else {
+            header("Location: ../../adminpanel.php?p=groups&res=3ne&visible&group=" . $_POST["group"]);
+            exit;
+        }
     }
 
     if (isset($_POST["edit_group_button"])) {
@@ -189,6 +183,5 @@ if ((!$user->UserGroup()->getPermission("group_create")) &&
         }
         //if ()
     }
-}
 
 { header("Location: ../../adminpanel.php?p=forbidden"); exit; }

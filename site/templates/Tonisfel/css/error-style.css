@@ -1,13 +1,3 @@
-html,
-body{
-    height: 100%;
-    width: 100%;
-    overflow-x: auto;
-    padding: 0;
-    margin: 0;
-
-}
-
 @font-face {
     font-family: "My Passion";
     src: url("../../../../libs/styles/font.otf");
@@ -18,38 +8,194 @@ body{
     src: url("../../../../libs/styles/site-font.ttf");
 }
 
+html,
 body{
-    position: fixed;
+    height: 100%;
+    width: 100%;
+    overflow-x: auto;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    background-image: url("errorbg.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+div.fc-tip-hint {
+    position: absolute;
+    background: rgba(48, 48, 48, 0.7);
     color: white;
-    font: 13px "Trebuchet MS";
-    background: linear-gradient(250deg, #666, #111),
-                linear-gradient(200deg, #555, #111),
-                linear-gradient(150deg, #444, #111),
-                linear-gradient(100deg, #222, #111);
-}
-
-div.header{
-    background: radial-gradient(at left center, #FF9600, #eec187);
-    color: #0e1d1b;
-    text-align: left;
-    padding: 25px;
-}
-
-p.helper{
-    padding: 20px;
-}
-
-.error-code-analyzator,
-.error-informer,
-.error-stacktrace {
-    margin: 5px;
-    border: 1px white solid;
-    border-radius: 5px;
+    z-index: 999;
     padding: 10px;
+    border-radius: 7px;
+    font-family: "Consolas", sans-serif;
+    font-size: 14px;
+    width: 300px;
 }
 
-.error-stacktrace,
-.error-code-analyzator {
-    background: black;
+div.fc-tip-hint div.triangle-cursor {
+    position: absolute;
+    width: 100px;
+    rotate: 90deg;
+}
+
+div.fc-tip-hint div.triangle-cursor::after {
+    content: '';
+    position: absolute;
+    border: 10px solid transparent;
+    border-left: 10px solid rgba(48,48,48,0.7);
+    margin: -100px 60px;
+}
+
+div.general-container {
+    margin: 100px;
+    padding: 30px;
+    font-family: "Trebuchet MS";
     color: white;
+    border-radius: 7px;
+    border: 1px solid white;
+}
+
+textarea {
+    display: none;
+}
+
+div.cm-scroller {
+    max-height: 300px;
+    scrollbar-width: thin;
+    scrollbar-color: #a0a0a0 #606060;
+}
+
+div.cm-scroller::-webkit-scrollbar {
+    width: 12px;
+}
+
+div.cm-scroller::-webkit-scrollbar-track {
+    background: #a0a0a0;
+}
+
+div.cm-scroller::-webkit-scrollbar-thumb {
+    background-color: #606060;
+    border-radius: 20px;
+    border: 3px solid orange;
+}
+
+div.cm-content {
+    background: white;
+}
+
+div.cm-line {
+    color: #595959;
+}
+
+div.cm-activeLine {
+    background: linear-gradient(90deg, rgba(226,15,15,0.4822129535407913) 0%, rgba(75,22,8,0.24691883589373254) 35%, rgb(255, 247, 204) 65%, rgba(203,163,43,0) 90%);
+    background-color: transparent !important;
+    color: white;
+}
+
+div.cm-activeLineGutter {
+    background: rgba(226,15,15,0.4822129535407913) !important;
+    color: white !important;
+}
+
+div.cm-gutterElement {
+    color: #909090;
+}
+
+div.header {
+    border-bottom: 2px solid white;
+    padding: 8px;
+}
+
+div.header h1 {
+    font-family: "My Passion";
+}
+
+div.error-informer div.double-separator {
+    font-family: 'Consolas', sans-serif;
+    background: linear-gradient(90deg, rgba(15,207,226,0.4822129535407913) 0%, rgb(115, 143, 203) 35%, rgb(75, 167, 221) 45%, rgba(0,212,255,0) 90%);
+}
+
+div.div-spoiler {
+    border: 1px solid white;
+    margin-top: 15px;
+    width: 100%;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+}
+
+div.spoiler-header {
+    padding: 15px;
+    background: linear-gradient(90deg, rgba(77,17,116,1) 0%, rgba(59,59,116,1) 50%, rgba(0,212,255,0) 90%);
+    border-radius: 7px;
+    display: inline-flex;
+    cursor: pointer;
+    width: 100%;
+}
+
+div.spoiler-header div.arrow {
+    width: 7px;
+    height: 5px;
+    border-top: 3px solid #A36FD5;
+    border-right: 3px solid #6E18C0;
+    margin-right: 15px;
+}
+
+div.spoiler-header div.arrow-top {
+    margin-top: 5px;
+    rotate: 315deg;
+}
+
+div.spoiler-header div.arrow-bottom {
+    margin-top: 3px;
+    rotate: 135deg;
+}
+
+div.spoiler-body {
+    border-top: 1px solid white;
+}
+
+div.double-separator {
+    display: inline-flex;
+    justify-content: space-between;
+    padding: 10px;
+    width: 100%;
+}
+
+.hidden {
+    display: none;
+}
+
+div.double-separator span:last-child {
+    padding-right: 20px;
+}
+
+div.filepath-container {
+    display: flex;
+    flex-direction: column;
+}
+
+div.filepath-container:last-child {
+    padding-right: 20px;
+}
+
+div.error-code-analyzator {
+    padding-bottom: 20px;
+}
+
+div.error-function-block {
+    padding-bottom: 20px;
+}
+
+div.error-function-block span.fc-help-tip {
+    display: inline-block;
+    min-width: 200px;
+    background: linear-gradient(90deg, rgba(15,207,226,0.4822129535407913) 0%, rgb(115, 143, 203) 35%, rgb(75, 167, 221) 45%, rgba(0,212,255,0) 90%);
+    padding: 5px 10px;
+    border-radius: 3px;
+    text-decoration: underline dashed;
+    cursor: help;
 }

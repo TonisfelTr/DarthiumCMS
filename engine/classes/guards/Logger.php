@@ -4,7 +4,7 @@ namespace Guards;
 
 use Engine\DataKeeper;
 use Engine\Engine;
-use Engine\ErrorManager;
+use Exceptions\Exemplars\NotConnectedToDatabaseError;
 use Users\UserAgent;
 
 class Logger{
@@ -98,8 +98,7 @@ class Logger{
 
         $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
         if (mysqli_connect_errno()) {
-            ErrorManager::GenerateError(2);
-            return ErrorManager::GetError();
+            throw new NotConnectedToDatabaseError("Cannot connect to database");
         }
 
         if ($stmt = $mysqli->prepare("SELECT * FROM `tt_logs` ORDER BY `datetime` DESC")){

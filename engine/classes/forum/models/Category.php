@@ -4,6 +4,7 @@ namespace Forum\Models;
 
 use Engine\DataKeeper;
 use Engine\ErrorManager;
+use Exceptions\Exemplars\CategoryNotExistError;
 use Forum\ForumAgent;
 
 class Category extends ForumAgent{
@@ -18,8 +19,7 @@ class Category extends ForumAgent{
 
     public function __construct($categoryId){
         if (!self::isCategoryExists($categoryId)){
-            ErrorManager::GenerateError(32);
-            return ErrorManager::GetError();
+            throw new CategoryNotExistError("This category doesn't exist");
         }
 
         $queryResponse = DataKeeper::Get("tt_categories", ["*"], ["id" => $categoryId])[0];

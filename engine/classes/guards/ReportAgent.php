@@ -4,7 +4,10 @@ namespace Guards;
 
 use Engine\DataKeeper;
 use Engine\Engine;
-use Engine\ErrorManager;
+use Exceptions\Exemplars\ReportAnswerNotExistError;
+use Exceptions\Exemplars\ReportAnswerManipulationError;
+use Exceptions\Exemplars\ReportNotExistError;
+use Guards\Models\Report;
 
 class ReportAgent
 {
@@ -14,8 +17,7 @@ class ReportAgent
     }
     private static function isAnswerSolve($answerId){
         if (!self::isAnswerExists($answerId)){
-            ErrorManager::GenerateError(30);
-            return ErrorManager::GetError();
+            throw new ReportAnswerNotExistError("Cannot find the report answer");
         }
 
         $queryResponse = DataKeeper::Get("tt_reports", ["id"], [$answerId])[0]["id"];
@@ -35,12 +37,11 @@ class ReportAgent
     public static function isReportExists($reportId){
         return DataKeeper::MakeQuery("SELECT count(*) FROM `tt_reports` WHERE `id` = ?", [$reportId])["count(*)"];
     }
-
     public static function CreateAnswer($authorId, $text, $reportId){
         if (!self::isReportExists($reportId)){
-            ErrorManager::GenerateError(29);
-            return ErrorManager::GetError();
+            throw new ReportNotExistError("Cannot find the report");
         }
+
         DataKeeper::InsertTo("tt_reportanswers", ["reportId" => $reportId,
             "authorId" => $authorId,
             "create_date" => date("Y-m-d", Engine::GetSiteTime()),
@@ -50,46 +51,40 @@ class ReportAgent
     }
     public static function DeleteAnswer($answerId){
         if (!self::isAnswerExists($answerId)){
-            ErrorManager::GenerateError(30);
-            return ErrorManager::GetError();
+            throw new ReportAnswerNotExistError("Cannot find the report answer");
         }
 
         if (self::isAnswerSolve($answerId)){
-            ErrorManager::GenerateError(31);
-            return ErrorManager::GetError();
+            throw new ReportAnswerManipulationError("Cannot delete report solve answer", 31);
         }
 
         return DataKeeper::Delete("tt_reportanswers", ["id" => $answerId]);
     }
     public static function ChangeAnswerText($answerId, $newText, $reasonEdit, $editorId){
         if (!self::isAnswerExists($answerId)){
-            ErrorManager::GenerateError(30);
-            return ErrorManager::GetError();
+            throw new ReportAnswerNotExistError("Cannot find the report answer");
         }
 
         if (self::isAnswerSolve($answerId)){
-            ErrorManager::GenerateError(31);
-            return ErrorManager::GetError();
+            throw new ReportAnswerManipulationError("Cannot edit solve answer of the report", 31);
         }
 
         return DataKeeper::Update("tt_reportanswers", ["message" => $newText, "edit_date" => date("Y-m-d H:m:s", Engine::GetSiteTime()), "reason_edit" => $reasonEdit, "last_editorId" => $editorId], ["id" => $answerId]);
     }
     public static function SetAsSolveOfReportTheAnswer($idReport, $answerId){
         if (!self::isAnswerExists($answerId)){
-            ErrorManager::GenerateError(30);
-            return ErrorManager::GetError();
+            throw new ReportAnswerNotExistError("Cannot find the report answer");
         }
+
         if (!self::isReportExists($idReport)){
-            ErrorManager::GenerateError(29);
-            return ErrorManager::GetError();
+            throw new ReportNotExistError("Cannot find the report");
         }
 
         return DataKeeper::Update("tt_reports", ["answerId" => $answerId, "status" => 2, "close_data" => date("Y-m-d", Engine::GetSiteTime())], ["id" => $idReport]);
     }
     public static function GetAnswerParam($answerId, $param){
         if (!self::isAnswerExists($answerId)){
-            ErrorManager::GenerateError(30);
-            return ErrorManager::GetError();
+            throw new ReportAnswerNotExistError("Cannot find the report answer");
         }
 
         return DataKeeper::Get("tt_reportanswers", [$param], ["id" => $answerId])[0][$param];
@@ -105,8 +100,7 @@ class ReportAgent
     }
     public static function DeleteReport($reportId){
         if (!self::isReportExists($reportId)){
-            ErrorManager::GenerateError(29);
-            return ErrorManager::GetError();
+            throw new ReportNotExistError("Cannot find the report");
         }
 
         $firstQuery = DataKeeper::Delete("tt_reports", ["id" => $reportId]);
@@ -119,8 +113,7 @@ class ReportAgent
         if (in_array($param, ["create_date", "id", "close_date"])) return false;
 
         if (!self::isReportExists($idReport)){
-            ErrorManager::GenerateError(29);
-            return ErrorManager::GetError();
+            throw new ReportNotExistError("Cannot find the report");
         }
 
         return DataKeeper::Update("tt_reports", [$param => $newValue], ["id" => $idReport]);

@@ -5,6 +5,11 @@ namespace Forum;
 use Engine\DataKeeper;
 use Engine\Engine;
 use Engine\ErrorManager;
+use Exceptions\Exemplars\InSqlQueryError;
+use Exceptions\Exemplars\InvalidPageNumberError;
+use Exceptions\Exemplars\NotConnectedToDatabaseError;
+use Exceptions\Exemplars\StmtQueryError;
+use Exceptions\Exemplars\UserExistsError;
 use Users\UserAgent;
 
 class ForumAgent {
@@ -217,16 +222,15 @@ class ForumAgent {
     }
     public static function GetCountTopicOfAuthor($userId){
         if (!UserAgent::IsUserExist($userId)){
-            ErrorManager::GenerateError(11);
-            ErrorManager::PretendToBeDied("User with ID $userId is not exist.", new InvalidArgumentException());
+            throw new UserExistsError("This user doesn't exist", 11);
         }
+
         $result = DataKeeper::MakeQuery("SELECT count(*) FROM `tt_topics` WHERE `authorId`=?", [$userId]);
         return $result["count(*)"];
     }
     public static function GetTopicsOfAuthor($userId, $mini = false, $page = 1){
         if (!UserAgent::IsUserExist($userId)){
-            ErrorManager::GenerateError(11);
-            ErrorManager::PretendToBeDied("User with ID $userId is not exist.", new InvalidArgumentException());
+            throw new UserExistsError("This user doesn't exist", 11);
         }
 
         if (!$mini) {
@@ -298,7 +302,7 @@ class ForumAgent {
     }
     public static function GetCommentsOfTopic(int $topicId, int $page = 1){
         if ($page < 1)
-            throw new InvalidArgumentException("Page number cannot be less then 0.");
+            throw new InvalidPageNumberError("This page doesn't exist");
 
         //Откуда отсчёт
         $lowBorder = $page * 10 - 10;
@@ -308,16 +312,14 @@ class ForumAgent {
         $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
 
         if ($mysqli->errno){
-            ErrorManager::GenerateError(2);
-            return ErrorManager::GetError();
+            throw new NotConnectedToDatabaseError("Cannot connect to database");
         }
 
         if ($stmt = $mysqli->prepare("SELECT `id` FROM `tt_topiccomments` WHERE `topicId` = ? LIMIT $lowBorder,$highBorder")){
             $stmt->bind_param("i", $topicId);
             $stmt->execute();
             if ($stmt->errno){
-                ErrorManager::GenerateError(9);
-                return ErrorManager::GetError();
+                throw new StmtQueryError("Error in database query");
             }
             $stmt->bind_result($topicsId);
             $result = [];
@@ -332,16 +334,14 @@ class ForumAgent {
         $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
 
         if ($mysqli->errno){
-            ErrorManager::GenerateError(2);
-            return ErrorManager::GetError();
+            throw new NotConnectedToDatabaseError("Cannot connect to database");
         }
 
         if ($stmt = $mysqli->prepare("SELECT count(*) FROM `tt_topiccomments` WHERE `topicId` = ?")){
             $stmt->bind_param("i", $topicId);
             $stmt->execute();
             if ($stmt->errno){
-                ErrorManager::GenerateError(9);
-                return ErrorManager::GetError();
+                throw new StmtQueryError("Cannot execute STMT query", 9);
             }
             $stmt->bind_result($count);
             $stmt->fetch();

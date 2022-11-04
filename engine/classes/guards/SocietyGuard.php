@@ -5,6 +5,8 @@ namespace Guards;
 use Engine\DataKeeper;
 use Engine\Engine;
 use Engine\ErrorManager;
+use Exceptions\Exemplars\BannedEntityError;
+use Exceptions\Exemplars\UserExistsError;
 use Users\UserAgent;
 
 class SocietyGuard
@@ -22,12 +24,11 @@ class SocietyGuard
     public static function Ban($id, $reason, $time = 1, $author)
     {
         if (self::IsBanned($id)) {
-            ErrorManager::GenerateError(5);
-            return ErrorManager::GetError();
+            throw new BannedEntityError("This user already banned", 5);
         }
+
         if (!UserAgent::IsUserExist($id)) {
-            ErrorManager::GenerateError(7);
-            return ErrorManager::GetError();
+            throw new UserExistsError("This user already exists", 7);
         }
 
         $result = DataKeeper::InsertTo("tt_banned", ["banned" => $id,
@@ -57,8 +58,7 @@ class SocietyGuard
     public static function BanIP($ip, $reason, $time = 1, $author)
     {
         if (self::IsBanned($ip, true)){
-            ErrorManager::GenerateError(5);
-            return ErrorManager::GetError();
+            throw new BannedEntityError("This IP already banned", 36);
         }
 
         $result = DataKeeper::InsertTo("tt_banned", ["banned" => $ip,
@@ -75,8 +75,7 @@ class SocietyGuard
     public static function Unban($id)
     {
         if (!self::IsBanned($id)) {
-            ErrorManager::GenerateError(6);
-            return ErrorManager::GetError();
+            throw new BannedEntityError("This user had not been banned", ErrorManager::EC_BANNED_VAR_EXISTS);
         }
 
         $result = DataKeeper::Delete("tt_banned", ["banned"=> $id, "type" => 1]);
@@ -86,8 +85,7 @@ class SocietyGuard
     public static function UnbanIP($ip)
     {
         if (!self::IsBanned($ip, true)) {
-            ErrorManager::GenerateError(6);
-            return ErrorManager::GetError();
+            throw new BannedEntityError("This IP had not been banned", 6);
         }
 
         $result = DataKeeper::Delete("tt_banned", ["banned" => $ip, "type" => 2]);
@@ -104,8 +102,7 @@ class SocietyGuard
     public static function GetBanUserParam($idUser, $param)
     {
         if (!self::IsBanned($idUser)) {
-            ErrorManager::GenerateError(6);
-            return ErrorManager::GetError();
+            throw new BannedEntityError("This user had not been banned", 6);
         }
 
         return DataKeeper::Get("tt_banned", [$param], ["banned" => $idUser, "type" => 1])[0][$param];
@@ -142,8 +139,7 @@ class SocietyGuard
     public static function GetIPBanParam($ip, $param)
     {
         if (!self::IsBanned($ip, true)) {
-            ErrorManager::GenerateError(6);
-            return ErrorManager::GetError();
+            throw new BannedEntityError("This IP had not been banned", 6);
         }
 
         $queryResponse = DataKeeper::MakeQuery("SELECT $param FROM `tt_banned` WHERE ? REGEXP `banned` AND `type` = ?", [$ip, 2])[$param];
