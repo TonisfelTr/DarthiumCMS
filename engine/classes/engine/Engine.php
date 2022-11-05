@@ -6,6 +6,7 @@ define("HOME_ROOT", $_SERVER["DOCUMENT_ROOT"] . "/");
 define("CONFIG_ROOT", "{$_SERVER["DOCUMENT_ROOT"]}/engine/config/");
 define("ADDONS_ROOT", "{$_SERVER["DOCUMENT_ROOT"]}/addons/");
 
+use Engine\Services\Migration;
 use Exceptions\Exemplars\NotLoadedEngineConfigError;
 use Users\UserAgent;
 
@@ -226,8 +227,9 @@ class Engine
         @$htaccessGlobal = preg_replace("/php_value upload_max_filesize [0-9A-Za-z]+/", "php_value upload_max_filesize " . self::GetEngineInfo("ups"), $htaccessGlobal);
         file_put_contents($_SERVER["DOCUMENT_ROOT"] . "/.htaccess", $htaccessGlobal);
 
-        include_once "engine/classes/engine/ErrorManager.php";
         set_exception_handler("Engine\ErrorManager::throwHandlerHtml");
+
+        Migration::run();
     }
 
     public static function SettingsSave($DomainSite, $siteName, $siteTagline, $siteStatus, $siteSubscribe, $siteHashtags, $siteLang, $siteTemplate, $siteRegionTime,
