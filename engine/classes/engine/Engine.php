@@ -53,7 +53,7 @@ class Engine
 
     static private $SiteMetricStatus;
 
-    private static function includeDependencies(string $className) {;
+    private static function includeDependencies(string $className) {
         $path = HOME_ROOT . "engine/classes/";
 
         $namespace = "";
