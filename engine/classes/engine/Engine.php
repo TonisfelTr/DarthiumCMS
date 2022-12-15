@@ -8,6 +8,7 @@ define("ADDONS_ROOT", "{$_SERVER["DOCUMENT_ROOT"]}/addons/");
 
 use Engine\Services\Migration;
 use Exceptions\Exemplars\NotLoadedEngineConfigError;
+use Users\Services\FlashSession;
 use Users\UserAgent;
 
 class Engine
@@ -230,6 +231,7 @@ class Engine
         set_exception_handler("Engine\ErrorManager::throwHandlerHtml");
 
         Migration::run();
+        FlashSession::SetUpSource();
     }
 
     public static function SettingsSave($DomainSite, $siteName, $siteTagline, $siteStatus, $siteSubscribe, $siteHashtags, $siteLang, $siteTemplate, $siteRegionTime,

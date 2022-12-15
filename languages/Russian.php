@@ -161,6 +161,12 @@ $languagePack = [
     "unban_date" => "Дата разблокировки аккаунта",
     "unban_info" => "Если дата наступила, но Вас ещё не разблокировали, значит, что Вы были заблокированы до конкретного времени. Попробуйте зайти завтра, либо позднее.",
     "logout" => "Выйти из аккаунта",
+//Error panel on site
+    "errors_panel" => [
+        "invalid_credentials_when_activation_needs" => "Неправильный Email или пароль.",
+        "invalid_credentials_when_activation_does_not_need" => "Неправильный логин, Email или пароль.",
+        "inactive_user" => "Данный пользователь не активирован.",
+    ],
 //Adminpanel
 //Main
     "navigation" => "Навигация",

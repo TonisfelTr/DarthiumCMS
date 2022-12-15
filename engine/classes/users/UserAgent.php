@@ -18,11 +18,10 @@ use Exceptions\Exemplars\ReferrerNotExistError;
 use Exceptions\Exemplars\UserExistsError;
 use Forum\ForumAgent;
 use Users\Models\User;
+use Users\Services\FlashSession;
+use Users\Services\Session;
 
 class UserAgent {
-    private static $IsAuthorized = False;
-    private static $authID = 0;
-
     private static function IsValidNick($str) {
         if (strlen($str) > 16) {
             return false;
@@ -75,9 +74,9 @@ class UserAgent {
      * @param $param string Email or nickname. If activation is need it's have to be a email.
      * @param $pass string Password for this account.
      * @param bool $passIsHash
-     * @return bool|int
+     * @return bool
      */
-    private static function Authorization($param, $pass, $passIsHash = False) {
+    private static function Authorization($param, $pass, $passIsHash = False) : bool {
         if (Engine::GetEngineInfo("na")) {
             $paramsToEnter = [$param,
                 ($passIsHash) ? $pass : hash("sha256", $pass)
@@ -97,7 +96,7 @@ class UserAgent {
                 self::UpdateLastData($autorizationResult["id"]);
                 return true;
             } else {
-                return false;
+                throw new InvalidUserCredentialsError("Invalid identifier or password");
             }
         } else {
             $autorizationResult = DataKeeper::MakeQuery("SELECT `id` FROM `tt_users` WHERE `nickname`= ? AND `password`= ?",
@@ -109,25 +108,9 @@ class UserAgent {
                 self::UpdateLastData($autorizationResult["id"]);
                 return true;
             } else {
-                return false;
+                throw new InvalidUserCredentialsError("Invalid nickname or password");
             }
         }
-    }
-
-    private static function AfterAuth() {
-        self::$authID = $_SESSION["uid"];
-        self::$IsAuthorized = True;
-        session_register_shutdown();
-        return True;
-    }
-
-    /**
-     * Throw error of invalid password.
-     *
-     * @return mixed
-     */
-    private static function NotValidPWD() {
-        throw new InvalidUserCredentialsError("Invalid identifier or password");
     }
 
     private static function IsActivated($id) {
@@ -203,102 +186,109 @@ class UserAgent {
         return true;
     }
 
+    /**
+     * Check if flash session exists.
+     *
+     * @return bool Flash session existing result.
+     */
     public static function IsSessionContinued() : bool {
         return isset($_COOKIE["PHPSESSID"]);
     }
 
-    public static function SessionCreate($param, $pass) {
-        $authIs = self::Authorization($param, $pass);
-        if ($authIs === True) {
-            ini_set("session.gc_maxlifetime", 31536000);
-            ini_set("session.cookie_lifetime", 31536000);
-            //ini_set("session.save_path", $_SERVER["DOCUMENT_ROOT"] . "/engine/sessions/");
-            session_start();
-            $authIs = self::GetUserId($param);
-            setcookie("reloadSession", true, time() + 31536000, "/", $_SERVER["SERVER_NAME"]);
-            $_SESSION["uid"] = $authIs;
-            $_SESSION["nickname"] = self::GetUserNick($authIs);
-            $_SESSION["email"] = self::GetUserParam($authIs, "email");
-            $_SESSION["passhash"] = hash("sha256", $pass);
-            $_SESSION["hostip"] = $_SERVER["REMOTE_ADDR"];
-            return True;
-        } elseif ($authIs === False) {
-            try {
-                return self::NotValidPWD();
-            } catch (InvalidUserCredentialsError $ex) {
-                echo "Invalid credentials";
+    /**
+     * Start a account session.
+     *
+     * @param $param string Email or nickname of account.
+     * @param $pass string Password
+     * @return bool Account authorization result
+     */
+    public static function SessionCreate(string $param, string $pass) : bool {
+        $result = false;
+
+        try {
+            $result = self::Authorization($param, $pass);
+        } catch (InvalidUserCredentialsError $e) {
+            if (Engine::GetEngineInfo("na")) {
+                FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.invalid_credentials_when_activation_needs"), FlashSession::MA_ERRORS);
+            } else {
+                FlashSession::writeIn(LanguageManager::GetTranslation("invalid_credentials_when_activation_does_not_need"), FlashSession::MA_ERRORS);
             }
-        } elseif ($authIs == 26) {
-            ini_set("session.gc_maxlifetime", 3600);
-            ini_set("session.cookie_lifetime", 3600);
-            //ini_set("session.save_path", $_SERVER["DOCUMENT_ROOT"] . "/engine/sessions/");
-            session_start();
-            $authIs = self::GetUserId($param);
-            setcookie("reloadSession", true, time() + 3600, '/', $_SERVER["SERVER_NAME"]);
-            $_SESSION["uid"] = $authIs;
-            $_SESSION["nickname"] = self::GetUserNick($authIs);
-            $_SESSION["email"] = self::GetUserParam($authIs, "email");
-            $_SESSION["passhash"] = hash("sha256", $pass);
-            $_SESSION["hostip"] = $_SERVER["REMOTE_ADDR"];
-            return 26;
-        } else {
-            return $authIs;
+
+            return $result;
+        } catch (NotActivatedUserError $e) {
+            FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.inactive_user"), FlashSession::MA_ERRORS);
+
+            return $result;
         }
+        $userId = self::GetUserId($param);
+        $session = new Session(FlashSession::getSessionId());
+        $session->setContent([
+            "uid" => $userId,
+            "nickname" => self::GetUserNick($userId),
+            "email" => self::GetUserParam($userId, "email"),
+            "passhash" => hash("sha256", $pass),
+            "hostip" => $_SERVER["REMOTE_ADDR"]
+        ]);
+
+        return $result;
     }
 
     /**
      * Continue the session with identifier from cookie.
      *
-     * @return bool|int
+     * @return bool Continue account authorization result.
      */
-    public static function SessionContinue() {
+    public static function SessionContinue() : bool {
         if (isset($_COOKIE["PHPSESSID"])) {
-            setcookie("reloadSession", true, time() + 31536000, "/", $_SERVER["SERVER_NAME"]);
-            session_id($_COOKIE["PHPSESSID"]);
-            ini_set("session.gc_maxlifetime", 31536000);
-            ini_set("session.cookie_lifetime", 31536000);
-            //ini_set("session.save_path", $_SERVER["DOCUMENT_ROOT"] . "/engine/sessions/");
-            session_start();
+            $sessionContent = new Session(FlashSession::getSessionId());
 
-            if (empty($_SESSION)) {
+            //If session is empty it means authorization had not been completed... OR?
+            //If session does not contain "hostip" key drop it reauthorization trying.
+            if ($sessionContent->isEmpty() ||
+                (isset($sessionContent["hostip"]) && $sessionContent["hostip"] != $_SERVER["REMOTE_ADDR"])) {
                 self::SessionDestroy();
                 return false;
             }
 
+            $authResult = false;
             $needUserActivating = Engine::GetEngineInfo("na");
 
-            $fstCredential = $needUserActivating ? $_SESSION["nickname"] : $_SESSION["email"];
-            $sndCredential = $_SESSION["passhash"];
-
-            $authResult = self::Authorization(!$needUserActivating ? $_SESSION["nickname"] : $_SESSION["email"], $_SESSION["passhash"], true);
-
-            if ($authResult === True) {
-                return self::AfterAuth();
-            } elseif ($authResult === False) {
-                return self::NotValidPWD();
+            if ($needUserActivating) {
+                $fstCredential = $sessionContent["nickname"];
             } else {
+                $fstCredential = $sessionContent["email"];
+            }
+            $sndCredential = $sessionContent["passhash"];
+
+            try {
+                $authResult = self::Authorization($fstCredential, $sndCredential);
+            } catch (InvalidUserCredentialsError $e) {
+                if (Engine::GetEngineInfo("na")) {
+                    FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.invalid_credentials_when_activation_needs"), FlashSession::MA_ERRORS);
+                } else {
+                    FlashSession::writeIn(LanguageManager::GetTranslation("invalid_credentials_when_activation_does_not_need"), FlashSession::MA_ERRORS);
+                }
+
+                return $authResult;
+            } catch (NotActivatedUserError $e) {
+                FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.inactive_user"), FlashSession::MA_ERRORS);
+
                 return $authResult;
             }
+
+            return $authResult;
         }
+
         return false;
     }
 
+    /**
+     * Remove session record.
+     *
+     * @return void
+     */
     public static function SessionDestroy() {
-        session_id($_COOKIE["PHPSESSID"]);
-        ini_set("session.gc_maxlifetime", 0);
-        ini_set("session.cookie_lifetime", 0);
-        ini_set("session.save_path", $_SERVER["DOCUMENT_ROOT"] . "/engine/sessions/");
-        session_start();
-        setcookie(session_name(), "", 0, "/", $_SERVER["SERVER_NAME"]);
-        setcookie("sid", "", 0, "/", $_SERVER["SERVER_NAME"]);
-        setcookie("uid", "", 0, "/", $_SERVER["SERVER_NAME"]);
-        setcookie("reloadSession", "", 0, "/", $_SERVER["SERVER_NAME"]);
-        setcookie("PHPSESSID", "", 0, "/", $_SERVER["SERVER_NAME"]);
-        $_SESSION = array();
-        session_unset();
-        session_destroy();
-        return true;
-
+        (new Session(FlashSession::getSessionId()))->end();
     }
 
     public static function IsUserExist($id) {

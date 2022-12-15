@@ -3,8 +3,10 @@
 namespace Users\Models;
 
 use Engine\DataKeeper;
+use Engine\Engine;
 use Guards\SocietyGuard;
 use Users\PrivateMessager;
+use Users\Services\Session;
 use Users\UserAgent;
 use Users\Blacklister;
 use Users\Friendlist;
@@ -12,7 +14,6 @@ use Users\Notificator;
 use Users\Reputationer;
 
 class User {
-
     private $uId;
     private $uNickname;
     private $uPassHash;
@@ -50,6 +51,7 @@ class User {
     private $uNotifications;
     private $uFriendList;
     private $uAdditionFields;
+    private $uSession;
 
     public function __construct($userId) {
         $result = DataKeeper::Get("tt_users", ["*"], ["id" => $userId])[0];
@@ -88,8 +90,13 @@ class User {
         $this->uNotifications = new Notificator($this->uId);
         $this->uFriendList = new Friendlist($this->uId);
         $this->uAdditionFields = UserAgent::GetAdditionalFieldsListOfUser($userId);
+        $this->uSession = new Session($_COOKIE["PHPSESSID"]);
 
         return $this;
+    }
+
+    public function getSession() : Session {
+        return $this->uSession;
     }
 
     public function getId() {

@@ -62,6 +62,8 @@ class ErrorManager
         40 => "Plugin doesn't have configuration file.",
         /*-------------------------------------*/
         41 => "This page doesn't exist",
+        42 => "Flash session container does not contain this key",
+        43 => "Flash session content did not read"
     ];
 
     public const EC_SUCCESS = 999;
@@ -107,6 +109,8 @@ class ErrorManager
     public const EC_PLUGIN_NOT_FOUND = 39;
     public const EC_PLUGIN_NO_CONFIGS = 40;
     public const EC_INVALID_PAGE = 41;
+    public const EC_SESSION_NOT_CONTAIN = 42;
+    public const EC_FLASH_SESSION_CONTENT_DID_NOT_READ = 43;
 
     /**
      * Get PHP function documentation.
