@@ -6,7 +6,7 @@ use Engine\DataKeeper;
 
 class Migration
 {
-    private const MIGRATION_DIR = "engine/migrations/";
+    private const MIGRATION_DIR = "./engine/migrations/";
     private const MIGRATION_TABLE = "tt_migrations";
 
     public static function run() {
