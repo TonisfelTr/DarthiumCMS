@@ -6,13 +6,13 @@ use Engine\DataKeeper;
 
 class Migration
 {
-    private const MIGRATION_DIR = "./engine/migrations/";
+    private const MIGRATION_DIR = "/engine/migrations/";
     private const MIGRATION_TABLE = "tt_migrations";
 
     public static function run() {
         $files = [];
 
-        $fileIterator = new \FilesystemIterator(self::MIGRATION_DIR, \FilesystemIterator::SKIP_DOTS);
+        $fileIterator = new \FilesystemIterator($_SERVER["DOCUMENT_ROOT"] . self::MIGRATION_DIR, \FilesystemIterator::SKIP_DOTS);
 
         if (iterator_count($fileIterator) == 0) {
             return;
@@ -40,12 +40,12 @@ class Migration
     }
 
     public static function rollback(int $migrationId) {
-        $result = DataKeeper::Get(self::MIGRATION_TABLE, ["migration_name"], ["id" => $migrationId], 1);
+        $result = DataKeeper::Get($_SERVER["DOCUMENT_ROOT"] . self::MIGRATION_TABLE, ["migration_name"], ["id" => $migrationId], 1);
         if (count($result) == 0) {
             return;
         }
 
-        if (file_exists(self::MIGRATION_DIR . $result["migration_name"])) {
+        if (file_exists($_SERVER["DOCUMENT_ROOT"] . self::MIGRATION_DIR . $result["migration_name"])) {
             $migrationClass = include_once self::MIGRATION_DIR . $result["migration_name"];
             $migrationClass->rollback();
             DataKeeper::Delete(self::MIGRATION_TABLE, ["id" => $migrationId]);
@@ -53,7 +53,7 @@ class Migration
     }
 
     public static function rollbackAll() {
-        $migrationNames = DataKeeper::Get(self::MIGRATION_TABLE, ["migration_name"]);
+        $migrationNames = DataKeeper::Get($_SERVER["DOCUMENT_ROOT"] . self::MIGRATION_TABLE, ["migration_name"]);
         $mnArray = [];
 
         foreach ($migrationNames as $name) {
