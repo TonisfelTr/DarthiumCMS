@@ -4,7 +4,7 @@ include "engine/classes/engine/Engine.php";
 \Engine\Engine::LoadEngine();
 $sessionRes = \Users\UserAgent::SessionContinue();
 if (\Engine\Engine::GetEngineInfo("ss") == 1) header("Location: index.php");
-if ($sessionRes === True) $user = new \Users\Models\User($_SESSION["uid"]);
+if ($sessionRes === True) $user = new \Users\Models\User((new Session(\Users\Services\FlashSession::getSessionId()))->getContent()["uid"], true);
 if (isset($user)) if ($user->isBanned()) { header("Location: banned.php"); exit; }
 if(\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){ header("Location: banned.php"); exit; }
 ?>

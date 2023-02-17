@@ -6,22 +6,23 @@ use Engine\DataKeeper;
 
 class Session
 {
-    private const SESSION_TBALE = "tt_users_sessions";
+    private const SESSION_TABLE = "tt_users_sessions";
 
     private $sessionId;
     private $content;
     private $createdAt;
 
     public function __construct(string $sessionId) {
-        $doesSessionExist = DataKeeper::exists(self::SESSION_TBALE, "sessionId", $sessionId);
+        $doesSessionExist = DataKeeper::exists(self::SESSION_TABLE, "sessionId", $sessionId);
 
         if ($doesSessionExist) {
-            $info = DataKeeper::Get(self::SESSION_TBALE, ["id", "sessionId", "content", "createdAt"], ["sessionId" => $sessionId]);
+            $info = DataKeeper::Get(self::SESSION_TABLE, ["id", "sessionId", "content", "createdAt"], ["sessionId" => $sessionId]);
             $this->sessionId = $sessionId;
-            $this->content = $info["content"];
-            $this->createdAt = $info["createdAt"];
+            $this->content = $info[0]["content"];
+            $this->createdAt = $info[0]["createdAt"];
         } else {
-            DataKeeper::InsertTo(self::SESSION_TBALE, ["sessionId" => $sessionId]);
+            DataKeeper::InsertTo(self::SESSION_TABLE, ["sessionId" => $sessionId]);
+            $this->sessionId = $sessionId;
         }
     }
 
@@ -40,16 +41,25 @@ class Session
         return $this;
     }
 
-    public function getContent() : array {
-        return json_decode($this->content, true);
+    public function getContent(string $key = null) {
+        if (is_null($key)) {
+            return json_decode($this->content, true);
+        }
+
+        return json_decode($this->content, true)[$key];
     }
 
     public function remember() {
-        return DataKeeper::Update(self::SESSION_TBALE, ["sessionId" => $this->sessionId, "content" => $this->content], ["sessionId" => $this->sessionId]);
+        return DataKeeper::Update(self::SESSION_TABLE, ["sessionId" => $this->sessionId, "content" => $this->content], ["sessionId" => $this->sessionId]);
     }
 
+    /**
+     * Remove session from database.
+     *
+     * @return bool Session has been removed successfully.
+     */
     public function end() {
-        return DataKeeper::Delete(self::SESSION_TBALE, ["sessionId" => $this->sessionId]);
+        return (bool)DataKeeper::Delete(self::SESSION_TABLE, ["sessionId" => $this->sessionId]);
     }
 
     public function isEmpty() : bool {

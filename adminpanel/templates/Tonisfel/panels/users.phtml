@@ -375,7 +375,7 @@ if ($canSigns) {
                                                 ? \Engine\LanguageManager::GetTranslation("not_signed_in_she")
                                                 : \Engine\LanguageManager::GetTranslation("not_signed_in_he"))
                                             : \Engine\Engine::DateFormatToRead($selUser->getLastDate()); ?></td>
-                                    <td><?php print(htmlentities($selUser->getReputation()->getReputationPoints()) . " users.php" . \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.point")); ?></td>
+                                    <td><?php print(htmlentities($selUser->getReputation()->getReputationPoints()) . " " . \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.point")); ?></td>
                                     <td><?php print(htmlentities($selUserBan)); ?></td>
                                     <?php if ($canSeeProfiles) { ?>
                                         <td class="alert-info">

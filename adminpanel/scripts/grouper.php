@@ -18,7 +18,7 @@ require_once "../../engine/engine.php";
  * 3ngmm - [group] [member] have [not] been [moved].
  * 3ngsd - [standard] [group] can [not] been [deleted].
  */
-if ($sessionRes = \Users\UserAgent::SessionContinue()) $user = new \Users\Models\User($_SESSION["uid"]);
+if ($sessionRes = \Users\UserAgent::SessionContinue()) $user = new \Users\Models\User((new \Users\Services\Session(\Users\Services\FlashSession::getSessionId()))->getContent()["uid"]);
 else { header("Location: ../../adminpanel.php?p=forbidden"); exit; }
 
 if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBanned()){

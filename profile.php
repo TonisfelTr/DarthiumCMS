@@ -1,6 +1,11 @@
 <?php
+
+use Engine\Engine;
+use Users\UserAgent;
+use Users\Services\Session;
+
 include "engine/classes/engine/Engine.php";
-\Engine\Engine::LoadEngine();
+Engine::LoadEngine();
 $session = Users\UserAgent::SessionContinue();
 $user = false;
 function getBrick(){
@@ -24,7 +29,7 @@ else
     $seeProfile = false;
 
 if ($session === TRUE || $session === 26){
-    $user = new \Users\Models\User($_SESSION["uid"]);
+    $user = new \Users\Models\User((new Session(\Users\Services\FlashSession::getSessionId()))->getContent()["uid"], true);
     if (!empty($_REQUEST["res"])){
         $response = $_REQUEST["res"];
     }
@@ -65,10 +70,10 @@ if (!empty($_REQUEST["activate"]) && !empty($_REQUEST["uid"])){
     exit;
 }
 
-if ($user !== false && $user->getId() == $_SESSION["uid"]) {
+if ($user !== false && $user->getId() == UserAgent::getCurrentSession()->getContent()["uid"]) {
 ################################################
 # Менеджер личных сообщений.
-    if ($session === true && $user->getId() == $_SESSION["uid"]) {
+    if ($session === true && $user->getId() == UserAgent::getCurrentSession()->getContent()["uid"]) {
         $letter = false;
         $quoteLetter = false;
         if (!empty($_GET["page"]) && $_GET["page"] == "rm") {
@@ -88,7 +93,7 @@ if ($user !== false && $user->getId() == $_SESSION["uid"]) {
 
 ################################################
 # Менеджер уведомлений.
-    if ($session === true && $user->getId() == $_SESSION["uid"]) {
+    if ($session === true && $user->getId() == UserAgent::getCurrentSession()->getContent()["uid"]) {
         $notificationsCount = $user->Notifications()->getNotifiesCount();
         $notNotifiedCount = $user->Notifications()->getNotificationsUnreadCount();
     }
@@ -126,16 +131,22 @@ if ($seeProfile){
         $errorCode = 1;
     elseif (isset($_GET["uid"]) && !\Users\UserAgent::IsUserExist($_GET["uid"]))
         $errorCode = 2;
-    elseif ($session === true && isset($_GET["uid"]) && $_GET["uid"] != $_SESSION["uid"] && !\Users\GroupAgent::IsHavePerm(\Users\UserAgent::GetUserGroupId($_SESSION["uid"]), "user_see_foreign"))
+    elseif ($session === true
+        && isset($_GET["uid"])
+        && $_GET["uid"] != UserAgent::getCurrentSession()->getContent()["uid"]
+        && !\Users\GroupAgent::IsHavePerm(\Users\UserAgent::GetUserGroupId($user->getSession()->getContent()["uid"]), "user_see_foreign"))
         $errorCode = 3;
-    elseif ($session === true && isset($_GET["uid"]) && $_GET["uid"] != $_SESSION["uid"] && $user->Blacklister()->isBlocked($_SESSION["uid"])
+    elseif ($session === true
+        && isset($_GET["uid"])
+        && $_GET["uid"] != UserAgent::getCurrentSession()->getContent()["uid"]
+        && $user->Blacklister()->isBlocked($user->getSession()->getContent()["uid"])
         || (!empty($user) && !$user->IsAccountPublic() && $session !== true)
-        || (!empty($user) && $user->getId() != $_SESSION["uid"] && !$user->IsAccountPublic() && !$user->FriendList()->isFriend($_SESSION["uid"])))
+        || (!empty($user) && $user->getId() != UserAgent::getCurrentSession()->getContent()["uid"] && !$user->IsAccountPublic() && !$user->FriendList()->isFriend($user->getSession()->getContent()["uid"])))
         $errorCode = 4;
 }
 
 /***********************************Block profile page if user is exist.*********************/
-if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
+if ($session === true && $user !== false && $user->getId() == UserAgent::getCurrentSession()->getContent()["uid"]){
     if ($user->isBanned() || \Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){
         header("Location: banned.php");
         exit;
@@ -758,17 +769,17 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
     $main = str_replace_once("{PROFILE_UPLOADER_BLOCK}", $uploaderBlock, $main);
     $main = str_replace("{PROFILE_JS:SHOW_PANEL}", "showPanel('$parentDivName');" . PHP_EOL . "showSubpanel('$parentDivName', $subpanelDivNumber);", $main);
 
-    if ($user->IsVKPublic() || $user->getId() == $_SESSION["uid"])
+    if ($user->IsVKPublic() || $user->getId() == $user->getSession()->getContent()["uid"])
         $userVKLink = ($user->getVK() == "") ? "VK: " . \Engine\LanguageManager::GetTranslation("not_setted") . "<br>" : "VK: <a class=\"profile-profile-link\" href=\"http://vk.com/".htmlentities($user->getVK())."\">" . htmlentities($user->getVK()) . "</a><br>";
     else $userVKLink = "";
-    if ($user->IsBirthdayPublic() || $user->getId() == $_SESSION["uid"])
+    if ($user->IsBirthdayPublic() || $user->getId() == $user->getSession()->getContent()["uid"])
         $userBirthday = $user->getBirth() == "" ?  \Engine\LanguageManager::GetTranslation("birthday") . ": " . \Engine\LanguageManager::GetTranslation("not_setted")."<br>"
                                                 : \Engine\LanguageManager::GetTranslation("birthday") . ": " . htmlentities($user->getBirth()) . "<br>";
     else $userBirthday = "";
-    if ($user->IsSkypePublic() || $user->getId() == $_SESSION["uid"])
+    if ($user->IsSkypePublic() || $user->getId() == $user->getSession()->getContent()["uid"])
         $userSkypeLink = $user->getSkype() == "" ? "Skype: " . \Engine\LanguageManager::GetTranslation("not_setted") . "<br>" : "Skype: <a class=\"profile-profile-link\" href=\"skype:". htmlentities($user->getSkype())."?chat\">написать</a><br>";
     else $userSkypeLink = "";
-    if ($user->IsEmailPublic() || $user->getId() == $_SESSION["uid"])
+    if ($user->IsEmailPublic() || $user->getId() == $user->getSession()->getContent()["uid"])
         $userEmailLink = "Email: <a class=\"profile-profile-link\" href=\"mailto:".$user->getEmail()."\">" . $user->getEmail() . "</a><br>";
     else $userEmailLink = "";
     if ($user->getReferer() != null)
@@ -821,7 +832,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
     $main = str_replace("{PROFILE_PAGE:USER_FROM_TEXT}", htmlentities($user->getFrom()), $main);
     $main = str_replace("{PROFILE_PAGE:USER_ABOUT_TEXT}", htmlentities($user->getAbout()), $main);
     $main = str_replace("{PROFILE_PAGE:USER_HOBBIES_TEXT}", htmlentities($user->getHobbies()), $main);
-    if ($user->getId() == $_SESSION["uid"]){
+    if ($user->getId() == UserAgent::getCurrentSession()->getContent()["uid"]){
         include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/userperrors.phtml";
         $userPageErrors = getBrick();
         include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/aup_buttons.html";
@@ -875,7 +886,7 @@ if ($session === true && $user !== false && $user->getId() == $_SESSION["uid"]){
     $main = str_replace("{PROFILE_PAGE:USER_AVATAR_SIZE}", \Engine\Engine::GetEngineInfo("aw") . "x" . \Engine\Engine::GetEngineInfo("ah"), $main);
 }
 
-if ($user !== false && $session === 26 && $user->getId() == $_SESSION["uid"] && !$user->getActiveStatus()){
+if ($user !== false && $session === 26 && $user->getId() == $user->getSession()->getContent()["uid"] && !$user->getActiveStatus()){
     include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/authactivation.html";
     $authActivateForm = getBrick();
 
@@ -889,8 +900,8 @@ if ($user !== false && $session === 26 && $user->getId() == $_SESSION["uid"] && 
 }
 
 if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $user->IsAccountPublic())
-    || ($session === true && $user !== false && $user->getId() != $_SESSION["uid"] && \Users\UserAgent::GetUser($_SESSION["uid"])->UserGroup()->getPermission("user_see_foreign")))
-    && ($user->IsAccountPublic() || $user->FriendList()->isFriend($_SESSION["uid"]))){
+    || ($session === true && $user !== false && !$user->isThisCurrent() && \Users\UserAgent::GetUser($user->getSession()->getContent()["uid"])->UserGroup()->getPermission("user_see_foreign")))
+    && ($user->IsAccountPublic() || $user->FriendList()->isFriend($user->getSession()->getContent()["uid"]))){
     ///////////////////////////////////////////////////////////////////////
     /// Build additional fields mechanism.
     ///////////////////////////////////////////////////////////////////////
@@ -978,17 +989,17 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
     include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/userinfo.html";
     $userInfo = getBrick();
 
-    if ($user->IsVKPublic() || $user->FriendList()->isFriend($_SESSION["uid"]))
+    if ($user->IsVKPublic() || $user->FriendList()->isFriend($user->getSession()->getContent()["uid"]))
         $userVKLink = ($user->getVK() == "") ? "VK: " . \Engine\LanguageManager::GetTranslation("not_setted") . "<br>" : "VK: <a class=\"profile-profile-link\" href=\"http://vk.com/".htmlentities($user->getVK())."\">" . $user->getVK() . "</a><br>";
     else $userVKLink = "";
-    if ($user->IsBirthdayPublic() || $user->FriendList()->isFriend($_SESSION["uid"]))
+    if ($user->IsBirthdayPublic() || $user->FriendList()->isFriend($user->getSession()->getContent()["uid"]))
         $userBirthday = $user->getBirth() == "" ? \Engine\LanguageManager::GetTranslation("birthday") . ": " . \Engine\LanguageManager::GetTranslation("not_setted") . "<br>" :
              \Engine\LanguageManager::GetTranslation("birthday") . ": " . htmlentities($user->getBirth()) . "<br>";
     else $userBirthday = "";
-    if ($user->IsSkypePublic() || $user->FriendList()->isFriend($_SESSION["uid"]))
+    if ($user->IsSkypePublic() || $user->FriendList()->isFriend($user->getSession()->getContent()["uid"]))
         $userSkypeLink = $user->getSkype() == "" ? "Skype: " . \Engine\LanguageManager::GetTranslation("not_setted") ."<br>" : "Skype: <a class=\"profile-profile-link\" href=\"skype:". $user->getSkype()."?chat\">написать</a><br>";
     else $userSkypeLink = "";
-    if ($user->IsEmailPublic() || $user->FriendList()->isFriend($_SESSION["uid"]))
+    if ($user->IsEmailPublic() || $user->FriendList()->isFriend($user->getSession()->getContent()["uid"]))
         $userEmailLink = "Email: <a class=\"profile-profile-link\" href=\"mailto:".$user->getEmail()."\">" . $user->getEmail() . "</a><br>";
     else $userEmailLink = "";
 
@@ -1073,7 +1084,7 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
     $main = str_replace_once("{PROFILE_PAGE:USER_REPUTATION_AONCLICK}", "onclick=\"$('#reputation-frame').show();\"", $main);
     $main = str_replace("{PROFILE_JS:SHOW_PANEL}", "showPanel('info');" . PHP_EOL . "showSubpanel('info', 1);", $main);
 
-    if ($session === true && $user->getId() != $_SESSION["uid"] && \Users\UserAgent::GetUser($_SESSION["uid"])->UserGroup()->getPermission("user_see_foreign")) {
+    if ($session === true && $user->getId() != $user->getSession()->getContent()["uid"] && \Users\UserAgent::GetUser($user->getSession()->getContent()["uid"])->UserGroup()->getPermission("user_see_foreign")) {
         include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/afup_buttons.html";
         $userFootBtns = getBrick();
         $userFootBtns = str_replace_once("{USER_NICKNAME}", $user->getNickname(), $userFootBtns);
@@ -1088,8 +1099,8 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
 
 if (($session !== true && !empty($user) && !\Engine\Engine::GetEngineInfo("gsp")) ||
     (isset($_GET["uid"]) && !\Users\UserAgent::IsUserExist($_GET["uid"])) ||
-    ($session === true && isset($_GET["uid"]) && $_GET["uid"] != $_SESSION["uid"] && !\Users\GroupAgent::IsHavePerm(\Users\UserAgent::GetUserGroupId($_SESSION["uid"]), "user_see_foreign")) ||
-    ($session === true && isset($_GET["uid"]) && $_GET["uid"] != $_SESSION["uid"] && $user->Blacklister()->isBlocked($_SESSION["uid"]))){
+    ($session === true && isset($_GET["uid"]) && $_GET["uid"] != UserAgent::getCurrentSession()->getContent()["uid"] && !\Users\GroupAgent::IsHavePerm(\Users\UserAgent::GetUserGroupId($user->getSession()->getContent()["uid"]), "user_see_foreign")) ||
+    ($session === true && isset($_GET["uid"]) && $_GET["uid"] != UserAgent::getCurrentSession()->getContent()["uid"] && $user->Blacklister()->isBlocked($user->getSession()->getContent()["uid"]))){
 
     include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/seeperrors.phtml";
     $userPageErrors = getBrick();

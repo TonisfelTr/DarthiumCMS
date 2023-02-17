@@ -1,20 +1,28 @@
 <?php
 
-include_once "../../engine/engine.php";
-\Engine\Engine::LoadEngine();
+use Engine\Engine;
+use Engine\LanguageManager;
+use Guards\SocietyGuard;
+use Users\Models\User;
+use Users\Services\FlashSession;
+use Users\UserAgent;
 
-if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){
+include_once "../../engine/engine.php";
+Engine::LoadEngine();
+
+if (SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){
     header("Location: banned.php");
     exit;
 }
 
-$session = \Users\UserAgent::SessionContinue();
+$session = UserAgent::SessionContinue();
 if ($session !== TRUE){
-    header("Location: ../../profile.php?res=nsi");
+    FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.you_are_not_authorized"), FlashSession::MA_ERRORS);
+    header("Location: ../../profile.php");
     exit;
 }
 
-$user = new \Users\Models\User($_SESSION["uid"]);
+$user = User::getAvailableCurrentEntity();
 
 if ($user->UserGroup()->getPermission("change_profile")) {
 
@@ -108,7 +116,7 @@ if (isset($_POST["profile-change-pass-checkbox"])) {
         header("Location: ../../profile.php?page=security&res=nsrnp");
         exit;
     }
-    if ($_SESSION["passhash"] == hash("sha256", $_POST["profile-change-oldpass"])){
+    if ($user->getSession()->getContent()["passhash"] == hash("sha256", $_POST["profile-change-oldpass"])){
         if ($_POST["profile-change-newpass"] == $_POST["profile-change-renewpass"]){
             $user->passChange($_POST["profile-change-newpass"], true);
             header("Location: ../../profile.php?page=security&res=phbc");

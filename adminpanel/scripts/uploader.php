@@ -1,10 +1,20 @@
 <?php
 
-include_once "../../engine/engine.php";
-\Engine\Engine::LoadEngine();
+use Engine\Engine;
+use Guards\SocietyGuard;
+use Users\UserAgent;
+use Users\Models\User;
+use Users\Services\FlashSession;
 
-if ($sessionRes = \Users\UserAgent::SessionContinue()) $user = new \Users\Models\User($_SESSION["uid"]);
-else { header("Location: ../../index.php?page=errors/nonauth"); exit;}
+include_once "../../engine/engine.php";
+Engine::LoadEngine();
+
+if ($sessionRes = UserAgent::SessionContinue()) {
+    $user = new \Users\Models\User((new \Users\Services\Session(\Users\Services\FlashSession::getSessionId()))->getContent()["uid"]);
+} else {
+    header("Location: ../../index.php?page=errors/nonauth");
+    exit;
+}
 
 if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBanned()){
     header("Location: banned.php");
@@ -16,7 +26,7 @@ else $symbol = "&";
 
 if (isset($_POST["uploader-upload-file-btn"])){
     if($user->UserGroup()->getPermission("upload_add")){
-        $result = \Engine\Uploader::UploadFile($user->getId(), $_FILES["uploader-file-input"]);
+        $result = \Engine\Uploader::UploadFile($user->getId(),"uploader-file-input");
         if ($result === TRUE) {
             header("Location: " . $_SESSION["LASTADDR"] . $symbol . "res=1s&upload");
             $_SESSION["LASTADDR"] = null;

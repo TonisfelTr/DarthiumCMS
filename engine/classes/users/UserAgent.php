@@ -133,6 +133,16 @@ class UserAgent {
         return $pos !== false ? substr_replace($text, $replace, $pos, strlen($search)) : $text;
     }
 
+    public static function isAuthorized() : bool {
+        return (bool)(new Session(FlashSession::getSessionId()))->getContent("uid");
+    }
+
+    public static function getCurrentSession() {
+        if (isset($_COOKIE["PHPSESSID"])) {
+            return new Session(FlashSession::getSessionId());
+        }
+    }
+
     public static function AddCookie(string $name, $content, int $lifeTime, string $whereCookieActive = "/") {
         setcookie($name, $content, $lifeTime, $whereCookieActive, Engine::GetEngineInfo("dm"));
     }
@@ -229,6 +239,7 @@ class UserAgent {
             "passhash" => hash("sha256", $pass),
             "hostip" => $_SERVER["REMOTE_ADDR"]
         ]);
+        $session->remember();
 
         return $result;
     }
@@ -240,12 +251,12 @@ class UserAgent {
      */
     public static function SessionContinue() : bool {
         if (isset($_COOKIE["PHPSESSID"])) {
-            $sessionContent = new Session(FlashSession::getSessionId());
+            $session = new Session(FlashSession::getSessionId());
 
             //If session is empty it means authorization had not been completed... OR?
             //If session does not contain "hostip" key drop it reauthorization trying.
-            if ($sessionContent->isEmpty() ||
-                (isset($sessionContent["hostip"]) && $sessionContent["hostip"] != $_SERVER["REMOTE_ADDR"])) {
+            if ($session->isEmpty() ||
+                (isset($session->getContent()["hostip"]) && $session->getContent()["hostip"] != $_SERVER["REMOTE_ADDR"])) {
                 self::SessionDestroy();
                 return false;
             }
@@ -254,14 +265,14 @@ class UserAgent {
             $needUserActivating = Engine::GetEngineInfo("na");
 
             if ($needUserActivating) {
-                $fstCredential = $sessionContent["nickname"];
+                $fstCredential = $session->getContent()["nickname"];
             } else {
-                $fstCredential = $sessionContent["email"];
+                $fstCredential = $session->getContent()["email"];
             }
-            $sndCredential = $sessionContent["passhash"];
+            $sndCredential = $session->getContent()["passhash"];
 
             try {
-                $authResult = self::Authorization($fstCredential, $sndCredential);
+                $authResult = self::Authorization($fstCredential, $sndCredential, true);
             } catch (InvalidUserCredentialsError $e) {
                 if (Engine::GetEngineInfo("na")) {
                     FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.invalid_credentials_when_activation_needs"), FlashSession::MA_ERRORS);
@@ -285,10 +296,11 @@ class UserAgent {
     /**
      * Remove session record.
      *
-     * @return void
+     * @return bool
      */
     public static function SessionDestroy() {
-        (new Session(FlashSession::getSessionId()))->end();
+        $sessionId = FlashSession::getSessionId();
+        return (new Session($sessionId))->end();
     }
 
     public static function IsUserExist($id) {

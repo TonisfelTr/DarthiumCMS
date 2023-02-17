@@ -4,7 +4,7 @@ require_once $_SERVER["DOCUMENT_ROOT"] . "/engine/classes/engine/Engine.php";
 \Engine\Engine::LoadEngine();
 
 if (isset($_POST["topicId"]) && isset($_POST["mark"])){
-    if (\Users\UserAgent::SessionContinue() === true) $user = new \Users\Models\User($_SESSION["uid"]);
+    if (\Users\UserAgent::SessionContinue() === true) $user = new \Users\Models\User($user->getSession()->getContent()["uid"]);
     else {
         echo "not allowed.";
         exit;

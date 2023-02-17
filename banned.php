@@ -9,7 +9,7 @@ if (isset($_REQUEST["banned-log-out"])) {
 }
 
 $sessionRes = \Users\UserAgent::SessionContinue();
-if ($sessionRes === True) $user = new \Users\Models\User($_SESSION["uid"]);
+if ($sessionRes === True) $user = new \Users\Models\User((new Session(\Users\Services\FlashSession::getSessionId()))->getContent()["uid"], true);
 if (!$user->isBanned() && !\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)) { header("Location: index.php"); exit; }
 
 if ($user->isBanned()){

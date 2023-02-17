@@ -1,5 +1,9 @@
 <?php
 
+use Engine\Engine;
+use Engine\LanguageManager;
+use Users\Services\FlashSession;
+use Users\UserAgent;
 
 /**
  * Authorization script.
@@ -9,7 +13,7 @@
  * 3. If enter to the account have been successefuly redirect to profile page.
 **/
 include "../../engine/classes/engine/Engine.php";
-\Engine\Engine::LoadEngine();
+Engine::LoadEngine();
 
 /**
  * Authorization does those tests:
@@ -20,31 +24,20 @@ include "../../engine/classes/engine/Engine.php";
  */
 
 if (empty($_REQUEST["profile-auth-uid"])){
-    header("Location: ../../profile.php?res=nsuid");
+    FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.uid_does_not_sended"), FlashSession::MA_ERRORS);
+    header("Location: ../../profile.php");
     exit;
 }
 if (empty($_REQUEST["profile-auth-password"])){
-    header("Location: ../../profile.php?res=nspwd");
-    exit;
-}
-$session = \Users\UserAgent::SessionCreate($_REQUEST["profile-auth-uid"], $_REQUEST["profile-auth-password"]);
-if ($session === TRUE){
-    header("Location: ../../profile.php?uid=" . $_SESSION["uid"]);
-    exit;
-} elseif ($session == 25) {
-    header("Location: ../../profile.php?res=iad");
-    exit;
-} elseif (in_array($session, [21,22])){
-    header("Location: ../../profile.php?res=iuid");
-    exit;
-} elseif ($session == 9){
-    header("Location: ../../profile.php?res=dbe");
-    exit;
-} elseif ($session == 26){
-    header("Location: ../../profile.php?activate");
+    FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.uid_does_not_sended"), FlashSession::MA_ERRORS);
+    header("Location: ../../profile.php");
     exit;
 }
 
+if (UserAgent::SessionCreate($_REQUEST["profile-auth-uid"], $_REQUEST["profile-auth-password"]) === true) {
+    header("Location: ../../profile.php?uid=" . (new \Users\Services\Session(\Users\Services\FlashSession::getSessionId()))->getContent()["uid"]);
+    exit;
+}
 
 
 

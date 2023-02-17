@@ -1,13 +1,18 @@
 <?php
 
-include "../../engine/engine.php";
-\Engine\Engine::LoadEngine();
+use Engine\Engine;
+use Guards\SocietyGuard;
+use Users\UserAgent;
 
-if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){
+include "../../engine/classes/engine/Engine.php";
+Engine::LoadEngine();
+
+if (SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){
     header("Location: banned.php");
     exit;
 }
 
-\Users\UserAgent::SessionDestroy();
+$logout = UserAgent::SessionDestroy();
+
 header("Location: ../../profile.php");
 exit;

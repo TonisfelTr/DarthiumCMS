@@ -1,5 +1,8 @@
 <?php
-$accessType =  ($user->getId() != $_SESSION["uid"]) ? true : false;
+
+use Users\UserAgent;
+
+$accessType =  ($user->getId() != UserAgent::getCurrentSession()->getContent()["uid"]) ? true : false;
 if ($accessType){
     $captchaId = \Guards\CaptchaMen::GenerateCaptcha();
     $captchaImgPath = \Guards\CaptchaMen::GenerateImage(\Guards\CaptchaMen::FetchCaptcha(4));
@@ -41,11 +44,13 @@ if ($accessType) {
     $reputationerAddBlock = str_replace_once("{PROFILE_REPUTATIONER:UID}", $user->getId(), $reputationerAddBlock);
     $reputationerAddBlock = str_replace_once("{PROFILE_REPUTATIONER:CAPTCHA_IMG}", $captchaImgPath, $reputationerAddBlock);
     $reputationerAddBlock = str_replace_once("{PROFILE_REPUTATIONER:CAPTCHA_ID}", $captchaId, $reputationerAddBlock);
-    if (\Engine\Engine::GetEngineInfo("vmr") && !empty($_SESSION) && $user->getReputation()->getPointsFromUserCount($_SESSION["uid"]) == 0) {
+    //1. If user is not current
+    if ($user->isThisCurrent())
+    if (\Engine\Engine::GetEngineInfo("vmr") && !$user->getSession()->isEmpty() && $user->getReputation()->getPointsFromUserCount($user->getSession()->getContent()["uid"]) == 0) {
         $reputationerBlock = str_replace_once("{PROFILE_REPUTATIONER:REPUTATION_ADD}", $reputationerAddBlock, $reputationerBlock);
     } elseif (!\Engine\Engine::GetEngineInfo("vmr")) {
         $reputationerBlock = str_replace_once("{PROFILE_REPUTATIONER:REPUTATION_ADD}", $reputationerAddBlock, $reputationerBlock);
-    } elseif (empty($_SESSION)){
+    } elseif (empty($user->getSession()->getContent())){
         $reputationerBlock = str_replace_once("{PROFILE_REPUTATIONER:REPUTATION_ADD}", "", $reputationerBlock);
     } else {
         $reputationerBlock = str_replace_once("{PROFILE_REPUTATIONER:REPUTATION_ADD}", "<div class=\"alert alert-warning\"><span class=\"glyphicons glyphicons-warning-sign\"></span> ". \Engine\LanguageManager::GetTranslation("reputationer.change_rep_only_one_time_tip") . "</div>", $reputationerBlock);

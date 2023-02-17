@@ -1,4 +1,7 @@
 <?php
+
+use Users\Services\Session;
+
 /*****************************************************************************
  * TONISFEL TAVERN CMS.
  *
@@ -29,7 +32,7 @@ include "engine/classes/engine/Engine.php";
 $user = false;
 $sessionRes = \Users\UserAgent::SessionContinue();
 if ($sessionRes == 1) {
-    $user = new \Users\Models\User($_SESSION["uid"]);
+    $user = new \Users\Models\User((new Session(\Users\Services\FlashSession::getSessionId()))->getContent()["uid"], true);
 }
 if ((\Engine\Engine::GetEngineInfo("ss") == 0 && !$user) ||
     (\Engine\Engine::GetEngineInfo("ss") == 0 && $user->UserGroup()->getPermission("offline_visiter") != 1)) {
