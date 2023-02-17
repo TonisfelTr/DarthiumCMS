@@ -1,11 +1,14 @@
 <?php
+
+use Users\UserAgent;
+
 if (!defined("TT_Uploader")){
    return;
 }
 if ($user != false) {
     $uploadList = \Engine\Uploader::GetUploadList($user->getId());
     $uploadCount = count($uploadList);
-    $_SESSION["LASTADDR"] = $_SERVER["REQUEST_URI"];
+    UserAgent::getCurrentSession()->getContent()["LASTADDR"] = $_SERVER["REQUEST_URI"];
 
     if (!isset($_GET["uploaderVisible"]))
         $uploaderVisible = "hidden";

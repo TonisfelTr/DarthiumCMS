@@ -1,12 +1,17 @@
 <?php
 
-require_once "../../engine/engine.php";
-\Engine\Engine::LoadEngine();
+use Engine\Engine;
+use Guards\SocietyGuard;
+use Users\Models\User;
+use Users\UserAgent;
 
-if ($sessionRes = \Users\UserAgent::SessionContinue()) $user = new \Users\Models\User($_SESSION["uid"]);
+require_once "../../engine/engine.php";
+Engine::LoadEngine();
+
+if ($sessionRes = UserAgent::SessionContinue()) $user = new User(UserAgent::getCurrentSession()->getContent()["uid"]);
 else { header("Location: ../../index.php?page=errors/nonauth"); exit;}
 
-if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBanned()){
+if (SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBanned()){
     header("Location: banned.php");
     exit;
 }

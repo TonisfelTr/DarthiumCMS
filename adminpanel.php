@@ -12,7 +12,7 @@ define("ADMINPANEL_TEMPLATES", "adminpanel/templates/" . \Engine\Engine::GetEngi
 ob_start();
 
 if ($sessionRes = \Users\UserAgent::SessionContinue()) {
-    $user = new \Users\Models\User($_SESSION["uid"]);
+    $user = new \Users\Models\User((new \Users\Services\Session(\Users\Services\FlashSession::getSessionId()))->getContent()["uid"], true);
 } else {
     header("Location: profile.php");
     exit;

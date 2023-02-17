@@ -171,7 +171,7 @@ class FlashSession
         self::selfEncode();
     }
 
-    public static function readFrom( $key, int $messageContainerIdentifier) {
+    public static function readFrom($key, int $messageContainerIdentifier) {
         $result = self::get($key, $messageContainerIdentifier);
 
         self::removeMessage($key, $messageContainerIdentifier);
@@ -179,19 +179,19 @@ class FlashSession
         return $result;
     }
 
-    public static function readFromErrors( $key) {
+    public static function readFromErrors($key) {
         return self::get($key, self::MA_ERRORS);
     }
 
-    public static function readFromInfo( $key) {
+    public static function readFromInfo($key) {
         return self::get($key, self::MA_INFOS);
     }
 
-    public static function readFromWarnings( $key) {
+    public static function readFromWarnings($key) {
         return self::get($key, self::MA_WARNINGS);
     }
 
-    public static function writeInSystemContainer($value,  $key = null) {
+    public static function writeInSystemContainer($value, $key = null) {
         $array = json_decode($_SESSION["s"], true);
 
         if (!is_null($key)) {
@@ -208,6 +208,30 @@ class FlashSession
     }
 
     public static function getSessionId() {
-        return session_id();
+        return session_id() ?? $_COOKIE["PHPSESSID"];
+    }
+
+    public static function hasErrors() : bool {
+        return !empty(json_decode($_SESSION["e"], true));
+    }
+
+    public static function hasInfos() : bool {
+        return !empty(json_decode($_SESSION["i"], true));
+    }
+
+    public static function hasWarnings() : bool {
+        return !empty(json_decode($_SESSION["w"], true));
+    }
+
+    public static function getErrors() : array {
+        return json_decode($_SESSION["e"], true);
+    }
+
+    public static function getInfos() : array {
+        return json_decode($_SESSION["i"], true);
+    }
+
+    public static function getWarnings() : array {
+        return json_decode($_SESSION["w"], true);
     }
 }

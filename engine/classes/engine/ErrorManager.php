@@ -40,7 +40,7 @@ class ErrorManager
         24 => "Denial of service. Stolen session!",
         25 => "Invalid UID or PWD",
         26 => "This account is not active.",
-        27 => "This file has too much weight.",
+        27 => "This file has too big size.",
         28 => "There is no file to upload.",
         29 => "This report is not exist.",
         30 => "This answer for report is not exist.",
@@ -63,7 +63,13 @@ class ErrorManager
         /*-------------------------------------*/
         41 => "This page doesn't exist",
         42 => "Flash session container does not contain this key",
-        43 => "Flash session content did not read"
+        43 => "Flash session content did not read",
+        44 => "Sender has no file with that index",
+        45 => "Invalid error code",
+        46 => "Property is not available in current PHP version",
+        48 => "Sent files count is one",
+        49 => "File with this extension does not permitted to be uploaded",
+        50 => "Cannot find file on the server storage"
     ];
 
     public const EC_SUCCESS = 999;
@@ -94,7 +100,7 @@ class ErrorManager
     public const EC_STOLEN_SESSION = 24;
     public const EC_INVALID_USER_ACCESS_DATA = 25;
     public const EC_INACTIVE_ACCOUNT = 26;
-    public const EC_FILE_OVERWEIGHT = 27;
+    public const EC_FILE_OVERSIZE = 27;
     public const EC_NO_FILE_TO_UPLOAD = 28;
     public const EC_REPORT_NOT_EXIST = 29;
     public const EC_ANSWER_IN_REPORT_NOT_EXIST = 30;
@@ -111,6 +117,13 @@ class ErrorManager
     public const EC_INVALID_PAGE = 41;
     public const EC_SESSION_NOT_CONTAIN = 42;
     public const EC_FLASH_SESSION_CONTENT_DID_NOT_READ = 43;
+    public const EC_INVALID_FILE_INDEX = 44;
+    public const EC_INVALID_ERROR_CODE = 45;
+    public const EC_INVALID_PHP_VERSION = 46;
+    public const EC_INVALID_ARGUMENT = 47;
+    public const EC_ONE_SENT_FILE = 48;
+    public const EC_NOT_PERMITTED_FILE_EXTENSION = 49;
+    public const EC_CANNOT_FIND_TEMP_FILE = 50;
 
     /**
      * Get PHP function documentation.
@@ -149,7 +162,13 @@ class ErrorManager
 
     public static function throwIfErrorCodeInvalid(int $code) : void {
         if ($code !== 999 && $code !== 0 && $code > self::getCountErrors()) {
-            throw new InvalidErrorCodeError("There is no error with this code");
+            throw new InvalidErrorCodeError();
+        }
+
+        if (in_array($code, [
+            ErrorManager::EC_INVALID_ARGUMENT
+        ])) {
+            throw new InvalidErrorCodeError($code);
         }
     }
 

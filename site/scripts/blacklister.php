@@ -1,4 +1,12 @@
 <?php
+
+use Engine\Engine;
+use Engine\LanguageManager;
+use Guards\SocietyGuard;
+use Users\Models\User;
+use Users\Services\FlashSession;
+use Users\UserAgent;
+
 /** Response list:
  *  1. nsnfb - not sended nickname for blacklisting.
  *  2. une - user not exists.
@@ -12,17 +20,18 @@
  *  8. cnuu - cannot unblock user;
  */
 include_once "../../engine/engine.php";
-\Engine\Engine::LoadEngine();
+Engine::LoadEngine();
 
-$session = \Users\UserAgent::SessionContinue();
+$session = UserAgent::SessionContinue();
 if ($session !== TRUE){
-    header("Location: ../../profile.php?res=nsi");
+    FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.you_are_not_authorized"), FlashSession::MA_ERRORS);
+    header("Location: ../../profile.php");
     exit;
 }
 
-$user = new \Users\Models\User(@$_SESSION["uid"]);
+$user = new User(@UserAgent::getCurrentSession()->getContent()["uid"]);
 
-if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBanned()){
+if (SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBanned()){
     header("Location: banned.php");
     exit;
 }
@@ -30,43 +39,37 @@ if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBa
 if (isset($_REQUEST["profile-blacklist-add"])){
     if (empty($_REQUEST["profile-edit-blacklist-nickname"])){
         //Not sended nickname
-        header("Location: ../../profile.php?page=blacklist&res=nsnfb");
-        exit;
+        FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.nickname_had_not_been_received_for_blocking"), FlashSession::MA_ERRORS);
     }
     if (!\Users\UserAgent::GetUserId($_REQUEST["profile-edit-blacklist-nickname"])){
-        //User is not exitst.
-        header("Location: ../../profile.php?page=blacklist&res=une");
-        exit;
+        //User does not exits.
+        FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.receiver_with_this_nickname_does_not_exist"), FlashSession::MA_ERRORS);
     }
     if ($user->Blacklister()->isBlocked(\Users\UserAgent::GetUserId($_REQUEST["profile-edit-blacklist-nickname"]))){
         //User is already blocked.
-        header("Location: ../../profile.php?page=blacklist&res=uiab");
-        exit;
+        FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.user_is_already_blocked"), FlashSession::MA_ERRORS);
     }
     if ($user->Blacklister()->add(\Users\UserAgent::GetUserId($_REQUEST["profile-edit-blacklist-nickname"]), @$_REQUEST["profile-edit-blacklist-comment"])){
         //User has been blocked.
-        header("Location: ../../profile.php?page=blacklist&res=uhbb");
-        exit;
+        FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.user_has_been_blocked_successfully"), FlashSession::MA_INFOS);
     } else {
-        header("Location: ../../profile.php?page=blacklist&res=uhnbb");
-        exit;
+        FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.user_blocking_failed"), FlashSession::MA_INFOS);
     }
-
 }
 
 if (isset($_REQUEST["buid"])){
     if (!$user->Blacklister()->isBlocked($_REQUEST["buid"])){
         //User is not blocked;
-        header("Location: ../../profile.php?page=blacklist&res=uinb");
-        exit;
+        FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.user_blocking_failed"), FlashSession::MA_ERRORS);
     }
     if ($user->Blacklister()->remove($_REQUEST["buid"])){
         //User has been unblocked;
-        header("Location: ../../profile.php?page=blacklist&res=uhbub");
-        exit;
+        FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.user_has_been_unblocked"), FlashSession::MA_INFOS);
     } else {
         //Cannot unblocked user;
-        header("Location: ../../profile.php?page=blacklist&res=cnuu");
-        exit;
+        FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.cannot_unblock_user"), FlashSession::MA_ERRORS);
     }
 }
+
+header("Location: ../../profile.php?page=blacklist");
+exit;

@@ -6,6 +6,14 @@
  * Time: 2:35
  */
 
+use Engine\Engine;
+use Engine\LanguageManager;
+use Guards\SocietyGuard;
+use Users\Blacklister;
+use Users\Models\User;
+use Users\Services\FlashSession;
+use Users\UserAgent;
+
 // Errors:
 // rins - receiver is not set.
 // rine - receiver is not exist.
@@ -20,52 +28,65 @@
 // mhbr - message has been removed.
 
 include_once "../../engine/engine.php";
-\Engine\Engine::LoadEngine();
+Engine::LoadEngine();
 
-if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){
+if (SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){
     header("Location: banned.php");
     exit;
 }
 
-$session = \Users\UserAgent::SessionContinue();
-if ($session === false){
-    header("Location: ../../profile.php?res=nsi");
+$session = UserAgent::SessionContinue();
+if ($session !== TRUE){
+    FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.you_are_not_authorized"), FlashSession::MA_ERRORS);
+    header("Location: ../../profile.php");
     exit;
 }
 
-$user = new \Users\Models\User($_SESSION["uid"]);
+$user = new User(@UserAgent::getCurrentSession()->getContent()["uid"]);
 
 //Send message.
 if (isset($_REQUEST["send"])){
-    if (empty($_POST["profile-pm-receiver-input"])){
-        header("Location: ../../profile.php?page=wm&res=rins");
+    if (empty($_POST["profile-pm-receiver-input"])) {
+        //No receiver
+        FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.no_receiver_sended"), FlashSession::MA_ERRORS);
+        header("Location: ../../profile.php?page=wm");
         exit;
     }
 
     if (!\Users\UserAgent::IsNicknameExists($_POST["profile-pm-receiver-input"])){
-        header("Location: ../../profile.php?page=wm&res=rine");
+        //Receiver does not exist.
+        FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.receiver_with_this_nickname_does_not_exist"), FlashSession::MA_ERRORS);
+        header("Location: ../../profile.php?page=wm");
         exit;
     }
 
     if (empty($_POST["profile-pm-text"])){
-        header("Location: ../../profile.php?page=wm&res=nt");
+        //No message text.
+        FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.no_message_text"), FlashSession::MA_ERRORS);
+        header("Location: ../../profile.php?page=wm");
         exit;
     }
 
-    $bl = new \Users\UserBlacklister(\Users\UserAgent::GetUserId($_POST["profile-pm-receiver-input"]));
+    $bl = new Blacklister(\Users\UserAgent::GetUserId($_POST["profile-pm-receiver-input"]));
 
     if ($bl->isBlocked($user->getId())){
-        header("Location: ../../profile.php?page=wm&res=yibl");
+        //User is blocked.
+        FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.receiver_is_blocked"), FlashSession::MA_ERRORS);
+        header("Location: ../../profile.php?page=wm");
         exit;
     }
 
     if ($user->MessageManager()->send(\Users\UserAgent::GetUserId($_POST["profile-pm-receiver-input"]),
         (!empty($_POST["profile-pm-subject-input"])) ? $_POST["profile-pm-subject-input"] : "Без темы",
          $_POST["profile-pm-text"])){
-        header("Location: ../../profile.php?page=ic&res=mhbs");
+        //Message has been sended.
+        FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.message_has_been_sended"), FlashSession::MA_INFOS);
+        header("Location: ../../profile.php?page=ic");
         exit;
     } else {
-        header("Location: ../../profile.php?page=wm&res=mhnbs");
+        //Cannot send message...
+        FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.cannot_send_message"), FlashSession::MA_ERRORS);
+        header("Location: ../../profile.php?page=wm");
         exit;
     }
 }
@@ -76,7 +97,8 @@ if (!empty($_REQUEST["r"])) {
         header("Location: ../../profile.php?page=rm&mid=" . $_REQUEST["r"]);
         exit;
     } else {
-        header("Location: ../../profile.php?page=pm&res=nprm");
+        FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.not_permitted_to_read_message"), FlashSession::MA_ERRORS);
+        header("Location: ../../profile.php?page=pm");
         exit;
     }
 }
@@ -86,14 +108,16 @@ if (!empty($_REQUEST["q"])){
     $letter = $user->MessageManager()->read($_REQUEST["q"]);
     if ($letter !== false){
         if (!\Users\UserAgent::IsNicknameExists($letter["senderUID"])){
-            header("Location: ../../profile.php?page=wm&res=rine");
+            FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.receiver_with_this_nickname_does_not_exist"), FlashSession::MA_ERRORS);
+            header("Location: ../../profile.php?page=wm");
             exit;
         }
         header("Location: ../../profile.php?page=wm&sendTo=" . \Users\UserAgent::GetUserNick($letter["senderUID"]) . "&mid=" . $_REQUEST["q"]);
         exit;
     }
     else {
-        header("Location: ../../profile.php?page=pm&res=nprm");
+        FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.not_permitted_to_read_message"), FlashSession::MA_ERRORS);
+        header("Location: ../../profile.php?page=pm");
         exit;
     }
 }
@@ -101,10 +125,12 @@ if (!empty($_REQUEST["q"])){
 //Delete message.
 if (!empty($_REQUEST["d"])){
     if ($user->MessageManager()->remove($_REQUEST["d"]) === true){
-        header("Location: ../../profile.php?page=pm&res=mhbr");
+        FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.message_has_been_removed"), FlashSession::MA_INFOS);
+        header("Location: ../../profile.php?page=pm");
         exit;
     } else {
-        header("Location: ../../profile.php?page=pm&res=nprmm");
+        FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.not_permitted_to_remove_message"), FlashSession::MA_ERRORS);
+        header("Location: ../../profile.php?page=pm");
         exit;
     }
 }
@@ -112,7 +138,8 @@ if (!empty($_REQUEST["d"])){
 if (!empty($_REQUEST["rt"])){
     $result = $user->MessageManager()->restore($_REQUEST["rt"]);
     if ($result) {
-        header("Location: ../../profile.php?page=pm&res=mhbrt");
+        FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.message_has_been_restored"), FlashSession::MA_INFOS);
+        header("Location: ../../profile.php?page=pm");
         exit;
     }
 }

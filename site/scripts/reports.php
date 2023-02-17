@@ -8,7 +8,7 @@ if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){
     exit;
 }
 
-if ($sessionRes = \Users\UserAgent::SessionContinue()) $user = new \Users\Models\User($_SESSION["uid"]);
+if ($sessionRes = \Users\UserAgent::SessionContinue()) $user = new \Users\Models\User($user->getSession()->getContent()["uid"]);
 else { header("Location: ../../index.php?page=errors/nonauth"); exit;}
 
 if (isset($_REQUEST["reports-create"])) {

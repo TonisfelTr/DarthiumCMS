@@ -53,7 +53,15 @@ class User {
     private $uAdditionFields;
     private $uSession;
 
-    public function __construct($userId) {
+    public static function getAvailableCurrentEntity(User &$user = null) : User {
+        if (is_null($user)) {
+            return new User(UserAgent::getCurrentSession()->getContent()["uid"]);
+        } else {
+            $user = new User(UserAgent::getCurrentSession()->getContent()["uid"]);
+        }
+    }
+
+    public function __construct($userId, bool $isCurrentUser = false) {
         $result = DataKeeper::Get("tt_users", ["*"], ["id" => $userId])[0];
         $this->uId = $result["id"];
         $this->uNickname = $result["nickname"];
@@ -90,7 +98,9 @@ class User {
         $this->uNotifications = new Notificator($this->uId);
         $this->uFriendList = new Friendlist($this->uId);
         $this->uAdditionFields = UserAgent::GetAdditionalFieldsListOfUser($userId);
-        $this->uSession = new Session($_COOKIE["PHPSESSID"]);
+        if ($isCurrentUser) {
+            $this->uSession = new Session($_COOKIE["PHPSESSID"]);
+        }
 
         return $this;
     }
@@ -100,7 +110,6 @@ class User {
     }
 
     public function getId() {
-
         return $this->uId;
     }
 
@@ -286,4 +295,7 @@ class User {
         return false;
     }
 
+    public function isThisCurrent() {
+        return $this->uId = UserAgent::getCurrentSession()->getContent("uid");
+    }
 }

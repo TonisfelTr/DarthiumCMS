@@ -61,6 +61,12 @@ class Reputationer {
         return false;
     }
 
+    /**
+     * Get count of reputation points added by $fromUserId.
+     *
+     * @param int $fromUserId ID of user which add reputation.
+     * @return false|mixed
+     */
     public function getPointsFromUserCount(int $fromUserId) {
         $mysqli = new \mysqli(Engine::GetDBInfo(0), Engine::GetDBInfo(1), Engine::GetDBInfo(2), Engine::GetDBInfo(3));
 
