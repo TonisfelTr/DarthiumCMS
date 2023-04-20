@@ -46,7 +46,7 @@ if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBa
 }
 
 if (isset($_POST["users-find-button"]) || isset($_POST["fpage"])){
-    if ($user->UserGroup()->getPermission("user_see_foreign")){
+    if ($user->getUserGroup()->getPermission("user_see_foreign")){
         $backRequest = "Location: ../../adminpanel.php?p=users";
         if (isset($_POST["fgroup"]) && $_POST["fgroup"] != 0) $backRequest .= "&fgroup=".$_POST["fgroup"];
         if (isset($_POST["user-data-input"])) {
@@ -65,7 +65,7 @@ if (isset($_POST["users-find-button"]) || isset($_POST["fpage"])){
 }
 
 if (isset($_POST["users-delete-button"])){
-    if ($user->UserGroup()->getPermission("user_remove")) {
+    if ($user->getUserGroup()->getPermission("user_remove")) {
         if (isset($_GET["duids"])){
             $indexer = 0;
             $deleteUIDs = explode(",", $_GET["duids"]);
@@ -93,7 +93,7 @@ if (isset($_POST["users-delete-button"])){
 }
 
 if (isset($_POST["user_ban_ban"])){
-    if ($user->UserGroup()->getPermission("user_ban")){
+    if ($user->getUserGroup()->getPermission("user_ban")){
         $backRequest = "Location: ../../adminpanel.php?p=users&reqtype=1";
         if (!isset($_POST["user_ban_time"])){ header("Location: ../../adminpanel.php?p=users&reqtype=1&res=4nvbt"); exit; }
         if (isset($_POST["user_ban_input"])) {
@@ -128,7 +128,7 @@ if (isset($_POST["user_ban_ban"])){
 }
 
 if (isset ($_POST["user_ban_unban"])) {
-    if ($user->UserGroup()->getPermission("user_unban")){
+    if ($user->getUserGroup()->getPermission("user_unban")){
         $backRequest = "Location: ../../adminpanel.php?p=users&reqtype=1";
         if( isset ($_GET["ufuban"])) {
             $unbanUsers = explode(",", $_GET["ufuban"]);
@@ -164,7 +164,7 @@ if (isset ($_POST["user_ban_find"])){
 }
 
 if (isset ($_POST["user_bip_ban"])){
-    if ($user->UserGroup()->getPermission("user_banip")){
+    if ($user->getUserGroup()->getPermission("user_banip")){
         $backRequest = "Location: ../../adminpanel.php?p=users&reqtype=2";
         if (!empty($_POST["user-banip-input"])){
             if(\Guards\SocietyGuard::BanIP($_POST["user-banip-input"], (empty($_POST["user-banip-reason"])) ? "none" : $_POST["user-banip-reason"],
@@ -198,7 +198,7 @@ if (isset ($_POST["user_bip_ban"])){
 }
 
 if (isset ($_POST["user_bip_unban"]) || isset($_GET["ipuban"])){
-    if ($user->UserGroup()->getPermission("user_unbanip")){
+    if ($user->getUserGroup()->getPermission("user_unbanip")){
         $backRequest = "Location: ../../adminpanel.php?p=users&reqtype=2";
         if (!empty($_GET["ipuban"])) {
             $unipBans = explode(",", $_GET["ipuban"]);
@@ -225,7 +225,7 @@ if (isset ($_POST["user_bip_unban"]) || isset($_GET["ipuban"])){
 }
 
 if (isset ($_POST["user-add-add"])){
-    if ($user->UserGroup()->getPermission("user_add")){
+    if ($user->getUserGroup()->getPermission("user_add")){
         $backRequest = "Location: ../../adminpanel.php?p=users&reqtype=3";
         if (empty($_POST["user-add-nickname"])){
             $backRequest .= "&res=4nrnn";
@@ -242,7 +242,7 @@ if (isset ($_POST["user-add-add"])){
             header($backRequest);
             exit;
         } else {
-            $group = (!isset($_POST["user-add-group"]) || !$user->UserGroup()->getPermission("change_user_group")) ?
+            $group = (!isset($_POST["user-add-group"]) || !$user->getUserGroup()->getPermission("change_user_group")) ?
                 \Engine\Engine::GetEngineInfo("sg") : (($_POST["user-add-group"] == 0) ? \Engine\Engine::GetEngineInfo("sg") : $_POST["user-add-group"]);
             if (\Users\UserAgent::AddUser($_POST["user-add-nickname"], $_POST["user-add-password"], $_POST["user-add-email"], $user->getNickname()) === TRUE) {
                 $newUser = new \Users\Models\User(\Users\UserAgent::GetUserId($_POST["user-add-nickname"]));
@@ -286,7 +286,7 @@ if (!empty ($_GET["uide"])){
 }
 
 if (isset ($_POST["user-edit-save"])){
-    if ($user->UserGroup()->getPermission("change_another_profiles")){
+    if ($user->getUserGroup()->getPermission("change_another_profiles")){
         $backRequest = "Location: ../../adminpanel.php?p=users&uid=" . $_POST["user-edit-id"];
         $eUser = new \Users\Models\User($_POST["user-edit-id"]);
         //Change nickname
@@ -323,9 +323,9 @@ if (isset ($_POST["user-edit-save"])){
             elseif ($res === 4) $backRequest .= "&res=4neee";
         }
         //Change group
-        if ($user->UserGroup()->getPermission("change_user_group")) {
+        if ($user->getUserGroup()->getPermission("change_user_group")) {
             if ($eUser->getGroupId() != $_POST["user-edit-group"]) {
-                $groupFromName = $eUser->UserGroup()->getName();
+                $groupFromName = $eUser->getUserGroup()->getName();
                 $groupToName = \Users\GroupAgent::GetGroupNameById($_POST["user-edit-group"]);
                 \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.change_user_group_log") . $eUser->getNickname() .
                 " [$groupFromName -> $groupToName]" );
@@ -429,7 +429,7 @@ if (isset ($_POST["user-edit-save"])){
 }
 
 if (isset ($_POST["user-edit-activate"])){
-    if ($user->UserGroup()->getPermission("change_another_profiles")){
+    if ($user->getUserGroup()->getPermission("change_another_profiles")){
         $eUser = new \Users\Models\User($_POST["user-edit-id"]);
         if ($eUser->Activate()){
             \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("users_panel.logs.activate_user_log") . $eUser->getNickname() . ".");

@@ -9,35 +9,6 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
     $pageName = $topic->getName();
 
     if ($page == 1){
-        include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/news/new.html";
-        $new = getBrick();
-        $info = "";
-        if (isset($_GET["res"])) {
-            switch ($_GET["res"]) {
-                case "3set":
-                    $info = "<div class=\"alert alert-success\"><span class='glyphicon glyphicon-ok'></span> " . \Engine\LanguageManager::GetTranslation("newsviewer.topic_edited_success") . "</div>";
-                    break;
-                case "3sdc":
-                    $info = "<div class=\"alert alert-success\"><span class='glyphicon glyphicon-ok'></span> " . \Engine\LanguageManager::GetTranslation("newsviewer.comment_removed_success") . "</div>";
-                    break;
-                case "3ndc":
-                    $info = "<div class=\"alert alert-danger\"><span class='glyphicon glyphicon-remove'></span> " . \Engine\LanguageManager::GetTranslation("newsviewer.comment_removed_failed") . "</div>";
-                    break;
-                case "3scc":
-                    $info = "<div class=\"alert alert-success\"><span class='glyphicon glyphicon-ok'></span> " . \Engine\LanguageManager::GetTranslation("newsviewer.comment_created_success") . "</div>";
-                    break;
-                case "3sec":
-                    $info = "<div class=\"alert alert-success\"><span class='glyphicon glyphicon-ok'></span> " . \Engine\LanguageManager::GetTranslation("newsviewer.comment_edited_success") . "</div>";
-                    break;
-                case "3npec":
-                    $info = "<div class=\"alert alert-danger\"><span class='glyphicon glyphicon-remove'></span> " . \Engine\LanguageManager::GetTranslation("newsviewer.comment_edited_not_permitted") . "</div>";
-                    break;
-                case "3ntlc":
-                    $info = "<div class=\"alert alert-danger\"><span class='glyphicon glyphicon-remove'></span> " . \Engine\LanguageManager::GetTranslation("newsviewer.too_short_comment") . "</div>";
-                    break;
-            }
-        }
-        $new = str_replace_once("{TOPIC_DELETE_ERROR}", $info, $new);
 //Quize block
         if (\Forum\ForumAgent::IsExistQuizeInTopic($topic->getId())) {
             include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/news/quizeframe.html";
@@ -92,9 +63,9 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
         $new = str_replace_once("{TOPIC_CATEGORY}", $topic->getCategory()->getName(), $new);
         $new = str_replace_once("{TOPIC_AUTHOR_AVATAR}", $author->getAvatar(), $new);
         $new = str_replace_once("{TOPIC_AUTHOR_NICKNAME}", $author->getNickname(), $new);
-        $new = str_replace_once("{TOPIC_AUTHOR_GROUP_COLOR}", $author->UserGroup()->getColor(), $new);
-        $new = str_replace_once("{TOPIC_AUTHOR_GROUP}", $author->UserGroup()->getName(), $new);
-        $new = str_replace_once("{TOPIC_AUTHOR_GROUP_ID}", $author->UserGroup()->getId(), $new);
+        $new = str_replace_once("{TOPIC_AUTHOR_GROUP_COLOR}", $author->getUserGroup()->getColor(), $new);
+        $new = str_replace_once("{TOPIC_AUTHOR_GROUP}", $author->getUserGroup()->getName(), $new);
+        $new = str_replace_once("{TOPIC_AUTHOR_GROUP_ID}", $author->getUserGroup()->getId(), $new);
         $new = str_replace_once("{TOPIC_AUTHOR_ID}", $topic->getAuthorId(), $new);
         $new = str_replace_once("{TOPIC_AUTHOR_LAST_ONLINE}", ((\Engine\Engine::GetSiteTime() > $author->getLastTime() + 15 * 60) ? "заходил" . (($author->getSex() == 2) ? "а" : "")
             . " в " . \Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s", $author->getLastTime())) : "<span style=\"color: #00dd00;\">онлайн</span>"), $new);
@@ -122,11 +93,11 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
     //Second condition
         $isUserIsAuthor = ($isAuthorized && $user->getId() == $author->getId());
     //Third condition
-        $permToComment = $isAuthorized && (($user->UserGroup()->getPermission("comment_create") && $topic->getCategory()->CanCreateComments()) ||
-                ($user->UserGroup()->getPermission("comment_create") && !$topic->getCategory()->CanCreateComments() && $user->UserGroup()->getPermission("category_params_ignore")));
+        $permToComment = $isAuthorized && (($user->getUserGroup()->getPermission("comment_create") && $topic->getCategory()->CanCreateComments()) ||
+                ($user->getUserGroup()->getPermission("comment_create") && !$topic->getCategory()->CanCreateComments() && $user->getUserGroup()->getPermission("category_params_ignore")));
     //Other
-        $hasPermToEdit = ($isAuthorized && (($isUserIsAuthor && $user->UserGroup()->getPermission("topic_edit")) || $user->UserGroup()->getPermission("topic_foreign_edit")));
-        $hasPermToDelete = ($isAuthorized && (($isUserIsAuthor && $user->UserGroup()->getPermission("topic_delete")) || $user->UserGroup()->getPermission("topic_foreign_delete")));
+        $hasPermToEdit = ($isAuthorized && (($isUserIsAuthor && $user->getUserGroup()->getPermission("topic_edit")) || $user->getUserGroup()->getPermission("topic_foreign_edit")));
+        $hasPermToDelete = ($isAuthorized && (($isUserIsAuthor && $user->getUserGroup()->getPermission("topic_delete")) || $user->getUserGroup()->getPermission("topic_foreign_delete")));
         $hasPermToComment = ($isAuthorized && ($isUserIsAuthor || $permToComment));
 
         if ($hasPermToEdit) {
@@ -174,9 +145,9 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
         $comment = new \Forum\Models\TopicComment($topicElement);
         $currentComment = str_replace_once("{COMMENT_AUTHOR_NICKNAME}", $comment->author()->getNickname(), $currentComment);
         $currentComment = str_replace_once("{COMMENT_AUTHOR_ID}", $comment->author()->getId(), $currentComment);
-        $currentComment = str_replace_once("{COMMENT_AUTHOR_GROUP_NAME}", $comment->author()->UserGroup()->getName(), $currentComment);
-        $currentComment = str_replace_once("{COMMENT_AUTHOR_GROUP_ID}", $comment->author()->UserGroup()->getId(), $currentComment);
-        $currentComment = str_replace_once("{COMMENT_AUTHOR_GROUP_COLOR}", $comment->author()->UserGroup()->getColor(), $currentComment);
+        $currentComment = str_replace_once("{COMMENT_AUTHOR_GROUP_NAME}", $comment->author()->getUserGroup()->getName(), $currentComment);
+        $currentComment = str_replace_once("{COMMENT_AUTHOR_GROUP_ID}", $comment->author()->getUserGroup()->getId(), $currentComment);
+        $currentComment = str_replace_once("{COMMENT_AUTHOR_GROUP_COLOR}", $comment->author()->getUserGroup()->getColor(), $currentComment);
         switch ($comment->author()->getSex()){
             case 2:
                 $sexAuthorComment = \Engine\LanguageManager::GetTranslation("gender_male");
@@ -206,13 +177,13 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
             date("Y-m-d H:i:s", $comment->getCreateDatetime())
         ), $currentComment);
         if ($user !== false) {
-            if (($user->UserGroup()->getPermission("comment_edit") && $comment->getAuthorId() == $user->getId()) || $user->UserGroup()->getPermission("comment_foreign_edit")) {
+            if (($user->getUserGroup()->getPermission("comment_edit") && $comment->getAuthorId() == $user->getId()) || $user->getUserGroup()->getPermission("comment_foreign_edit")) {
                 $currentComment = str_replace_once("{COMMENT_EDIT_BUTTON}", "<a class=\"btn btn-default btn-comment\" href=\"index.php?topic=" . $topic->getId() . "&cedit=". $comment->getId() . "\">
                 <span class=\"glyphicon glyphicon-edit\"></span> " . \Engine\LanguageManager::GetTranslation("edit") . "</a>", $currentComment);
             } else {
                 $currentComment = str_replace_once("{COMMENT_EDIT_BUTTON}", "", $currentComment);
             }
-            if (($user->UserGroup()->getPermission("comment_delete") && $comment->getAuthorId() == $user->getId()) || $user->UserGroup()->getPermission("comment_foreign_delete")) {
+            if (($user->getUserGroup()->getPermission("comment_delete") && $comment->getAuthorId() == $user->getId()) || $user->getUserGroup()->getPermission("comment_foreign_delete")) {
                 $currentComment = str_replace_once("{COMMENT_DELETE_BUTTON}", "<button class=\"btn btn-default btn-delete\" type=\"submit\" name=\"comment-delete-btn\">
                 <span class=\"glyphicon glyphicon-erase\"></span> " . \Engine\LanguageManager::GetTranslation("remove") . "</button>", $currentComment);
             } else {
@@ -254,7 +225,7 @@ if (!isset($_GET["edit"]) && !isset($_GET["cedit"])) {
     echo $new;
 }
 elseif (isset($_GET["edit"])) {
-    if (($user->getId() == $author->getId() && $user->UserGroup()->getPermission("topic_edit")) || $user->UserGroup()->getPermission("topic_foreign_edit")) {
+    if (($user->getId() == $author->getId() && $user->getUserGroup()->getPermission("topic_edit")) || $user->getUserGroup()->getPermission("topic_foreign_edit")) {
         $pageName = \Engine\LanguageManager::GetTranslation("newsviewer.editor_topic");
 
         include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/news/newedit.html";
@@ -294,12 +265,12 @@ elseif (isset($_GET["edit"])) {
                 $atr = " selected";
             else
                 $atr = "";
-            if ($category->isPublic() || (!$category->isPublic() && $user->UserGroup()->getPermission("category_see_unpublic")))
+            if ($category->isPublic() || (!$category->isPublic() && $user->getUserGroup()->getPermission("category_see_unpublic")))
                 $categoriesList .= "<option value=\"" . $category->getId() . "\"$atr>" . $category->getName() . "</option>";
         }
         $editor = str_replace_once("{TOPIC_PAGE:CATEGORIES_OPTION}", $categoriesList, $editor);
         $selectorAtr = "";
-        if (!$user->UserGroup()->getPermission("topic_manage"))
+        if (!$user->getUserGroup()->getPermission("topic_manage"))
             $selectorAtr = "disabled";
         $editor = str_replace_once("{TOPIC_DISABLED_PROPERTY}", $selectorAtr, $editor);
         $editor = str_replace_once("{TOPIC_DISABLED_STATUS_PROPERTY}", $selectorAtr, $editor);
@@ -314,7 +285,7 @@ elseif (isset($_GET["edit"])) {
 }
 elseif (isset($_GET["cedit"])) {
     $comment = new \Forum\Models\TopicComment($_GET["cedit"]);
-    if (($user->getId() == $comment->getAuthorId() && $user->UserGroup()->getPermission("comment_edit")) || $user->UserGroup()->getPermission("comment_foreign_edit")) {
+    if (($user->getId() == $comment->getAuthorId() && $user->getUserGroup()->getPermission("comment_edit")) || $user->getUserGroup()->getPermission("comment_foreign_edit")) {
         $pageName = \Engine\LanguageManager::GetTranslation("newsviewer.editor_comment");
         include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/news/commentedit.html";
         $editor = getBrick();

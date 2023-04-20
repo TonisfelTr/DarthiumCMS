@@ -175,6 +175,20 @@ class PluginManager
         return self::$installed;
     }
 
+
+    public static function GetInstalledPluginsNames() : array {
+        $resultArray = [];
+
+        $queryResponse = DataKeeper::Get("tt_plugins", ["name", "status"]);
+        foreach ($queryResponse as $response) {
+            if ($response["status"]) {
+                $resultArray[] = $response["name"];
+            }
+        }
+
+        return $resultArray;
+    }
+
     public static function DeletePlugin(string $codeName){
         $id = DataKeeper::Get("tt_plugins", ["id"], ["codename" => $codeName]);
         DataKeeper::Delete("tt_plugins", ["id" => $id[0]["id"]]);
@@ -260,28 +274,25 @@ class PluginManager
         return $main;
     }
 
-    public static function IntegrateCSS(string $string){
+    public static function IntegrateCSS() : string {
         $css = array_unique(self::$cssLines);
         $css = implode("", $css);
-        $string = str_replace_once("{PLUGINS_STYLESHEETS}", $css, $string);
 
-        return $string;
+        return $css;
     }
 
-    public static function IntegrateFooterJS(string $string){
+    public static function IntegrateFooterJS() : string {
         $footerJS = array_unique(self::$jsFooterLines);
         $footerJS = implode("", $footerJS);
-        $string = str_replace_once("{PLUGIN_FOOTER_JS}", $footerJS, $string);
 
-        return $string;
+        return $footerJS;
     }
 
-    public static function IntegrateHeaderJS(string $string) {
+    public static function IntegrateHeaderJS() : string {
         $headerJS = array_unique(self::$jsHeadLines);
         $headerJS = implode("", $headerJS);
-        $string = str_replace_once("{PLUGIN_HEAD_JS}", $headerJS, $string);
 
-        return $string;
+        return $headerJS;
     }
 
     public static function GetPluginId(string $codename){

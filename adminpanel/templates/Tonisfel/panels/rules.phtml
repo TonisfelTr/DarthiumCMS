@@ -1,7 +1,7 @@
 <?php
 if (!defined("TT_AP")){ header("Location: ../adminapanel.php?p=forbidden"); exit; }
 //Проверка на наличие прав.
-if (!$user->UserGroup()->getPermission("rules_edit")){ header("Location: ../../adminpanel.php?res=1"); exit; }
+if (!$user->getUserGroup()->getPermission("rules_edit")){ header("Location: ../../adminpanel.php?res=1"); exit; }
 else {
 $rulesText = file_get_contents("./engine/config/rules.sfc", FILE_USE_INCLUDE_PATH);
 if (isset($_SESSION["result"])) $resultSave = $_SESSION["result"]; ?>

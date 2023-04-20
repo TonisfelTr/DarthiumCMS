@@ -32,10 +32,10 @@ if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBa
     exit;
 }
 
-$createSPPerm = $user->UserGroup()->getPermission("sc_create_pages");
-$editSPPerm = $user->UserGroup()->getPermission("sc_edit_pages");
-$removeSPPerm = $user->UserGroup()->getPermission("sc_remove_pages");
-$designSCPerm = $user->UserGroup()->getPermission("sc_design_edit");
+$createSPPerm = $user->getUserGroup()->getPermission("sc_create_pages");
+$editSPPerm = $user->getUserGroup()->getPermission("sc_edit_pages");
+$removeSPPerm = $user->getUserGroup()->getPermission("sc_remove_pages");
+$designSCPerm = $user->getUserGroup()->getPermission("sc_design_edit");
 
 if (isset($_POST["staticc-page-create-create-btn"]) && $createSPPerm) {
     if (empty($_POST["staticc-page-create-name-input"])) {

@@ -11,7 +11,7 @@ if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBa
     exit;
 }
 
-if ($user->UserGroup()->getPermission("rules_edit") == 1) {
+if ($user->getUserGroup()->getPermission("rules_edit") == 1) {
     $rulesFile = fopen("../../engine/config/rules.sfc", "w+", FILE_USE_INCLUDE_PATH);
     if ($rulesFile) {
         fwrite($rulesFile, $_REQUEST["rules_texter"]);

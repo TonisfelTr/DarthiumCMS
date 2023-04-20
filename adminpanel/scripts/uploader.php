@@ -25,7 +25,7 @@ if (!strstr($_SESSION["LASTADDR"], "?")) $symbol = "?";
 else $symbol = "&";
 
 if (isset($_POST["uploader-upload-file-btn"])){
-    if($user->UserGroup()->getPermission("upload_add")){
+    if($user->getUserGroup()->getPermission("upload_add")){
         $result = \Engine\Uploader::UploadFile($user->getId(),"uploader-file-input");
         if ($result === TRUE) {
             header("Location: " . $_SESSION["LASTADDR"] . $symbol . "res=1s&upload");
@@ -64,7 +64,7 @@ if (isset($_POST["uploader-upload-file-btn"])){
 }
 
 if (isset($_POST["uploader-file-delete"]) || isset($_POST["uploader-delete-files-btn"])){
-    if ($user->UserGroup()->getPermission("upload_delete")){
+    if ($user->getUserGroup()->getPermission("upload_delete")){
         if (isset($_POST["uploader-delete-files-btn"])) {
             if (empty($_POST["uploader-file-delete-ids"])) {
                 header("Location: " . $_SESSION["LASTADDR"] . $symbol . "res=1ndnef&upload");

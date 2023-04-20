@@ -13,7 +13,7 @@ else $index = count($array)-1;
 if ($index >= 0){
     foreach ($array as $item) {
         $user = new \Users\Models\User($item["id"]);
-        $result[] = [$user->getAvatar(), $user->getNickname(), $user->UserGroup()->getName(), "\"" . $user->getId() . "\""];
+        $result[] = [$user->getAvatar(), $user->getNickname(), $user->getUserGroup()->getName(), "\"" . $user->getId() . "\""];
     }
     echo @serialize($result);
 } else {

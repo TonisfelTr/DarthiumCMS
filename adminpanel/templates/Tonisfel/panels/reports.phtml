@@ -1,10 +1,10 @@
 <?php
 if (!defined("TT_AP")){ header("Location: ../adminpanel.php?p=forbidden"); exit; }
 //Проверка на наличие прав.
-if (!$user->UserGroup()->getPermission("report_talking") ||
-    !$user->UserGroup()->getPermission("report_foreign_remove") ||
-    !$user->UserGroup()->getPermission("report_foreign_edit") ||
-    !$user->UserGroup()->getPermission("report_close")
+if (!$user->getUserGroup()->getPermission("report_talking") ||
+    !$user->getUserGroup()->getPermission("report_foreign_remove") ||
+    !$user->getUserGroup()->getPermission("report_foreign_edit") ||
+    !$user->getUserGroup()->getPermission("report_close")
     ){ header("Location: ../../adminpanel.php?res=1"); exit; }
 else {
     if (!isset($_GET["reqtype"])){

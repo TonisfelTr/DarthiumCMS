@@ -134,7 +134,7 @@ if ($seeProfile){
     elseif ($session === true
         && isset($_GET["uid"])
         && $_GET["uid"] != UserAgent::getCurrentSession()->getContent()["uid"]
-        && !\Users\GroupAgent::IsHavePerm(\Users\UserAgent::GetUserGroupId($user->getSession()->getContent()["uid"]), "user_see_foreign"))
+        && !\Users\GroupAgent::IsHavePerm(\Users\UserAgent::GetgetUserGroupId($user->getSession()->getContent()["uid"]), "user_see_foreign"))
         $errorCode = 3;
     elseif ($session === true
         && isset($_GET["uid"])
@@ -161,7 +161,7 @@ if ($session === true && $user !== false && $user->getId() == UserAgent::getCurr
 
     include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/useredit.html";
     $userEdit = getBrick();
-    if ($user->UserGroup()->getPermission("change_profile")) {
+    if ($user->getUserGroup()->getPermission("change_profile")) {
         $userEdit = str_replace_once("{PROFILE_PAGE:USER_EDITPANEL_BTN}", "<button type=\"button\" id=\"profile-edit-btn-custom-panel\" class=\"profile-profile-panel-btn active\" onclick=\"showSubpanel('edit', 1);\"> ".
             \Engine\LanguageManager::GetTranslation("custom_data"). "</button>", $userEdit);
         include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/userprofileeditcustom.html";
@@ -732,9 +732,9 @@ if ($session === true && $user !== false && $user->getId() == UserAgent::getCurr
     $main = str_replace_once("{PROFILE_PAGE_SEE_ERRORS}", "", $main);
     $main = str_replace_once("{PROFILE_MAIN_BODY}",$profileMainPanel, $main);
     $main = str_replace("{PROFILE_PAGE:USER_NICKNAME}", $user->getNickname(), $main);
-    $main = str_replace("{PROFILE_PAGE:USER_GROUP_ID}", $user->UserGroup()->getId(), $main);
-    $main = str_replace("{PROFILE_PAGE:USER_GROUP_COLOR}", ($user->UserGroup()->getColor() == "#000000") ? "#ffffff" : $user->UserGroup()->getColor(), $main);
-    $main = str_replace("{PROFILE_PAGE:USER_GROUP_NAME}", $user->UserGroup()->getName(), $main);
+    $main = str_replace("{PROFILE_PAGE:USER_GROUP_ID}", $user->getUserGroup()->getId(), $main);
+    $main = str_replace("{PROFILE_PAGE:USER_GROUP_COLOR}", ($user->getUserGroup()->getColor() == "#000000") ? "#ffffff" : $user->getUserGroup()->getColor(), $main);
+    $main = str_replace("{PROFILE_PAGE:USER_GROUP_NAME}", $user->getUserGroup()->getName(), $main);
     $lastOnline = 0;
     if ($user->getLastTime() == 0){
         if ($user->getSex() == 3)
@@ -869,14 +869,14 @@ if ($session === true && $user !== false && $user->getId() == UserAgent::getCurr
         $main = str_replace("{PROFILE_PAGE:USER_PRIVATE_BIRTHDAY}", ($user->IsBirthdayPublic()) ? "checked" : "", $main);
         $main = str_replace("{PROFILE_PAGE:USER_PRIVATE_ACC}", ($user->IsAccountPublic()) ? "checked" : "", $main);
         $main = str_replace("{PROFILE_PAGE:USER_BLACKLIST_TABLE}", $blacklistTable, $main);
-        if ($user->UserGroup()->getPermission("user_signs")) {
+        if ($user->getUserGroup()->getPermission("user_signs")) {
             include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/usereditsignature.html";
             $userEditSignatureForm = getBrick();
             $main = str_replace("{PROFILE_PAGE:USER_SIGNATURE_FORM}", $userEditSignatureForm, $main);
             $main = str_replace("{PROFILE_PAGE:USER_SIGNATURE_TEXT}", $user->getSignature(), $main);
         }
         else $main = str_replace_once("{PROFILE_PAGE:USER_SIGNATURE_FORM}", null, $main);
-        if ($user->UserGroup()->getPermission("enterpanel"))
+        if ($user->getUserGroup()->getPermission("enterpanel"))
             $main = str_replace_once("{PROFILE_AUTH_ADMINPANEL_BTN}", "<a class=\"profile-profile-btn\" href=\"adminpanel.php\"><span class=\"profile-btn-span\"></span> "
                     . \Engine\LanguageManager::GetTranslation("adminpanel_btn") . "</a>", $main);
         else
@@ -900,7 +900,7 @@ if ($user !== false && $session === 26 && $user->getId() == $user->getSession()-
 }
 
 if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $user->IsAccountPublic())
-    || ($session === true && $user !== false && !$user->isThisCurrent() && \Users\UserAgent::GetUser($user->getSession()->getContent()["uid"])->UserGroup()->getPermission("user_see_foreign")))
+    || ($session === true && $user !== false && !$user->isThisCurrent() && \Users\UserAgent::GetUser($user->getSession()->getContent()["uid"])->getUserGroup()->getPermission("user_see_foreign")))
     && ($user->IsAccountPublic() || $user->FriendList()->isFriend($user->getSession()->getContent()["uid"]))){
     ///////////////////////////////////////////////////////////////////////
     /// Build additional fields mechanism.
@@ -1024,9 +1024,9 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
     $main = str_replace_once("{PROFILE_MAIN_BODY}",$profileMainPanel, $main);
     $main = str_replace("{PROFILE_PAGE:USER_AVATAR}", $user->getAvatar(), $main);
     $main = str_replace("{PROFILE_PAGE:USER_NICKNAME}", $user->getNickname(), $main);
-    $main = str_replace("{PROFILE_PAGE:USER_GROUP_ID}", $user->UserGroup()->getId(), $main);
-    $main = str_replace("{PROFILE_PAGE:USER_GROUP_COLOR}", ($user->UserGroup()->getColor() == "#000000") ? "#ffffff" : $user->UserGroup()->getColor(), $main);
-    $main = str_replace("{PROFILE_PAGE:USER_GROUP_NAME}", $user->UserGroup()->getName(), $main);
+    $main = str_replace("{PROFILE_PAGE:USER_GROUP_ID}", $user->getUserGroup()->getId(), $main);
+    $main = str_replace("{PROFILE_PAGE:USER_GROUP_COLOR}", ($user->getUserGroup()->getColor() == "#000000") ? "#ffffff" : $user->getUserGroup()->getColor(), $main);
+    $main = str_replace("{PROFILE_PAGE:USER_GROUP_NAME}", $user->getUserGroup()->getName(), $main);
     //Механизм последнего входа.
     $lastOnline = 0;
     if ($user->getLastTime() == 0){
@@ -1084,7 +1084,7 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
     $main = str_replace_once("{PROFILE_PAGE:USER_REPUTATION_AONCLICK}", "onclick=\"$('#reputation-frame').show();\"", $main);
     $main = str_replace("{PROFILE_JS:SHOW_PANEL}", "showPanel('info');" . PHP_EOL . "showSubpanel('info', 1);", $main);
 
-    if ($session === true && $user->getId() != $user->getSession()->getContent()["uid"] && \Users\UserAgent::GetUser($user->getSession()->getContent()["uid"])->UserGroup()->getPermission("user_see_foreign")) {
+    if ($session === true && $user->getId() != $user->getSession()->getContent()["uid"] && \Users\UserAgent::GetUser($user->getSession()->getContent()["uid"])->getUserGroup()->getPermission("user_see_foreign")) {
         include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/afup_buttons.html";
         $userFootBtns = getBrick();
         $userFootBtns = str_replace_once("{USER_NICKNAME}", $user->getNickname(), $userFootBtns);
@@ -1099,7 +1099,7 @@ if (((!$session && \Engine\Engine::GetEngineInfo("gsp") && !empty($user) && $use
 
 if (($session !== true && !empty($user) && !\Engine\Engine::GetEngineInfo("gsp")) ||
     (isset($_GET["uid"]) && !\Users\UserAgent::IsUserExist($_GET["uid"])) ||
-    ($session === true && isset($_GET["uid"]) && $_GET["uid"] != UserAgent::getCurrentSession()->getContent()["uid"] && !\Users\GroupAgent::IsHavePerm(\Users\UserAgent::GetUserGroupId($user->getSession()->getContent()["uid"]), "user_see_foreign")) ||
+    ($session === true && isset($_GET["uid"]) && $_GET["uid"] != UserAgent::getCurrentSession()->getContent()["uid"] && !\Users\GroupAgent::IsHavePerm(\Users\UserAgent::GetgetUserGroupId($user->getSession()->getContent()["uid"]), "user_see_foreign")) ||
     ($session === true && isset($_GET["uid"]) && $_GET["uid"] != UserAgent::getCurrentSession()->getContent()["uid"] && $user->Blacklister()->isBlocked($user->getSession()->getContent()["uid"]))){
 
     include_once "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/seeperrors.phtml";

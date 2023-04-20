@@ -4,13 +4,13 @@ if (!defined("TT_AP")) {
     exit;
 }
 
-$canSeeProfiles = $user->UserGroup()->getPermission("user_see_foreign");
-$canChangeProfiles = $user->UserGroup()->getPermission("change_another_profiles");
-$canUserBan = $user->UserGroup()->getPermission("user_ban");
-$canUserUnban = $user->UserGroup()->getPermission("user_unban");
-$canIPBan = $user->UserGroup()->getPermission("user_banip");
-$canIPUnban = $user->UserGroup()->getPermission("user_unbanip");
-$canSigns = $user->UserGroup()->getPermission("user_add");
+$canSeeProfiles = $user->getUserGroup()->getPermission("user_see_foreign");
+$canChangeProfiles = $user->getUserGroup()->getPermission("change_another_profiles");
+$canUserBan = $user->getUserGroup()->getPermission("user_ban");
+$canUserUnban = $user->getUserGroup()->getPermission("user_unban");
+$canIPBan = $user->getUserGroup()->getPermission("user_banip");
+$canIPUnban = $user->getUserGroup()->getPermission("user_unbanip");
+$canSigns = $user->getUserGroup()->getPermission("user_add");
 
 if (!$canSeeProfiles &&
     !$canChangeProfiles &&
@@ -304,7 +304,7 @@ if ($canSigns) {
                     <div class="btn-group">
                         <button class="btn btn-default" type="submit"
                                 name="users-find-button"><?= \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.search_users") ?></button>
-                        <?php if ($user->UserGroup()->getPermission("user_remove")) { ?>
+                        <?php if ($user->getUserGroup()->getPermission("user_remove")) { ?>
                             <button class="btn btn-default alert-danger" type="button" name="users-delete-button"
                                     id="users-delete-button"
                                     disabled><?= \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.remove_users") ?></button><?php } ?>
@@ -331,7 +331,7 @@ if ($canSigns) {
                                 <td><?= \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_last_sign_in") ?></td>
                                 <td><?= \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_rate") ?></td>
                                 <td><?= \Engine\LanguageManager::GetTranslation("users_panel.search_user_panel.table_banned") ?></td>
-                                <?php if ($user->UserGroup()->getPermission("change_another_profiles")) {
+                                <?php if ($user->getUserGroup()->getPermission("change_another_profiles")) {
                                     echo "<td></td>";
                                 } ?>
                             </tr>
@@ -362,7 +362,7 @@ if ($canSigns) {
                                     </td>
                                     <td><?php print(htmlentities($User["id"])); ?></td>
                                     <td><?php print(htmlentities($selUser->getNickname())); ?></td>
-                                    <td><?php print("<span style=\"color: " . htmlentities($selUser->UserGroup()->getColor()) . ";\">" . htmlentities($selUser->UserGroup()->getName()) . "</span>"); ?></td>
+                                    <td><?php print("<span style=\"color: " . htmlentities($selUser->getUserGroup()->getColor()) . ";\">" . htmlentities($selUser->getUserGroup()->getName()) . "</span>"); ?></td>
                                     <td><?php print(htmlentities($selUser->getEmail())); ?></td>
                                     <td><?php print(htmlentities(($selUser->getLastIp() != "null")
                                                                      ? $selUser->getLastIp()
@@ -640,7 +640,7 @@ if ($canSigns) {
                 <input class="form-control" type="email"
                        placeholder="<?= \Engine\LanguageManager::GetTranslation("users_panel.register_panel.placeholder_email") ?>"
                        id="user-add-email" name="user-add-email" autocomplete="off">
-                <?php if ($user->UserGroup()->getPermission("change_user_group")) { ?>
+                <?php if ($user->getUserGroup()->getPermission("change_user_group")) { ?>
                     <select class="form-control" name="user-add-group" id="user-add-group">
                         <option value="0"><?= \Engine\LanguageManager::GetTranslation("users_panel.register_panel.select_group") ?></option>
                         <?php foreach ($groupList as $group) {
@@ -745,7 +745,7 @@ if ($canSigns) {
                         </button>
                     </span>
                     </div>
-                    <?php if ($user->UserGroup()->getPermission("change_user_group")) { ?>
+                    <?php if ($user->getUserGroup()->getPermission("change_user_group")) { ?>
                         <div class="input-group">
                             <div class="input-group-addon"><?= \Engine\LanguageManager::GetTranslation("users_panel.user_edit_panel.group") ?></div>
                             <select class="form-control" name="user-edit-group">

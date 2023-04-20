@@ -26,15 +26,15 @@ if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBa
     exit;
 }
 
-if ((!$user->UserGroup()->getPermission("group_create")) &&
-    (!$user->UserGroup()->getPermission("group_change")) &&
-    (!$user->UserGroup()->getPermission("group_delete")) &&
-    (!$user->UserGroup()->getPermission("change_perms"))) { header("Location: ../../adminpanel.php&&res=1"); exit; } else {
+if ((!$user->getUserGroup()->getPermission("group_create")) &&
+    (!$user->getUserGroup()->getPermission("group_change")) &&
+    (!$user->getUserGroup()->getPermission("group_delete")) &&
+    (!$user->getUserGroup()->getPermission("change_perms"))) { header("Location: ../../adminpanel.php&&res=1"); exit; } else {
 
     $groupName = \Users\GroupAgent::GetGroupNameById($_POST["group-id-input"]);
 
     if (isset($_POST["save_perms_button"])) {
-        if ($user->UserGroup()->getPermission("change_perms")) {
+        if ($user->getUserGroup()->getPermission("change_perms")) {
             //Custom engine perms
             \Users\GroupAgent::ChangeGroupPerms($_POST["group-id-input"], "enterpanel", $_POST["permadminpanel"]);
             \Users\GroupAgent::ChangeGroupPerms($_POST["group-id-input"], "change_engine_settings", $_POST["change_engine_settings"]);
@@ -130,7 +130,7 @@ if ((!$user->UserGroup()->getPermission("group_create")) &&
     }
 
     if (isset($_POST["add_group_button"])) {
-        if (!$user->UserGroup()->getPermission("group_create")) { header("Location: ../../adminpanel.php?p=groups&res=1"); exit; }
+        if (!$user->getUserGroup()->getPermission("group_create")) { header("Location: ../../adminpanel.php?p=groups&res=1"); exit; }
         else {
             if (\Users\GroupAgent::AddGroup($_POST["groupname_create"], $_POST["groupcolor_create"], $_POST["groupsubscribe_create"]) === True)
                 {
@@ -143,7 +143,7 @@ if ((!$user->UserGroup()->getPermission("group_create")) &&
     }
 
     if (isset($_POST["delete_group_button"])) {
-        if (!$user->UserGroup()->getPermission("group_delete")) { header("Location: ../../adminpanel.php?p=groups&res=1"); exit; }
+        if (!$user->getUserGroup()->getPermission("group_delete")) { header("Location: ../../adminpanel.php?p=groups&res=1"); exit; }
         else {
             if ($_POST["group-id-input"] == 1 || $_POST["group-id-input"] == 2 || $_POST["group-id-input"] == 3){ { header("Location: ../../adminpanel.php?p=groups&res=3ndd&group=".$_POST["group-id-input"]."&visible"); exit; } }
             elseif ($_POST["group-id-input"] == \Engine\Engine::GetEngineInfo("sg")){ { header("Location: ../../adminpanel.php?p=groups&res=3ngsd&group=".$_POST["group-id-input"]."&visible"); exit; } }
@@ -161,7 +161,7 @@ if ((!$user->UserGroup()->getPermission("group_create")) &&
     }
 
     if (isset($_POST["save_group_button"])) {
-        if ($user->UserGroup()->getPermission("group_change")) {
+        if ($user->getUserGroup()->getPermission("group_change")) {
                 \Users\GroupAgent::ChangeGroupData($_POST["group-id-input"], "name", $_POST["groupname"]);
                 \Users\GroupAgent::ChangeGroupData($_POST["group-id-input"], "descript", $_POST["groupsubscribe"]);
                 \Users\GroupAgent::ChangeGroupData($_POST["group-id-input"], "color", $_POST["groupcolor"]);

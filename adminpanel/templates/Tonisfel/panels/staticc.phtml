@@ -1,17 +1,17 @@
 <?php
 if (!defined("TT_AP")){ header("Location: ../adminpanel.php?p=forbidden"); exit; }
-if (!$user->UserGroup()->getPermission("sc_edit_pages") &&
-    !$user->UserGroup()->getPermission("sc_create_pages") &&
-    !$user->UserGroup()->getPermission("sc_remove_pages") &&
-    !$user->UserGroup()->getPermission("sc_design_edit")){
+if (!$user->getUserGroup()->getPermission("sc_edit_pages") &&
+    !$user->getUserGroup()->getPermission("sc_create_pages") &&
+    !$user->getUserGroup()->getPermission("sc_remove_pages") &&
+    !$user->getUserGroup()->getPermission("sc_design_edit")){
     header("Location: ../adminpanel.php?res=1");
     exit;
 }
 
-$editPPerm = $user->UserGroup()->getPermission("sc_edit_pages");
-$createPPerm = $user->UserGroup()->getPermission("sc_create_pages");
-$removePPerm = $user->UserGroup()->getPermission("sc_remove_pages");
-$editSContentPerm = $user->UserGroup()->getPermission("sc_design_edit");
+$editPPerm = $user->getUserGroup()->getPermission("sc_edit_pages");
+$createPPerm = $user->getUserGroup()->getPermission("sc_create_pages");
+$removePPerm = $user->getUserGroup()->getPermission("sc_remove_pages");
+$editSContentPerm = $user->getUserGroup()->getPermission("sc_design_edit");
 
 if ($editPPerm || $createPPerm || $removePPerm) {
     $pageNumber = (!empty($_REQUEST["pl"])) ? $_REQUEST["pl"] : 1;
@@ -44,9 +44,9 @@ if ($editPPerm && isset($_GET["editpage"]) && \Forum\StaticPagesAgent::isPageExi
 }
 
 if ($editSContentPerm){
-    $firstSmallBannerContent = @\Decorator\Controllers\BannerAgent::GetBannersByName("firstbanner")["firstbanner"]["content"];
-    $secondSmallBannerContent = @\Decorator\Controllers\BannerAgent::GetBannersByName("smallbanner")["smallbanner"]["content"];
-    $bigbanners = \Decorator\Controllers\BannerAgent::GetBanners("banner");
+    $firstSmallBannerContent = @\Builder\Controllers\BannerAgent::GetBannersByName("firstbanner")["firstbanner"]["content"];
+    $secondSmallBannerContent = @\Builder\Controllers\BannerAgent::GetBannersByName("smallbanner")["smallbanner"]["content"];
+    $bigbanners = \Builder\Controllers\BannerAgent::GetBanners("banner");
     $buttons = array();
     foreach ($bigbanners as $bigbanner){
         $bannerId = $bigbanner["id"];
@@ -54,11 +54,11 @@ if ($editSContentPerm){
         $class = ($bigbanner["isVisible"] == 1) ? "btn-success" : "btn-danger";
         array_push($buttons, "<button class=\"btn $class\" type=\"button\" data-banner-id=\"$bannerId\">$bannerName</button>");
     }
-    $panels = \Decorator\Controllers\SidePanelsAgent::GetPanelsList();
+    $panels = \Builder\Controllers\SidePanelsAgent::GetPanelsList();
     $panelsList = [];
     foreach ($panels as $panel){
         $id = $panel["id"];
-        $panel = \Decorator\Controllers\SidePanelsAgent::GetPanel($id);
+        $panel = \Builder\Controllers\SidePanelsAgent::GetPanel($id);
         $side = ($panel["type"] == "leftside") ? \Engine\LanguageManager::GetTranslation("staticc_panel.left") : \Engine\LanguageManager::GetTranslation("staticc_panel.right");
         $panelsList[] = "<option value=\"$id\">[$side] " . $panel["name"] . "</option>";
     }
@@ -341,7 +341,7 @@ if ($editSContentPerm){
                             <hr>
                             <div class="container-fluid">
                                 <div class="btn-group-vertical col-lg-3 col-md-6 col-sm-6 col-xs-12" id="staticc-banner-btns">
-                                    <?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.banners_panel.big_banners_count")?><span id="staticc-banners-counter"><?php echo \Decorator\Controllers\BannerAgent::GetBigBannersCount(); ?></span>
+                                    <?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.banners_panel.big_banners_count")?><span id="staticc-banners-counter"><?php echo \Builder\Controllers\BannerAgent::GetBigBannersCount(); ?></span>
                                     <button class="btn btn-default" type="button" id="staticc-create-banner-btn"><span class="glyphicons glyphicons-plus-sign"></span> <?=\Engine\LanguageManager::GetTranslation("staticc_panel.static_editor.banners_panel.add_big_banner")?></button>
                                     <?php foreach($buttons as $b){
                                         echo $b;
@@ -552,7 +552,7 @@ if ($editSContentPerm){
                             <div class="navbar-group-box" id="navbar-group-box">
                                 <div class="btn-group">
                                     <?php
-                                    $navbarbtns = \Decorator\Controllers\NavbarAgent::GetElements();
+                                    $navbarbtns = \Builder\Controllers\NavbarAgent::GetElements();
                                     foreach ($navbarbtns as $navbarbtn){
                                         if ($navbarbtn["type"] == "nav-btn"){
                                             $data_href = $navbarbtn["action"];
@@ -561,7 +561,7 @@ if ($editSContentPerm){
                                             echo "<button class=\"btn btn-default\" type=\"button\" data-href=\"$data_href\" data-id=\"$id\">$content</button>";
                                         }
                                         if ($navbarbtn["type"] == "nav-list"){
-                                            $children = \Decorator\Controllers\NavbarAgent::GetElementsOfList($navbarbtn["id"]);
+                                            $children = \Builder\Controllers\NavbarAgent::GetElementsOfList($navbarbtn["id"]);
                                             $data_content = $navbarbtn["action"];
                                             $content = $navbarbtn["content"];
                                             $id = $navbarbtn["id"]; ?>

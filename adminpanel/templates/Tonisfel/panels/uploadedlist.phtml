@@ -1,9 +1,9 @@
 <?php
 if (!defined("TT_AP")){ header("Location: ../adminapanel.php?p=forbidden"); exit; }
 
-if (!$user->UserGroup()->getPermission("upload_see_all")) { header("Location: ../adminpanel.php?res=1"); exit; }
-if ($user->UserGroup()->getPermission("upload_delete")) $fileDeleteOwn = true; else $fileDeleteOwn = false;
-if ($user->UserGroup()->getPermission("upload_delete_foreign")) $fileDeleteForeign = true; else $fileDeleteForeign = false;
+if (!$user->getUserGroup()->getPermission("upload_see_all")) { header("Location: ../adminpanel.php?res=1"); exit; }
+if ($user->getUserGroup()->getPermission("upload_delete")) $fileDeleteOwn = true; else $fileDeleteOwn = false;
+if ($user->getUserGroup()->getPermission("upload_delete_foreign")) $fileDeleteForeign = true; else $fileDeleteForeign = false;
 if (isset($_GET["filter"])){
     if ($_GET["filter"] == "author"){
         $filter = "author";

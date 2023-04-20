@@ -1,7 +1,7 @@
 <?php
 if (!defined("TT_AP")){ header("Location: ../adminapanel.php?p=forbidden"); exit; }
 
-if (!$user->UserGroup()->getPermission("bmail_sende")) { header("Location: ../adminpanel.php?res=1"); exit; }
+if (!$user->getUserGroup()->getPermission("bmail_sende")) { header("Location: ../adminpanel.php?res=1"); exit; }
 
 ?>
 

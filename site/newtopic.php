@@ -11,7 +11,7 @@ include_once "site/uploader.php";
 $categoriesList = "";
 foreach ($categories as $c){
     $category = new \Forum\Models\Category($c["id"]);
-    if ($category->isPublic() || (!$category->isPublic() && $user->UserGroup()->getPermission("category_see_unpublic")))
+    if ($category->isPublic() || (!$category->isPublic() && $user->getUserGroup()->getPermission("category_see_unpublic")))
         $categoriesList .= "<option value=\"" . $category->getId() . "\">" . $category->getName() . "</option>";
 }
 

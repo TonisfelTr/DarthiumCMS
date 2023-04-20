@@ -16,9 +16,9 @@ class LanguageManager
     public static function load()
     {
         if (Engine::GetEngineInfo("sl") == "")
-            $languageFile = $_SERVER["DOCUMENT_ROOT"] . "/languages/English.php";
+            $languageFile = LANGUAGE_ROOT . "English.php";
         else
-            $languageFile = $_SERVER["DOCUMENT_ROOT"] . "/languages/" . Engine::GetEngineInfo("sl") . ".php";
+            $languageFile = LANGUAGE_ROOT . Engine::GetEngineInfo("sl") . ".php";
         if (!file_exists($languageFile))
             throw new LanguageFileNotFoundError("Language file does not exist", 12);
 

@@ -7,22 +7,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="{ENGINE_META:DESCRIPTION}">
     <meta name="keywords" content="{ENGINE_META:KEYWORDS}">
-    <script src="../../../libs/js/ie-emulator.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="../../../libs/bootstrap/js/bootstrap.min.js"></script>
-    <script src="../../../libs/bootstrap/js/bootstrap.bundle.js"></script>
-    <script src="../../../libs/bootstrap/js/jquery-ui.min.js"></script>
-    <script>window.jQuery || document.write('&lt;script src="../../../libs/js/jquery-3.1.0.min.js"&gt;&lt;\/script&gt;')</script>
+    <script src="{>|libs-path:js/ie-emulator.js}"></script>
+    <script src="{>|libs-path:bootstrap/js/bootstrap.min.js}"></script>
+    <script src="{>|libs-path:bootstrap/js/bootstrap.bundle.js}"></script>
+    <script src="{>|libs-path:bootstrap/js/jquery-ui.min.js}"></script>
     {PLUGIN_HEAD_JS}
-    <link href="../../../libs/bootstrap/css/ie10-viewport.css" rel="stylesheet">
-    <link href="../../../libs/bootstrap/css/bootstrap.css" rel="stylesheet">
-    <link href="../../../libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../../../libs/bootstrap/css/glyphicons-regular.css" rel="stylesheet">
-    <link href="../../../libs/lightbox/css/lightbox.css" rel="stylesheet">
-    <link href="../../../site/templates/Tonisfel/css/ap-style.css" rel="stylesheet">
-    <link href="../../../site/templates/Tonisfel/css/sp-style.css" rel="stylesheet">
-    <link href="../../../site/templates/Tonisfel/icon.ico" rel="icon">
+    <link href="{>|libs-path:bootstrap/css/ie10-viewport.css}" rel="stylesheet">
+    <link href="{>|libs-path:bootstrap/css/bootstrap.css}" rel="stylesheet">
+    <link href="{>|libs-path:bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <link href="{>|libs-path:bootstrap/css/glyphicons-regular.css}" rel="stylesheet">
+    <link href="{>|libs-path:lightbox/css/lightbox.css}" rel="stylesheet">
+    <link href="{>|css-main:ap-style.css}" rel="stylesheet">
+    <link href="{>|css-main:sp-style.css}" rel="stylesheet">
+    <link href="{>|site-icon}" rel="icon">
     {PLUGINS_STYLESHEETS}
     {PROFILE_UPLOADER:STYLESHEET}
     {METRIC_JS}
@@ -32,11 +30,9 @@
     <div class="wrapper">
         {INDEX_PAGE_NAVBAR}
         {INDEX_PAGE_HEADER}
-        {INDEX_PAGE_OFFLINE}
         <div class="container-fluid">
-            {INDEX_PAGE_INFORMATOR}
             <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
-            {INDEX_PAGE_LEFT}
+                {INDEX_PAGE_LEFT}
             </div>
             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
                 <div class="content-block row">
@@ -44,22 +40,23 @@
                         {MAIN_PAGE:FIRST_BIG_BANNER}
                     </div>
                     <hr class="search-separator">
-                    {INDEX_CATEGORY_HINT}
+                    {INDEX_MESSAGE_BOX}
                     {INDEX_SEARCHING}
+                    {INDEX_CATEGORY_HINT}
                     <div class="news-container">
-                    {INDEX_PAGE_NEWSPAPER}
+                        {INDEX_PAGE_MAIN_BLOCK}
                     </div>
                 </div>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
-            {INDEX_PAGE_RIGHT}
+                {INDEX_PAGE_RIGHT}
             </div>
         </div>
     </div>
-        {INDEX_PAGE_FOOTER}
+    {INDEX_PAGE_FOOTER}
 </body>
-<script src="site/scripts/SpoilerController.js"></script>
-<script src="../../../libs/lightbox/js/lightbox.js"></script>
+<script src="{>|js-default:SpoilerController.js}"></script>
+<script src="{>|libs-path:lightbox/js/lightbox.js}"></script>
 <script type="text/javascript">
     {PROFILE_UPLOADER:JS}
     {REPORT_PAGE:JS}

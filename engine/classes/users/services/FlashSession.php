@@ -2,6 +2,7 @@
 
 namespace Users\Services;
 
+use Builder\Controllers\BuildManager;
 use Engine\Engine;
 use Exceptions\Exemplars\FlashSessionDidNotReadError;
 use Exceptions\Exemplars\SessionNotContainError;
@@ -212,14 +213,26 @@ class FlashSession
     }
 
     public static function hasErrors() : bool {
+        if (!array_key_exists('e', $_SESSION)) {
+            return false;
+        }
+
         return !empty(json_decode($_SESSION["e"], true));
     }
 
     public static function hasInfos() : bool {
+        if (!array_key_exists('i', $_SESSION)) {
+            return false;
+        }
+
         return !empty(json_decode($_SESSION["i"], true));
     }
 
     public static function hasWarnings() : bool {
+        if (!array_key_exists('w', $_SESSION)) {
+            return false;
+        }
+
         return !empty(json_decode($_SESSION["w"], true));
     }
 

@@ -8,12 +8,12 @@ body{
 
 @font-face {
     font-family: "My Passion";
-    src: url("../../../../libs/styles/font.otf");
+    src: url(/libs/styles/font.otf);
 }
 
 @font-face {
     font-family: "Trebuchet MS";
-    src: url("../../../../libs/styles/site-font.ttf");
+    src: url(/libs/styles/site-font.ttf);
 }
 
 body{
@@ -24,7 +24,7 @@ body{
 }
 
 .index-body{
-    background: url(bground.jpeg) no-repeat;
+    background: url(/images/main/bground.jpeg) no-repeat;
     background-size: cover;
 }
 

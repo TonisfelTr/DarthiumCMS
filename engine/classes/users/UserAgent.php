@@ -137,6 +137,14 @@ class UserAgent {
         return (bool)(new Session(FlashSession::getSessionId()))->getContent("uid");
     }
 
+    public static function getCurrentUser() {
+        if (!self::isAuthorized()) {
+            return false;
+        }
+
+        return new User((new Session(FlashSession::getSessionId()))->getContent()["uid"], true);
+    }
+
     public static function getCurrentSession() {
         if (isset($_COOKIE["PHPSESSID"])) {
             return new Session(FlashSession::getSessionId());
@@ -152,10 +160,10 @@ class UserAgent {
     }
 
     public static function Get10OnlineUsers() {
-        $queryResponse = DataKeeper::MakeQuery("SELECT `id` FROM `tt_users` WHERE NOT `lasttime` < ? LIMIT 0,10", [Engine::GetSiteTime() - 60 * 5], true);
+        $queryResponse = DataKeeper::MakeQuery("SELECT `id`, `nickname` FROM `tt_users` WHERE NOT `lasttime` < ? LIMIT 0,10", [Engine::GetSiteTime() - 60 * 5], true);
         $res = [];
         foreach ($queryResponse as $user) {
-            $res[] = $user["id"];
+            $res[] = ['id' => $user["id"], 'nickname' => $user["nickname"]];
         }
         return $res;
     }
@@ -595,7 +603,7 @@ class UserAgent {
         return DataKeeper::Get("tt_users", ["nickname"], ["id" => $id])[0]["nickname"];
     }
 
-    public static function GetUserGroupId($idUser) {
+    public static function GetgetUserGroupId($idUser) {
         if (!self::IsUserExist($idUser)) {
             throw new UserExistsError("User does not exist", 7);
         }

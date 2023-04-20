@@ -1,7 +1,7 @@
 <div class="topic-wrapper col-xs-12 col-sm-12 col-md-12 col-lg-5">
     <div class="topic-header">
         {TOPIC_STATUS_ICON}
-        <a class="topic-head-link" href="?topic={TOPIC_ID}">{TOPIC_NAME}</a>
+        <a class="topic-head-link" href="{>|topic-view:{TOPIC_ID}}">{TOPIC_NAME}</a>
     </div>
     <div class="topic-breadcrumbs">
         Лента &raquo; {TOPIC_CATEGORY}
@@ -12,9 +12,9 @@
     <div class="topic-footer-neutral">
         <div class="topic-author-header">
             <img src="{TOPIC_AUTHOR_AVATAR}" width="20" height="20">
-            <a class="topic-author-link" href="profile.php?uid={TOPIC_AUTHOR_ID}">{TOPIC_AUTHOR_NICKNAME}</a>
+            <a class="topic-author-link" href="{>|profile-page-defined:{TOPIC_AUTHOR_ID}}">{TOPIC_AUTHOR_NICKNAME}</a>
             »
-            <a class="topic-author-link" style="color: {TOPIC_AUTHOR_GROUP_COLOR}" href="?group={TOPIC_AUTHOR_GROUP_ID}">{TOPIC_AUTHOR_GROUP_NAME}</a>
+            <a class="topic-author-link" style="color: {TOPIC_AUTHOR_GROUP_COLOR}" href="{>|group-list:{TOPIC_AUTHOR_GROUP_ID}}">{TOPIC_AUTHOR_GROUP_NAME}</a>
         </div>
         <div class="topic-likes-panel">
             <div>

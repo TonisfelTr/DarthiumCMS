@@ -1,13 +1,13 @@
 <?php
 if (!defined("TT_AP")){ header("Location: ../adminapanel.php?p=forbidden"); exit; }
 //Проверка на наличие прав.
-if (!$user->UserGroup()->getPermission("category_create") &&
-    !$user->UserGroup()->getPermission("category_edit") &&
-    !$user->UserGroup()->getPermission("category_delete")){ header("Location: ../../adminpanel.php?res=1"); exit; }
+if (!$user->getUserGroup()->getPermission("category_create") &&
+    !$user->getUserGroup()->getPermission("category_edit") &&
+    !$user->getUserGroup()->getPermission("category_delete")){ header("Location: ../../adminpanel.php?res=1"); exit; }
 else {
-    $canCategoryCreate = $user->UserGroup()->getPermission("category_create");
-    $canCategoryEdit = $user->UserGroup()->getPermission("category_edit");
-    $canCategoryDelete = $user->UserGroup()->getPermission("category_delete");
+    $canCategoryCreate = $user->getUserGroup()->getPermission("category_create");
+    $canCategoryEdit = $user->getUserGroup()->getPermission("category_edit");
+    $canCategoryDelete = $user->getUserGroup()->getPermission("category_delete");
 
     $categoryList = Forum\ForumAgent::GetCategoryList(false);
     $categoryCount = count($categoryList);

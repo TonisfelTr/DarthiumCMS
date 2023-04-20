@@ -18,7 +18,7 @@ if ($sessionRes = \Users\UserAgent::SessionContinue()) {
     exit;
 }
 //Проверка на наличие доступа в АП.
-if (!isset($user) || !$user->UserGroup()->getPermission("enterpanel")) {
+if (!isset($user) || !$user->getUserGroup()->getPermission("enterpanel")) {
     \Guards\Logger::addAccessLog("I tried visit adminpanel but I do not have the permission for that.");
     header("Location: index.php?page=errors/forbidden");
     exit;

@@ -1,0 +1,15 @@
+# tonisfeltavern.com/css/main/error-style.css?t=66&asdf=34413
+
+#RewriteRule (.*) http://www.example.com?ru=%{REQUEST_URI} [R=302,L,QSA]
+
+DirectoryIndex index.php
+
+RewriteEngine on
+RewriteBase /
+
+RewriteCond %{REQUEST_URI} !^$
+RewriteCond %{REQUEST_URI} !^/index\.php/(.+)$
+RewriteRule ^([a-zA-Z0-9\/\.\-\_\[\]\=\&\@]+)$ /index.php/$1 [L]
+
+RewriteCond %{REQUEST_URI} ^index\.php/(.+)$
+RewriteRule ^index\.php/([a-zA-Z0-9\/\.\-\_\[\]\=\&\@]+)$ /index.php/$1 [L]

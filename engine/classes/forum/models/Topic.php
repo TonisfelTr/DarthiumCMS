@@ -2,6 +2,7 @@
 
 namespace Forum\Models;
 
+use Builder\Controllers\BuildManager;
 use Engine\DataKeeper;
 use Forum\ForumAgent;
 use Users\User;
@@ -21,7 +22,7 @@ class Topic extends ForumAgent{
     private $topicLastEditDatetime;
     private $topicStatus;
 
-    public function __construct($topicId){
+    public function __construct(int $topicId){
         $query = "SELECT `sub`.*, 
                       (SELECT count(`mark`) FROM `tt_topicsmarks` AS `marks` WHERE `marks`.`mark` = 0 AND `marks`.`topicId` = ?) AS `negatives`, 
                       (SELECT count(`mark`) FROM `tt_topicsmarks` AS `marks` WHERE `marks`.`mark` = 1 AND `marks`.`topicId` = ?) AS `positives`

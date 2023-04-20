@@ -7,14 +7,13 @@
     <meta name="description" content="{ENGINE_META:DESCRIPTION}">
     <meta name="keywords" content="{ENGINE_META:KEYWORDS}">
     <title>{ERROR_PAGE_TITLE} - {SITE_NAME}</title>
-    <link rel="stylesheet" type="text/css" href="/site/templates/Tonisfel/css/error-style.css">
-    <link href="libs/bootstrap/css/bootstrap.css">
-    <link href="libs/bootstrap/css/bootstrap.min.css">
-    <link href="libs/codemirror/lib/codemirror.css" rel="stylesheet">
-    <link href="site/templates/Tonisfel/icon.ico" rel="icon">
-    <script src="libs/js/jquery-3.1.0.min.js"></script>
-    <script src="libs/bootstrap/js/bootstrap.js"></script>
-    <script src="libs/codemirror/v6/codemirror.js" type="module"></script>
+    <link rel="stylesheet" type="text/css" href="{SITE_DOMAIN}/css/main/errors/error-style.css">
+    <link href="{SITE_DOMAIN}/libs/bootstrap/css/bootstrap.css">
+    <link href="{SITE_DOMAIN}/libs/bootstrap/css/bootstrap.min.css">
+    <link href="{SITE_DOMAIN}/images/icon" rel="icon">
+    <script src="{SITE_DOMAIN}/libs/js/jquery-3.1.0.min.js"></script>
+    <script src="{SITE_DOMAIN}/libs/bootstrap/js/bootstrap.js"></script>
+    <script src="{SITE_DOMAIN}/libs/codemirror/v6/codemirror.js" type="module"></script>
     <script type="text/javascript">
         var exports = [];
     </script>
@@ -60,10 +59,11 @@
                 </div>
                 <div class="error-code-analyzator" id="error-code-analyzator-textarea">
                     <p class="helper">Выполняемый код:</p>
-                    <textarea class="form-control error-code-textarea" id="error-code-textarea">{ERROR_MANAGER:CODE}</textarea>
+                    <textarea class="hidden" id="error-code-textarea">{ERROR_MANAGER:CODE}</textarea>
+                    <textarea class="form-control error-code-textarea" id="error-code-textarea-formatted"></textarea>
                 </div>
                 <div class="error-function-block">
-                    Ошибка в функции: <span class="error-function-help fc-help-tip">{ERROR_MANAGER:FUNCTION_NAME}</span>
+                    Ошибка в функции: <span class="error-function-help fc-help-tip">{ERROR_MANAGER:FUNCTION_NAME} ({ERROR_MANAGER:FUNCTION_LINE})</span>
                 </div>
                 <div class="error-stacktrace">
                     Stacktrace:
@@ -72,17 +72,16 @@
             </div>
         </div>
     </div>
-    <script src="site/templates/Tonisfel/errors/codemirror.js" type="module"></script>
+    <script type="module" src="{SITE_DOMAIN}/js/main/errors/codemirror.js" rel="script"></script>
     <script type="module">
-        import { changeActiveLine } from "./site/templates/Tonisfel/errors/codemirror.js";
-
-        changeActiveLine({ERROR_MANAGER:LINE});
+        import {changeActiveLineInDOM} from "{SITE_DOMAIN}/js/main/errors/codemirror.js";
+        changeActiveLineInDOM({ERROR_MANAGER:LINE});
     </script>
     <script type="text/javascript">
-        var hint = document.querySelector(".fc-tip-hint"),
-            phpDocExists = hint.textContent.trim().length != 0;
+        var hint = document.querySelector("span.fc-tip-hint"),
+            phpDocExists = hint?.textContent.trim().length != 0;
 
-        if (phpDocExists) {
+        if (hint !== null && phpDocExists === true) {
             $("span.fc-help-tip").on("mouseleave", function () {
                 $(hint).fadeOut(200);
             });

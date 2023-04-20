@@ -8,6 +8,7 @@
 /.idea/
 /.run/
 /engine/logs/
-/engine/migrations/
+/engine/customs/migrations/
 /node_modules/
 /package-lock.json
+/vendor/

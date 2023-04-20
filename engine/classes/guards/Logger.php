@@ -2,20 +2,21 @@
 
 namespace Guards;
 
+use Builder\Controllers\BuildManager;
 use Engine\DataKeeper;
 use Engine\Engine;
 use Exceptions\Exemplars\NotConnectedToDatabaseError;
 use Users\UserAgent;
 
-class Logger{
+class Logger {
 
     private const ACCESSES_LOGS = 1;
     private const ERRORS_LOGS = 2;
     private const VISITORS_LOGS = 4;
 
-    private const ACCESSES_PATH = "engine/logs/accesses/";
-    private const ERRORS_PATH = "engine/logs/errors/";
-    private const VISITORS_PATH = "engine/logs/visitors/";
+    private const ACCESSES_PATH = HOME_ROOT . "engine/logs/accesses/";
+    private const ERRORS_PATH = HOME_ROOT . "engine/logs/errors/";
+    private const VISITORS_PATH = HOME_ROOT . "engine/logs/visitors/";
 
     /**
      * Get count of files in log folder.
@@ -127,12 +128,19 @@ class Logger{
      */
     public static function addErrorLog(string $logText) : bool {
         $nowTime = date('Y-m-d H:i:s');
-        $selfIdentificator = UserAgent::IsSessionContinued()
-            ? (new \Users\Models\User($_SESSION["uid"]))->getNickname()
+        $selfIdentificator = UserAgent::isAuthorized()
+            ? UserAgent::getCurrentUser()->getNickname()
             : $_SERVER["REMOTE_ADDR"];
         $lastNumber = self::getLogCount(self::ERRORS_LOGS) == 1
             ? ""
             : self::getLogCount(self::ERRORS_LOGS);
+
+        if (trim($selfIdentificator) == '' || !$selfIdentificator) {
+            BuildManager::turnOffOutputBuffering();
+            echo "<pre>Your address has not been determined. We do not serve clients who do not introduce themselves to us.</pre>";
+            file_put_contents(self::ERRORS_PATH . "errors.log", "[$nowTime] UNKNOWN says: $logText" . PHP_EOL, FILE_APPEND);
+            exit(0);
+        }
 
         if (file_exists(self::ERRORS_PATH . "errors.log")) {
             if (@self::getLogSize(self::ERRORS_LOGS) >= 15728640) {
@@ -151,12 +159,19 @@ class Logger{
      */
     public static function addAccessLog(string $logText) : bool {
         $nowTime = date('Y-m-d H:i:s');
-        $selfIdentificator = UserAgent::IsSessionContinued()
-            ? (new \Users\Models\User($_SESSION["uid"]))->getNickname()
+        $selfIdentificator = UserAgent::isAuthorized()
+            ? UserAgent::getCurrentUser()->getNickname()
             : $_SERVER["REMOTE_ADDR"];
         $lastNumber = self::getLogCount(self::ACCESSES_LOGS) == 1
             ? ""
             : self::getLogCount(self::ACCESSES_LOGS);
+
+
+        if (trim($selfIdentificator) == '' || !$selfIdentificator) {
+            BuildManager::turnOffOutputBuffering();
+            echo "<pre>Your address has not been determined. We do not serve clients who do not introduce themselves to us.</pre>";
+            exit(0);
+        }
 
         if (file_exists(self::ACCESSES_PATH . "access.log")) {
             if (@self::getLogSize(self::ACCESSES_LOGS) >= 15728640) {
@@ -176,11 +191,18 @@ class Logger{
     public static function addVisitLog(string $logText) : bool {
         $nowTime = date('Y-m-d H:i:s');
         $selfIdentificator = UserAgent::IsSessionContinued()
-            ? (new \Users\Models\User($_SESSION["uid"]))->getNickname()
+            ? UserAgent::getCurrentUser()->getNickname()
             : $_SERVER["REMOTE_ADDR"];
         $lastNumber = self::getLogCount(self::VISITORS_LOGS) == 1
             ? ""
             : self::getLogCount(self::VISITORS_LOGS);
+
+
+        if (trim($selfIdentificator) == '' || !$selfIdentificator) {
+            BuildManager::turnOffOutputBuffering();
+            echo "<pre>Your address has not been determined. We do not serve clients who do not introduce themselves to us.</pre>";
+            exit(0);
+        }
 
         if (file_exists(self::VISITORS_PATH . "visitor.log")) {
             if (@self::getLogSize(self::VISITORS_LOGS) >= 15728640) {

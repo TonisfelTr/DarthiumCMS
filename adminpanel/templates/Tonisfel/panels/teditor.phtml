@@ -3,7 +3,7 @@
 /** @var $user Users\Models\User Current authorized admin user. */
 
 if (!defined("TT_AP")){ header("Location: ../adminpanel.php?p=forbidden"); exit; }
-if (!$user->UserGroup()->getPermission("change_template_design")){
+if (!$user->getUserGroup()->getPermission("change_template_design")){
     header("Location: ../adminpanel.php?res=1");
     exit;
 }

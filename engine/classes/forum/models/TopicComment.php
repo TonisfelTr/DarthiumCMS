@@ -3,7 +3,11 @@
 namespace Forum;
 
 use Engine\DataKeeper;
-use Users\User;
+use Engine\Engine;
+use Engine\LanguageManager;
+use Engine\PluginManager;
+use Users\Models\User;
+use Users\UserAgent;
 
 class TopicComment extends ForumAgent{
     private $id;
@@ -40,15 +44,28 @@ class TopicComment extends ForumAgent{
     public function getAuthorId(){
         return $this->authorId;
     }
-    public function author(){
-        return \Users\Models\Group($this->authorId);
+    public function getAuthor(){
+        return new User($this->authorId);
     }
     public function getCreateDatetime(){
         return $this->createDateTime;
+    }
+    public function isEdited() : bool {
+        return $this->getChangeInfo()["editorId"] != "";
     }
     public function getChangeInfo(){
         return ["editDate" => $this->changeDateTime,
             "editReason" => $this->changeReason,
             "editorId" => $this->changerId];
+    }
+    public function getChangeInfoAsText() : string {
+        $changeInfo = $this->getChangeInfo();
+        $message = LanguageManager::GetTranslation("newsviewer.last_edited_comment");
+        $message .= ' by ';
+        $message .= UserAgent::GetUserNick($changeInfo['editorId']) . ' ';
+        $message .= LanguageManager::GetTranslation("in") . ' ';
+        $message .= Engine::DatetimeFormatToRead(date("Y-m-d H:i:s", $changeInfo['editDate']));
+
+        return $message;
     }
 }

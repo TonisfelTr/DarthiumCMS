@@ -5,11 +5,11 @@ namespace Users\Models;
 use Engine\DataKeeper;
 
 class Group {
-    private $gId;
-    private $gName;
-    private $gColor;
-    private $gDescript;
-    private $gPerms = array();
+    private int $gId;
+    private string $gName;
+    private string $gColor;
+    private string $gDescript;
+    private array $gPerms;
 
     public function __construct($groupId) {
         $result = DataKeeper::Get("tt_groups", ["*"], ["id" => $groupId])[0];
@@ -17,7 +17,7 @@ class Group {
         $this->gName = $result["name"];
         $this->gColor = $result["color"];
         $this->gDescript = $result["descript"];
-        $this->gPerms = array(
+        $this->gPerms = [
             'enterpanel'             => $result["enterpanel"],
             'change_engine_settings' => $result["change_engine_settings"],
             'offline_visiter'        => $result["offline_visiter"],
@@ -120,27 +120,28 @@ class Group {
             'bmail_sends'     => $result["bmail_sends"],
             'logs_see'        => $result["logs_see"],
             'plugins_control' => $result["plugins_control"]
-        );
+        ];
+
         return $this;
     }
 
-    public function getPermission($permValue) {
-        return $this->gPerms[$permValue];
+    public function getPermission($permValue) : bool {
+        return (bool)$this->gPerms[$permValue];
     }
 
-    public function getName() {
+    public function getName() : string {
         return $this->gName;
     }
 
-    public function getColor() {
+    public function getColor() : string {
         return $this->gColor;
     }
 
-    public function getDescript() {
+    public function getDescript() : string {
         return $this->gDescript;
     }
 
-    public function getId() {
+    public function getId() : string {
         return $this->gId;
     }
 }

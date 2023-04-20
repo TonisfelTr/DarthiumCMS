@@ -2,8 +2,9 @@
 
 namespace Users\Models;
 
+use Builder\Controllers\BuildManager;
 use Engine\DataKeeper;
-use Engine\Engine;
+use Engine\RouteAgent;
 use Guards\SocietyGuard;
 use Users\PrivateMessager;
 use Users\Services\Session;
@@ -183,21 +184,14 @@ class User {
 
     public function getReferer() {
         if (UserAgent::IsUserExist($this->uReferer)) {
-            return new \Users\Models\User($this->uReferer);
+            return new self($this->uReferer);
         } else {
             return null;
         }
     }
 
     public function getAvatar() {
-        $avatar = $this->uAvatar;
-        if ($avatar == 'no') {
-            $result = "../uploads/avatars/no.jpg";
-        } else {
-            $result = "../uploads/avatars/" . $avatar;
-        }
-
-        return $result;
+        return $this->uAvatar == 'no' ? 'no.jpg' : $this->uAvatar;
     }
 
     public function getVK() {
@@ -253,7 +247,7 @@ class User {
         }
     }
 
-    public function UserGroup() {
+    public function getUserGroup() {
         return $this->uGroupOwner;
     }
 

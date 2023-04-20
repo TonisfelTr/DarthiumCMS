@@ -2,7 +2,9 @@
 
 namespace Exceptions\Exemplars;
 
-class ForbiddenError extends \Exceptions\TavernException
+use Exceptions\TavernException;
+
+class ForbiddenError extends TavernException
 {
     public function __construct(string $message = "") {
         parent::__construct($message, 14);

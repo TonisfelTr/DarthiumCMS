@@ -13,7 +13,7 @@ if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBa
 
 #Удаление жалоб(ы) из страницы просмотра таблицы жалоб.
 if (isset($_POST["reports-table-delete-btn"])){
-    if ($user->UserGroup()->getPermission("report_foreign_remove")){
+    if ($user->getUserGroup()->getPermission("report_foreign_remove")){
         $backRequest = "Location: ../../adminpanel.php?p=reports";
         if (empty($_POST["reports-ids-for-delete"])){
             header($backRequest . "&res=5nsrd");
@@ -35,7 +35,7 @@ if (isset($_POST["reports-table-delete-btn"])){
 
 # Просмотр жалобы.
 if (isset($_POST["reports-see-btn"])){
-    if ($user->UserGroup()->getPermission("report_talking")){
+    if ($user->getUserGroup()->getPermission("report_talking")){
         if (empty($_GET["rid"])){
             header("Location: ../../adminpanel.php?p=reports&res=5nrid");
             exit;
@@ -47,7 +47,7 @@ if (isset($_POST["reports-see-btn"])){
 
 # Отметить ответ решением проблемы.
 if (isset($_POST["reports-answer-accept"])){
-    if ($user->UserGroup()->getPermission("report_close")){
+    if ($user->getUserGroup()->getPermission("report_close")){
         if (empty($_GET["rid"])){
             header("Location: ../../adminpanel.php?p=reports&res=5nrid");
             exit;
@@ -93,8 +93,8 @@ if (isset($_POST["reports-answer-edit"])){
         exit;
     }
     if (\Guards\ReportAgent::GetReportParam($_GET["rid"], "status") != 2) {
-        if (($user->getId() == \Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "authorId") && $user->UserGroup()->getPermission("report_answer_edit")) ||
-            ($user->getId() != \Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "authorId") && $user->UserGroup()->getPermission("report_foreign_answer_edit"))){
+        if (($user->getId() == \Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "authorId") && $user->getUserGroup()->getPermission("report_answer_edit")) ||
+            ($user->getId() != \Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "authorId") && $user->getUserGroup()->getPermission("report_foreign_answer_edit"))){
                 header("Location: ../../adminpanel.php?p=reports&reqtype=edit&ansid=" . $_GET["ansid"]);
                 exit;
             } else {
@@ -115,8 +115,8 @@ if (isset($_POST["reports-report-edit"])){
     }
 
     if (\Guards\ReportAgent::GetReportParam($_GET["rid"], "status") != 2) {
-        if (($user->getId() == \Guards\ReportAgent::GetReportParam($_GET["rid"], "author") && $user->UserGroup()->getPermission("report_edit")) ||
-            ($user->getId() != \Guards\ReportAgent::GetReportParam($_GET["rid"], "author") && $user->UserGroup()->getPermission("report_foreign_edit"))){
+        if (($user->getId() == \Guards\ReportAgent::GetReportParam($_GET["rid"], "author") && $user->getUserGroup()->getPermission("report_edit")) ||
+            ($user->getId() != \Guards\ReportAgent::GetReportParam($_GET["rid"], "author") && $user->getUserGroup()->getPermission("report_foreign_edit"))){
             header("Location: ../../adminpanel.php?p=reports&reqtype=edit&rid=" . $_GET["rid"]);
             exit;
         } else {
@@ -137,8 +137,8 @@ if (isset($_POST["reports-report-delete"])){
     }
 
     if (\Guards\ReportAgent::GetReportParam($_GET["rid"], "status") != 2) {
-        if (($user->getId() == \Guards\ReportAgent::GetReportParam($_GET["rid"], "author") && $user->UserGroup()->getPermission("report_remove")) ||
-            ($user->getId() != \Guards\ReportAgent::GetReportParam($_GET["rid"], "author") && $user->UserGroup()->getPermission("report_foreign_remove"))){
+        if (($user->getId() == \Guards\ReportAgent::GetReportParam($_GET["rid"], "author") && $user->getUserGroup()->getPermission("report_remove")) ||
+            ($user->getId() != \Guards\ReportAgent::GetReportParam($_GET["rid"], "author") && $user->getUserGroup()->getPermission("report_foreign_remove"))){
             $reportName = \Guards\ReportAgent::GetReportParam($_GET["rid"], "short_message");
             $result = \Guards\ReportAgent::DeleteReport($_GET["rid"]);
             if ($result === TRUE){
@@ -180,8 +180,8 @@ if (isset($_POST["reports-answer-delete"])){
 
     $a = false;
     if ($user->getId() == \Guards\Report::GetAnswerParam($_GET["ansid"], "authorId")){
-        if ($user->UserGroup()->getPermission("report_answer_edit")) $a = true;
-    } elseif ($user->UserGroup()->getPermission("report_foreign_answer_edit")) $a = true;
+        if ($user->getUserGroup()->getPermission("report_answer_edit")) $a = true;
+    } elseif ($user->getUserGroup()->getPermission("report_foreign_answer_edit")) $a = true;
     if (\Guards\Report::GetReportParam($_GET["rid"], "status") != 2) {
         if ($a === true) {
             $reportName = \Guards\ReportAgent::GetReportParam($user->getId(), "theme");
@@ -214,7 +214,7 @@ if (isset($_POST["reports-answer-delete"])){
 
 # Опубликовать ответ к реппорту (не решение, а именно ответ!)
 if (isset($_POST["reports-answer-send"])){
-    if ($user->UserGroup()->getPermission("report_talking")){
+    if ($user->getUserGroup()->getPermission("report_talking")){
         if (empty($_GET["rid"])){
             header("Location: ../../adminpanel.php?p=reports&res=5nrid");
             exit;
@@ -259,8 +259,8 @@ if (isset($_POST["report-edit-answer-edit"])){
         exit;
     }
 
-    if (($user->getId() == \Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "authorId") && $user->UserGroup()->getPermission("report_answer_edit") ||
-        ($user->getId() != \Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "authorId") && $user->UserGroup()->getPermission("report_foreign_answer_edit")))){
+    if (($user->getId() == \Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "authorId") && $user->getUserGroup()->getPermission("report_answer_edit") ||
+        ($user->getId() != \Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "authorId") && $user->getUserGroup()->getPermission("report_foreign_answer_edit")))){
         if (empty($_POST["reports-edit-message-text"])){
             header("Location: ../../adminpanel.php?p=reports&reqtype=edit&ansid=" . $_GET["ansid"]. "&res=5nmt");
             exit;
@@ -296,8 +296,8 @@ if (isset($_POST["reports-edit-reports-edit"])){
         exit;
     }
 
-    if (($user->getId() == \Guards\ReportAgent::GetReportParam($_GET["rid"], "author") && $user->UserGroup()->getPermission("report_edit") ||
-        ($user->getId() != \Guards\ReportAgent::GetReportParam($_GET["rid"], "author") && $user->UserGroup()->getPermission("report_foreign_edit")))){
+    if (($user->getId() == \Guards\ReportAgent::GetReportParam($_GET["rid"], "author") && $user->getUserGroup()->getPermission("report_edit") ||
+        ($user->getId() != \Guards\ReportAgent::GetReportParam($_GET["rid"], "author") && $user->getUserGroup()->getPermission("report_foreign_edit")))){
         if (empty($_POST["reports-edit-message-text"])){
             header("Location: ../../adminpanel.php?p=reports&reqtype=edit&rid=" . $_GET["rid"]. "&res=5nmt");
             exit;

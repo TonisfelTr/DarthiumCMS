@@ -5,7 +5,7 @@ require_once "../../../engine/engine.php";
 if ($sessionRes = \Users\UserAgent::SessionContinue()) $user = new \Users\Models\User($_SESSION["uid"]);
 else { header("Location: ../../../adminpanel.php?p=forbidden"); exit; }
 
-if (!$user->UserGroup()->getPermission("change_engine_settings")){
+if (!$user->getUserGroup()->getPermission("change_engine_settings")){
     header("Location: ../../../adminpanel.php?res=1");
     exit;
 }

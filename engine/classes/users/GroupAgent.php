@@ -3,7 +3,6 @@
 namespace Users;
 
 use Engine\DataKeeper;
-use Engine\ErrorManager;
 use Exceptions\Exemplars\GroupInvalidNameError;
 use Exceptions\Exemplars\GroupNotExistError;
 

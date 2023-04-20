@@ -12,7 +12,7 @@ if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBa
 }
 
 if (isset($_POST["category-add-btn"])){
-    if ($user->UserGroup()->getPermission("category_create")){
+    if ($user->getUserGroup()->getPermission("category_create")){
         if (empty($_POST["category-add-name"])){
             header("Location: ../../adminpanel.php?p=categories&reqtype=1&res=6ncn");
             exit;
@@ -50,7 +50,7 @@ if (isset($_POST["category-add-btn"])){
 }
 
 if (isset($_POST["category_edit_btn"])){
-    if ($user->UserGroup()->getPermission("category_edit")){
+    if ($user->getUserGroup()->getPermission("category_edit")){
         if (!empty($_GET["cid"])) {
             header("Location: ../../adminpanel.php?p=categories&reqtype=2&cid=" . $_GET["cid"]);
             exit;
@@ -65,7 +65,7 @@ if (isset($_POST["category_edit_btn"])){
 }
 
 if (isset($_POST["category_edit_save"])){
-    if ($user->UserGroup()->getPermission("category_edit")){
+    if ($user->getUserGroup()->getPermission("category_edit")){
         if (empty($_GET["cid"])){
             header("Location: ../../adminpanel.php?p=categories&res=6ncid");
             exit;
@@ -131,7 +131,7 @@ if (isset($_POST["category_edit_save"])){
 }
 
 if (isset($_POST["category_edit_delete"])){
-    if ($user->UserGroup()->getPermission("category_delete")){
+    if ($user->getUserGroup()->getPermission("category_delete")){
         if (empty($_GET["cid"])){
             header("Location: ../../adminpanel.php?p=categories&res=6ncid");
             exit;
@@ -162,7 +162,7 @@ if (isset($_POST["category_edit_delete"])){
 }
 
 if (isset($_POST["categories-table-delete"])){
-    if ($user->UserGroup()->getPermission("category_delete")){
+    if ($user->getUserGroup()->getPermission("category_delete")){
         if (empty($_GET["cid"])){
             header("Location: ../../adminpanel.php?p=categories&res=6ncid");
             exit;

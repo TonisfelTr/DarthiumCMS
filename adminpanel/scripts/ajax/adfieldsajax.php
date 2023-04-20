@@ -83,7 +83,7 @@ function Get(){
 \Engine\Engine::LoadEngine();
 if (\Users\UserAgent::SessionContinue() === true) {
     $user = new \Users\Models\User($_SESSION["uid"]);
-    if ($user->UserGroup()->getPermission("change_engine_settings")){
+    if ($user->getUserGroup()->getPermission("change_engine_settings")){
         if ($_POST["action"] == "add"){
             if (!IsCorrectName($_POST["field-name"])) {
                 echo "in";

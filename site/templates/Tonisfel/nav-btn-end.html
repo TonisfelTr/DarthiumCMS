@@ -1,0 +1,30 @@
+<foreach array="array_merge(\Builder\Controllers\NavbarAgent::GetElements(), \Engine\PluginManager::GetNavbarBtns())" value="$navbtnbbh">
+    <if condition="isset($navbtnbbh['visibility'])">
+        <if condition="$navbtnbbh['visibility'] == 'only_authorized' && \Users\UserAgent::isAuthorized() === false">
+            {!@|continue(2)}
+        </if>
+        <if condition="$navbtnbbh['visibility'] == 'only_guest' && \Users\UserAgent::isAuthorized() !== false">
+            {!@|continue(2)}
+        </if>
+    </if>
+    <if condition="$navbtnbbh['type'] == 'end-nav-btn'">
+        <li><a href="{@|$navbtnbbh['action']}">{@|$navbtnbbh['content']}</a></li>
+    </if>
+    <if condition="$navbtnbbh['type'] == 'end-nav-list'">
+        <li class="dropdown">
+            <a aria-expanded="false" aria-haspopup="true" role="button" data-toggle="dropdown" class="dropdown-toggle" href="#">
+                {@|$navbtnbbh['content']} <span class="caret"></span>
+            </a>
+            <if condition="$navbtnbbh['action'] != ''">
+                <ul class="dropdown-menu">{@|$navbtnbbh['action']}</ul>
+            </if>
+            <if condition="$navbtnbbh['action'] == ''">
+                <ul class="dropdown-menu">
+                    <foreach array="\Builder\Controllers\NavbarAgent::GetElementsOfList($navbtnbbh['id'])" value="$child">
+                        <li><a href="{@|$child['action']}">{@|$child['content']}</a></li>
+                    </foreach>
+                </ul>
+            </if>
+        </li>
+    </if>
+</foreach>

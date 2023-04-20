@@ -46,7 +46,7 @@ class Session
             return json_decode($this->content, true);
         }
 
-        return json_decode($this->content, true)[$key];
+        return json_decode($this->content, true)[$key] ?? null;
     }
 
     public function remember() {

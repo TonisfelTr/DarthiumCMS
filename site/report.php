@@ -173,9 +173,9 @@ if (empty($_GET["preg"])) {
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:CREATE_DATE}", \Engine\Engine::DateFormatToRead($report->getCreateDate()), $reportSeeBlock);
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_AVATAR}", $report->ReportAuthor()->getAvatar(), $reportSeeBlock);
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_NICKNAME}", $report->ReportAuthor()->getNickname(), $reportSeeBlock);
-            $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_GROUP_ID}", $report->ReportAuthor()->UserGroup()->getId(), $reportSeeBlock);
-            $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_GROUP_COLOR}", $report->ReportAuthor()->UserGroup()->getColor(), $reportSeeBlock);
-            $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_GROUP_NAME}", $report->ReportAuthor()->UserGroup()->getName(), $reportSeeBlock);
+            $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_GROUP_ID}", $report->ReportAuthor()->getUserGroup()->getId(), $reportSeeBlock);
+            $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_GROUP_COLOR}", $report->ReportAuthor()->getUserGroup()->getColor(), $reportSeeBlock);
+            $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_GROUP_NAME}", $report->ReportAuthor()->getUserGroup()->getName(), $reportSeeBlock);
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_REALNAME}", ($report->ReportAuthor()->getRealName() != '') ? \Engine\LanguageManager::GetTranslation("reports_site_panel.name") . " " . htmlentities($report->ReportAuthor()->getRealName()) . "<br>" : "", $reportSeeBlock);
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:AUTHOR_FROM}", ($report->ReportAuthor()->getFrom() != '') ? \Engine\LanguageManager::GetTranslation("reports_site_panel.from") . " " . htmlentities($report->ReportAuthor()->getFrom()) . "<br>" : "", $reportSeeBlock);
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:VK}", ($report->ReportAuthor()->getVK() != '' && $report->ReportAuthor()->IsVKPublic()) ? "VK: <a href=\"http://vk.com/" . htmlentities($report->ReportAuthor()->getVK()) . "\">" . \Engine\LanguageManager::GetTranslation("reports_site_panel.go_to") . "</a><br>" : "", $reportSeeBlock);
@@ -184,7 +184,7 @@ if (empty($_GET["preg"])) {
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:REPORT_STATUS}", $report->getStatus(), $reportSeeBlock);
             $reportSeeBlock = str_replace_once("{REPORT_ID}", $report->getId(), $reportSeeBlock);
             $reportSeeBlock = str_replace_once("{REPORT_PAGE:BTNS_PANEL}", "", $reportSeeBlock);
-            if (($report->ReportAuthor() == $user || $user->UserGroup()->getPermission("report_foreign_edit")) && !$report->isClosed()) {
+            if (($report->ReportAuthor() == $user || $user->getUserGroup()->getPermission("report_foreign_edit")) && !$report->isClosed()) {
                 include_once \Engine\Engine::ConstructTemplatePath("reportpanelbtn", "report");
                 $reportBtnBlock = getBrick();
                 $reportBtnBlock = str_replace("{REPORT_PAGE:REPORT_ID}", $report->getId(), $reportBtnBlock);
@@ -206,8 +206,8 @@ if (empty($_GET["preg"])) {
                 $answer = new \Guards\ReportAnswer($report->getAnswerId());
                 $reportSolveAnswer = str_replace_once("{REPORT_PAGE:SA_AUTHOR_AVATAR}", $answer->getAuthor()->getAvatar(), $reportSolveAnswer);
                 $reportSolveAnswer = str_replace_once("{REPORT_PAGE:SA_AUTHOR_NICKNAME}", $answer->getAuthor()->getNickname(), $reportSolveAnswer);
-                $reportSolveAnswer = str_replace_once("{REPORT_PAGE:SA_AUTHOR_GROUP_COLOR}", $answer->getAuthor()->UserGroup()->getColor(), $reportSolveAnswer);
-                $reportSolveAnswer = str_replace_once("{REPORT_PAGE:SA_AUTHOR_GROUP_NAME}", $answer->getAuthor()->UserGroup()->getName(), $reportSolveAnswer);
+                $reportSolveAnswer = str_replace_once("{REPORT_PAGE:SA_AUTHOR_GROUP_COLOR}", $answer->getAuthor()->getUserGroup()->getColor(), $reportSolveAnswer);
+                $reportSolveAnswer = str_replace_once("{REPORT_PAGE:SA_AUTHOR_GROUP_NAME}", $answer->getAuthor()->getUserGroup()->getName(), $reportSolveAnswer);
                 $reportSolveAnswer = str_replace_once("{REPORT_PAGE:SA_AUTHOR_REALNAME}", ($answer->getAuthor()->getRealName() != '') ? \Engine\LanguageManager::GetTranslation("reports_site_panel.name") . " " . htmlentities($answer->getAuthor()->getRealName()) . "<br>" : "", $reportSolveAnswer);
                 $reportSolveAnswer = str_replace_once("{REPORT_PAGE:SA_AUHTOR_FROM}", ($answer->getAuthor()->getFrom() != '') ? \Engine\LanguageManager::GetTranslation("reports_site_panel.from") . " " . htmlentities($answer->getAuthor()->getFrom()) . "<br>" : "", $reportSolveAnswer);
                 $reportSolveAnswer = str_replace_once("{REPORT_PAGE:SA_AUTHOR_VK}", ($answer->getAuthor()->getVK() != '' && $answer->getAuthor()->IsVKPublic()) ? "VK: <a href=\"http://vk.com/" . htmlentities($answer->getAuthor()->getVK()) . "\">" . \Engine\LanguageManager::GetTranslation("reports_site_panel.go_to") . "</a><br>" : "", $reportSolveAnswer);
@@ -242,9 +242,9 @@ if (empty($_GET["preg"])) {
 
                     $reportAnswer = str_replace_once("{REPORT_PAGE:AO_AVATAR}", $answer->getAuthor()->getAvatar() ,$reportAnswer);
                     $reportAnswer = str_replace_once("{REPORT_PAGE:AO_NICKNAME}", $answer->getAuthor()->getNickname() ,$reportAnswer);
-                    $reportAnswer = str_replace_once("{REPORT_PAGE:AO_GROUP_ID}", $answer->getAuthor()->UserGroup()->getId(), $reportAnswer);
-                    $reportAnswer = str_replace_once("{REPORT_PAGE:AO_GROUP_COLOR}", $answer->getAuthor()->UserGroup()->getColor() ,$reportAnswer);
-                    $reportAnswer = str_replace_once("{REPORT_PAGE:AO_GROUP_NAME}", $answer->getAuthor()->UserGroup()->getName() ,$reportAnswer);
+                    $reportAnswer = str_replace_once("{REPORT_PAGE:AO_GROUP_ID}", $answer->getAuthor()->getUserGroup()->getId(), $reportAnswer);
+                    $reportAnswer = str_replace_once("{REPORT_PAGE:AO_GROUP_COLOR}", $answer->getAuthor()->getUserGroup()->getColor() ,$reportAnswer);
+                    $reportAnswer = str_replace_once("{REPORT_PAGE:AO_GROUP_NAME}", $answer->getAuthor()->getUserGroup()->getName() ,$reportAnswer);
                     $reportAnswer = str_replace_once("{REPORT_PAGE:AO_REALNAME}", ($answer->getAuthor()->getRealName() != '') ? \Engine\LanguageManager::GetTranslation("reports_site_panel.name") . " " . htmlentities($answer->getAuthor()->getRealName()) . "<br>" : "" ,$reportAnswer);
                     $reportAnswer = str_replace_once("{REPORT_PAGE:AO_FROM}", ($answer->getAuthor()->getFrom() != '') ? \Engine\LanguageManager::GetTranslation("reports_site_panel.from") . " " . htmlentities($answer->getAuthor()->getFrom()) . "<br>" : "" ,$reportAnswer);
                     $reportAnswer = str_replace_once("{REPORT_PAGE:AO_VK}", ($answer->getAuthor()->getVK() != '' && $answer->getAuthor()->IsVKPublic()) ? "VK: <a href=\"http://vk.com/" . htmlentities($answer->getAuthor()->getVK()) . "\">" . \Engine\LanguageManager::GetTranslation("reports_site_panel.go_to") . "</a><br>" : "" ,$reportAnswer);
@@ -289,8 +289,8 @@ if (empty($_GET["preg"])) {
             }
 
             if (!empty($_GET["rid"])) {
-                if (($user->UserGroup()->getPermission("report_edit") && $user->getId() == \Guards\ReportAgent::GetReportParam($_GET["rid"], "author"))
-                    || $user->UserGroup()->getPermission("report_foreign_edit")
+                if (($user->getUserGroup()->getPermission("report_edit") && $user->getId() == \Guards\ReportAgent::GetReportParam($_GET["rid"], "author"))
+                    || $user->getUserGroup()->getPermission("report_foreign_edit")
                 ) {
                     $report = new \Guards\Report($_GET["rid"]);
                     $message = htmlentities($report->getMessage());

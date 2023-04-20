@@ -4,7 +4,7 @@ require_once $_SERVER["DOCUMENT_ROOT"] . "/engine/classes/engine/Engine.php";
 \Engine\Engine::LoadEngine();
 
 if ($sessionRes = \Users\UserAgent::SessionContinue()) $user = new \Users\Models\User((new \Users\Services\Session(\Users\Services\FlashSession::getSessionId()))->getContent()["uid"]);
-if (!$user->UserGroup()->getPermission("change_engine_settings")) {
+if (!$user->getUserGroup()->getPermission("change_engine_settings")) {
     header("Location: ../../adminpanel.php?res=1");
     exit;
 } else {

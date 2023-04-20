@@ -1,0 +1,27 @@
+<if condition="\Users\Services\FlashSession::hasInfos()">
+    <div class="alert alert-success">
+        <ul>
+            <foreach array="\Users\Services\FlashSession::getInfos()" value="$info">
+                <li>{@|$info}</li>
+            </foreach>
+        </ul>
+    </div>
+</if>
+<if condition="\Users\Services\FlashSession::hasWarnings()">
+    <div class="alert alert-warning">
+        <ul>
+            <foreach array="\Users\Services\FlashSession::getWarnings()" value="$warning">
+                <li>{@|$warning}</li>
+            </foreach>
+        </ul>
+    </div>
+</if>
+<if condition="\Users\Services\FlashSession::hasErrors()">
+    <div class="alert alert-danger">
+        <ul>
+            <foreach array="\Users\Services\FlashSession::getErrors()" value="$error">
+                <li>{@|$error}</li>
+            </foreach>
+        </ul>
+    </div>
+</if>

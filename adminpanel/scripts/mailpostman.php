@@ -22,8 +22,8 @@ function str_replace_once($search, $replace, $text){
     return $pos!==false ? substr_replace($text, $replace, $pos, strlen($search)) : $text;
 }
 
-if ($user->UserGroup()->getPermission("bmail_sende") ||
-    $user->UserGroup()->getPermission("bmail_sends")){
+if ($user->getUserGroup()->getPermission("bmail_sende") ||
+    $user->getUserGroup()->getPermission("bmail_sends")){
     if (isset($_POST["email-send-text"])){
         $userList = \Users\UserAgent::GetAllUsers();
         foreach ($userList as $someUser){
