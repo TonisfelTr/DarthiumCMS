@@ -2,7 +2,7 @@
     <if condition="isset($navbtnbb['visibility'])">
         <if condition="($navbtnbb['visibility'] == 'only_authorized' && \Users\UserAgent::isAuthorized() === false) ||
                        $navbtnbb['visibility'] == 'only_guest' && \Users\UserAgent::isAuthorized() !== false">
-            {!@|continue(2)}
+            {!@|continue(1)}
         </if>
     </if>
     <if condition="$navbtnbb['type'] == 'nav-btn'">

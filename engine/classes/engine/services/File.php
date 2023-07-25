@@ -15,7 +15,8 @@ use Exceptions\TavernException;
  * this class can do every can do Uploader class but just with regards to exemplar
  * of this class created entity.
  **/
-class File extends Uploader {
+class File extends Uploader
+{
     /** @var string File name on the client machine. */
     private string $fileName;
     /** @var string The MIME type of the file. Exists, if the browser provided this information. */
@@ -35,7 +36,7 @@ class File extends Uploader {
      * Returns file entity or file entities array from received data. If $senderName is not null, return
      * file entity or file entities array, dependency by count of sent files from sender. If $senderName
      * is null, return all able file entities.
-     * 
+     *
      * @param string|null $senderName Input tag name.
      * @return File|array Entity or entities array.
      */
@@ -48,22 +49,25 @@ class File extends Uploader {
         if (!is_null($senderName)) {
             if (!is_array($_FILES[$senderName]["name"])) {
                 $result = new File($senderName);
-            } else {
+            }
+            else {
                 $result = [];
 
-                for ($i = 0; $i < count($_FILES[$senderName]["name"]); $i++) {
+                for ($i = 0 ; $i < count($_FILES[$senderName]["name"]) ; $i++) {
                     $result[] = new File($senderName, $i);
                 }
             }
-        //If $senderName is null...
-        //If count of senders is more then one, handle all of them recursively.
-        } elseif (count($_FILES) > 1) {
+            //If $senderName is null...
+            //If count of senders is more then one, handle all of them recursively.
+        }
+        elseif (count($_FILES) > 1) {
             //Enumerate all senders...
             foreach (array_keys($_FILES) as $key) {
                 $result[] = File::getOneOrAll($key);
             }
-        //If a sender is the only one, handle that one recursively
-        } else {
+            //If a sender is the only one, handle that one recursively
+        }
+        else {
             $result = File::getOneOrAll($_FILES[array_keys($_FILES)[0]]);
         }
 
@@ -73,9 +77,9 @@ class File extends Uploader {
     /**
      * Create file entity handler.
      *
-     * @param string $senderName Sender name.
+     * @param string   $senderName      Sender name.
      * @param int|null $indexOfContents Index of sent file from sender. If tag has one file or file index does not
-     *                                  exist, it throw an exception.
+     *                                  exist, it throws an exception.
      */
     public function __construct(string $senderName, int $indexOfContents = null) {
         if (!self::hasSentFile($senderName)) {
@@ -83,23 +87,24 @@ class File extends Uploader {
         }
 
         if (is_null($indexOfContents)) {
-            $this->fileName = $_FILES[$senderName]["name"];
-            $this->fileType = $_FILES[$senderName]["type"] ?? null;
-            $this->fileSize = $_FILES[$senderName]["size"];
+            $this->fileName           = $_FILES[$senderName]["name"];
+            $this->fileType           = $_FILES[$senderName]["type"] ?? null;
+            $this->fileSize           = $_FILES[$senderName]["size"];
             $this->uploadingErrorCode = $_FILES[$senderName]["error"];
 
-            $dividerTmpName = explode("/", $_FILES[$senderName]["tmp_name"]);
+            $dividerTmpName    = explode("/", $_FILES[$senderName]["tmp_name"]);
             $this->fileTmpName = end($dividerTmpName);
             $this->fileTmpPath = substr($_FILES[$senderName]["tmp_name"], -(strlen($this->fileTmpName)));
 
             $this->fileFullPath = $_FILES[$senderName]["full_path"] ?? null;
-        } else {
-            $this->fileName = $_FILES[$senderName]["name"][$indexOfContents];
-            $this->fileType = $_FILES[$senderName]["type"][$indexOfContents] ?? null;
-            $this->fileSize = $_FILES[$senderName]["size"][$indexOfContents];
+        }
+        else {
+            $this->fileName           = $_FILES[$senderName]["name"][$indexOfContents];
+            $this->fileType           = $_FILES[$senderName]["type"][$indexOfContents] ?? null;
+            $this->fileSize           = $_FILES[$senderName]["size"][$indexOfContents];
             $this->uploadingErrorCode = $_FILES[$senderName]["error"][$indexOfContents];
 
-            $dividerTmpName = explode("/", $_FILES[$senderName]["tmp_name"][$indexOfContents]);
+            $dividerTmpName    = explode("/", $_FILES[$senderName]["tmp_name"][$indexOfContents]);
             $this->fileTmpName = end($dividerTmpName);
             $this->fileTmpPath = substr($_FILES[$senderName]["tmp_name"][$indexOfContents], -(strlen($this->fileTmpName)));
 
@@ -135,7 +140,7 @@ class File extends Uploader {
      * Returns content of full path property.
      *
      * @return string Full path.
-     * @throws TavernException Throws if PHP version is less then 8.1.0.
+     * @throws TavernException Throws if PHP version is less than 8.1.0.
      */
     public function getFullPath() : string {
         if (version_compare(PHP_VERSION, "8.1.0", ">=")) {

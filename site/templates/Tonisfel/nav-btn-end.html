@@ -1,10 +1,8 @@
 <foreach array="array_merge(\Builder\Controllers\NavbarAgent::GetElements(), \Engine\PluginManager::GetNavbarBtns())" value="$navbtnbbh">
     <if condition="isset($navbtnbbh['visibility'])">
-        <if condition="$navbtnbbh['visibility'] == 'only_authorized' && \Users\UserAgent::isAuthorized() === false">
-            {!@|continue(2)}
-        </if>
-        <if condition="$navbtnbbh['visibility'] == 'only_guest' && \Users\UserAgent::isAuthorized() !== false">
-            {!@|continue(2)}
+        <if condition="($navbtnbbh['visibility'] == 'only_authorized' && \Users\UserAgent::isAuthorized() === false) ||
+						($navbtnbbh['visibility'] == 'only_guest' && \Users\UserAgent::isAuthorized() !== false)">
+            {!@|continue(1)}
         </if>
     </if>
     <if condition="$navbtnbbh['type'] == 'end-nav-btn'">

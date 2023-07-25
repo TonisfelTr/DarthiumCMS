@@ -16,6 +16,7 @@ use Builder\Controllers\BuildManager;
 use Builder\Controllers\TagAgent;
 use Exceptions\Exemplars\InvalidParameterNameError;
 use Exceptions\Exemplars\NotLoadedEngineConfigError;
+use Exceptions\Exemplars\RoutesRegistrationError;
 use Exceptions\TavernException;
 use Users\Services\FlashSession;
 use Users\UserAgent;
@@ -243,19 +244,19 @@ class Engine
         set_error_handler([\Engine\ErrorManager::class, "throwErrorHandlerHtml"]);
         register_shutdown_function("\Engine\ErrorManager::throwFatalErrorHandlerHtml");
 
-        ini_set('memory_limit', 204217728);
+        ini_set('memory_limit', 8 * 1024 * 1024 * 1024 * 512);
 
         MigrationAgent::run();
         FlashSession::SetUpSource();
-        RouteAgent::registerRoutes();
+        if (!RouteAgent::registerRoutes()) {
+            throw new RoutesRegistrationError(ErrorManager::getErrorDescription(99), 99);
+        }
 
         if (self::$SiteStatus != 1) {
             BuildManager::showOfflinePage();
         }
 
-        TagAgent::registerHtmlTags();
-        TagAgent::registerServiceTags();
-        TagAgent::registerSystemTags();
+        RouteAgent::parseUrl();
 
         UserAgent::SessionContinue();
     }
@@ -303,6 +304,7 @@ class Engine
     public static function GetEngineInfo($code) {
         switch ($code) {
             case "na":
+            case "account.need_activate":
                 return self::$NeedActivate;
             case "map":
                 return self::$MultiAccPermitted;

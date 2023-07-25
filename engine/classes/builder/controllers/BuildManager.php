@@ -5,6 +5,8 @@ namespace Builder\Controllers;
 use Builder\Parser\HtmlDOM;
 use Engine\Engine;
 use Engine\ErrorManager;
+use Exceptions\Exemplars\DisabledOutputBufferingError;
+use Exceptions\Exemplars\EmptyOutputBufferError;
 use Exceptions\Exemplars\HashPageError;
 use Exceptions\Exemplars\TagCompilationError;
 use Exceptions\TavernException;
@@ -13,7 +15,6 @@ use Guards\SocietyGuard;
 use Throwable;
 use Users\Models\User;
 use Users\UserAgent;
-use PHP_Beautifier as Beautifier;
 
 class BuildManager
 {
@@ -23,26 +24,55 @@ class BuildManager
         }
     }
 
-    private static function formatCode(string $htmlCode, string $filePath) : string {
-        $dom = new HtmlDOM();
-        $dom->load($htmlCode);
+    private static function convertToValid(string $htmlText) : string {
+        $argumentsPattern = '((\s*([a-zA-Z\-]+)\s*=\s*"(.*?)"\s*)*)';
 
-        $result = $dom->save($filePath, '   ');
-        $result = htmlspecialchars_decode($result);
+        $htmlText = preg_replace('/(\n*)(<\?php(.*?)?>)/', "$2\r$1    ", $htmlText);
 
-        return $result;
+        $htmlText = preg_replace('/(<\/\w+>)/', "$1\r", $htmlText);
+        $htmlText = preg_replace("/<!DOCTYPE(.*?)>/", "<!DOCTYPE$1>\r", $htmlText);
+        $htmlText = preg_replace("/\s*<html$argumentsPattern>/", "\r<html$1>\r", $htmlText);
+        $htmlText = preg_replace("/<head$argumentsPattern>/", "<head$1>\r", $htmlText);
+        $htmlText = preg_replace("/<meta$argumentsPattern>/", "<meta$1>\r", $htmlText);
+        $htmlText = preg_replace("/<link$argumentsPattern>/", "<link$1>\r", $htmlText);
+        $htmlText = preg_replace("/<body$argumentsPattern>/", "<body$1>\r", $htmlText);
+        $htmlText = preg_replace("/<div$argumentsPattern>/", "<div$1>\r", $htmlText);
+        $htmlText = preg_replace("/<nav$argumentsPattern>/", "<nav$1>\r", $htmlText);
+        $htmlText = preg_replace("/<button$argumentsPattern>/", "<button$1>\r", $htmlText);
+        $htmlText = preg_replace("/<ul$argumentsPattern>/", "<ul$1>\r", $htmlText);
+        $htmlText = preg_replace("/<ol$argumentsPattern>/", "<ol$1>\r", $htmlText);
+        $htmlText = preg_replace("/<li$argumentsPattern>/", "<li$1>\r", $htmlText);
+        $htmlText = preg_replace("/<li$argumentsPattern>\s*<a$argumentsPattern>(.*?)<\/a>\s*<\/li>/", '<li$1><a$5>$6</a></li>' . "\r", $htmlText);
+        $htmlText = preg_replace("/<select$argumentsPattern>/", "<select$1>\r", $htmlText);
+        $htmlText = preg_replace("/<option$argumentsPattern>(.*?)<\/option>/", "<option$1>$5</option>\r", $htmlText);
+
+        $htmlText = str_replace("</ul>", "</ul>\r", $htmlText);
+
+        $htmlText = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $htmlText);
+
+        return $htmlText;
     }
 
     private static function compilePhpCode(string $filePath, string &$htmlText, bool $withRemoving = false) : string {
+        //self::convertToValid($htmlText)
         if (file_put_contents($filePath, $htmlText, FILE_USE_INCLUDE_PATH) === false) {
             throw new HashPageError("", ErrorManager::EC_PAGE_HASHING_ERROR);
         }
-        self::formatCode($htmlText, $filePath);
 
-        ob_start();
-        require $filePath;
-        $htmlText = ob_get_contents();
-        ob_end_clean();
+        if (!ob_start()) {
+            throw new EmptyOutputBufferError("", ErrorManager::EC_FAILED_START_OUTPUT_BUFFERING);
+        }
+        else {
+            require $filePath;
+            $htmlText = ob_get_contents();
+            if (!$htmlText) {
+                throw new EmptyOutputBufferError("", ErrorManager::EC_EMPTY_OUTPUT_BUFFER);
+            }
+            if (ob_get_level() > 0) {
+                ob_end_clean();
+            }
+        }
+
         if ($withRemoving) {
             unlink($filePath);
         }
@@ -100,46 +130,22 @@ class BuildManager
 
     public static function include(string $path, bool $onlyOnce = false, string $root = HOME_ROOT) {
         self::throwIfContainsDoubleDot($path);
-        BuildManager::turnOffOutputBuffering();
-        $outputBufferingContent = '';
-        $rawPath                = $path;
-        $path                   = $_SERVER["DOCUMENT_ROOT"] . "/$root" . $path;
 
-        try {
-            ob_start(function ($outputResult) {
-                return $outputResult = ob_get_contents();
-            });
-            BuildManager::fileExists($rawPath, $root, true);
+        $outputBufferingConxtent = '';
+        $rawPath                 = $path;
+        $path                    = $_SERVER["DOCUMENT_ROOT"] . "/$root" . $path;
 
-            if (!$onlyOnce) {
-                require $path;
-            }
-            else {
-                require_once $path;
-            }
-            $outputBufferingContent = ob_get_clean();
-            BuildManager::turnOffOutputBuffering();
-        } catch (Throwable $ex) {
-            if (basename(__FILE__) == basename($_SERVER["SCRIPT_FILENAME"])) {
-                throw new TavernException("File doesn't exist by path \"{path}\" (exists: {exist}, is directiory: {is_directory})",
-                                          ErrorManager::EC_FILE_NOT_EXIST,
-                                          [
-                                              $path,
-                                              file_exists($path) ? "true" : "false",
-                                              is_dir($path) ? "true" : "false",
-                                          ]);
-            }
-            if (ob_get_level() > 0) {
-                $outputBufferingContent = ob_get_clean();
-                BuildManager::turnOffOutputBuffering();
-            }
-            ErrorManager::throwExceptionHandlerHtml($ex);
-        } finally {
-            if (ob_get_level() > 0) {
-                $outputBufferingContent = ob_get_clean();
-                BuildManager::turnOffOutputBuffering();
-            }
+        BuildManager::fileExists($rawPath, $root, true);
+
+        ob_start();
+        if ($onlyOnce === false) {
+            require $path;
         }
+        else {
+            require_once $path;
+        }
+        $outputBufferingContent = ob_get_contents();
+        ob_end_clean();
 
         return $outputBufferingContent;
     }
@@ -176,7 +182,7 @@ class BuildManager
     public static function includeFromTemplateAndCompile(string $path, bool $onlyOnce = false) {
         $included = self::include($path, $onlyOnce, TEMPLATE_ROOT) . PHP_EOL;
 
-        return self::createHashAndDrop($included);
+        return self::createHashAndDrop($included, true, basename($path));
     }
 
     public static function includeContentFromTemplate(string $path) {
@@ -233,45 +239,53 @@ class BuildManager
         }
     }
 
-    public static function createHashAndDrop(string $htmlText = null) {
-        $hash       = Engine::RandomGen(32);
-        $hashedPage = HOME_ROOT . "uploads/hashed/$hash.php";
+    public static function createHashAndDrop(string $htmlText = null, bool $isIncluded = false, string $suffix = '') {
+        if (!TagAgent::isTagsRegistrationCompleted()) {
+            TagAgent::registerSystemTags();
+        }
+        if (!TagAgent::isServiceTagsRegistrationCompleted()) {
+            TagAgent::registerServiceTags();
+        }
+        if (!TagAgent::isHTMLTagsRegistrationCompleted()) {
+            TagAgent::registerHtmlTags();
+        }
 
-        if (file_exists(HOME_ROOT . '/uploads/hashed')) {
-            foreach (glob(HOME_ROOT . '/uploads/hashed/*') as $file) {
-                unlink($file);
+        $hash = Engine::RandomGen(32);
+
+        $result = TagAgent::compileHtmlTags($htmlText);
+        $result = TagAgent::compileSystemTags($result);
+        $result = TagAgent::compileServiceTags($result);
+
+        if ($isIncluded) {
+            $result = self::hardCompile($result);
+        }
+        //Есть ли сервисные теги
+        $firstChecking = preg_match_all('/\{[a-zA-Z0-9_\-\!\@\$\%\&\*\?\>\+]+\|/', $result, $firstMatch);
+        //Есть ли служебные теги
+        $secondChecking = preg_match_all("/\{[0-9a-zA-Z_\-\:]+\}/", $result, $secondMatch);
+        //Проверяем на пустоту
+        if ($firstChecking || $secondChecking) {
+            if (TagAgent::isCompileCorrected($result)) {
+                throw new TagCompilationError($result, ErrorManager::EC_TAG_COMPILATION_DOES_NOT_ENDED);
             }
         }
 
-        $result = TagAgent::compileSystemTags($htmlText);
-        self::compilePhpCode($hashedPage, $result, true);
+        $result = self::compilePhpCode(HOME_ROOT . "site/hashed/html_{$hash}.php", $result);
 
-        $includeTag = TagAgent::getHtmlTag("include");
-        $result     = $includeTag->execute($result);
-        $ifTag      = TagAgent::getHtmlTag('if');
-        $result     = $ifTag->execute($result);
-        $foreachTag = TagAgent::getHtmlTag('foreach');
-        $result     = $foreachTag->execute($result);
-        $withTag    = TagAgent::getHtmlTag('with');
-        $result     = $withTag->execute($result);
-        $result     = TagAgent::compileServiceTags($result);
-        self::compilePhpCode($hashedPage, $result);
+        if ($suffix == 'main.html') {
+            if (self::fileExists("site/hashed/main_html.php")) {
+                self::fileRemove("site/hashed/main_html.php");
+            }
+            file_put_contents(HOME_ROOT . "site/hashed/main_html.php", $result);
+        }
 
-        $result = TagAgent::compileHtmlTags($result);
-        self::compilePhpCode($hashedPage, $result);
+        return $result;
+    }
 
+    public static function hardCompile(string $htmlText = null) : string {
+        $result = TagAgent::compileHtmlTags($htmlText);
         $result = TagAgent::compileServiceTags($result);
-        self::compilePhpCode($hashedPage, $result);
-
-        while (str_contains($result, '<' . '?' . 'php') || str_contains($result, '<' . '?' . '=')) {
-            self::compilePhpCode($hashedPage, $formatedHtml, false);
-            $result = $formatedHtml;
-        }
-
-        if (preg_match_all('/\{[a-zA-Z0-9_\-\!\@\$\%\&\*\?\>\+]+\|/', $result) ||
-            preg_match_all("/\{[0-9a-zA-Z_\-\:]+\}/", $result)) {
-            throw new TagCompilationError($result, ErrorManager::EC_TAG_COMPILATION_DOES_NOT_ENDED);
-        }
+        $result = TagAgent::compileSystemTags($result);
 
         return $result;
     }

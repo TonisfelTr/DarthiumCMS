@@ -1,0 +1,22 @@
+<div class="profile-reg-message-div">
+    <if condition="Users\Services\FlashSession::hasInfos()">
+	    <div class="profile-reg-error-div">
+			<ol>
+				<foreach array="Users\Services\FlashSession::getInfos()" value="$message">
+					<li>{@|$message}</li>
+				</foreach>
+			</ol>
+		</div>
+    </if>
+	<if condition="Users\Services\FlashSession::hasErrors()">
+		<div class="profile-reg-error-div">
+			<ol>
+				<foreach array="Users\Services\FlashSession::getErrors()" value="$message">
+					<li>{@|$message}</li>
+				</foreach>
+			</ol>
+		</div>
+	</if>
+    <hr>
+    <p style="color: lightblue; text-decoration: underline;" onclick="$(this).parent('div').hide();">Закрыть сообщение</p>
+</div>

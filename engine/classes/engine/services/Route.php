@@ -3,6 +3,7 @@
 namespace Engine\Services;
 
 use Builder\Controllers\BuildManager;
+use Builder\Controllers\TagAgent;
 use Engine\ErrorManager;
 use Engine\RouteAgent;
 use Exceptions\Exemplars\InvalidRouteConditionError;
@@ -14,23 +15,23 @@ use Exceptions\TavernException;
 class Route extends RouteAgent
 {
     private string $url;
-    private array $urlArguments = [];
-    private array $urlArgumentsNames = [];
-    private array $urlChainLinksContent = [];
+    private array  $urlArguments         = [];
+    private array  $urlArgumentsNames    = [];
+    private array  $urlChainLinksContent = [];
 
     private string $method;
-    private string $name = '';
-    private string $title = '';
-    private array $availableParameters = [];
-    private string $handlerName = '';
-    private $handlerFunction = false;
-    private $parameters = [];
-    private $runConditionFunction;
-    private $accessConditionFunction;
-    private $titlingFunction;
-    private $customPageWithConditionFailed = false;
-    private $customPageWithAccessConditionFailed = false;
-    private $justIncludingRoute = false;
+    private string $name                                = '';
+    private string $title                               = '';
+    private array  $availableParameters                 = [];
+    private string $handlerName                         = '';
+    private        $handlerFunction                     = false;
+    private        $parameters                          = [];
+    private        $runConditionFunction;
+    private        $accessConditionFunction;
+    private        $titlingFunction;
+    private        $customPageWithConditionFailed       = false;
+    private        $customPageWithAccessConditionFailed = false;
+    private        $justIncludingRoute                  = false;
 
     public static function createGet(string $url, string $handlerName) : Route {
         return self::create('get', $url, $handlerName);
@@ -58,10 +59,12 @@ class Route extends RouteAgent
     }
 
     private function __construct(string $httpMethod, string $url, $handler = null) {
-        $this->method = $httpMethod;
-        $this->url    = $url;
-        $this->titlingFunction = function () { return ''; };
-        $handler = is_null($handler) ? RouteAgent::getCurrentHandler() : $handler;
+        $this->method          = $httpMethod;
+        $this->url             = $url;
+        $this->titlingFunction = function () {
+            return '';
+        };
+        $handler               = is_null($handler) ? RouteAgent::getCurrentHandler() : $handler;
 
         if (!preg_match("/[a-zA-Z0-9_\-\{\}\:\[\]\,]+/", $this->url) && $this->getUrl() != "") {
             throw new InvalidRouteIdentificatorError("", ErrorManager::EC_INVALID_SYMBOLS_IN_ROUTE_URL);
@@ -80,7 +83,7 @@ class Route extends RouteAgent
 
             throw new TavernException("Argument #3 must be string or callable, {handler_type_result} given",
                                       ErrorManager::EC_INVALID_ROUTE_HANDLER_RESULT,
-                                       [$currentType]);
+                                      [$currentType]);
         }
 
         $explodedUrl = array_filter(explode("/", $this->url), function (string $link) {
@@ -90,15 +93,15 @@ class Route extends RouteAgent
 
             return true;
         });
-        $this->url = implode('/', $explodedUrl);
-        $this->url = RouteAgent::hasPrefix() ? RouteAgent::getPrefix() . "/" . $url : $url;
+        $this->url   = implode('/', $explodedUrl);
+        $this->url   = RouteAgent::hasPrefix() ? RouteAgent::getPrefix() . "/" . $url : $url;
 
         if (strpos($this->url, '{') || strpos($this->url, '[')) {
             foreach ($explodedUrl as $index => $urlChainLink) {
-                $startsByBracket = str_starts_with($urlChainLink, '{');
-                $endsByBracket = str_ends_with($urlChainLink, '}');
+                $startsByBracket       = str_starts_with($urlChainLink, '{');
+                $endsByBracket         = str_ends_with($urlChainLink, '}');
                 $startsBySquareBracket = str_starts_with($urlChainLink, '[');
-                $endsBySquareBracket = str_ends_with($urlChainLink, ']');
+                $endsBySquareBracket   = str_ends_with($urlChainLink, ']');
 
                 if ($startsByBracket && $endsByBracket) {
                     if (in_array($urlChainLink, array_keys($this->urlArguments))) {
@@ -110,20 +113,23 @@ class Route extends RouteAgent
 
                     if (($colonPos = strpos($urlChainLink, ':')) !== false) {
                         $urlChainLinkName = '{' . substr($urlChainLink, 1, strpos($urlChainLink, ':') - 1) . '}';
-                    } else {
+                    }
+                    else {
                         $urlChainLinkName = '{' . substr($urlChainLink, 1, -1) . '}';
                     }
                     $this->urlArgumentsNames[$urlChainLinkName] = $index;
 
                     $this->urlArguments["$index"] = new RouteUrlLink($urlChainLink, $index == count($explodedUrl) - 1);
-                } elseif (($startsByBracket && !$endsByBracket) || (!$startsByBracket && $endsByBracket)) {
+                }
+                elseif (($startsByBracket && !$endsByBracket) || (!$startsByBracket && $endsByBracket)) {
                     $chainLinkName = explode(":", trim($urlChainLink, "{}"))[0];
                     throw new InvalidRouteIdentificatorError("Invalid given property syntax for \"$chainLinkName\" chain link", ErrorManager::EC_INVALID_LINK_IN_URL);
                 }
 
                 if ($startsBySquareBracket && $endsBySquareBracket) {
                     $this->urlArguments["$index"] = new RouteUrlLink($urlChainLink, $index == count($explodedUrl) - 1, true);
-                } elseif (($startsBySquareBracket && !$endsBySquareBracket) || (!$startsBySquareBracket && $endsBySquareBracket)) {
+                }
+                elseif (($startsBySquareBracket && !$endsBySquareBracket) || (!$startsBySquareBracket && $endsBySquareBracket)) {
                     $chainLinkName = trim($urlChainLink, '[]');
                     throw new InvalidRouteIdentificatorError("Invalid given property syntax for \"$chainLinkName\" chain link", ErrorManager::EC_INVALID_LINK_IN_URL);
                 }
@@ -139,29 +145,32 @@ class Route extends RouteAgent
     }
 
     private function setValuesToURLChainsLinks() : void {
-        $explodedCurrentUrl  = explode("/", substr($_SERVER["REQUEST_URI"], 1));
-        $explodedRouteUrl    = explode("/", $this->url);
+        $explodedCurrentUrl = explode("/", substr($_SERVER["REQUEST_URI"], 1));
+        $explodedRouteUrl   = explode("/", $this->url);
 
         foreach ($explodedRouteUrl as $uclIndex => $uclContent) {
             if (str_starts_with($uclContent, '{')) {
-                $currentArgument = $this->urlArguments[$uclIndex];
+                $currentArgument     = $this->urlArguments[$uclIndex];
                 $currentArgumentName = $currentArgument->getName(RouteUrlLink::RL_TEXTNAME);
 
                 if (!$currentArgument->canBeNull() && isset($explodedCurrentUrl[$uclIndex])) {
                     $this->urlChainLinksContent[$currentArgumentName] = $explodedCurrentUrl[$uclIndex];
-                } elseif ($currentArgument->canBeNull()) {
+                }
+                elseif ($currentArgument->canBeNull()) {
                     if (isset($explodedCurrentUrl[$uclIndex])) {
                         $this->urlChainLinksContent[$currentArgumentName] = $explodedCurrentUrl[$uclIndex];
-                    } else {
+                    }
+                    else {
                         $this->urlChainLinksContent[$currentArgumentName] = $currentArgumentName == 'page' ? 1 : null;
                     }
                 }
-            } elseif (str_starts_with($uclContent, '[')) {
-                $currentArgument = $this->urlArguments[$uclIndex];
+            }
+            elseif (str_starts_with($uclContent, '[')) {
+                $currentArgument     = $this->urlArguments[$uclIndex];
                 $currentArgumentName = $currentArgument->getName(RouteUrlLink::RL_TEXTNAME);
 
-                $squareBracketPos = strpos($this->url, '[');
-                $contentForSquare = substr(substr($_SERVER["REQUEST_URI"], 1), $squareBracketPos);
+                $squareBracketPos                                 = strpos($this->url, '[');
+                $contentForSquare                                 = substr(substr($_SERVER["REQUEST_URI"], 1), $squareBracketPos);
                 $this->urlChainLinksContent[$currentArgumentName] = $contentForSquare;
             }
         }
@@ -177,9 +186,9 @@ class Route extends RouteAgent
          */
 
         //1. Разбить на составляющие звенья полученного URL и установленного URL;
-        $currentUCLs      = explode('/', $url);
-        $routeUCLs        = explode('/', $this->url);
-        $routeUCLsCount   = count($routeUCLs);
+        $currentUCLs    = explode('/', $url);
+        $routeUCLs      = explode('/', $this->url);
+        $routeUCLsCount = count($routeUCLs);
 
         //2. Сопоставить...
         foreach ($currentUCLs as $uclIndex => $uclContent) {
@@ -296,7 +305,8 @@ class Route extends RouteAgent
     public function getParameter(string $parameterName, bool $strict = false) : string {
         if (!$strict) {
             return $this->parameters[$parameterName] ?? false;
-        } else {
+        }
+        else {
             if (!isset($this->parameters[$parameterName]) || is_null($this->parameters[$parameterName])) {
                 throw new UnavailabledRouteParameterError();
             }
@@ -321,9 +331,9 @@ class Route extends RouteAgent
 
     public function isHandlerClass() : bool {
         BuildManager::fileExists($this->handlerName, HOME_ROOT, true);
-        $tokens     = token_get_all(HOME_ROOT . "{$this->handlerName}");
+        $tokens = token_get_all(HOME_ROOT . "{$this->handlerName}");
 
-        $classInFile = false;
+        $classInFile      = false;
         $closingTagInFile = false;
         foreach ($tokens as $token) {
             if (is_array($token)) {
@@ -351,16 +361,19 @@ class Route extends RouteAgent
             if (!$this->customPageWithConditionFailed) {
                 // @todo: Надо сделать страницу 404, если нужно отобразить ошибку в панели
                 echo 'Not found (showCustomPage in panel)';
-            } else {
+            }
+            else {
                 // @todo: Надо сделать страницу 404, если нужно отобразить ошибку как отдельную страницу.
                 echo 'Not found (showCustomPage as page)';
             }
-        } else {
+        }
+        else {
             http_response_code(403);
             if (!$this->customPageWithAccessConditionFailed) {
                 // @todo: Надо сделать страницу 403, если нужно отобразить ошибку в панели.
                 echo 'Forbidden (showCustomPage in panel)';
-            } else {
+            }
+            else {
                 // @todo: Надо сделать страницу 403, если нужно отобразить отдельную страницу.
                 echo 'Forbidden (showCustomPage as page)';
             }
@@ -370,16 +383,17 @@ class Route extends RouteAgent
     }
 
     public function getUrlWithReplacing($content) : string {
-        $url = $this->url;
-        $writtenArguments = $this->urlArguments;
-        $this->urlArguments = array_values($this->urlArguments);
-        $lastChainLink = end($this->urlArguments);
+        $url                 = $this->url;
+        $writtenArguments    = $this->urlArguments;
+        $this->urlArguments  = array_values($this->urlArguments);
+        $lastChainLink       = end($this->urlArguments);
         $routeArgumentsCount = count($this->urlArguments);
         if (is_array($content) && $content) {
             $contentCount = count($content);
             if ($routeArgumentsCount == 1 && $lastChainLink->doesContainAllAfterIt()) {
                 return str_replace($lastChainLink->getName(true), $content[0], $this->url);
-            } else {
+            }
+            else {
                 foreach ($this->urlArguments as $index => $argument) {
                     /** Прыгаем по всем.
                      * 1. Если переданных параметров больше 1, аргументов больше 1, но передано меньше, чем нужно,
@@ -390,40 +404,46 @@ class Route extends RouteAgent
                     if ($contentCount > 1 && $routeArgumentsCount > 1) {
                         if ($contentCount < $routeArgumentsCount && !$lastChainLink->canBeNull()) {
                             throw new InvalidRouteConditionError("", ErrorManager::EC_TOO_FEW_ROUTE_ARGUMENTS);
-                        } elseif ($contentCount < $routeArgumentsCount - 1 && $lastChainLink->canBeNull()){
+                        }
+                        elseif ($contentCount < $routeArgumentsCount - 1 && $lastChainLink->canBeNull()) {
                             throw new InvalidRouteConditionError("", ErrorManager::EC_TOO_FEW_ROUTE_ARGUMENTS);
                         }
                     }
-                    if (!isset($content[1]) && !($argument == $lastChainLink && $lastChainLink->doesContainAllAfterIt())){
+                    if (!isset($content[1]) && !($argument == $lastChainLink && $lastChainLink->doesContainAllAfterIt())) {
 
                     }
                     // Если последний чейнлинк - текущий и он может содержать всё до конца
                     if ($argument == $lastChainLink && $lastChainLink->doesContainAllAfterIt()) {
                         $url = str_replace($lastChainLink->getName(RouteUrlLink::RL_RECEIVEDNAME), end($content), $this->url);
-                    } elseif ($argument == $lastChainLink && !$lastChainLink->doesContainAllAfterIt() && count($content) == 1 && count($this->urlArguments) == 1) {
+                    }
+                    elseif ($argument == $lastChainLink && !$lastChainLink->doesContainAllAfterIt() && count($content) == 1 && count($this->urlArguments) == 1) {
                         $url = str_replace($argument->getName(RouteUrlLink::RL_RECEIVEDNAME),
                                            str_starts_with($content[0], '$')
                                                ? '" ' . $content[0] . ' "'
                                                : $content[0],
                                            $url);
-                    } elseif (isset($lastContentPosition) && !isset($content[$index])) {
+                    }
+                    elseif (isset($lastContentPosition) && !isset($content[$index])) {
                         $url = substr($url, 0, $lastContentPosition);
                         break;
-                    } elseif (preg_match('/[a-zA-Z0-9\.\[\]\$\>\'\-]+/', $content[$index]) || $argument == $lastChainLink) {
+                    }
+                    elseif (preg_match('/[a-zA-Z0-9\.\[\]\$\>\'\-]+/', $content[$index]) || $argument == $lastChainLink) {
                         $lastContentPosition = strpos($url, $argument->getName(RouteUrlLink::RL_RECEIVEDNAME)) + strlen($content[$index]);
                         $url                 = str_replace($argument->getName(RouteUrlLink::RL_RECEIVEDNAME),
                                                            str_starts_with($content[$index], '$')
                                                                ? '" ' . $content[$index] . ' "'
                                                                : $content[$index],
                                                            $url);
-                    } else {
+                    }
+                    else {
                         throw new InvalidRouteUrlChainLinkError("",
                                                                 ErrorManager::EC_INVALID_URL_CHAIN_LINK_CONTENT,
                                                                 [$this->name, $argument->getName(RouteUrlLink::RL_RECEIVEDNAME)]);
                     }
                 }
             }
-        } elseif (is_string($content)) {
+        }
+        elseif (is_string($content)) {
             if (preg_match('/[a-zA-Z0-9\.]+/', $content)) {
                 $url = str_replace($lastChainLink->getName(true), $content, $url);
             }
@@ -474,8 +494,8 @@ class Route extends RouteAgent
         }
         if ($this->isHandlerClass() && !$this->justIncludingRoute) {
             $exploadHandlerString = explode("->", $this->handlerName);
-            $handlerPath = reset($exploadHandlerString);
-            $handlerFunctionName = end($exploadHandlerString);
+            $handlerPath          = reset($exploadHandlerString);
+            $handlerFunctionName  = end($exploadHandlerString);
 
             $handler = BuildManager::include("$handlerPath");
             call_user_func($handler->$handlerFunctionName, $this->urlArguments);
@@ -486,7 +506,8 @@ class Route extends RouteAgent
             if ($handlerResult == false) {
                 http_response_code(404);
                 return false;
-            } else {
+            }
+            else {
                 echo $handlerResult;
             }
 
@@ -495,9 +516,18 @@ class Route extends RouteAgent
         if ($this->isHandlerFile()) {
             BuildManager::fileExists($this->handlerName, HOME_ROOT, true);
 
-            BuildManager::turnOffOutputBuffering();
+            if (!TagAgent::isTagsRegistrationCompleted()) {
+                TagAgent::registerSystemTags();
+            }
+            if (!TagAgent::isServiceTagsRegistrationCompleted()) {
+                TagAgent::registerServiceTags();
+            }
+            if (!TagAgent::isHTMLTagsRegistrationCompleted()) {
+                TagAgent::registerHtmlTags();
+            }
 
             BuildManager::include($this->handlerName);
+
             return true;
         }
 
@@ -518,9 +548,11 @@ class Route extends RouteAgent
             $this->titlingFunction = function () use ($titleObj) : string {
                 return $titleObj;
             };
-        } elseif (is_callable($titleObj)) {
+        }
+        elseif (is_callable($titleObj)) {
             $this->titlingFunction = $titleObj;
-        } else {
+        }
+        else {
             throw new InvalidRouteConditionError("", ErrorManager::EC_ROUTE_TITLING_INVALID_TYPE, [gettype($titleObj)]);
         }
 

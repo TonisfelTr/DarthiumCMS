@@ -3,34 +3,36 @@
 namespace Engine;
 
 use Builder\Controllers\BuildManager;
+use Builder\Controllers\TagAgent;
 use Engine\Services\Route;
 use Exceptions\Exemplars\DublicatedRouteError;
 use Exceptions\Exemplars\InvalidHttpRequestTypeError;
 use Exceptions\Exemplars\InvalidRouteHandlerFunction;
 use Exceptions\Exemplars\InvalidRouteIdentificatorError;
 use Exceptions\TavernException;
+use Guards\Logger;
 use Users\Models\User;
 use Users\UserAgent;
 
 class RouteAgent
 {
-    private const ROUTES_MAIN = "engine/customs/routes/main.php";
-    private const ROUTES_PROFILE = "engine/customs/routes/profile.php";
+    private const ROUTES_MAIN       = "engine/customs/routes/main.php";
+    private const ROUTES_PROFILE    = "engine/customs/routes/profile.php";
     private const ROUTES_ADMINPANEL = "engine/customs/routes/adminpanel.php";
-    public const REDIRECT_ABSOLUTE = 1;
-    public const REDIRECT_RELATIVE = 2;
+    public const  REDIRECT_ABSOLUTE = 1;
+    public const  REDIRECT_RELATIVE = 2;
 
-    private static $hasRegisteredAsAgent = false;
-    private static $routes = [
-        'get' => [],
+    private static $hasRegisteredAsAgent    = false;
+    private static $routes                  = [
+        'get'  => [],
         'post' => [],
     ];
     private static $routesByNameSubscripted = [];
     private static $justContentReturnRoutes = [];
-    private static $currentPrefix = null;
-    private static $currentHandler = null;
-    private static $currentRunCondition = null;
-    private static $currentAccessCondition = null;
+    private static $currentPrefix           = null;
+    private static $currentHandler          = null;
+    private static $currentRunCondition     = null;
+    private static $currentAccessCondition  = null;
 
     private static function withHandler(string $moduleFile, callable $fn) {
         if (!file_exists(HOME_ROOT . $moduleFile)) {
@@ -98,9 +100,9 @@ class RouteAgent
             header("Content-Type: application/javascript");
             return BuildManager::includeContentFromTemplate("js/{$args["jsmain"]}");
         })->setName("template-js");
-        Route::create("get", "js/main/errors/[jsmain]",  function (array $args) {
-           header("Content-Type: application/javascript");
-           return BuildManager::includeContentFromTemplate("errors/" . $args["jsmain"]);
+        Route::create("get", "js/main/errors/[jsmain]", function (array $args) {
+            header("Content-Type: application/javascript");
+            return BuildManager::includeContentFromTemplate("errors/" . $args["jsmain"]);
         })->setName("template-error-js");
         Route::create("get", "js/main/uploader/{jsmain}", function (array $args) {
             header("Content-Type: application/javascript");
@@ -112,8 +114,8 @@ class RouteAgent
         })->setName("css-images");
 
         Route::create("get", "js/default/{jsmain}", function (array $args) {
-           header("Content-Type: application/javascript");
-           return BuildManager::includeContent("site/scripts/js/" . $args["jsmain"]);
+            header("Content-Type: application/javascript");
+            return BuildManager::includeContent("site/scripts/js/" . $args["jsmain"]);
         })->setName("js-default");
 
         Route::create("get", "css/adminpanel/{cssname}", function (array $args) {
@@ -125,6 +127,15 @@ class RouteAgent
             return BuildManager::includeContentFromAdminpanelTemplate("js/{$args["jsname"]}");
         });
 
+        Route::create("get", "css/profile/{cssname}", function (array $args) {
+            header("Content-Type: text/css");
+            return BuildManager::includeContentFromTemplate("profile/{$args["cssname"]}");
+        })->setName("css-profile");
+        Route::create("get", "js/profile/{jsname}", function (array $args) {
+            header("Content-Type: application/javascript");
+            return BuildManager::includeContentFromTemplate("profile/{$args["jsname"]}");
+        })->setName("js-profile");
+
         Route::create("get", "images/icon", function () {
             header("Content-Type: image/x-icon");
             return BuildManager::includeContentFromTemplate('icon.ico');
@@ -133,13 +144,13 @@ class RouteAgent
             header("Content-Type: image/x-icon");
             return BuildManager::includeContentFromTemplate('icon.ico');
         })
-            ->setName("favicon-url");
+             ->setName("favicon-url");
         Route::create("get", "images/{banner}", function (array $args) {
             header("Content-Type: image/*");
             return BuildManager::includeContentFromTemplate($args["banner"]);
         })->setName("banners");
 
-        Route::create("get", "users/avatars/{user_id}",function (array $args) {
+        Route::create("get", "users/avatars/{user_id}", function (array $args) {
             $user = new User($args['user_id']);
 
             header("Content-Type: image/*");
@@ -150,17 +161,18 @@ class RouteAgent
             return BuildManager::includeContent("uploads/images/{$args['imagename']}");
         })->setName("uploaded-images");
         Route::create("get", "/", MAIN_MODULE)
-            ->setTitling(LanguageManager::GetTranslation("home"))
-            ->setName("main-page");
+             ->setTitling(LanguageManager::GetTranslation("home"))
+             ->setName("main-page");
         Route::create("get", "/profile", PROFILE_MODULE)
-            ->setTitling(function () {
-                if (UserAgent::isAuthorized()) {
-                    return LanguageManager::GetTranslation("my-profile");
-                } else {
-                    return LanguageManager::GetTranslation("profile");
-                }
-            })
-            ->setName("profile-page");
+             ->setTitling(function () {
+                 if (UserAgent::isAuthorized()) {
+                     return LanguageManager::GetTranslation("my-profile");
+                 }
+                 else {
+                     return LanguageManager::GetTranslation("profile");
+                 }
+             })
+             ->setName("profile-page");
         Route::create("get", "/adminpanel", ADMINPANEL_MODULE)->setName("adminpanel-page");
 
         self::$justContentReturnRoutes = array_keys(self::$routes['get']);
@@ -189,7 +201,8 @@ class RouteAgent
                     $urls[] = $route->getUrl();
                 }
             }
-        } else {
+        }
+        else {
             foreach (self::$routes[$method] as $route) {
                 $urls[] = $route->getUrl();
             }
@@ -211,7 +224,8 @@ class RouteAgent
                     $routesWithNames[] = $route->getName();
                 }
             }
-        } else {
+        }
+        else {
             foreach (self::$routes[$method] as $route) {
                 if ($route->getName() == "") {
                     continue;
@@ -239,7 +253,7 @@ class RouteAgent
             throw new InvalidHttpRequestTypeError();
         }
 
-        $urls = self::getAssociatedUrlList($route->getMethod());
+        $urls  = self::getAssociatedUrlList($route->getMethod());
         $names = self::getAssociatedNameList($route->getMethod());
         if (in_array($route->getUrl(), $urls)) {
             throw new DublicatedRouteError("", ErrorManager::EC_DUPLICATED_ROUTE_URL);
@@ -258,12 +272,13 @@ class RouteAgent
     public final static function getRouteByName(string $routeName) : Route {
         if (!isset(self::$routesByNameSubscripted[$routeName])) {
             throw new InvalidRouteIdentificatorError("", ErrorManager::EC_INVALID_ROUTE_NAME, [$routeName]);
-        } else {
+        }
+        else {
             return self::$routesByNameSubscripted[$routeName];
         }
     }
 
-    public final static function registerRoutes() {
+    public final static function registerRoutes() : bool {
         if (self::$hasRegisteredAsAgent) {
             throw new TavernException("Route agent must be registered only one time");
         }
@@ -271,6 +286,8 @@ class RouteAgent
         self::addServiceRoutes();
 
         self::$hasRegisteredAsAgent = true;
+
+        return !empty(self::$routes);
     }
 
     public final static function parseUrl() {
@@ -279,7 +296,7 @@ class RouteAgent
         if ($currentRoute === false) {
             http_response_code(404);
             echo "Not found (parseUrl)";
-            exit(0);
+            exit(1);
         }
 
         self::execute($currentRoute);
@@ -347,7 +364,7 @@ class RouteAgent
     }
 
     public static function getCurrentRoute() : Route|false {
-        $currentMethod = mb_strtolower($_SERVER["REQUEST_METHOD"]);
+        $currentMethod            = mb_strtolower($_SERVER["REQUEST_METHOD"]);
         $currentUrlWithoutSlashes = trim($_SERVER["REQUEST_URI"], '\/');
 
         /** @var Route $route Checking route entity */

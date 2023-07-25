@@ -2,11 +2,13 @@
 
 namespace Builder\Services;
 
+use Builder\Controllers\BuildManager;
 use Builder\Controllers\TagAgent;
 use Engine\ErrorManager;
 use Exceptions\Exemplars\TagError;
 use Exceptions\TavernException;
 use Builder\Parser\HtmlDOM;
+use Guards\Logger;
 
 class HtmlTag extends Tag
 {
@@ -17,7 +19,6 @@ class HtmlTag extends Tag
     private array  $availableAttributes      = [];
     private array  $requiredAttributes       = [];
     private bool   $withoutClosing           = false;
-    private string $closingTagText           = '';
     private        $resultClosingTagFunction = null;
     protected      $processingFunction;
     protected bool $tagOnlyForOneCompilation = false;
@@ -41,6 +42,7 @@ class HtmlTag extends Tag
             throw new TagError("", ErrorManager::EC_INVALID_TAG_NAME);
         }
 
+        $this->withoutClosing           = false;
         $this->tagName                  = $tagName;
         $this->availableAttributes      = $availableAttributes;
         $this->requiredAttributes       = $requiredAttributes;
@@ -55,20 +57,28 @@ class HtmlTag extends Tag
         $htmlObject->load($plainText);
 
         $tagEntities = $htmlObject->find($this->tagName);
-        foreach ($tagEntities as $tagEntity) {
-            $attributes = [];
-            foreach ($tagEntity->attr as $attributeName => $attributeValue) {
-                $attributes[$attributeName] = $attributeValue;
+        //Получить полный код;
+        //Увидеть все with-теги;
+        //Посмотреть, какие не обрабатываются.
+        if (!empty($tagEntities)) {
+            foreach ($tagEntities as $tagEntity) {
+                $attributes = [];
+                foreach ($tagEntity->attr as $attributeName => $attributeValue) {
+                    $attributes[$attributeName] = $attributeValue;
+                }
+
+                $replacingTagContent = BuildManager::hardCompile(PHP_EOL . $tagEntity->innertext);
+                $replacingStartTag   = ($this->processingFunction)($replacingTagContent, $attributes);
+                $replacingEndTag     = !$this->withoutClosing ? ($this->resultClosingTagFunction)($replacingTagContent, $attributes) : '';
+
+                $tagEntity->outertext = "{$replacingStartTag}{$replacingTagContent}{$replacingEndTag}";
             }
 
-            $replacingTagContent = $tagEntity->innertext;
-            $replacingStartTag   = ($this->processingFunction)($replacingTagContent, $attributes);
-            $replacingEndTag     = !$this->withoutClosing ? ($this->resultClosingTagFunction)($replacingTagContent, $attributes) : '';
-
-            $tagEntity->outertext = "{$replacingStartTag}{$replacingTagContent}{$replacingEndTag}";
+            $result = $htmlObject->save();
         }
-
-        $result = $htmlObject->save();
+        else {
+            $result = $plainText;
+        }
 
         return $result;
     }

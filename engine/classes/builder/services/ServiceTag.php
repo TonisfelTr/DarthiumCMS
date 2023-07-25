@@ -7,17 +7,18 @@ use Builder\Controllers\TagAgent;
 use Builder\Services\Tag;
 use Engine\ErrorManager;
 use Exceptions\Exemplars\TagError;
+use Guards\Logger;
 
 class ServiceTag extends Tag
 {
-    private const    CUSTOM_BODY = '\s*(.+?)\s*';
-    private const    CUSTOM_ARGUMENT = '(:\s*(.+?)\s*){0,}';
-    private const    ARGUMENT_DEFINED = '\s*([a-zA-Z0-9_\-\!\@\$\%\&\*\(\)\[\]\>\?\.\\\\\|\/\+\=]+){1}';
-    private const    ARGUMENT_AVAILABLE = '\s*([a-zA-Z0-9_\-\!\@\$\%\&\*\(\)\[\]\>\?\.\\\\\|\/\+\=]+){0,1}';
-    private const    ARGUMENT_POSSIBLE = '\s*([a-zA-Z0-9_\-\!\@\$\%\&\*\(\)\[\]\>\?\.\\\\\|\/\+\=]+){0,}';
-    private const    ARGUMENT_VALIDATION = '/\s*[a-zA-Z0-9_\-\!\@\$\%\&\*\(\)\[\]\>\?\.\\\\\|\/\+\=]+\s*/ms';
-    private const    BODY_CONTENT = '([a-zA-Z_\-]+)';
-    private const    NAME_CONTENT = '([a-zA-Z_\-\!\@\$\%\&\*\>\?\.]+)';
+    private const    CUSTOM_BODY         = '\s*(.+?)\s*';
+    private const    CUSTOM_ARGUMENT     = '(:\s*(.+?)\s*){0,}';
+    private const    ARGUMENT_DEFINED    = '\s*([a-zA-Z0-9_\-\!\@\$\%\&\*\(\)\[\]\>\?\.\\\\\|\/\+\=\']+){1}';
+    private const    ARGUMENT_AVAILABLE  = '\s*([a-zA-Z0-9_\-\!\@\$\%\&\*\(\)\[\]\>\?\.\\\\\|\/\+\=\']+){0,1}';
+    private const    ARGUMENT_POSSIBLE   = '\s*([a-zA-Z0-9_\-\!\@\$\%\&\*\(\)\[\]\>\?\.\\\\\|\/\+\=\']+){0,}';
+    private const    ARGUMENT_VALIDATION = '/\s*[a-zA-Z0-9_\-\!\@\$\%\&\*\(\)\[\]\>\?\.\\\\\|\/\+\=\']+\s*/ms';
+    private const    BODY_CONTENT        = '([a-zA-Z_\-]+)';
+    private const    NAME_CONTENT        = '([a-zA-Z_\-\!\@\$\%\&\*\>\?\.]+)';
 
     protected        $processingFunction;
     protected bool   $onlyForOneCompilation = false;
@@ -51,10 +52,10 @@ class ServiceTag extends Tag
     private function replaceByPattern(array $matches) : string {
         $tmpMatches = array_slice($matches, 1);
         $tmpMatches = array_filter($tmpMatches, function ($match) {
-           return $match != '' || !str_contains($match, ':');
+            return $match != '' || !str_contains($match, ':');
         });
 
-        $content = reset($tmpMatches);
+        $content   = reset($tmpMatches);
         $arguments = [];
         if ($this->tagArguments > 0 || $this->unknownArgumentsCount) {
             $tempArgumentsBuffer = array_values(array_slice($tmpMatches, 2));
@@ -62,6 +63,7 @@ class ServiceTag extends Tag
                 $arguments[] = $argument;
             }
         }
+        
         $this->validateContent($content);
         $this->validateArguments($arguments);
 
@@ -90,18 +92,19 @@ class ServiceTag extends Tag
         $tagNamePattern = preg_quote($tagName);
         $tagContent     = self::CUSTOM_BODY;
 
-        $this->tagName               = $tagName;
-        $this->tagArguments          = $availableArguments ?? 0;
-        $this->tagRequireArguments   = $requireArguments ?? 0;
-        $this->processingFunction    = $handlerFunction;
-        $this->tagPattern            = '/\{' . $tagNamePattern . '\|' . $tagContent;
+        $this->tagName             = $tagName;
+        $this->tagArguments        = $availableArguments ?? 0;
+        $this->tagRequireArguments = $requireArguments ?? 0;
+        $this->processingFunction  = $handlerFunction;
+        $this->tagPattern          = '/\{' . $tagNamePattern . '\|' . $tagContent;
 
         if ($this->tagArguments > 0) {
             $this->tagPattern .= ':';
             for ($i = 1 ; $i <= $this->tagArguments ; $i++) {
                 if ($i <= $this->tagRequireArguments) {
                     $this->tagPattern .= self::ARGUMENT_DEFINED . ',';
-                } else {
+                }
+                else {
                     $this->tagPattern .= self::ARGUMENT_AVAILABLE . ',';
                 }
             }
@@ -115,7 +118,8 @@ class ServiceTag extends Tag
 
         if ($this->unknownArgumentsCount) {
             $pattern = '/\{' . preg_quote($this->tagName) . '\|' . self::CUSTOM_BODY . self::CUSTOM_ARGUMENT . '\}/ms';
-        } else {
+        }
+        else {
             $pattern = $this->tagPattern;
         }
 
@@ -151,14 +155,15 @@ class ServiceTag extends Tag
     }
 
     public function getCustomPattern() : string {
-        $tagName = preg_quote($this->tagName);
-        $tagBody = self::BODY_CONTENT;
+        $tagName      = preg_quote($this->tagName);
+        $tagBody      = self::BODY_CONTENT;
         $tagArguments = self::CUSTOM;
 
         if ($this->unknownArgumentsCount) {
             $tagBody .= ':';
-        } elseif ($this->tagArguments > 0) {
-            $tagBody .= '(:';
+        }
+        elseif ($this->tagArguments > 0) {
+            $tagBody      .= '(:';
             $tagArguments .= ')';
         }
 

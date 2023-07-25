@@ -14,6 +14,7 @@ use Exceptions\Exemplars\InvalidRouteUrlChainLinkError;
 use Exceptions\Exemplars\TagCompilationError;
 use Exceptions\Exemplars\TagError;
 use Users\UserAgent;
+use function Engine\getLineNumberOf;
 
 class TagAgent
 {
@@ -204,10 +205,6 @@ class TagAgent
             return '<' . '?' . "= $content " . '?' . '>';
         });
         ServiceTag::create("!@", function (string $content) {
-            if (preg_match_all('/continue/', $content)) {
-                return '';
-            }
-
             return '<' . "?php $content; ?>";
         });
         ServiceTag::create("!php", function (string $content) {
@@ -274,8 +271,9 @@ class TagAgent
             throw new TagError("", ErrorManager::EC_SYSTEM_TAG_REGISTRATION_DISABLED);
         }
 
-        BuildManager::include("engine/customs/tags/tags.php", true);
-
+        Tag::create("{INDEX_PAGE_TITLE}")->setProcessingFunction(function () {
+            return RouteAgent::getCurrentRoute()->getTitle() . " - " . \Engine\Engine::GetEngineInfo("sn");
+        });
         Tag::create("{SITE_DOMAIN}")->setProcessingFunction(function () {
             return Engine::GetEngineInfo("site.domain");
         });
@@ -301,11 +299,13 @@ class TagAgent
             return BuildManager::includeContent("report/reportscript.js", TEMPLATE_ROOT);
         });
         Tag::create("{SPOILER_CONTROLLER:JS}")->setProcessingFunction(function () {
-            return BuildManager::includeContent("site/scripts/SpoilerController.js");
+            return BuildManager::includeContent("site/scripts/js/SpoilerController.js");
         });
         Tag::create("{METRIC_JS}")->setProcessingFunction(function () {
             return Engine::GetEngineInfo("sms") == 0 ? '' : Engine::GetAnalyticScript();
         });
+
+        BuildManager::include("engine/customs/tags/tags.php", true);
 
         self::$registeredSystemTag = true;
     }
@@ -446,6 +446,13 @@ class TagAgent
         return $result;
     }
 
+    public static function makeHtmlPattern() : string {
+        $result = implode("|", array_keys(self::$htmlTagsContainer));
+        $result = "/<($result)/";
+
+        return $result;
+    }
+
     public static function getServiceTag(string $name) : ServiceTag {
         foreach (self::$serviceTagsContainer as $serviceTag) {
             if ($serviceTag->getName() == $name) {
@@ -460,5 +467,72 @@ class TagAgent
                 return $htmlTag;
             }
         }
+    }
+
+    public static function isSystemTag(string $tag) : bool {
+        foreach (self::$tagsContainer as $systemTag) {
+            if ($systemTag->getName() == $tag) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static function isServiceTag(string $tag) : bool {
+        foreach (self::$serviceTagsContainer as $serviceTag) {
+            if ($serviceTag->getName() == $tag) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static function isTagsRegistrationCompleted() : bool {
+        return !empty(self::$tagsContainer);
+    }
+
+    public static function isServiceTagsRegistrationCompleted() : bool {
+        return !empty(self::$serviceTagsContainer);
+    }
+
+    public static function isHTMLTagsRegistrationCompleted() : bool {
+        return !empty(self::$htmlTagsContainer);
+    }
+
+    public static function isCompileCorrected(string $htmlText) : bool {
+        preg_match_all("/\{[0-9a-zA-Z_\-\:]+\}/", $htmlText, $systemTagMatched);
+        preg_match_all('/\{[a-zA-Z0-9_\-\>\*\@\!\.\%\?]+\|/', $htmlText, $serviceTagMatched);
+        preg_match_all(TagAgent::makeHtmlPattern(), $htmlText, $htmlTagMatched);
+
+        $systemTagMatched  = array_unique($systemTagMatched[0]);
+        $serviceTagMatched = array_unique($serviceTagMatched[0]);
+        $htmlTagMatched    = array_unique($htmlTagMatched[0]);
+
+        $systemTags = 0;
+        if ($systemTagMatched) {
+            foreach ($systemTagMatched as $systemTag) {
+                if (TagAgent::isSystemTag($systemTag)) {
+                    $systemTags++;
+                }
+            }
+        }
+        $serviceTags = 0;
+        if ($serviceTagMatched) {
+            foreach ($serviceTagMatched as $serviceTag) {
+                if (TagAgent::isServiceTag($serviceTag)) {
+                    $serviceTags++;
+                }
+            }
+        }
+        $htmlTags = 0;
+        if ($htmlTagMatched) {
+            foreach ($htmlTagMatched as $htmlTag) {
+                $htmlTags++;
+            }
+        }
+
+        return $systemTags > 0 || $serviceTags > 0 || $htmlTags > 0;
     }
 }

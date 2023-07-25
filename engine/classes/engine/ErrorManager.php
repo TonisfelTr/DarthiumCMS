@@ -5,10 +5,12 @@ namespace Engine;
 use Builder\Controllers\BuildManager;
 use Builder\Controllers\TagAgent;
 use Builder\Services\Tag;
+use Exceptions\Exemplars\EmptyOutputBufferError;
 use Exceptions\Exemplars\InvalidErrorCodeError;
 use Exceptions\Exemplars\TagCompilationError;
 use Exceptions\TavernException;
 use Guards\Logger;
+use ParseError;
 use ReflectionClass;
 use ReflectionException;
 use Throwable;
@@ -121,6 +123,10 @@ class ErrorManager
         95  => "No one compilation for tag \"{tag_name}\"",
         96  => "Engine has no parameter with name \"{parameter_name}\"",
         97  => "Route handler must be a string with path to handler file or a callable (route name: \"{route_name}\")",
+        99  => "Cannot register service routes",
+        100 => "Disabling output buffering is forbidden in including file (path: \"{path}\")",
+        101 => "Output buffer is empty",
+        102 => "Failed to start output buffering",
     ];
 
     public const EC_SUCCESS                                            = 999;
@@ -222,6 +228,20 @@ class ErrorManager
     public const EC_INVALID_ENGINE_PARAMETER_NAME                      = 96;
     public const EC_INVALID_ROUTE_HANDLER_RESULT                       = 97;
     public const EC_INVALID_TAG_ARGUMENT_SYNTAX                        = 98;
+    public const EC_ROUTES_REGISTER_ERROR                              = 99;
+    public const EC_DISABLED_OUTPUT_BUFFERING                          = 100;
+    public const EC_EMPTY_OUTPUT_BUFFER                                = 101;
+    public const EC_FAILED_START_OUTPUT_BUFFERING                      = 102;
+
+    private static function relativePath(string $path) : string {
+        $hostDir = $_SERVER["DOCUMENT_ROOT"];
+        $hostDir = explode("/", $hostDir);
+        $hostDir = array_slice($hostDir, 0, -1);
+        $hostDir = implode("/", $hostDir) . '/';
+
+        $relativePath = substr($path, strlen($hostDir));
+        return $relativePath;
+    }
 
     /**
      * Get PHP function documentation.
@@ -256,13 +276,15 @@ class ErrorManager
     }
 
     private static function getFullFunctionPath(Throwable $ex) : string {
-        foreach ($ex->getTrace() as $trace) {
+        $traceContainer = empty($ex->getTrace()) ? debug_backtrace() : $ex->getTrace();
+
+        foreach ($traceContainer as $trace) {
             if (isset($trace["class"])) {
                 return $trace["class"];
             }
         }
 
-        return $ex->getTrace()[0]["function"];
+        return $traceContainer[0]["function"];
     }
 
     public static function throwIfErrorCodeInvalid(int $code) : void {
@@ -277,8 +299,9 @@ class ErrorManager
         }
     }
 
-    public static function getErrorDescription(int $code) : string {
-        self::throwIfErrorCodeInvalid($code);
+    public static function getErrorDescription(TavernException $ex, int $code) : string {
+        if (!$ex->isCodeCorrect($code))
+            self::throwIfErrorCodeInvalid($code);
 
         return self::ERRORS_DESCRIPTIONS[$code];
     }
@@ -290,66 +313,179 @@ class ErrorManager
     public static function throwExceptionHandlerHtml($ex) {
         http_response_code(500);
 
-        $stackTrace = $ex->getTrace();
+        $isInvalidErrorCode = $ex instanceof InvalidErrorCodeError;
+        $isOutputBufferfing = $ex instanceof EmptyOutputBufferError;
+        $isParseError       = $ex instanceof ParseError;
+        $isTavernError      = $ex instanceof TavernException;
 
-        $isTavernError = $ex instanceof TavernException;
+        if ($isInvalidErrorCode) {
+            $stackTrace = $ex->getTrace();
+            $fileTrace  = array_filter($stackTrace, function ($el) {
+                if ($el['function'] == '__construct') {
+                    return $el;
+                }
+            });
+            $fileTrace  = reset($fileTrace);
 
-        if (!$ex->getFile()) {
-            foreach ($stackTrace as $exceptionStep) {
-                if (isset($exceptionStep["file"])) {
-                    $exceptionSourceFile = $exceptionStep["file"];
-                    $lineNumber          = $exceptionStep["line"];
-                    break;
-                }
-                else {
-                    preg_match_all('/(\d+)/', $ex->getMessage(), $matches);
-                    $lineNumber = $matches[0][1] ?? $matches[0][0];
-                }
-            }
+            $fileErrorLine = $fileTrace['line'];
+            $filePath      = $fileTrace['file'];
+            $fileClass     = $fileTrace['class'];
+            $fileContent   = file_get_contents($filePath);
+
+            $content = TagAgent::getErrorPage();
+            $content = TagAgent::compileSystemTags($content);
+            $content = Engine::replaceFirst("{ERROR_PAGE_TITLE}", $isTavernError ? "Ошибка #{$ex->getErrorCode()}" : "Ошибка", $content);
+            $content = Engine::replaceFirst("{SITE_NAME}", Engine::GetEngineInfo("sn"), $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:MESSAGE}", "[{$filePath}:{$fileErrorLine}]: {$ex->getMessage()}", $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:LASTTEXT}", "Ошибка вывода исключения", $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:CODE}",
+                                            $fileContent,
+                                            $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:FUNCTION_NAME}", "throw new {$fileClass}", $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:FUNCTION_LINE}", $fileErrorLine, $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:LINE}", $fileErrorLine, $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:STACKTRACE}", rtrim($ex->getTraceAsString()), $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:FULL_FILEPATH}", $filePath, $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:RELATIVE_FILEPATH}", self::relativePath($filePath), $content);
         }
-        else {
-            $exceptionSourceFile = $ex->getFile();
-            if (str_contains($ex->getMessage(), 'on line') && !$isTavernError) {
-                preg_match_all("/(\d)+/", $ex->getMessage(), $exceptionLine);
-                $functionLineNumber = $stackTrace[0]['line'];
-                $lineNumber         = $exceptionLine[0][1] ?? $exceptionLine[0][0];
+        elseif ($isOutputBufferfing) {
+            $stackTrace         = $ex->getTrace();
+            $functionLineNumber = $ex->getLine();
+            $functionName       = $stackTrace[0]['function'];
+            $lineNumber         = $ex->getLine();
+            $filePath           = $ex->getFile();
+            $relativeFilepath   = self::relativePath($filePath);
+            $fileContent        = file_get_contents($ex->getFile());
+            $functionDoc        = "";
+            $thrownScript       = $ex->getFile();
+            $thrownLineNumber   = $lineNumber;
+            $exceptionName      = $ex->getName();
+
+            $content = TagAgent::getErrorPage();
+            $content = TagAgent::compileSystemTags($content);
+            $content = Engine::replaceFirst("{ERROR_PAGE_TITLE}", $isTavernError ? "Ошибка #{$ex->getErrorCode()}" : "Ошибка", $content);
+            $content = Engine::replaceFirst("{SITE_NAME}", Engine::GetEngineInfo("sn"), $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:FUNCTION_TIP}", !$functionDoc ? "" : "<span class='fc-tip-hint'>$functionDoc</span>", $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:MESSAGE}", "[$thrownScript:$thrownLineNumber]$exceptionName: {$ex->getMessage()}", $content);
+            $content = Engine::replaceFirst(         "{ERROR_MANAGER:LASTTEXT}", $isTavernError
+                ? ""
+                : "Необработанная системная ошибка", $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:FULL_FILEPATH}", $filePath, $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:RELATIVE_FILEPATH}", $relativeFilepath, $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:CODE}",
+                                            $fileContent,
+                                            $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:FUNCTION_NAME}", $functionName, $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:FUNCTION_LINE}", $functionLineNumber, $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:STACKTRACE}", rtrim($ex->getTraceAsString()), $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:LINE}", $lineNumber, $content);
+        }
+        elseif ($isParseError) {
+            $stackTrace         = $ex->getTrace();
+            $functionLineNumber = $ex->getLine();
+            $functionName       = $stackTrace[0]['function'];
+            $lineNumber         = $ex->getLine();
+            $filePath           = $ex->getFile();
+            $relativeFilepath   = self::relativePath($filePath);
+            $fileContent        = file_get_contents($ex->getFile());
+            $functionDoc        = "";
+            $thrownScript       = $ex->getFile();
+            $thrownLineNumber   = $lineNumber;
+            $exceptionName      = "ParseError";
+
+            $content = TagAgent::getErrorPage();
+            $content = TagAgent::compileSystemTags($content);
+            $content = Engine::replaceFirst("{ERROR_PAGE_TITLE}", $isTavernError ? "Ошибка #{$ex->getErrorCode()}" : "Ошибка", $content);
+            $content = Engine::replaceFirst("{SITE_NAME}", Engine::GetEngineInfo("sn"), $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:FUNCTION_TIP}", !$functionDoc ? "" : "<span class='fc-tip-hint'>$functionDoc</span>", $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:MESSAGE}", "[$thrownScript:$thrownLineNumber]$exceptionName: {$ex->getMessage()}", $content);
+            $content = Engine::replaceFirst(         "{ERROR_MANAGER:LASTTEXT}", $isTavernError
+                ? ""
+                : "Необработанная системная ошибка", $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:FULL_FILEPATH}", $filePath, $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:RELATIVE_FILEPATH}", $relativeFilepath, $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:CODE}",
+                                            $fileContent,
+                                            $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:FUNCTION_NAME}", $functionName, $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:FUNCTION_LINE}", $functionLineNumber, $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:STACKTRACE}", rtrim($ex->getTraceAsString()), $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:LINE}", $lineNumber, $content);
+        }
+        elseif ($isTavernError) {
+            $stackTrace = $ex->getTrace();
+
+            if (!$ex->getFile()) {
+                foreach ($stackTrace as $exceptionStep) {
+                    if (isset($exceptionStep["file"])) {
+                        $exceptionSourceFile = $exceptionStep["file"];
+                        $lineNumber          = $exceptionStep["line"];
+                        break;
+                    }
+                    else {
+                        preg_match_all('/(\d+)/', $ex->getMessage(), $matches);
+                        $lineNumber = $matches[0][1] ?? $matches[0][0];
+                    }
+                }
             }
             else {
-                $functionLineNumber = $stackTrace[0]['line'];
-                $lineNumber         = $ex->getLine();
+                $exceptionSourceFile = $ex->getFile();
+                if (str_contains($ex->getMessage(), 'on line') && !$isTavernError) {
+                    preg_match_all("/(\d)+/", $ex->getMessage(), $exceptionLine);
+                    $functionLineNumber = $stackTrace[0]['line'];
+                    $lineNumber         = $exceptionLine[0][1] ?? $exceptionLine[0][0];
+                }
+                else {
+                    $stackTrace         = debug_backtrace();
+                    $functionLineNumber = $ex->getLine();
+                    $lineNumber         = $ex->getLine();
+                }
             }
+
+            $exceptionName = explode('\\', get_class($ex))[2] ?? get_class($ex);
+            $fileContent   = file_get_contents($exceptionSourceFile);
+            $fileContent   = htmlspecialchars($fileContent, ENT_QUOTES | ENT_HTML5);
+            if ($isInvalidErrorCode || $isTavernError) {
+                $firstInTrace = $stackTrace[0];
+            }
+            else {
+                $firstInTrace = $ex;
+            }
+
+            $functionPath     = self::getFullFunctionPath($ex);
+            $functionName     = $firstInTrace["function"];
+            $functionDoc      = self::getFunctionTip($functionPath, $functionName);
+            $homeRootPath     = implode("/", array_slice(explode("/", $_SERVER["DOCUMENT_ROOT"]), 0, -1));
+            $thrownLineNumber = $ex->getLine();
+            $relativeFilepath = str_replace($homeRootPath, "", $exceptionSourceFile);
+            $thrownScript     = str_replace($homeRootPath, "", $ex->getFile());
+
+            $content = TagAgent::getErrorPage();
+            $content = TagAgent::compileSystemTags($content);
+            $content = Engine::replaceFirst("{ERROR_PAGE_TITLE}", $isTavernError ? "Ошибка #{$ex->getErrorCode()}" : "Ошибка", $content);
+            $content = Engine::replaceFirst("{SITE_NAME}", Engine::GetEngineInfo("sn"), $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:FUNCTION_TIP}", !$functionDoc ? "" : "<span class='fc-tip-hint'>$functionDoc</span>", $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:MESSAGE}", "[$thrownScript:$thrownLineNumber]$exceptionName: {$ex->getMessage()}", $content);
+            $content = Engine::replaceFirst(         "{ERROR_MANAGER:LASTTEXT}", $isTavernError
+                ? ""
+                : "Необработанная системная ошибка", $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:FULL_FILEPATH}", $firstInTrace["file"], $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:RELATIVE_FILEPATH}", $relativeFilepath, $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:CODE}",
+                                            $fileContent,
+                                            $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:FUNCTION_NAME}", $functionName, $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:FUNCTION_LINE}", $functionLineNumber, $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:STACKTRACE}", rtrim($ex->getTraceAsString()), $content);
+            $content = Engine::replaceFirst("{ERROR_MANAGER:LINE}", $lineNumber, $content);
+        }
+        else {
+            self::throwErrorHandlerHtml($ex->getCode(), $ex->getMessage(), $ex->getFile(), $ex->getLine());
+
+            return;
         }
 
-        $exceptionName    = explode('\\', get_class($ex))[2] ?? get_class($ex);
-        $fileContent      = htmlentities(file_get_contents($exceptionSourceFile));
-        $firstInTrace     = $stackTrace[0];
-        $functionPath     = self::getFullFunctionPath($ex);
-        $functionName     = $firstInTrace["function"];
-        $functionDoc      = self::getFunctionTip($functionPath, $functionName);
-        $homeRootPath     = implode("/", array_slice(explode("/", $_SERVER["DOCUMENT_ROOT"]), 0, -1));
-        $thrownLineNumber = $ex->getLine();
-        $relativeFilepath = str_replace($homeRootPath, "", $exceptionSourceFile);
-        $thrownScript     = str_replace($homeRootPath, "", $ex->getFile());
-
-        $content = TagAgent::getErrorPage();
-        $content = Engine::replaceFirst("{ERROR_PAGE_TITLE}", $isTavernError ? "Ошибка #{$ex->getErrorCode()}" : "Ошибка", $content);
-        $content = Engine::replaceFirst("{SITE_NAME}", Engine::GetEngineInfo("sn"), $content);
-        $content = Engine::replaceFirst("{ERROR_MANAGER:FUNCTION_TIP}", !$functionDoc ? "" : "<span class='fc-tip-hint'>$functionDoc</span>", $content);
-        $content = Engine::replaceFirst("{ERROR_MANAGER:MESSAGE}", "[$thrownScript:$thrownLineNumber]$exceptionName: {$ex->getMessage()}", $content);
-        $content = Engine::replaceFirst(         "{ERROR_MANAGER:LASTTEXT}", $isTavernError
-            ? ""
-            : "Необработанная системная ошибка", $content);
-        $content = Engine::replaceFirst("{ERROR_MANAGER:FULL_FILEPATH}", $firstInTrace["file"], $content);
-        $content = Engine::replaceFirst("{ERROR_MANAGER:RELATIVE_FILEPATH}", $relativeFilepath, $content);
-        $content = Engine::replaceFirst("{ERROR_MANAGER:CODE}",
-                                        $fileContent,
-                                        $content);
-        $content = Engine::replaceFirst("{ERROR_MANAGER:FUNCTION_NAME}", $functionName, $content);
-        $content = Engine::replaceFirst("{ERROR_MANAGER:FUNCTION_LINE}", $functionLineNumber, $content);
-        $content = Engine::replaceFirst("{ERROR_MANAGER:STACKTRACE}", rtrim($ex->getTraceAsString()), $content);
-        $content = Engine::replaceFirst("{ERROR_MANAGER:LINE}", $lineNumber, $content);
-
-        echo TagAgent::compileSystemTags($content);
+        echo $content;
 
         exit(0);
     }
@@ -380,6 +516,7 @@ class ErrorManager
         $relativeFilePath   = substr($fullFilePath, $rootPathLength + 1);
         $fileContent        = file_get_contents(HOME_ROOT . $relativeFilePath);
         $stackTraceAsString = '';
+
         foreach ($ex as $index => $stackTrace) {
             if ($index == 0) {
                 continue;
@@ -449,20 +586,24 @@ class ErrorManager
             $systemTags        = '';
             $systemTagsCounter = getLineNumberOf($contentLines, $systemTagMatched);
             foreach ($systemTagMatched as $systemTag) {
-                $systemTags .= "<li>$systemTag (" . implode(', ', $systemTagsCounter[$systemTag]) . ")</li>";
+                if (TagAgent::isSystemTag($systemTag)) {
+                    $systemTags .= "<li>$systemTag (" . implode(', ', $systemTagsCounter[$systemTag]) . ")</li>";
+                }
             }
         }
-        else {
+        if (empty($systemTags)) {
             $systemTags = 'Все служебные теги откомпилированы!';
         }
         if ($serviceTagMatched) {
             $serviceTags        = '';
             $serviceTagsCounter = getLineNumberOf($contentLines, $serviceTagMatched);
             foreach ($serviceTagMatched as $serviceTag) {
-                $serviceTags .= "<li>$serviceTag (" . implode(', ', $serviceTagsCounter[$serviceTag]) . ")</li>";
+                if (TagAgent::isServiceTag($serviceTag)) {
+                    $serviceTags .= "<li>$serviceTag (" . implode(', ', $serviceTagsCounter[$serviceTag]) . ")</li>";
+                }
             }
         }
-        else {
+        if (empty($serviceTags)) {
             $serviceTags = 'Все обрабатывающие теги откомпилированы!';
         }
         if ($htmlTagMatched) {
@@ -474,14 +615,15 @@ class ErrorManager
                 $htmlTags      .= "<li>$htmlTag ($htmlTagsLines)</li>";
             }
         }
-        else {
-            $htmlTags = 'Все HTML-подобные теги откомпилированы!';
+        if (empty($htmlTags)) {
+            $htmlTags = "Все HTML-подобные теги были откомпилированы!";
         }
+
 
         $htmlResult = str_replace('{SITE_DOMAIN}', $siteDomain, $htmlResult);
         $htmlResult = BuildManager::replaceOnceInString('{SITE_NAME}', Engine::GetEngineInfo('sn'), $htmlResult);
         $htmlResult = BuildManager::replaceOnceInString('{ERROR_MANAGER:FUNCTION_TIP}', '', $htmlResult);
-        $htmlResult = BuildManager::replaceOnceInString('{ERROR_MANAGER:CODE}', htmlentities($content), $htmlResult);
+        $htmlResult = BuildManager::replaceOnceInString('{ERROR_MANAGER:CODE}', $content, $htmlResult);
         $htmlResult = BuildManager::replaceOnceInString('{SYSTEM_TAGS_LIST}', $systemTags, $htmlResult);
         $htmlResult = BuildManager::replaceOnceInString('{SERVICE_TAGS_LIST}', $serviceTags, $htmlResult);
         $htmlResult = BuildManager::replaceOnceInString('{HTML_TAGS_LIST}', $htmlTags, $htmlResult);

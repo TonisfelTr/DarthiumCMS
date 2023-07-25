@@ -8,14 +8,15 @@ use Engine\Engine;
 use Exceptions\Exemplars\NotConnectedToDatabaseError;
 use Users\UserAgent;
 
-class Logger {
+class Logger
+{
 
     private const ACCESSES_LOGS = 1;
-    private const ERRORS_LOGS = 2;
+    private const ERRORS_LOGS   = 2;
     private const VISITORS_LOGS = 4;
 
     private const ACCESSES_PATH = HOME_ROOT . "engine/logs/accesses/";
-    private const ERRORS_PATH = HOME_ROOT . "engine/logs/errors/";
+    private const ERRORS_PATH   = HOME_ROOT . "engine/logs/errors/";
     private const VISITORS_PATH = HOME_ROOT . "engine/logs/visitors/";
 
     /**
@@ -28,7 +29,7 @@ class Logger {
         if (!in_array($logType, [self::ACCESSES_LOGS, self::ERRORS_LOGS, self::VISITORS_LOGS]))
             throw new \InvalidArgumentException("Invalid argument received");
 
-        switch($logType) {
+        switch ($logType) {
             case self::ACCESSES_LOGS:
                 $iterator = new \FilesystemIterator(self::ACCESSES_PATH, \FilesystemIterator::SKIP_DOTS);
                 break;
@@ -59,10 +60,10 @@ class Logger {
                 $filesize = filesize(self::ACCESSES_PATH . "access.log");
                 break;
             case self::ERRORS_LOGS:
-                $filesize = filesize(self::ACCESSES_PATH . "errors.log");
+                $filesize = filesize(self::ERRORS_PATH . "errors.log");
                 break;
             case self::VISITORS_LOGS:
-                $filesize = filesize(self::ACCESSES_PATH . "visitors.log");
+                $filesize = filesize(self::VISITORS_PATH . "visitors.log");
                 break;
         }
 
@@ -85,15 +86,15 @@ class Logger {
      *
      * @return array|false|int
      */
-    public static function GetLogged(){
+    public static function GetLogged() {
         $queryResponse = DataKeeper::MakeQuery("SELECT * FROM `tt_logs` ORDER BY `datetime` DESC", null, true);
-        $result = [];
-        foreach ($queryResponse as $log){
+        $result        = [];
+        foreach ($queryResponse as $log) {
             $result[] = [
-                "id" => $log["id"],
+                "id"       => $log["id"],
                 "authorId" => $log["authorId"],
                 "log_text" => $log["log_text"],
-                "datetime" => $log["datetime"]
+                "datetime" => $log["datetime"],
             ];
         }
 
@@ -102,16 +103,16 @@ class Logger {
             throw new NotConnectedToDatabaseError("Cannot connect to database");
         }
 
-        if ($stmt = $mysqli->prepare("SELECT * FROM `tt_logs` ORDER BY `datetime` DESC")){
+        if ($stmt = $mysqli->prepare("SELECT * FROM `tt_logs` ORDER BY `datetime` DESC")) {
             $stmt->execute();
             $stmt->bind_result($id, $authorId, $log_text, $datetime);
             $result = [];
-            while($stmt->fetch()){
+            while ($stmt->fetch()) {
                 array_push($result, [
-                    "id" => $id,
+                    "id"       => $id,
                     "authorId" => $authorId,
                     "datetime" => $datetime,
-                    "log_text" => $log_text
+                    "log_text" => $log_text,
                 ]);
             }
             return $result;
@@ -127,11 +128,11 @@ class Logger {
      * @return bool Success or fail create record in log file.
      */
     public static function addErrorLog(string $logText) : bool {
-        $nowTime = date('Y-m-d H:i:s');
+        $nowTime           = date('Y-m-d H:i:s');
         $selfIdentificator = UserAgent::isAuthorized()
             ? UserAgent::getCurrentUser()->getNickname()
             : $_SERVER["REMOTE_ADDR"];
-        $lastNumber = self::getLogCount(self::ERRORS_LOGS) == 1
+        $lastNumber        = self::getLogCount(self::ERRORS_LOGS) == 1
             ? ""
             : self::getLogCount(self::ERRORS_LOGS);
 
@@ -158,11 +159,11 @@ class Logger {
      * @return bool Success or fail create record in log file.
      */
     public static function addAccessLog(string $logText) : bool {
-        $nowTime = date('Y-m-d H:i:s');
+        $nowTime           = date('Y-m-d H:i:s');
         $selfIdentificator = UserAgent::isAuthorized()
             ? UserAgent::getCurrentUser()->getNickname()
             : $_SERVER["REMOTE_ADDR"];
-        $lastNumber = self::getLogCount(self::ACCESSES_LOGS) == 1
+        $lastNumber        = self::getLogCount(self::ACCESSES_LOGS) == 1
             ? ""
             : self::getLogCount(self::ACCESSES_LOGS);
 
@@ -189,11 +190,11 @@ class Logger {
      * @return bool Success or fail create record in log file.
      */
     public static function addVisitLog(string $logText) : bool {
-        $nowTime = date('Y-m-d H:i:s');
+        $nowTime           = date('Y-m-d H:i:s');
         $selfIdentificator = UserAgent::IsSessionContinued()
             ? UserAgent::getCurrentUser()->getNickname()
             : $_SERVER["REMOTE_ADDR"];
-        $lastNumber = self::getLogCount(self::VISITORS_LOGS) == 1
+        $lastNumber        = self::getLogCount(self::VISITORS_LOGS) == 1
             ? ""
             : self::getLogCount(self::VISITORS_LOGS);
 
