@@ -58,6 +58,11 @@ class RouteAgent
     }
 
     private static function addServiceRoutes() {
+        Route::create("get", "captchas/{name}", function (array $args) {
+            header("Content-Type: image/png");
+            return BuildManager::includeContent("engine/captchas/{$args['name']}");
+        })->setName("captcha");
+
         Route::create("get", "libs/[path]", function (array $args) {
             switch (BuildManager::getFileExtension("libs/{$args['path']}")) {
                 case "js":

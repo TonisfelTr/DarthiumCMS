@@ -5,6 +5,7 @@ namespace Guards;
 use Engine\DataKeeper;
 use Engine\Engine;
 use Engine\ErrorManager;
+use Engine\RouteAgent;
 use Exceptions\Exemplars\CaptchaGenerationError;
 use Exceptions\Exemplars\CaptchaNotExistError;
 use Exceptions\Exemplars\ForbiddenError;
@@ -71,9 +72,9 @@ class CaptchaMen{
         imagefill($image, 0, 0, imagecolorallocate($image, 255,255,255));
         for($i = 0; $i <= 8; $i++)
             imageline($image, rand(0, 35), rand(0, 35), rand(0, 100), rand(0, 100), imagecolorallocate($image, rand(0,255),rand(0,255),rand(0,255)));
-        imagettftext($image, 12, 0, 8, 23, imagecolorallocate($image, 0x00, 0x00, 0x00), $_SERVER["DOCUMENT_ROOT"]."/engine/captchas/font.ttf", CaptchaMen::$captchaHash);
-        imagepng($image, $_SERVER["DOCUMENT_ROOT"]."/engine/captchas/".$imageName.".png");
-        return "/engine/captchas/".$imageName.".png";
+        imagettftext($image, 12, 0, 8, 23, imagecolorallocate($image, 0x00, 0x00, 0x00), HOME_ROOT . "/engine/captchas/font.ttf", CaptchaMen::$captchaHash);
+        imagepng($image, HOME_ROOT . "/engine/captchas/".$imageName.".png");
+        return RouteAgent::buildRoute("captcha", $imageName . ".png");
     }
 
     public static function CheckCaptcha($typedCaptcha, $captchaID, $type){
