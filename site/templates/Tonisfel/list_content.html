@@ -1,0 +1,8 @@
+<if condition="ForumAgent::GetCategoryList(1, true)">
+    <foreach array="ForumAgent.GetCategoryList(1, true)" value="$category">
+        <li><a href="{>|topics_of_category:$category->getId()}" title="{@|$category->getDescription()}">{@|$category->getName()}</a></li>
+    </foreach>
+</if>
+<if condition="!ForumAgent::GetCategoryList(1, true)">
+    <li class="dropdown-header">{%|list_is_empty}</li>
+</if>

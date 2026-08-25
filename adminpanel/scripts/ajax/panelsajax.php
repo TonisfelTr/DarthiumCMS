@@ -2,7 +2,7 @@
 require_once $_SERVER["DOCUMENT_ROOT"] . "/engine/classes/engine/Engine.php";;
 
 function CreatePanel($title, $content, $visibility, $side){
-    $result = \Decorator\Controllers\SidePanelsAgent::AddSidePanel($side, $title, $content, $visibility);
+    $result = \Builder\Controllers\SidePanelsAgent::AddSidePanel($side, $title, $content, $visibility);
     if ($result === false){
         return "failed";
     } else {
@@ -11,7 +11,7 @@ function CreatePanel($title, $content, $visibility, $side){
 }
 
 function EditPanel($id, array $newContent){
-    $result = (\Decorator\Controllers\SidePanelsAgent::EditSidePanel($id, $newContent));
+    $result = (\Builder\Controllers\SidePanelsAgent::EditSidePanel($id, $newContent));
     if ($result === 35){
         return "pne";
     } elseif ($result === false){
@@ -20,7 +20,7 @@ function EditPanel($id, array $newContent){
 }
 
 function GetPanel($id){
-    $result = \Decorator\Controllers\SidePanelsAgent::GetPanel($id);
+    $result = \Builder\Controllers\SidePanelsAgent::GetPanel($id);
     if ($result === 35){
         return "pne";
     } elseif ($result === false){
@@ -29,7 +29,7 @@ function GetPanel($id){
 }
 
 function RemovePanel($id){
-    $result = \Decorator\Controllers\SidePanelsAgent::DeleteSidePanel($id);
+    $result = \Builder\Controllers\SidePanelsAgent::DeleteSidePanel($id);
     if ($result === 35){
         return "pne";
     } elseif ($result === false){
@@ -40,9 +40,9 @@ function RemovePanel($id){
 \Engine\Engine::LoadEngine();
 if (\Users\UserAgent::SessionContinue() === true) {
     $user = new \Users\Models\User($_SESSION["uid"]);
-    if ($user->UserGroup()->getPermission("sc_design_edit")){
+    if ($user->getUserGroup()->getPermission("sc_design_edit")){
         if (isset($_POST["addpanel"])){
-            echo CreatePanel($_POST["panel-name"], $_POST["panel-content"], $_POST["panel-visibility"], ($_POST["panel-side"] == "left") ? \Decorator\SB_LEFTSIDE : \Decorator\SB_RIGHTSIDE);
+            echo CreatePanel($_POST["panel-name"], $_POST["panel-content"], $_POST["panel-visibility"], ($_POST["panel-side"] == "left") ? \Builder\SB_LEFTSIDE : \Builder\SB_RIGHTSIDE);
             exit;
         }
         if (isset($_POST["deletepanel"])){
@@ -58,7 +58,7 @@ if (\Users\UserAgent::SessionContinue() === true) {
             if (isset($_POST["panel-name"])) $toChange["name"] = $_POST["panel-name"];
             if (isset($_POST["panel-content"])) $toChange["content"] = $_POST["panel-content"];
             if (isset($_POST["panel-visibility"])) $toChange["isVisible"] = $_POST["panel-visibility"];
-            if (isset($_POST["panel-side"])) $toChange["type"] = ($_POST["panel-side"] == "left") ? \Decorator\SB_LEFTSIDE : \Decorator\SB_RIGHTSIDE;
+            if (isset($_POST["panel-side"])) $toChange["type"] = ($_POST["panel-side"] == "left") ? \Builder\SB_LEFTSIDE : \Builder\SB_RIGHTSIDE;
             if (!empty($toChange))
                 echo EditPanel($_POST["panel-id"], $toChange);
             else

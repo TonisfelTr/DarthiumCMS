@@ -15,11 +15,11 @@ function IsCorrectName($str){
 }
 
 function Add(){
-    if (true === \Engine\DataKeeper::exists("tt_adfields", "name", $_POST["field-name"])) {
+    if (true === \Engine\Database::exists("tt_adfields", "name", $_POST["field-name"])) {
         echo "fae"; //field already exists.
         return;
     }
-    $insert = \Engine\DataKeeper::InsertTo("tt_adfields", array(
+    $insert = \Engine\Database::InsertTo("tt_adfields", array(
         "name" => $_POST["field-name"],
         "description" => $_POST["field-description"],
         "link" => $_POST["field-link"],
@@ -35,7 +35,7 @@ function Add(){
 }
 
 function Edit(){
-    if (false === \Engine\DataKeeper::exists("tt_adfields", "id", $_POST["field-id"])) {
+    if (false === \Engine\Database::exists("tt_adfields", "id", $_POST["field-id"])) {
         echo "fne"; //field not exists.
         return;
     }
@@ -51,7 +51,7 @@ function Edit(){
         "custom" => $_POST["field-custom"]
     );
 
-    if (\Engine\DataKeeper::Update("tt_adfields", $vars, array("id" => $_POST["field-id"])))
+    if (\Engine\Database::Update("tt_adfields", $vars, array( "id" => $_POST["field-id"])))
         echo "sef";
     else
         echo "fef";
@@ -59,12 +59,12 @@ function Edit(){
 }
 
 function Remove() {
-    if (false === \Engine\DataKeeper::exists("tt_adfields", "id", $_POST["field-id"])) {
+    if (false === \Engine\Database::exists("tt_adfields", "id", $_POST["field-id"])) {
         echo "fne"; //field not exists.
         return;
     }
 
-    if (\Engine\DataKeeper::Delete("tt_adfields", ["id" => $_POST["field-id"]]))
+    if (\Engine\Database::Delete("tt_adfields", [ "id" => $_POST["field-id"]]))
         echo "sdf";
     else
         echo "fdf";
@@ -72,18 +72,18 @@ function Remove() {
 }
 
 function Get(){
-    if (false === \Engine\DataKeeper::exists("tt_adfields", "id", $_POST["field-id"])) {
+    if (false === \Engine\Database::exists("tt_adfields", "id", $_POST["field-id"])) {
         echo "fne"; //field not exists.
         return;
     }
-    echo json_encode(\Engine\DataKeeper::Get("tt_adfields", ["*"], ["id" => $_POST["field-id"]])[0]);
+    echo json_encode(\Engine\Database::Get("tt_adfields", [ "*"], [ "id" => $_POST["field-id"]])[0]);
     return;
 }
 
 \Engine\Engine::LoadEngine();
 if (\Users\UserAgent::SessionContinue() === true) {
     $user = new \Users\Models\User($_SESSION["uid"]);
-    if ($user->UserGroup()->getPermission("change_engine_settings")){
+    if ($user->getUserGroup()->getPermission("change_engine_settings")){
         if ($_POST["action"] == "add"){
             if (!IsCorrectName($_POST["field-name"])) {
                 echo "in";

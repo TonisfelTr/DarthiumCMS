@@ -1,0 +1,10 @@
+<if condition="count(\Forum\ForumAgent::GetLastTopicsId()) > 0">
+    <ul>
+        <foreach array="\Forum\ForumAgent::GetLastTopicsId()" value="$topic">
+            <li><a class="alert-link" href="{>|topic-view:$topic['id']}">{@|$topic['name']}</a></li>
+        </foreach>
+    </ul>
+</if>
+<if condition="count(\Forum\ForumAgent::GetLastTopicsId()) <= 0">
+    {%|list_is_empty}
+</if>

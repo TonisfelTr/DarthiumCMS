@@ -1,0 +1,12 @@
+<with var="$onlineUsers" value="\Users\UserAgent::Get10OnlineUsers()">
+  <if condition="!empty($onlineUsers)">
+    <ul>
+      <foreach array="$onlineUsers" value="$user">
+        <li><a class="alert-link" href="{>|profile-page-defined:$user['id']}">{@|$user['nickname']}</a></li>
+      </foreach>
+    </ul>
+  </if>
+  <if condition="empty($onlineUsers)">
+    {%|no_online_users}
+  </if>
+</with>

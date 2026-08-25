@@ -1,0 +1,65 @@
+<with var="$hasQuiz" value="\Forum\ForumAgent::IsExistQuizeInTopic({>*|id})" condition="\Forum\ForumAgent::IsExistQuizeInTopic({>*|id}) !== false">
+    <with var="$quiz" value="new \Forum\Models\Quize(\Forum\ForumAgent::GetQuizeByTopic({>*|id})['id'])">
+        <with var="$topic" value="new \Forum\Models\Topic({>*|id})">
+            <div class="quize-frame">
+                <if condition="(\Users\UserAgent::isAuthorized() && \Forum\ForumAgent::IsVoted(\Users\UserAgent::getCurrentUser()->getId(), $quiz->getId())) || \Users\UserAgent::isAuthorized() === false">
+                    <div class="quize-quizer">
+                        <div class="quize-header">
+                            <h3>{@|\Engine\Engine::MakeUnactiveCodeWords($quiz->getQuestion())}</h3>
+                        </div>
+                        <div class="quize-body container">
+                            <div class="btn-group-vertical col-lg-6">
+                                <foreach array="$quiz->getVars()" key="$index" value="$answer">
+                                    <p><span class="quize-label quize-label-{@|$index + 1}">{@|\Engine\Engine::MakeUnactiveCodeWords($answer[1])}</span>
+                                        <span data-var-id="{@|$answer[0]}">{@|$quiz->getProcentAnswer($answer[0])}</span></p>
+                                </foreach>
+                            </div>
+                        </div>
+                        <div class="quize-footer">
+                            <p>Всего проголосовавших: <span id="quize-answered-count">{@|$quiz->getTotalAnswers()}</span></p>
+                        </div>
+                    </div>
+                </if>
+                <if condition="\Users\UserAgent::isAuthorized() && !\Forum\ForumAgent::IsVoted(\Users\UserAgent::getCurrentUser()->getId(), $quiz->getId())">
+                    <div class="quize-results">
+                        <div class="quize-header">
+                            <h3>{@|\Engine\Engine::MakeUnactiveCodeWords($quiz->getQuestion())}</h3>
+                        </div>
+                        <div class="quize-body container">
+                            <div class="col-lg-6">
+                                <foreach array="$quiz->getVars()" key="$index" value="$answer">
+                                    <button class="btn btn-default" type="button" id="quize-answer-{@|$answer[0]}" data-var-id="{@|$answer[0]}">
+                                        {@|\Engine\Engine::MakeUnactiveCodeWords($answer[1])}
+                                    </button>
+                                </foreach>
+                            </div>
+                        </div>
+                        <div class="quize-footer">
+                            <p>Всего проголосовавших: <span id="quize-voted-count">{@|$quiz->getTotalAnswers()}</span></p>
+                        </div>
+                    </div>
+                </if>
+            </div>
+            <script type="text/javascript">
+                $("div.quize-body > div.btn-group-vertical > button").on("click", function () {
+                    var varId = $(this).attr("data-var-id");
+                    var span = $("span[data-var-id=" + varId + "]");
+                    var voteCount = parseInt($(span).text());
+                    var quizeId = {@|$quiz->getId()}
+                }
+
+                var total = parseInt($("span#quize-voted-count").text());
+                $(span).text(voteCount + 1);
+                $("span#quize-voted-count").text(total + 1);
+                $("span#quize-answered-count").text(total + 1);
+                $("div.quize-quizer").hide();
+                $("div.quize-results").show();
+                $.ajax({
+                    type: "POST",
+                    url: "/site/scripts/ajax/quizerajax.php",
+                    data: "user_id={u|getNickname()}" + "&quize_id=" + quizeId + "&var_id=" + varId
+                });
+            </script>
+        </with>
+    </with>
+</with>

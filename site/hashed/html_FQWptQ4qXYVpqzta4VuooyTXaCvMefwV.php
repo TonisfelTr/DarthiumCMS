@@ -1,0 +1,16 @@
+<div class="profile-header">
+    <h1>Таверна Тонисфеля</h1>
+    <h3 id="profile-form-name">Авторизация</h3>
+    <hr>
+</div>
+  <div class="container">      
+<?php if(!\Users\UserAgent::isAuthorized() && \Engine\RouteAgent::getCurrentRoute() != 'profile-page-defined') { ?>
+<div class="row" data-div-title="login">              <?= \Users\Services\FlashSession::readFromSystemContainer('authorization') == true ? "ok" : "no" ?>              
+<?php if(\Users\Services\FlashSession::readFromSystemContainer('authorization') == true) { ?>
+auth yes                  
+<?php if(\Users\Services\FlashSession::hasErrors()) { ?>
+
+                      errors                      <div class="profile-reg-error-div">                          <p><span class="glyphicon glyphicon-info-sign"></span> При авторизации возникли ошибки:</p>                          <ol>                               <?php foreach (\Users\Services\FlashSession::getErrors() as $msg) { ?>                                    <li><?= $msg ?></li>                              <?php } ?>                          </ol>                      </div>                  <?php } ?>                  
+<?php if(\Users\Services\FlashSession::hasInfos()) { ?>
+
+                      success                      <div class="profile-reg-success-div">                          <?= \Users\Services\FlashSession::readFromInfo("message") ?>                      </div>                  <?php } ?><?php } ?>              <form action="<?= \Engine\RouteAgent::buildRoute('signin', []) ?>" method="post" enctype="multipart/form-data">  				<input type="hidden" name="csrf_token" value="37314a4b4a34584e4c384479345352764d36306b4c36777244576e5a59346263">                   <div class="container">                      <div class="row d-flex flex-column align-items-center">                          <input class="profile-input col-xs-12 col-sm-12 col-md-6 col-lg-3" name="login"                                 placeholder="{AUTH_PAGE:UID_INPUT_PLACEHOLDER}" type="text">                          <input class="profile-input col-xs-12 col-sm-12 col-md-6 col-lg-3" name="password"                                 placeholder="Пароль" type="password">                      </div>                      <div class="row d-flex flex-column align-items-center profile-btn-group auth-btns">                          <button class="col-xs-12 col-sm-12 col-md-6 col-lg-3" type="submit">Войти</button>                          <button class="col-xs-12 col-sm-12 col-md-6 col-lg-3" type="button"                                  onclick="showPanel('rules', 'Правила')">Регистрация                          </button>                          <span class="text-center" id="profile_auth_password_restore">Забыл пароль</span>                          <a href="<?= \Engine\RouteAgent::buildRoute('main-page', []) ?>" class="text-center">На главную</a>                      </div>                  </div>              </form>          </div>          {PROFILE_PAGE:RULES_BLOCK}          {PROFILE_PAGE:REGISTRATION_BLOCK}          {PROFILE_PAGE:RESTORE_BLOCK}<?php } ?>  </div>

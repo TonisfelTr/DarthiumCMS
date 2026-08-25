@@ -4,7 +4,7 @@ require_once $_SERVER["DOCUMENT_ROOT"] . "/engine/classes/engine/Engine.php";;
 \Engine\Engine::LoadEngine();
 if (\Users\UserAgent::SessionContinue() === true){
     $user = new \Users\Models\User($_SESSION["uid"]);
-    if ($user->UserGroup()->getPermission("report_foreign_edit") || $user->UserGroup()->getPermission("report_edit")){
+    if ($user->getUserGroup()->getPermission("report_foreign_edit") || $user->getUserGroup()->getPermission("report_edit")){
         if (isset($_POST["atd"])){
             if (!empty($_POST["uid"])){
                 $_POST["uid"] = \Users\UserAgent::GetUserId($_POST["uid"]);
@@ -13,7 +13,7 @@ if (\Users\UserAgent::SessionContinue() === true){
                     exit;
                 }
                 if (!empty($_POST["rid"])) {
-                    if (\Users\GroupAgent::IsHavePerm(\Users\UserAgent::GetUserGroupId($_POST["uid"]), "profile_foreign_edit")) {
+                    if (\Users\GroupAgent::IsHavePerm(\Users\UserAgent::GetgetUserGroupId($_POST["uid"]), "profile_foreign_edit")) {
                         echo "Not need to add.";
                         exit;
                     }

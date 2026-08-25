@@ -16,7 +16,7 @@ $allowedFormats = \Engine\Engine::GetEngineInfo("upf");
 $allowedSize = \Engine\Engine::GetEngineInfo("ups");
 $allowedSizeMB = round($allowedSize / 1024 / 1024);
 
-$uploadedList = \Engine\Uploader::GetUploadList($user->getId());
+$uploadedList = \Engine\FileAgent::GetUploadList($user->getId());
 $uploadedListSize = count($uploadedList);
 $tableBody = "";
 if ($uploadedListSize == 0) {
@@ -24,9 +24,9 @@ if ($uploadedListSize == 0) {
 }
 else {
     foreach ($uploadedList as $upload){
-        $fileName = \Engine\Uploader::GetUploadInfo($upload["id"], "name");
-        $filePath = \Engine\Uploader::GetUploadInfo($upload["id"], "file_path");
-        $fileUploadDate = \Engine\Engine::DateFormatToRead(\Engine\Uploader::GetUploadInfo($upload["id"], "upload_date"));
+        $fileName = \Engine\FileAgent::GetUploadInfo($upload["id"], "name");
+        $filePath = \Engine\FileAgent::GetUploadInfo($upload["id"], "file_path");
+        $fileUploadDate = \Engine\Engine::DateFormatToRead(\Engine\FileAgent::GetUploadInfo($upload["id"], "upload_date"));
         $tableBody .= "<tr>";
         $tableBody .= "<td><input type=\"checkbox\" data-file-id=\"". $upload["id"] . "\"></td>";
         $tableBody .= "<td><a href=\"$filePath\\$fileName\">$fileName</a></td>";

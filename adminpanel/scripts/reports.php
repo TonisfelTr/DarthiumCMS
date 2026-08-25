@@ -3,27 +3,33 @@
 require_once $_SERVER["DOCUMENT_ROOT"] . "/engine/classes/engine/Engine.php";
 \Engine\Engine::LoadEngine();
 
-if ($sessionRes = \Users\UserAgent::SessionContinue()) $user = new \Users\Models\User((new \Users\Services\Session(\Users\Services\FlashSession::getSessionId()))->getContent()["uid"]);
-else { header("Location: ../../adminpanel.php?p=forbidden"); exit; }
+if ($sessionRes = \Users\UserAgent::SessionContinue()) $user
+    = new \Users\Models\User((new \Users\Services\Session(\Users\Services\FlashSession::getSessionId()))->getContent()["uid"]);
+else {
+    header("Location: ../../adminpanel.php?p=forbidden");
+    exit;
+}
 
-if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBanned()){
+if (\Guards\SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true) || $user->isBanned()) {
     header("Location: banned.php");
     exit;
 }
 
 #Удаление жалоб(ы) из страницы просмотра таблицы жалоб.
-if (isset($_POST["reports-table-delete-btn"])){
-    if ($user->UserGroup()->getPermission("report_foreign_remove")){
+if (isset($_POST["reports-table-delete-btn"])) {
+    if ($user->getUserGroup()->getPermission("report_foreign_remove")) {
         $backRequest = "Location: ../../adminpanel.php?p=reports";
-        if (empty($_POST["reports-ids-for-delete"])){
+        if (empty($_POST["reports-ids-for-delete"])) {
             header($backRequest . "&res=5nsrd");
             exit;
         }
         $ids = explode(",", $_POST["reports-ids-for-delete"]);
-        foreach($ids as $item){
+        foreach ($ids as $item) {
             $report = \Guards\ReportAgent::GetReportParam($item, "short_message");
-            if (!\Guards\ReportAgent::DeleteReport($item)){
-                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("reports_panel.logs.report_removed_log") . "\"$report\"" . \Engine\LanguageManager::GetTranslation("reports_panel.logs.from_report_list_log"));
+            if (!\Guards\ReportAgent::DeleteReport($item)) {
+                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageAgent::getTranslation("reports_panel.logs.report_removed_log")
+                                                          . "\"$report\""
+                                                          . \Engine\LanguageAgent::getTranslation("reports_panel.logs.from_report_list_log"));
                 header($backRequest . "&res=5ndsr");
                 exit;
             }
@@ -34,36 +40,40 @@ if (isset($_POST["reports-table-delete-btn"])){
 }
 
 # Просмотр жалобы.
-if (isset($_POST["reports-see-btn"])){
-    if ($user->UserGroup()->getPermission("report_talking")){
-        if (empty($_GET["rid"])){
+if (isset($_POST["reports-see-btn"])) {
+    if ($user->getUserGroup()->getPermission("report_talking")) {
+        if (empty($_GET["rid"])) {
             header("Location: ../../adminpanel.php?p=reports&res=5nrid");
             exit;
         }
-        header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=". $_GET["rid"]);
+        header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_GET["rid"]);
         exit;
-    } else { header("Location: ../../adminpanel.php?p=reports&res=1"); exit; }
+    } else {
+        header("Location: ../../adminpanel.php?p=reports&res=1");
+        exit;
+    }
 }
 
 # Отметить ответ решением проблемы.
-if (isset($_POST["reports-answer-accept"])){
-    if ($user->UserGroup()->getPermission("report_close")){
-        if (empty($_GET["rid"])){
+if (isset($_POST["reports-answer-accept"])) {
+    if ($user->getUserGroup()->getPermission("report_close")) {
+        if (empty($_GET["rid"])) {
             header("Location: ../../adminpanel.php?p=reports&res=5nrid");
             exit;
         }
-        if (empty($_GET["ansid"])){
+        if (empty($_GET["ansid"])) {
             header("Location: ../../adminpanel.php?p=reports&res=5nnas");
             exit;
         }
         $result = \Guards\ReportAgent::SetAsSolveOfReportTheAnswer($_GET["rid"], $_GET["ansid"]);
         if ($result === True) {
             $reportName = \Guards\ReportAgent::GetReportParam($_GET["rid"], "short_message");
-            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("reports_panel.logs.mark_your_answer_as_solve_log") . "\"$reportName\".");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageAgent::getTranslation("reports_panel.logs.mark_your_answer_as_solve_log")
+                                                      . "\"$reportName\".");
             $ntf = new \Users\UserNotificator(\Guards\ReportAgent::GetReportParam($_GET["rid"], "author"));
             $ntf->createNotify("15", $user->getId(), $_GET["rid"]);
             $list = \Guards\ReportAgent::GetReport($_GET["rid"])->getAddedToDiscuse();
-            foreach ($list as $atdUser){
+            foreach ($list as $atdUser) {
                 \Users\UserAgent::GetUser($atdUser)->Notifications()->createNotify(20, $user->getId(),
                     $_GET["rid"] . "," . \Guards\ReportAgent::GetReportParam($_GET["rid"], "author"));
             }
@@ -72,35 +82,40 @@ if (isset($_POST["reports-answer-accept"])){
         } elseif ($result == 30) {
             header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_GET["rid"] . "&res=5nta");
             exit;
-        } elseif ($result == 29){
+        } elseif ($result == 29) {
             header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_GET["rid"] . "&res=5ntr");
             exit;
         } else {
             header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_GET["rid"] . "&res=5ncr");
             exit;
         }
-    } else { header("Location: ../../adminpanel.php?p=reports&res=1"); exit; }
+    } else {
+        header("Location: ../../adminpanel.php?p=reports&res=1");
+        exit;
+    }
 }
 
 #Перенаправление на редактирование конкретного ответа (не жалобы)
-if (isset($_POST["reports-answer-edit"])){
-    if (empty($_GET["rid"])){
+if (isset($_POST["reports-answer-edit"])) {
+    if (empty($_GET["rid"])) {
         header("Location: ../../adminpanel.php?p=reports&res=5nrid");
         exit;
     }
-    if (empty($_GET["ansid"])){
+    if (empty($_GET["ansid"])) {
         header("Location: ../../adminpanel.php?p=reports&res=5nnas");
         exit;
     }
     if (\Guards\ReportAgent::GetReportParam($_GET["rid"], "status") != 2) {
-        if (($user->getId() == \Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "authorId") && $user->UserGroup()->getPermission("report_answer_edit")) ||
-            ($user->getId() != \Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "authorId") && $user->UserGroup()->getPermission("report_foreign_answer_edit"))){
-                header("Location: ../../adminpanel.php?p=reports&reqtype=edit&ansid=" . $_GET["ansid"]);
-                exit;
-            } else {
-                header("Location: ../../adminpanel.php?p=reports&res=1");
-                exit;
-            }
+        if (($user->getId() == \Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "authorId")
+             && $user->getUserGroup()->getPermission("report_answer_edit"))
+            || ($user->getId() != \Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "authorId")
+                && $user->getUserGroup()->getPermission("report_foreign_answer_edit"))) {
+            header("Location: ../../adminpanel.php?p=reports&reqtype=edit&ansid=" . $_GET["ansid"]);
+            exit;
+        } else {
+            header("Location: ../../adminpanel.php?p=reports&res=1");
+            exit;
+        }
     } else {
         header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_GET["rid"] . "&res=5naacr");
         exit;
@@ -108,15 +123,17 @@ if (isset($_POST["reports-answer-edit"])){
 }
 
 #Перенаправление на редактирование жалобы
-if (isset($_POST["reports-report-edit"])){
-    if (empty($_GET["rid"])){
+if (isset($_POST["reports-report-edit"])) {
+    if (empty($_GET["rid"])) {
         header("Location: ../../adminpanel.php?p=reports&res=5nrid");
         exit;
     }
 
     if (\Guards\ReportAgent::GetReportParam($_GET["rid"], "status") != 2) {
-        if (($user->getId() == \Guards\ReportAgent::GetReportParam($_GET["rid"], "author") && $user->UserGroup()->getPermission("report_edit")) ||
-            ($user->getId() != \Guards\ReportAgent::GetReportParam($_GET["rid"], "author") && $user->UserGroup()->getPermission("report_foreign_edit"))){
+        if (($user->getId() == \Guards\ReportAgent::GetReportParam($_GET["rid"], "author")
+             && $user->getUserGroup()->getPermission("report_edit"))
+            || ($user->getId() != \Guards\ReportAgent::GetReportParam($_GET["rid"], "author")
+                && $user->getUserGroup()->getPermission("report_foreign_edit"))) {
             header("Location: ../../adminpanel.php?p=reports&reqtype=edit&rid=" . $_GET["rid"]);
             exit;
         } else {
@@ -130,27 +147,30 @@ if (isset($_POST["reports-report-edit"])){
 }
 
 # Удаление жалобы
-if (isset($_POST["reports-report-delete"])){
-    if (empty($_GET["rid"])){
+if (isset($_POST["reports-report-delete"])) {
+    if (empty($_GET["rid"])) {
         header("Location: ../../adminpanel.php?p=reports&res=5nrid");
         exit;
     }
 
     if (\Guards\ReportAgent::GetReportParam($_GET["rid"], "status") != 2) {
-        if (($user->getId() == \Guards\ReportAgent::GetReportParam($_GET["rid"], "author") && $user->UserGroup()->getPermission("report_remove")) ||
-            ($user->getId() != \Guards\ReportAgent::GetReportParam($_GET["rid"], "author") && $user->UserGroup()->getPermission("report_foreign_remove"))){
+        if (($user->getId() == \Guards\ReportAgent::GetReportParam($_GET["rid"], "author")
+             && $user->getUserGroup()->getPermission("report_remove"))
+            || ($user->getId() != \Guards\ReportAgent::GetReportParam($_GET["rid"], "author")
+                && $user->getUserGroup()->getPermission("report_foreign_remove"))) {
             $reportName = \Guards\ReportAgent::GetReportParam($_GET["rid"], "short_message");
-            $result = \Guards\ReportAgent::DeleteReport($_GET["rid"]);
-            if ($result === TRUE){
+            $result     = \Guards\ReportAgent::DeleteReport($_GET["rid"]);
+            if ($result === TRUE) {
                 if ($user->getId() != \Guards\ReportAgent::GetReportParam($_GET["rid"], "author")) {
                     $ntf = new \Users\UserNotificator(\Guards\ReportAgent::GetReportParam($_GET["rid"], "author"));
                     $ntf->createNotify("11", $user->getId(), \Guards\ReportAgent::GetReportParam($_GET["rid"], "short_message"));
                 }
 
-                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("reports_panel.logs.report_removed_log") . "\"$reportName\".");
+                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageAgent::getTranslation("reports_panel.logs.report_removed_log")
+                                                          . "\"$reportName\".");
                 header("Location: ../../adminpanel.php?p=reports&res=5sdr");
                 exit;
-            } elseif ($result == 29){
+            } elseif ($result == 29) {
                 header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_GET["rid"] . "&res=5ntr");
                 exit;
             } else {
@@ -168,26 +188,27 @@ if (isset($_POST["reports-report-delete"])){
 }
 
 #Удаление ответа к репорту.
-if (isset($_POST["reports-answer-delete"])){
-    if (empty($_GET["rid"])){
+if (isset($_POST["reports-answer-delete"])) {
+    if (empty($_GET["rid"])) {
         header("Location: ../../adminpanel.php?p=reports&res=5nrid");
         exit;
     }
-    if (empty($_GET["ansid"])){
+    if (empty($_GET["ansid"])) {
         header("Location: ../../adminpanel.php?p=reports&res=5nnas");
         exit;
     }
 
     $a = false;
-    if ($user->getId() == \Guards\Report::GetAnswerParam($_GET["ansid"], "authorId")){
-        if ($user->UserGroup()->getPermission("report_answer_edit")) $a = true;
-    } elseif ($user->UserGroup()->getPermission("report_foreign_answer_edit")) $a = true;
+    if ($user->getId() == \Guards\Report::GetAnswerParam($_GET["ansid"], "authorId")) {
+        if ($user->getUserGroup()->getPermission("report_answer_edit")) $a = true;
+    } elseif ($user->getUserGroup()->getPermission("report_foreign_answer_edit")) $a = true;
     if (\Guards\Report::GetReportParam($_GET["rid"], "status") != 2) {
         if ($a === true) {
             $reportName = \Guards\ReportAgent::GetReportParam($user->getId(), "theme");
-            $result = \Guards\ReportAgent::DeleteAnswer($_GET["ansid"]);
+            $result     = \Guards\ReportAgent::DeleteAnswer($_GET["ansid"]);
             if ($result === TRUE) {
-                \Guards\Logger::LogAction($user->getId(),  \Engine\LanguageManager::GetTranslation("reports_panel.logs.remove_answer_to_report_log") ."\"$reportName\".");
+                \Guards\Logger::LogAction($user->getId(), \Engine\LanguageAgent::getTranslation("reports_panel.logs.remove_answer_to_report_log")
+                                                          . "\"$reportName\".");
                 $ntf = new \Users\UserNotificator(\Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "authorId"));
                 $ntf->createNotify("16", $user->getId(), $_GET["rid"]);
                 header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_GET["rid"] . "&res=5sda");
@@ -213,9 +234,9 @@ if (isset($_POST["reports-answer-delete"])){
 }
 
 # Опубликовать ответ к реппорту (не решение, а именно ответ!)
-if (isset($_POST["reports-answer-send"])){
-    if ($user->UserGroup()->getPermission("report_talking")){
-        if (empty($_GET["rid"])){
+if (isset($_POST["reports-answer-send"])) {
+    if ($user->getUserGroup()->getPermission("report_talking")) {
+        if (empty($_GET["rid"])) {
             header("Location: ../../adminpanel.php?p=reports&res=5nrid");
             exit;
         }
@@ -229,13 +250,13 @@ if (isset($_POST["reports-answer-send"])){
                 exit;
             }
             $result = \Guards\ReportAgent::CreateAnswer($user->getId(), $_POST["reports-answer-text"], $_GET["rid"]);
-            if ($result === TRUE){
+            if ($result === TRUE) {
                 \Guards\ReportAgent::ChangeReportParam($_GET["rid"], "viewed", 1);
                 $ntf = new \Users\UserNotificator(\Guards\ReportAgent::GetReportParam($_GET["rid"], "author"));
                 $ntf->createNotify("5", $user->getId(), $_GET["rid"]);
                 header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_GET["rid"] . "&res=5sad");
                 exit;
-            } elseif ($result == 29){
+            } elseif ($result == 29) {
                 header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_GET["rid"] . "&res=5ntr");
                 exit;
             } else {
@@ -253,83 +274,100 @@ if (isset($_POST["reports-answer-send"])){
 }
 
 # Изменить ответ.
-if (isset($_POST["report-edit-answer-edit"])){
-    if (empty($_GET["ansid"])){
+if (isset($_POST["report-edit-answer-edit"])) {
+    if (empty($_GET["ansid"])) {
         header("Location: ../../adminpanel.php?p=reports&res=5nna");
         exit;
     }
 
-    if (($user->getId() == \Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "authorId") && $user->UserGroup()->getPermission("report_answer_edit") ||
-        ($user->getId() != \Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "authorId") && $user->UserGroup()->getPermission("report_foreign_answer_edit")))){
-        if (empty($_POST["reports-edit-message-text"])){
-            header("Location: ../../adminpanel.php?p=reports&reqtype=edit&ansid=" . $_GET["ansid"]. "&res=5nmt");
+    if (($user->getId() == \Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "authorId")
+         && $user->getUserGroup()->getPermission("report_answer_edit")
+         || ($user->getId() != \Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "authorId")
+             && $user->getUserGroup()->getPermission("report_foreign_answer_edit")))) {
+        if (empty($_POST["reports-edit-message-text"])) {
+            header("Location: ../../adminpanel.php?p=reports&reqtype=edit&ansid=" . $_GET["ansid"] . "&res=5nmt");
             exit;
         }
-        if (strlen($_POST["reports-edit-message-text"]) < 4){
+        if (strlen($_POST["reports-edit-message-text"]) < 4) {
             header("Location: ../../adminpanel.php?p=reports&reqtype=edit&ansid=" . $_GET["ansid"] . "&res=5ntsm");
             exit;
         }
-        $result = \Guards\ReportAgent::ChangeAnswerText($_GET["ansid"], $_POST["reports-edit-message-text"], $_POST["reports-edit-reason"], $user->getId());
-        if ($result === TRUE){
+        $result
+            = \Guards\ReportAgent::ChangeAnswerText($_GET["ansid"], $_POST["reports-edit-message-text"], $_POST["reports-edit-reason"], $user->getId());
+        if ($result === TRUE) {
             $reportName = \Guards\ReportAgent::GetReportParam($_GET["rid"], "theme");
-            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("reports_panel.log.change_answer_to_report_log") . "\"$reportName\".");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageAgent::getTranslation("reports_panel.log.change_answer_to_report_log")
+                                                      . "\"$reportName\".");
             $ntf = new \Users\UserNotificator(\Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "authorId"));
             $ntf->createNotify("17", $user->getId(), $_GET["rid"]);
-            header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . \Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "reportId") . "&res=5sea");
+            header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid="
+                   . \Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "reportId")
+                   . "&res=5sea");
             exit;
-        } elseif ($result == 30){
-            header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . \Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "reportId") . "&res=5nta");
+        } elseif ($result == 30) {
+            header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid="
+                   . \Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "reportId")
+                   . "&res=5nta");
             exit;
-        } elseif ($result == 31){
-            header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . \Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "reportId") . "&res=5ncds");
+        } elseif ($result == 31) {
+            header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid="
+                   . \Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "reportId")
+                   . "&res=5ncds");
             exit;
         } else {
-            header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . \Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "reportId") . "&res=5nea");
+            header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid="
+                   . \Guards\ReportAgent::GetAnswerParam($_GET["ansid"], "reportId")
+                   . "&res=5nea");
             exit;
         }
     }
 }
 
-if (isset($_POST["reports-edit-reports-edit"])){
-    if (empty($_GET["rid"])){
+if (isset($_POST["reports-edit-reports-edit"])) {
+    if (empty($_GET["rid"])) {
         header("Location: ../../adminpanel.php?p=reports&res=5nrid");
         exit;
     }
 
-    if (($user->getId() == \Guards\ReportAgent::GetReportParam($_GET["rid"], "author") && $user->UserGroup()->getPermission("report_edit") ||
-        ($user->getId() != \Guards\ReportAgent::GetReportParam($_GET["rid"], "author") && $user->UserGroup()->getPermission("report_foreign_edit")))){
-        if (empty($_POST["reports-edit-message-text"])){
-            header("Location: ../../adminpanel.php?p=reports&reqtype=edit&rid=" . $_GET["rid"]. "&res=5nmt");
+    if (($user->getId() == \Guards\ReportAgent::GetReportParam($_GET["rid"], "author")
+         && $user->getUserGroup()->getPermission("report_edit")
+         || ($user->getId() != \Guards\ReportAgent::GetReportParam($_GET["rid"], "author")
+             && $user->getUserGroup()->getPermission("report_foreign_edit")))) {
+        if (empty($_POST["reports-edit-message-text"])) {
+            header("Location: ../../adminpanel.php?p=reports&reqtype=edit&rid=" . $_GET["rid"] . "&res=5nmt");
             exit;
         }
-        if (strlen($_POST["reports-edit-message-text"]) < 4){
+        if (strlen($_POST["reports-edit-message-text"]) < 4) {
             header("Location: ../../adminpanel.php?p=reports&reqtype=edit&rid=" . $_GET["rid"] . "&res=5ntsm");
             exit;
         }
 
         $result = True;
-        $o = 0;
-        while($result === True){
+        $o      = 0;
+        while ($result === True) {
             $o++;
-            switch($o) {
+            switch ($o) {
                 case 1:
-                    $result = \Guards\ReportAgent::ChangeReportParam($_GET["rid"], "short_message", $_POST["reports-edit-shortmessage"]);
+                    $result
+                        = \Guards\ReportAgent::ChangeReportParam($_GET["rid"], "short_message", $_POST["reports-edit-shortmessage"]);
                     break;
                 case 2:
-                    $result = \Guards\ReportAgent::ChangeReportParam($_GET["rid"], "message", $_POST["reports-edit-message-text"]);
+                    $result
+                        = \Guards\ReportAgent::ChangeReportParam($_GET["rid"], "message", $_POST["reports-edit-message-text"]);
                     break;
             }
             if ($o == 3) break;
         }
 
-        if ($result === TRUE){
+        if ($result === TRUE) {
             $reportName = \Guards\ReportAgent::GetReportParam($_GET["rid"], "theme");
-            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageManager::GetTranslation("reports_panel.logs.change_report_text_log") . "\"$reportName\".");
+            \Guards\Logger::LogAction($user->getId(), \Engine\LanguageAgent::getTranslation("reports_panel.logs.change_report_text_log")
+                                                      . "\"$reportName\".");
             $ntf = new \Users\UserNotificator(\Guards\ReportAgent::GetReportParam($_GET["rid"], "author"));
             $ntf->createNotify("10", $user->getId(), $_GET["rid"]);
-            header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=". $_GET["rid"] . "&res=5ser");
+            header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_GET["rid"] . "&res=5ser");
             exit;
-        } elseif ($result == 29){
+        } elseif ($result == 29) {
             header("Location: ../../adminpanel.php?p=reports&reqtype=discusion&rid=" . $_GET["rid"] . "&res=5ntr");
             exit;
         } else {

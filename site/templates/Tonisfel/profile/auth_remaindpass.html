@@ -1,0 +1,38 @@
+<div data-div-title="remaind" hidden>
+    <div class="container-fluid">
+        <p>Если Вы забыли пароль, то Вы можете восстановить следующими способами с условиями:</p>
+        <div class="profile-radio-group">
+            <div class="profile-auth-group">
+                <input type="radio" id="profile-auth-for-email" name="profile-auth">
+                <label for="profile-auth-for-email">Я помню Email</label>
+                <br>
+                <input type="radio" id="profile-auth-for-nickname" name="profile-auth">
+                <label for="profile-auth-for-nickname">Я помню никнейм</label>
+                <div class="profile-btn-group">
+                    <button class="col-xs-12 col-sm-12 col-md-6 col-lg-3" type="button" id="profile_auth_signin">Назад к авторизации</button>
+                </div>
+            </div>
+        </div>
+        <div id="profile-password-remained-email" class="profile-remainer-panel" hidden>
+            <p>Введите Ваш email. Если такой email зарегистрирован в системе, на него будет отослана инструкция
+            по восстановлению пароля.</p>
+            <input type="email" class="profile-input col-xs-12" name="profile-auth-for-email-input" id="profile-auth-for-email-input">
+            <div class="col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                <div class="profile-btn-group">
+                    <button class="col-xs-12 col-sm-12 col-md-6 col-lg-3" type="button" id="profile_auth_remaind_email">Напомнить пароль</button>
+                </div>
+            </div>
+        </div>
+        <div id="profile-password-remained-nickname" class="profile-remainer-panel" hidden>
+            <p>Введите Ваш никнейм. Если такой пользователь зарегистрирован в системе, Вам напомнят часть Email.
+            Вам остаётся лишь перейти на этот Email и нажать на ссылку в нём.</p>
+            <input type="text" class="profile-input col-xs-12" name="profile-auth-for-nickname-input" id="profile-auth-for-nickname-input">
+            <div class="col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                <div class="profile-btn-group">
+                    <button class="col-xs-12 col-sm-12 col-md-6 col-lg-3" type="button" id="profile_auth_remaind_nickname">Напомнить пароль</button>
+                </div>
+            </div>
+        </div>
+        <p id="profile-email-remainder" hidden></p>
+    </div>
+</div>

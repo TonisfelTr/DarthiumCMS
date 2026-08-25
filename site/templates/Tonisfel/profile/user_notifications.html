@@ -1,0 +1,234 @@
+<div data-div-title="notifications" hidden>
+    <hr>
+    <h2>Уведомления</h2>
+    <p>Уведомления удаляются самостоятельно каждые 30 дней.</p>
+    <p id="profile-notification-warning-border" hidden><span class="glyphicons glyphicons-info-sign"></span> У вас есть новые уведомления. Обновите страницу, чтобы получить их.</p>
+    <with var="$count" value="\Users\UserAgent::getCurrentUser()->Notifications()->getNotifiesCount()">
+        <if condition="$count == 0">
+            <hr>
+            <p>{%|no_notifications}</p>
+        </if>
+        <if condition="$count > 0">
+            <hr>
+            <foreach array="\Users\UserAgent::getCurrentUser()->Notifications()->getNotifies()" value="$notify">
+                <div class="profile-notification-body">
+                    <if condition="!$notify['isRead']">
+                        <span class="glyphicons glyphicons-info-sign" style="font-size: 25px;"></span>
+                    </if>
+                    <with var="$userForNotification" value="new \Users\Models\User($notify['fromUid'])">
+                        <a class="profile-link" href="{>|profile-page-defined:$userForNotification->getId()}">
+                            {@|$userForNotification->getNickname()}
+                        </a>
+                        <with var="$type" value="$notify['type']">
+                            <if condition="$type == 1">
+                                <if condition="$userForNotification->getSex() == 3">
+                                    {%|added_to_she} <a href="">{%|to_report_room}</a> {%|for_discussions}
+                                </if>
+                                <if condition="$userForNotification->getSex() != 3">
+                                    {%|added_to_he} <a href="">{%|to_report_room}</a> {%|for_discussions}
+                                </if>
+                            </if>
+                            <if condition="$type == 2">
+                                <if condition="$userForNotification->getSex() == 3">
+                                    {%|added_to_friendlist_she}.
+                                </if>
+                                <if condition="$userForNotification->getSex() != 3">
+                                    {%|added_to_friendlist_he}.
+                                </if>
+                            </if>
+                            <if condition="$type == 3">
+                                <if condition="$userForNotification->getSex() == 3">
+                                    {%|changed_profile_she}.
+                                </if>
+                                <if condition="$userForNotification->getSex() != 3">
+                                    {%|changed_profile_he}.
+                                </if>
+                            </if>
+                            <if condition="$type == 4">
+                                <if condition="$userForNotification->getSex() == 3">
+                                    {%|remove_from_discussions_she}.
+                                </if>
+                                <if condition="$userForNotification->getSex() != 3">
+                                    {%|remove_from_discussions_he}.
+                                </if>
+                            </if>
+                            <if condition="$type == 5">
+                                <if condition="$userForNotification->getSex() == 3">
+                                    {%|add_message_to_she} <a
+                                        href="index.php?page=report&preg=see&rid=$ntf[$i]['subject']">
+                                    {%|to_report_room}</a> {%|for_discussions}.
+                                </if>
+                                <if condition="$userForNotification->getSex() != 3">
+                                    {%|add_message_to_he} <a
+                                        href="index.php?page=report&preg=see&rid=$ntf[$i]['subject']">
+                                    {%|to_report_room}</a> {%|for_discussions}.
+                                </if>
+                            </if>
+                            <if condition="$type == 6">
+                                <if condition="$userForNotification->getSex() == 3">
+                                    {%|add_message_to_your_topic_she} <a href="index.php?topic=$ntf[$i]['subject']">
+                                    {%|to_topic}</a>.
+                                </if>
+                                <if condition="$userForNotification->getSex() != 3">
+                                    {%|add_message_to_your_topic_he} <a href="index.php?topic=$ntf[$i]['subject']">
+                                    {%|to_topic}</a>.
+                                </if>
+                            </if>
+                            <if condition="$type == 7">
+                                {%|like_your_post} <a href="index.php?topic=$ntf[$i]['subject']">{%|topic}</a>.
+                            </if>
+                            <if condition="$type == 8">
+                                <if condition="$userForNotification->getSex() == 3">
+                                    {%|move_your_topic_she} <a href="index.php?topic=$ntf[$i]['subject']">{%|topic}</a>.
+                                </if>
+                                <if condition="$userForNotification->getSex() != 3">
+                                    {%|move_your_topic_he} <a href="index.php?topic=$ntf[$i]['subject']">{%|topic}</a>.
+                                </if>
+                            </if>
+                            <if condition="$type == 9">
+                                <if condition="$userForNotification->getSex() == 3">
+                                    {%|remove_your_topic_she}
+                                </if>
+                                <if condition="$userForNotification->getSex() != 3">
+                                    {%|remove_your_topic_he}
+                                </if>
+                            </if>
+                            <if condition="$type == 10">
+                                <if condition="$userForNotification->getSex() == 3">
+                                    {%|change_text_in_your_report_she}
+                                </if>
+                                <if condition="$userForNotification->getSex() != 3">
+                                    {%|change_text_in_your_report_he}
+                                </if>
+                            </if>
+                            <if condition="$type == 11">
+                                <if condition="$userForNotification->getSex() == 3">
+                                    {%|remove_your_report_she}
+                                </if>
+                                <if condition="$userForNotification->getSex() != 3">
+                                    {%|remove_your_report_he}
+                                </if>
+                            </if>
+                            <if condition="$type == 12">
+                                <if condition="$userForNotification->getSex() == 3">
+                                    {%|change_text_in_your_topic_she}
+                                </if>
+                                <if condition="$userForNotification->getSex() != 3">
+                                    {%|change_text_in_your_topic_he}
+                                </if>
+                            </if>
+                            <if condition="$type == 13">
+                                <if condition="$userForNotification->getSex() == 3">
+                                    {%|change_status_topic_she}
+                                </if>
+                                <if condition="$userForNotification->getSex() != 3">
+                                    {%|change_status_topic_he}
+                                </if>
+                            </if>
+                            <if condition="$type == 14">
+                                <if condition="$userForNotification->getSex() == 3">
+                                    {%|register_with_referer_she}
+                                </if>
+                                <if condition="$userForNotification->getSex() != 3">
+                                    {%|register_with_referer_he}
+                                </if>
+                            </if>
+                            <if condition="$type == 15">
+                                <if condition="$userForNotification->getSex() == 3">
+                                    {%|closed_your_report_she} <a
+                                        href="index.php?page=report&preg=see&rid=$ntf[$i]['subject']">{%|to_report}</a>
+                                </if>
+                                <if condition="$userForNotification->getSex() != 3">
+                                    {%|closed_your_report_he} <a
+                                        href="index.php?page=report&preg=see&rid=$ntf[$i]['subject']">{%|to_report}</a>
+                                </if>
+                            </if>
+                            <if condition="$type == 16">
+                                <if condition="$userForNotification->getSex() == 3">
+                                    {%|remove_your_answer_in_report_she} <a
+                                        href="index.php?page=report&preg=see&rid=$ntf[$i]['subject']">
+                                    {%|in_report}</a> {%|pm_to_know_details_she}
+                                </if>
+                                <if condition="$userForNotification->getSex() != 3">
+                                    {%|remove_your_answer_in_report_he} <a
+                                        href="index.php?page=report&preg=see&rid=$ntf[$i]['subject']">
+                                    {%|in_report}</a> {%|pm_to_know_details_he}
+                                </if>
+                            </if>
+                            <if condition="$type == 17">
+                                <if condition="$userForNotification->getSex() == 3">
+                                    {%|change_your_answer_in_she} <a
+                                        href="index.php?page=report&preg=see&rid=$ntf[$i]['subject']">{%|to_report}</a>.
+                                </if>
+                                <if condition="$userForNotification->getSex() != 3">
+                                    {%|change_your_answer_in_he} <a
+                                        href="index.php?page=report&preg=see&rid=$ntf[$i]['subject']">{%|to_report}</a>.
+                                </if>
+                            </if>
+                            <if condition="$type == 18">
+                                <if condition="$userForNotification->getSex() == 3">
+                                    {%|added_she} <a href="profile.php?uid=$nAID">{@|\Users\UserAgent::GetUserNick(end(explode(",",
+                                    $ntf[$i]["subject"])))}</a> в <a
+                                        href="index.php?page=report&preg=see&rid=reset(explode(',', $ntf[$i]['subject']))">
+                                    {%|to_report_room}</a>
+                                    {%|for_discussions}.
+                                </if>
+                                <if condition="$userForNotification->getSex() != 3">
+                                    {%|added_he} <a href="profile.php?uid=$nAID">{@|\Users\UserAgent::GetUserNick(end(explode(",",
+                                    $ntf[$i]["subject"])))}</a> в <a
+                                        href="index.php?page=report&preg=see&rid=reset(explode(',', $ntf[$i]['subject']))">
+                                    {%|to_report_room}</a>
+                                    {%|for_discussions}.
+                                </if>
+                            </if>
+                            <if condition="$type == 19">
+                                <if condition="$userForNotification->getSex() == 3">
+                                    {%|remove_she} <a href="profile.php?uid=$nAID">$nANickname</a> из <a
+                                        href="index.php?page=report&preg=see&rid=reset(explode(',', $ntf[$i]['subject']))">{%|from_room}</a>
+                                    {%|for_discussions}
+                                </if>
+                                <if condition="$userForNotification->getSex() != 3">
+                                    {%|remove_he} <a href="profile.php?uid=$nAID">$nANickname</a> из <a
+                                        href="index.php?page=report&preg=see&rid=reset(explode(',', $ntf[$i]['subject']))">{%|from_room}</a>
+                                    {%|for_discussions}
+                                </if>
+                            </if>
+                            <if condition="$type == 20">
+                                <if condition="$userForNotification->getSex() == 3">
+                                    {%|close_she} <a
+                                        href="index.php?page=report&rid=reset(explode(',', $ntf[$i]['subject']))">
+                                    {%|to_report}</a> {%|created_by} <a href="profile.php?uid=$nAID">$nANickname</a>
+                                </if>
+                                <if condition="$userForNotification->getSex() != 3">
+                                    {%|close_he} <a
+                                        href="index.php?page=report&rid=reset(explode(',', $ntf[$i]['subject']))">
+                                    {%|to_report}</a> {%|created_by} <a href="profile.php?uid=$nAID">$nANickname</a>
+                                </if>
+                            </if>
+                            <if condition="$type == 21">
+                                <if condition="$userForNotification->getSex() == 3">
+                                    {%|has_mentioned_in_she} <a
+                                        href="index.php?topic=$subjectNotification">{%|to_topic}</a>.
+                                </if>
+                                <if condition="$userForNotification->getSex() != 3">
+                                    {%|has_mentioned_in_he} <a
+                                        href="index.php?topic=$subjectNotification">{%|to_topic}</a>.
+                                </if>
+                            </if>
+                            <if condition="$type == 22">
+                                <if condition="$userForNotification->getSex() == 3">
+                                    {%|has_mentioned_in_she} <a href="index.php?topic=$topicId#comment-$commentId">{%|in_comment}</a>.
+                                </if>
+                                <if condition="$userForNotification->getSex() != 3">
+                                    {%|has_mentioned_in_he} <a href="index.php?topic=$topicId#comment-$commentId">{%|in_comment}</a>.
+                                </if>
+                            </if>
+                        </with>
+                    </with>
+                    <p class="profile-notification-time">{@|\Engine\Engine::DatetimeFormatToRead(date("Y-m-d H:i:s",
+                        $notify["createTime"]))}</p>
+                </div>
+            </foreach>
+        </if>
+    </with>
+</div>

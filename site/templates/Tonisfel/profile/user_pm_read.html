@@ -1,0 +1,15 @@
+<div data-desc-div="read" id="profile-pm-read">
+    <p class="profile-pm-read-param">Отправитель: <a class="profile-link" href="{PROFILE_PAGE:USER_SENDER_LINK}">{PROFILE_PAGE:USER_SENDER_NICKNAME}</a>
+    </p>
+    <p class="profile-pm-read-param">Получатель: <a class="profile-link" href="{PROFILE_PAGE:USER_RECEIVER_LINK}">{PROFILE_PAGE:USER_RECEIVER_NICKNAME}</a>
+    </p>
+    <p class="profile-pm-read-param">Тема: {PROFILE_PAGE:USER_PM_SUBJECT}</p>
+    <p class="profile-pm-read-param">Когда полученно: {PROFILE_PAGE:USER_PM_RECIEVETIME}</p>
+    <div class="profile-profile-text">
+        {PROFILE_PAGE:USER_PM_TEXT}
+    </div>
+</div>
+<script>
+    showPanel('pm');
+    showDescPanel('body', 'read');
+</script>

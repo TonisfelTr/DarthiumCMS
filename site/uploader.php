@@ -2,12 +2,12 @@
 
 use Users\UserAgent;
 
-if (!defined("TT_Uploader")){
-   return;
+if (!defined("TT_Uploader")) {
+    return;
 }
 if ($user != false) {
-    $uploadList = \Engine\Uploader::GetUploadList($user->getId());
-    $uploadCount = count($uploadList);
+    $uploadList                                              = \Engine\FileAgent::GetUploadList($user->getId());
+    $uploadCount                                             = count($uploadList);
     UserAgent::getCurrentSession()->getContent()["LASTADDR"] = $_SERVER["REQUEST_URI"];
 
     if (!isset($_GET["uploaderVisible"]))
@@ -19,57 +19,91 @@ if ($user != false) {
     if (!empty($_GET["res"])) {
         switch ($_GET["res"]) {
             case "1s":
-                $uploadResponse .= "<div class=\"alert alert-success\"><span class=\"glyphicon glyphicon-ok\"></span> " . \Engine\LanguageManager::GetTranslation("uploader.file_upload_success") . "</div>";
+                $uploadResponse .= "<div class=\"alert alert-success\"><span class=\"glyphicon glyphicon-ok\"></span> "
+                                   . \Engine\LanguageAgent::getTranslation("uploader.file_upload_success")
+                                   . "</div>";
                 break;
             case "1nnf":
-                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-warning-sign\"></span> " . \Engine\LanguageManager::GetTranslation("uploader.not_selected_for_update") . "</div>";
+                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-warning-sign\"></span> "
+                                   . \Engine\LanguageAgent::getTranslation("uploader.not_selected_for_update")
+                                   . "</div>";
                 break;
             case "1nnvft":
-                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-remove\"></span> " . \Engine\LanguageManager::GetTranslation("uploader.invalid_file_format") . "</div>";
+                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-remove\"></span> "
+                                   . \Engine\LanguageAgent::getTranslation("uploader.invalid_file_format")
+                                   . "</div>";
                 break;
             case "1nnvfs":
-                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-remove\"></span> " . \Engine\LanguageManager::GetTranslation("uploader.too_big_file_size") . "</div>";
+                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-remove\"></span> "
+                                   . \Engine\LanguageAgent::getTranslation("uploader.too_big_file_size")
+                                   . "</div>";
                 break;
             case "1ndb":
-                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-warning-sign\"></span> " . \Engine\LanguageManager::GetTranslation("uploader.db_error") . "</div>";
+                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-warning-sign\"></span> "
+                                   . \Engine\LanguageAgent::getTranslation("uploader.db_error")
+                                   . "</div>";
                 break;
             case "1nnp":
-                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-warning-sign\"></span> " . \Engine\LanguageManager::GetTranslation("uploader.move_file_error") . "</div>";
+                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-warning-sign\"></span> "
+                                   . \Engine\LanguageAgent::getTranslation("uploader.move_file_error")
+                                   . "</div>";
                 break;
             case "1n":
-                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-remove\"></span> " . \Engine\LanguageManager::GetTranslation("uploader.file_upload_failed") . "</div>";
+                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-remove\"></span> "
+                                   . \Engine\LanguageAgent::getTranslation("uploader.file_upload_failed")
+                                   . "</div>";
                 break;
             case "1ndsf":
-                $uploadResponse .= "<div class=\"alert alert-success\"><span class=\"glyphicon glyphicon-ok\"></span> " . \Engine\LanguageManager::GetTranslation("uploader.selected_files_removed") . "</div>";
+                $uploadResponse .= "<div class=\"alert alert-success\"><span class=\"glyphicon glyphicon-ok\"></span> "
+                                   . \Engine\LanguageAgent::getTranslation("uploader.selected_files_removed")
+                                   . "</div>";
                 break;
             case "1ndnef":
-                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-warning-sign\"></span> " . \Engine\LanguageManager::GetTranslation("uploader.no_selected_files_for_remove") . "</div>";
+                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-warning-sign\"></span> "
+                                   . \Engine\LanguageAgent::getTranslation("uploader.no_selected_files_for_remove")
+                                   . "</div>";
                 break;
             case "1npdof":
-                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-warning-sign\"></span> " . \Engine\LanguageManager::GetTranslation("uploader.not_permitted_delete_files") . "</div>";
+                $uploadResponse .= "<div class=\"alert alert-danger\"><span class=\"glyphicon glyphicon-warning-sign\"></span> "
+                                   . \Engine\LanguageAgent::getTranslation("uploader.not_permitted_delete_files")
+                                   . "</div>";
                 break;
         }
     }
 
     $uploadFormats = \Engine\Engine::GetEngineInfo("upf");
-    $uploadMaxSize = \Engine\Engine::GetEngineInfo("ups") . " " . \Engine\LanguageManager::GetTranslation("uploader.bytes") . " (" . (\Engine\Engine::GetEngineInfo("ups") / 1024 / 1024) . " " . \Engine\LanguageManager::GetTranslation("uploader.megabytes") . ")";
+    $uploadMaxSize = \Engine\Engine::GetEngineInfo("ups")
+                     . " "
+                     . \Engine\LanguageAgent::getTranslation("uploader.bytes")
+                     . " ("
+                     . (\Engine\Engine::GetEngineInfo("ups") / 1024 / 1024)
+                     . " "
+                     . \Engine\LanguageAgent::getTranslation("uploader.megabytes")
+                     . ")";
 
     $uploadFilesTable = "";
     if ($uploadCount == 0) {
         $uploadFilesTable = "<tr>
-                            <td colspan=\"4\" style=\"text-align: center;\"><span class=\"glyphicon glyphicon-info-sign\"></span> " . \Engine\LanguageManager::GetTranslation("uploader.no_file_uploaded") . "</td>
+                            <td colspan=\"4\" style=\"text-align: center;\"><span class=\"glyphicon glyphicon-info-sign\"></span> "
+                            . \Engine\LanguageAgent::getTranslation("uploader.no_file_uploaded")
+                            . "</td>
                         </tr>";
     } else {
         foreach ($uploadList as $file) {
-            $uploadName = \Engine\Uploader::GetUploadInfo($file["id"], "name");
-            $uploadFilePath = \Engine\Uploader::GetUploadInfo($file["id"], "file_path");
-            $uploadDate = Engine\Engine::DateFormatToRead(\Engine\Uploader::GetUploadInfo($file["id"], "upload_date"));
+            $uploadName       = \Engine\FileAgent::GetUploadInfo($file["id"], "name");
+            $uploadFilePath   = \Engine\FileAgent::GetUploadInfo($file["id"], "file_path");
+            $uploadDate
+                              = Engine\Engine::DateFormatToRead(\Engine\FileAgent::GetUploadInfo($file["id"], "upload_date"));
             $uploadFilesTable .= "<tr>
-                                <td><input type=\"checkbox\" data-fid-selected=\"". $file["id"] . "\"></td>
+                                <td><input type=\"checkbox\" data-fid-selected=\""
+                                 . $file["id"]
+                                 . "\"></td>
                                 <td>$uploadName</td>
                                 <td>
                                     <a href=\"$uploadFilePath\\$uploadName\">
-                                        <span class=\"glyphicons glyphicons-link\"></span> " . \Engine\LanguageManager::GetTranslation("uploader.link") . "
+                                        <span class=\"glyphicons glyphicons-link\"></span> "
+                                 . \Engine\LanguageAgent::getTranslation("uploader.link")
+                                 . "
                                     </a>
                                 </td>
                                 <td>$uploadDate</td>
@@ -89,7 +123,9 @@ if ($user != false) {
     $uploaderBlock = str_replace_once("{PROFILE_UPLOADER:FILES_ACCEPTED_MAX_SIZE}", $uploadMaxSize, $uploaderBlock);
     $uploaderBlock = str_replace_once("{PROFILE_UPLOADER:FILES_TABLE}", $uploadFilesTable, $uploaderBlock);
 
-    $main = str_replace_once("{PROFILE_UPLOADER:STYLESHEET}", "<link rel=\"stylesheet\" href=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/css/uploader-style.css\">", $main);
+    $main = str_replace_once("{PROFILE_UPLOADER:STYLESHEET}", "<link rel=\"stylesheet\" href=\"site/templates/"
+                                                              . \Engine\Engine::GetEngineInfo("stp")
+                                                              . "/css/uploader-style.css\">", $main);
     $main = str_replace_once("{PROFILE_UPLOADER_BLOCK}", $uploaderBlock, $main);
     $main = str_replace_once("{PROFILE_UPLOADER:JS}", $uploaderJS, $main);
 }

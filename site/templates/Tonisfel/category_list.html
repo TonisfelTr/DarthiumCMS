@@ -1,0 +1,3 @@
+<foreach array="\Forum\ForumAgent::GetCategoryList(true)" value="$category">
+    <li><a href="{>|category-topics:$category['id']}">{@|$category['name']}</a></li>
+</foreach>

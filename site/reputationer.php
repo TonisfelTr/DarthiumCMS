@@ -2,31 +2,36 @@
 
 use Users\UserAgent;
 
-$accessType =  ($user->getId() != UserAgent::getCurrentSession()->getContent()["uid"]) ? true : false;
-if ($accessType){
+$accessType = ($user->getId() != UserAgent::getCurrentSession()->getContent()["uid"]) ? true : false;
+if ($accessType) {
     $captchaId = \Guards\CaptchaMen::GenerateCaptcha();
     $captchaImgPath = \Guards\CaptchaMen::GenerateImage(\Guards\CaptchaMen::FetchCaptcha(4));
 }
 if (!empty($_GET["res"]) && in_array($_GET["res"], ["yuid", "sarp", "narp", "nvc"])) $hidden = false;
 else $hidden = true;
 
-if (!empty($_GET["res"])){
+if (!empty($_GET["res"])) {
     $reputationerError = "";
-    switch($_GET["res"]){
+    switch ($_GET["res"]) {
         case "yuid":
-            $reputationerError = "<span class=\"glyphicon glyphicon-remove\"></span> " . \Engine\LanguageManager::GetTranslation("reputationer.you_cannot_change_rep_yourself");
+            $reputationerError = "<span class=\"glyphicon glyphicon-remove\"></span> "
+                                 . \Engine\LanguageAgent::getTranslation("reputationer.you_cannot_change_rep_yourself");
             break;
         case "sarp":
-            $reputationerError = "<span class=\"glyphicon glyphicon-ok\"></span> " . \Engine\LanguageManager::GetTranslation("reputationer.mark_added_success");;
+            $reputationerError = "<span class=\"glyphicon glyphicon-ok\"></span> "
+                                 . \Engine\LanguageAgent::getTranslation("reputationer.mark_added_success");;
             break;
         case "narp":
-            $reputationerError = "<span class=\"glyphicon glyphicon-remove\"></span> " . \Engine\LanguageManager::GetTranslation("reputationer.mark_added_failed");;
+            $reputationerError = "<span class=\"glyphicon glyphicon-remove\"></span> "
+                                 . \Engine\LanguageAgent::getTranslation("reputationer.mark_added_failed");;
             break;
         case "nvc":
-            $reputationerError = "<span class=\"glyphicon glyphicon-warning-sign\"></span> ". \Engine\LanguageManager::GetTranslation("reputationer.invalid_captcha");
+            $reputationerError = "<span class=\"glyphicon glyphicon-warning-sign\"></span> "
+                                 . \Engine\LanguageAgent::getTranslation("reputationer.invalid_captcha");
             break;
         case "nchot":
-            $reputationerError = "<span class=\"glyphicon glyphicon-warning-sign\"></span> " . \Engine\LanguageManager::GetTranslation("reputationer.you_cannot_change_rep_more_one_time");
+            $reputationerError = "<span class=\"glyphicon glyphicon-warning-sign\"></span> "
+                                 . \Engine\LanguageAgent::getTranslation("reputationer.you_cannot_change_rep_more_one_time");
             break;
     }
 }
@@ -35,53 +40,73 @@ include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/rep
 $reputationerBlock = getBrick();
 
 $reputationerBlock = str_replace("{PROFILE_REPUTATIONER:HIDDEN_ATTR}", $hidden ? "hidden" : "", $reputationerBlock);
-$reputationerBlock = str_replace_once("{PROFILE_REPUTATIONER:INFO_BLOCK}", !empty($_GET["res"]) ? $reputationerError : "", $reputationerBlock);
+$reputationerBlock
+                   = str_replace_once("{PROFILE_REPUTATIONER:INFO_BLOCK}", !empty($_GET["res"]) ? $reputationerError : "", $reputationerBlock);
 
 $reputationerAddBlock = "";
 include_once "templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/reputationeradd.html";
 $reputationerAddBlock = getBrick();
 if ($accessType) {
     $reputationerAddBlock = str_replace_once("{PROFILE_REPUTATIONER:UID}", $user->getId(), $reputationerAddBlock);
-    $reputationerAddBlock = str_replace_once("{PROFILE_REPUTATIONER:CAPTCHA_IMG}", $captchaImgPath, $reputationerAddBlock);
+    $reputationerAddBlock
+                          = str_replace_once("{PROFILE_REPUTATIONER:CAPTCHA_IMG}", $captchaImgPath, $reputationerAddBlock);
     $reputationerAddBlock = str_replace_once("{PROFILE_REPUTATIONER:CAPTCHA_ID}", $captchaId, $reputationerAddBlock);
     //1. If user is not current
     if ($user->isThisCurrent())
-    if (\Engine\Engine::GetEngineInfo("vmr") && !$user->getSession()->isEmpty() && $user->getReputation()->getPointsFromUserCount($user->getSession()->getContent()["uid"]) == 0) {
-        $reputationerBlock = str_replace_once("{PROFILE_REPUTATIONER:REPUTATION_ADD}", $reputationerAddBlock, $reputationerBlock);
-    } elseif (!\Engine\Engine::GetEngineInfo("vmr")) {
-        $reputationerBlock = str_replace_once("{PROFILE_REPUTATIONER:REPUTATION_ADD}", $reputationerAddBlock, $reputationerBlock);
-    } elseif (empty($user->getSession()->getContent())){
-        $reputationerBlock = str_replace_once("{PROFILE_REPUTATIONER:REPUTATION_ADD}", "", $reputationerBlock);
-    } else {
-        $reputationerBlock = str_replace_once("{PROFILE_REPUTATIONER:REPUTATION_ADD}", "<div class=\"alert alert-warning\"><span class=\"glyphicons glyphicons-warning-sign\"></span> ". \Engine\LanguageManager::GetTranslation("reputationer.change_rep_only_one_time_tip") . "</div>", $reputationerBlock);
-    }
+        if (\Engine\Engine::GetEngineInfo("vmr") && !$user->getSession()->isEmpty()
+            && $user->getReputation()->getPointsFromUserCount($user->getSession()->getContent()["uid"])
+               == 0) {
+            $reputationerBlock
+                = str_replace_once("{PROFILE_REPUTATIONER:REPUTATION_ADD}", $reputationerAddBlock, $reputationerBlock);
+        } elseif (!\Engine\Engine::GetEngineInfo("vmr")) {
+            $reputationerBlock
+                = str_replace_once("{PROFILE_REPUTATIONER:REPUTATION_ADD}", $reputationerAddBlock, $reputationerBlock);
+        } elseif (empty($user->getSession()->getContent())) {
+            $reputationerBlock = str_replace_once("{PROFILE_REPUTATIONER:REPUTATION_ADD}", "", $reputationerBlock);
+        } else {
+            $reputationerBlock
+                = str_replace_once("{PROFILE_REPUTATIONER:REPUTATION_ADD}", "<div class=\"alert alert-warning\"><span class=\"glyphicons glyphicons-warning-sign\"></span> "
+                                                                            . \Engine\LanguageAgent::getTranslation("reputationer.change_rep_only_one_time_tip")
+                                                                            . "</div>", $reputationerBlock);
+        }
 }
 $reputationerBlock = str_replace_once("{PROFILE_REPUTATIONER:REPUTATION_ADD}", "", $reputationerBlock);
 //Для избежания взаимодействия пользователей с системой замены, пользовательские данные будут вставлены после операций замены.
 $reputationerList = "";
 if (count($user->getReputation()->getReputationArray()) == 0)
-    $reputationerList = "<span class=\"glyphicon glyphicon-info-sign\"></span> " . (($accessType) ? \Engine\LanguageManager::GetTranslation("reputationer.reputation") . " " . $user->getNickname() . " " : \Engine\LanguageManager::GetTranslation("reputationer.your_reputation") . " ") . \Engine\LanguageManager::GetTranslation("reputationer.nobody_change");
+    $reputationerList = "<span class=\"glyphicon glyphicon-info-sign\"></span> "
+                        . (($accessType) ? \Engine\LanguageAgent::getTranslation("reputationer.reputation")
+                                           . " "
+                                           . $user->getNickname()
+                                           . " " : \Engine\LanguageAgent::getTranslation("reputationer.your_reputation")
+                                                   . " ")
+                        . \Engine\LanguageAgent::getTranslation("reputationer.nobody_change");
 else {
     $reputationPoints = $user->getReputation()->getReputationArray();
-    foreach ($reputationPoints as $point){
-        $userRCGenderEnding = \Users\UserAgent::GetUserParam($point["authorId"], "sex") == 2 ? \Engine\LanguageManager::GetTranslation("reputationer.she_changed") : \Engine\LanguageManager::GetTranslation("reputationer.he_changed");
-        $userRCUID = $point["authorId"];
-        $userRCNickname = \Users\UserAgent::GetUserNick($point["authorId"]);
-        $userRCMark = ($point["type"] == 1) ? "<span style=\"color: green;\">" . \Engine\LanguageManager::GetTranslation("reputationer.mark_positive") . "</span>" : "<span style=\"color: darkred;\">" . \Engine\LanguageManager::GetTranslation("reputationer.mark_negative") . "</span>";
-        $userRCDate = \Engine\Engine::DateFormatToRead(date("Y-m-d", $point["createDate"]));
-        $userRCComment = htmlentities(\Engine\Engine::MakeUnactiveCodeWords($point["comment"]));
-        $reputationerList .= "<div class=\"reputation-change-info\">";
-        $reputationerList .= "$userRCGenderEnding: ";
-        $reputationerList .= "<a href=\"profile.php?uid=$userRCUID\">$userRCNickname</a><br>";
-        $reputationerList .= \Engine\LanguageManager::GetTranslation("reputationer.mark") . ": $userRCMark<br>";
-        $reputationerList .= \Engine\LanguageManager::GetTranslation("reputationer.date_from") . ": $userRCDate<br>";
-        $reputationerList .= \Engine\LanguageManager::GetTranslation("reputationer.comment") . ": $userRCComment";
-        $reputationerList .= "</div>";
+    foreach ($reputationPoints as $point) {
+        $userRCGenderEnding = \Users\UserAgent::GetUserParam($point["authorId"], "sex")
+                              == 2 ? \Engine\LanguageAgent::getTranslation("reputationer.she_changed") : \Engine\LanguageAgent::getTranslation("reputationer.he_changed");
+        $userRCUID          = $point["authorId"];
+        $userRCNickname     = \Users\UserAgent::GetUserNick($point["authorId"]);
+        $userRCMark         = ($point["type"] == 1) ? "<span style=\"color: green;\">"
+                                                      . \Engine\LanguageAgent::getTranslation("reputationer.mark_positive")
+                                                      . "</span>" : "<span style=\"color: darkred;\">"
+                                                                    . \Engine\LanguageAgent::getTranslation("reputationer.mark_negative")
+                                                                    . "</span>";
+        $userRCDate         = \Engine\Engine::DateFormatToRead(date("Y-m-d", $point["createDate"]));
+        $userRCComment      = htmlentities(\Engine\Engine::MakeUnactiveCodeWords($point["comment"]));
+        $reputationerList   .= "<div class=\"reputation-change-info\">";
+        $reputationerList   .= "$userRCGenderEnding: ";
+        $reputationerList   .= "<a href=\"profile.php?uid=$userRCUID\">$userRCNickname</a><br>";
+        $reputationerList   .= \Engine\LanguageAgent::getTranslation("reputationer.mark") . ": $userRCMark<br>";
+        $reputationerList   .= \Engine\LanguageAgent::getTranslation("reputationer.date_from") . ": $userRCDate<br>";
+        $reputationerList   .= \Engine\LanguageAgent::getTranslation("reputationer.comment") . ": $userRCComment";
+        $reputationerList   .= "</div>";
     }
 }
 $reputationerBlock = str_replace_once("{PROFILE_REPUTATIONER:REPUTATION_LIST}", $reputationerList, $reputationerBlock);
 
 include "site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/profile/reputationerscript.js";
 $reputationBlockJS = getBrick();
-$main = str_replace_once("{PROFILE_REPUTATIONER:JS}", $reputationBlockJS, $main);
+$main              = str_replace_once("{PROFILE_REPUTATIONER:JS}", $reputationBlockJS, $main);
 ?>

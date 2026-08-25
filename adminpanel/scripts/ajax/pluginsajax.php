@@ -5,7 +5,7 @@ require_once "../../../engine/engine.php";
 if ($sessionRes = \Users\UserAgent::SessionContinue()) $user = new \Users\Models\User($_SESSION["uid"]);
 else { header("Location: ../../../adminpanel.php?p=forbidden"); exit; }
 
-if (!$user->UserGroup()->getPermission("change_engine_settings")){
+if (!$user->getUserGroup()->getPermission("change_engine_settings")){
     header("Location: ../../../adminpanel.php?res=1");
     exit;
 }
@@ -14,13 +14,13 @@ if (isset($_POST["installPlugin"])){
     @$pathToPage = $_POST["pluginCodeName"];
     if (file_exists("../../../addons/$pathToPage/config/config.php")) {
         $installedPackageArray = include("../../../addons/$pathToPage/config/config.php");
-        \Engine\PluginManager::InstallPlugin($installedPackageArray["name"], $installedPackageArray["codeName"], $installedPackageArray["description"], 0);
+        \Engine\PluginAgent::InstallPlugin($installedPackageArray["name"], $installedPackageArray["codeName"], $installedPackageArray["description"], 0);
     }
 }
 
 if (isset($_POST["deletePlugin"])){
     @$codeName = $_POST["pluginCodeName"];
-    \Engine\PluginManager::DeletePlugin($codeName);
+    \Engine\PluginAgent::DeletePlugin($codeName);
 }
 
 if (isset($_POST["descriptionPlugin"])){
@@ -36,12 +36,12 @@ if (isset($_POST["descriptionPlugin"])){
 if (isset($_POST["turnModePlugin"])){
     @$mode = $_POST["mode"];
     @$codeName = $_POST["codename"];
-    if (\Engine\DataKeeper::existsWithConditions("tt_plugins", ["codename" => $codeName]) == true)
-        \Engine\DataKeeper::Update("tt_plugins", ["status" => $mode], ["codename" => $codeName]);
+    if (\Engine\Database::existsWithConditions("tt_plugins", [ "codename" => $codeName]) == true)
+        \Engine\Database::Update("tt_plugins", [ "status" => $mode], [ "codename" => $codeName]);
 }
 
 if (isset($_POST["getModePlugin"])){
     @$codeName = $_POST["codename"];
-    if (\Engine\DataKeeper::existsWithConditions("tt_plugins", ["codename" => $codeName]) == true)
-        echo \Engine\DataKeeper::Get("tt_plugins", ["status"], ["codename" => $codeName])[0]["status"];
+    if (\Engine\Database::existsWithConditions("tt_plugins", [ "codename" => $codeName]) == true)
+        echo \Engine\Database::Get("tt_plugins", [ "status"], [ "codename" => $codeName])[0]["status"];
 }
