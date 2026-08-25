@@ -1,7 +1,7 @@
 <?php
 
 use Engine\Engine;
-use Engine\LanguageManager;
+use Engine\LanguageAgent;
 use Guards\SocietyGuard;
 use Users\Models\User;
 use Users\Services\FlashSession;
@@ -10,14 +10,14 @@ use Users\UserAgent;
 include_once "../../engine/engine.php";
 Engine::LoadEngine();
 
-if (SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){
+if (SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)) {
     header("Location: banned.php");
     exit;
 }
 
 $session = UserAgent::SessionContinue();
-if ($session !== TRUE){
-    FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.you_are_not_authorized"), FlashSession::MA_ERRORS);
+if ($session !== TRUE) {
+    FlashSession::writeIn(LanguageAgent::getTranslation("errors_panel.you_are_not_authorized"), FlashSession::MA_ERRORS);
     header("Location: ../../profile.php");
     exit;
 }
@@ -26,29 +26,24 @@ $user = User::getAvailableCurrentEntity();
 
 if ($user->getUserGroup()->getPermission("change_profile")) {
 
-    if (!empty($_FILES["profile-edit-avatar"])){
+    if (!empty($_FILES["profile-edit-avatar"])) {
         $res = \Users\UserAgent::UploadAvatar($user->getId(), "profile-edit-avatar");
         if ($res === False) {
             header("Location: ../../profile.php?page=edit&res=neav");
             exit;
-        }
-        elseif ($res === 18){
+        } elseif ($res === 18) {
             header("Location: ../../profile.php?page=edit&res=neavvf");
             exit;
-        }
-        elseif ($res === 19) {
+        } elseif ($res === 19) {
             header("Location: ../../profile.php?page=edit&res=neavvs");
             exit;
-        }
-        elseif ($res === 20) {
+        } elseif ($res === 20) {
             header("Location: ../../profile.php?page=edit&res=neavvb");
             exit;
-        }
-        elseif ($res === true) {
+        } elseif ($res === true) {
             header("Location: ../../profile.php?res=seav");
             exit;
-        }
-        else {
+        } else {
             header("Location: ../../profile.php?page=edit&res=neav");
             exit;
         }
@@ -86,38 +81,38 @@ if ($user->getUserGroup()->getPermission("change_profile")) {
         \Users\UserAgent::ChangeUserParams($user->getId(), "public_account", 0);
 
     $adFields = \Users\UserAgent::GetAdditionalFieldsList();
-    foreach ($adFields as $field){
-        \Users\UserAgent::SetAdditionalFieldContent($user->getId(), $field["id"], @$_POST["profile-edit-" . $field["id"]]);
-        if (isset($_POST["profile-public-" . $field["id"]])){
+    foreach ($adFields as $field) {
+        \Users\UserAgent::SetAdditionalFieldContent($user->getId(), $field["id"], @$_POST["profile-edit-"
+                                                                                          . $field["id"]]);
+        if (isset($_POST["profile-public-" . $field["id"]])) {
             \Users\UserAgent::SetPrivacyToAdditionalField($user->getId(), $field["id"], true);
             echo 3;
-        }
-        else {
+        } else {
             \Users\UserAgent::SetPrivacyToAdditionalField($user->getId(), $field["id"], false);
             echo 2;
         }
     }
 
-} elseif (empty($_POST["profile-change-pass-checkbox"])){
+} elseif (empty($_POST["profile-change-pass-checkbox"])) {
     header("Location: ../../profile.php?res=nsi");
     exit;
 }
 
 if (isset($_POST["profile-change-pass-checkbox"])) {
-    if (empty($_POST["profile-change-oldpass"])){
+    if (empty($_POST["profile-change-oldpass"])) {
         header("Location: ../../profile.php?page=security&res=nsop");
         exit;
     }
-    if (empty($_POST["profile-change-newpass"])){
+    if (empty($_POST["profile-change-newpass"])) {
         header("Location: ../../profile.php?page=security&res=nsnp");
         exit;
     }
-    if (empty($_POST["profile-change-renewpass"])){
+    if (empty($_POST["profile-change-renewpass"])) {
         header("Location: ../../profile.php?page=security&res=nsrnp");
         exit;
     }
-    if ($user->getSession()->getContent()["passhash"] == hash("sha256", $_POST["profile-change-oldpass"])){
-        if ($_POST["profile-change-newpass"] == $_POST["profile-change-renewpass"]){
+    if ($user->getSession()->getContent()["passhash"] == hash("sha256", $_POST["profile-change-oldpass"])) {
+        if ($_POST["profile-change-newpass"] == $_POST["profile-change-renewpass"]) {
             $user->passChange($_POST["profile-change-newpass"], true);
             header("Location: ../../profile.php?page=security&res=phbc");
             exit;
@@ -134,7 +129,7 @@ if (isset($_POST["profile-change-pass-checkbox"])) {
 if ($user->getUserGroup()->getPermission("change_profile") && empty($_POST["profile-change-pass-checkbox"])) {
     header("Location: ../../profile.php?page=edit&res=aphbs");
     exit;
-} elseif ($user->getUserGroup()->getPermission("change_profile") && !empty($_POST["profile-change-pass-checkbox"])){
+} elseif ($user->getUserGroup()->getPermission("change_profile") && !empty($_POST["profile-change-pass-checkbox"])) {
     header("Location: ../../profile.php?page=edit&res=apaphbs");
     exit;
 }

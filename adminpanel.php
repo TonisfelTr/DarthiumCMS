@@ -5,14 +5,15 @@
  * Date: 8/1/16
  * Time: 5:50 AM
  */
-include "engine/classes/engine/Engine.php";
+include_once "engine/classes/engine/Engine.php";
 \Engine\Engine::LoadEngine();
 define("TT_AP", true);
 define("ADMINPANEL_TEMPLATES", "adminpanel/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/");
 ob_start();
 
 if ($sessionRes = \Users\UserAgent::SessionContinue()) {
-    $user = new \Users\Models\User((new \Users\Services\Session(\Users\Services\FlashSession::getSessionId()))->getContent()["uid"], true);
+    $user
+        = new \Users\Models\User((new \Users\Services\Session(\Users\Services\FlashSession::getSessionId()))->getContent()["uid"], true);
 } else {
     header("Location: profile.php");
     exit;
@@ -58,12 +59,14 @@ function getOption(string $flag) {
 
 include_once ADMINPANEL_TEMPLATES . "header.html";
 $mainHeader = getBrick();
-$mainHeader = str_replace_once("{ADMINPANEL_TITLE}", \Engine\LanguageManager::GetTranslation("header") . " - " . \Engine\Engine::GetEngineInfo("sn"), $mainHeader);
+$mainHeader = str_replace_once("{ADMINPANEL_TITLE}", \Engine\LanguageAgent::getTranslation("header")
+                                                     . " - "
+                                                     . \Engine\Engine::GetEngineInfo("sn"), $mainHeader);
 
 include_once ADMINPANEL_TEMPLATES . "main.html";
 $obMain = getBrick();
-$obMain = str_replace_once("{ADMINPANEL_HEADER}", \Engine\LanguageManager::GetTranslation("header"), $obMain);
-$obMain = str_replace_once("{ADMINPANEL_HEADER_INFO}", \Engine\LanguageManager::GetTranslation("header_info"), $obMain);
+$obMain = str_replace_once("{ADMINPANEL_HEADER}", \Engine\LanguageAgent::getTranslation("header"), $obMain);
+$obMain = str_replace_once("{ADMINPANEL_HEADER_INFO}", \Engine\LanguageAgent::getTranslation("header_info"), $obMain);
 
 include_once ADMINPANEL_TEMPLATES . "subpanels/uploader.phtml";
 $mainUploader = getBrick();
@@ -74,17 +77,27 @@ if (($rc = \Guards\ReportAgent::GetUnreadedReportsCount()) > 0) {
 
 include_once ADMINPANEL_TEMPLATES . "navbar.html";
 $mainNavbar = getBrick();
-$mainNavbar = str_replace_once("{ADMINPANEL_NAVIGATION_TEXT}", \Engine\LanguageManager::GetTranslation("navigation"), $mainNavbar);
-$mainNavbar = str_replace_once("{ADMINPANEL_NAV_BTN_HOME_ACTIVE}", !getOption("p") && !getOption("plp") ? "active" : "", $mainNavbar);
-$mainNavbar = str_replace_once("{ADMINPANEL_NAV_HOME_BTN_TEXT}", \Engine\LanguageManager::GetTranslation("home"), $mainNavbar);
-$mainNavbar = str_replace_once("{ADMINPANEL_NAV_BTN_SETTINGS_ACTIVE}", getOption("p") == "settings" ? "active" : "", $mainNavbar);
-$mainNavbar = str_replace_once("{ADMINPANEL_NAV_SETTINGS_BTN_TEXT}", \Engine\LanguageManager::GetTranslation("settings"), $mainNavbar);
-$mainNavbar = str_replace_once("{ADMINPANEL_NAV_BTN_REPORTS_ACTIVE}", getOption("p") == "reports" ? "active" : "", $mainNavbar);
-$mainNavbar = str_replace_once("{ADMINPANEL_NAV_REPORTS_BTN_TEXT}", \Engine\LanguageManager::GetTranslation("reports"), $mainNavbar);
+$mainNavbar
+            = str_replace_once("{ADMINPANEL_NAVIGATION_TEXT}", \Engine\LanguageAgent::getTranslation("navigation"), $mainNavbar);
+$mainNavbar = str_replace_once("{ADMINPANEL_NAV_BTN_HOME_ACTIVE}", !getOption("p")
+                                                                   && !getOption("plp") ? "active" : "", $mainNavbar);
+$mainNavbar
+            = str_replace_once("{ADMINPANEL_NAV_HOME_BTN_TEXT}", \Engine\LanguageAgent::getTranslation("home"), $mainNavbar);
+$mainNavbar = str_replace_once("{ADMINPANEL_NAV_BTN_SETTINGS_ACTIVE}", getOption("p")
+                                                                       == "settings" ? "active" : "", $mainNavbar);
+$mainNavbar
+            = str_replace_once("{ADMINPANEL_NAV_SETTINGS_BTN_TEXT}", \Engine\LanguageAgent::getTranslation("settings"), $mainNavbar);
+$mainNavbar = str_replace_once("{ADMINPANEL_NAV_BTN_REPORTS_ACTIVE}", getOption("p")
+                                                                      == "reports" ? "active" : "", $mainNavbar);
+$mainNavbar
+            = str_replace_once("{ADMINPANEL_NAV_REPORTS_BTN_TEXT}", \Engine\LanguageAgent::getTranslation("reports"), $mainNavbar);
 $mainNavbar = str_replace_once("{ADMINPANEL_REPORTS_COUNTER_BLOCK}", $counter ?? "", $mainNavbar);
-$mainNavbar = str_replace_once("{ADMINPANEL_NAV_BTN_LOGS_ACTIVE}", getOption("p") == "logs" ? "active" : "", $mainNavbar);
-$mainNavbar = str_replace_once("{ADMINPANEL_NAV_LOGS_BTN_TEXT}", \Engine\LanguageManager::GetTranslation("logs"), $mainNavbar);
-$mainNavbar = str_replace_once("{ADMINPANEL_NAV_RIGHT_TO_SITE_TEXT}", \Engine\LanguageManager::GetTranslation("to_site_home"), $mainNavbar);
+$mainNavbar = str_replace_once("{ADMINPANEL_NAV_BTN_LOGS_ACTIVE}", getOption("p")
+                                                                   == "logs" ? "active" : "", $mainNavbar);
+$mainNavbar
+            = str_replace_once("{ADMINPANEL_NAV_LOGS_BTN_TEXT}", \Engine\LanguageAgent::getTranslation("logs"), $mainNavbar);
+$mainNavbar
+            = str_replace_once("{ADMINPANEL_NAV_RIGHT_TO_SITE_TEXT}", \Engine\LanguageAgent::getTranslation("to_site_home"), $mainNavbar);
 $mainNavbar = str_replace_once("{ADMINPANEL_NAV_RIGHT_NICKNAME}", $user->getNickname(), $mainNavbar);
 
 if (getOption("res")) {
@@ -117,15 +130,17 @@ $obMain = str_replace_once("{ADMINPANEL_FOOTER}", $mainFooter, $obMain);
 
 if (getOption("p") == "staticc") {
     $obMain = str_replace_once("{ADMINPANEL_STATICC_STYLESHEET}",
-        "<link href=\"site/templates/" . \Engine\Engine::GetEngineInfo("stp") . "/css/sp-style.css\" rel=\"stylesheet\">",
+        "<link href=\"site/templates/"
+        . \Engine\Engine::GetEngineInfo("stp")
+        . "/css/sp-style.css\" rel=\"stylesheet\">",
         $obMain);
 } else {
     $obMain = str_replace_once("{ADMINPANEL_STATICC_STYLESHEET}", "", $obMain);
 }
 
-$obMain = \Engine\PluginManager::IntegrateCSS($obMain);
-$obMain = \Engine\PluginManager::IntegrateFooterJS($obMain);
-$obMain = \Engine\PluginManager::IntegrateHeaderJS($obMain);
+$obMain = \Engine\PluginAgent::IntegrateCSS($obMain);
+$obMain = \Engine\PluginAgent::IntegrateFooterJS($obMain);
+$obMain = \Engine\PluginAgent::IntegrateHeaderJS($obMain);
 echo $obMain;
 \Guards\Logger::addVisitLog("I was in adminpanel page.");
 

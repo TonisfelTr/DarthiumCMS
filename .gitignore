@@ -12,3 +12,7 @@
 /node_modules/
 /package-lock.json
 /vendor/
+/docker/
+/docker-compose.yml
+/Dockerfile
+/xdebug.ini

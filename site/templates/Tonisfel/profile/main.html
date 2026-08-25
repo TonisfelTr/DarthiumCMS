@@ -8,22 +8,21 @@
     <meta name="description" content="{ENGINE_META:DESCRIPTION}">
     <meta name="keywords" content="{ENGINE_META:KEYWORDS}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-	<script src="{>|libs-path:js/ie-emulator.js}"></script>
-    <script src="{>|libs-path:bootstrap/js/bootstrap.min.js}"></script>
-    <script src="{>|libs-path:bootstrap/js/bootstrap.bundle.js}"></script>
-    <script src="{>|libs-path:bootstrap/js/jquery-ui.min.js}"></script>
-    <script>window.jQuery || document.write('&lt;script src="../../../libs/js/jquery-3.1.0.min.js"&gt;&lt;\/script&gt;')</script>
+	<script src="{assets|js/ie-emulator.js}"></script>
+    <script src="{assets|libs/bootstrap/js/bootstrap.min.js}"></script>
+    <script src="{assets|js/jquery-3.1.0.min.js}"></script>
+    <script>window.jQuery || document.write('&lt;script src="{assets|js/jquery-3.1.0.min.js}"&gt;&lt;\/script&gt;')</script>
     {PLUGIN_HEAD_JS}
-    <link href="{>|libs-path:bootstrap/css/ie10-viewport.css}" rel="stylesheet">
-    <link href="{>|libs-path:bootstrap/css/bootstrap.css}" rel="stylesheet">
-    <link href="{>|libs-path:bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-    <link href="{>|libs-path:bootstrap/css/glyphicons-regular.css}" rel="stylesheet">
-    <link href="{>|css-main:profile-style.css}" rel="stylesheet">
+    <link href="{assets|libs/bootstrap/css/ie10-viewport.css}" rel="stylesheet">
+    <link href="{assets|libs/bootstrap/css/bootstrap.css}" rel="stylesheet">
+    <link href="{assets|libs/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <link href="{assets|libs/bootstrap/css/glyphicons-regular.css}" rel="stylesheet">
+    <link href="{assets|css/profile-style.css}" rel="stylesheet">
     <link href="{>|site-icon}" rel="icon">
     {PLUGINS_STYLESHEETS}
     {PROFILE_REPUTATIONER:STYLESHEET}
     {PROFILE_UPLOADER:STYLESHEET}
-    <script src="/site/scripts/UserFinderParser.js"></script>
+    <script src="{assets|js/UserFinderParser.js}"></script>
     {PROFILE_PAGE_GUI_CUSTOM_SCRIPT}
 </head>
 <body>
@@ -34,14 +33,11 @@
 	    </div>
 	    {PROFILE_PAGE_FOOTER}
 	</div>
-	<script type="text/javascript">
-	    showFirstPanel();
-	</script>
 	{PROFILE_JS:SHOW_PANEL}
 	{PROFILE_PAGE_GUI_SCRIPT}
 	{PROFILE_REPUTATIONER:JS}
 	{PROFILE_UPLOADER:JS}
-	<script src="../../../libs/lightbox/js/lightbox.js"></script>
+	<script src="{assets|libs/lightbox/js/lightbox.js}"></script>
 	{PLUGIN_FOOTER_JS}
 	{METRIC_JS}
 	</body>

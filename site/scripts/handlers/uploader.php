@@ -18,7 +18,7 @@ else $symbol = "&";
 
 if (isset($_POST["uploader-upload-file"])){
     if($user->getUserGroup()->getPermission("upload_add")){
-        $result = \Engine\Uploader::UploadFile($user->getId(), $_FILES['uploader-file']);
+        $result = \Engine\FileAgent::UploadFile($user->getId(), $_FILES['uploader-file']);
         if ($result === TRUE) {
             header("Location: " . $user->getSession()->getContent()["LASTADDR"] . $symbol . "res=1s&uploaderVisible");
             $user->getSession()->getContent()["LASTADDR"] = null;
@@ -64,7 +64,7 @@ if (isset($_POST["uploader-delete-file"])){
         } else {
             $filesToDelete = explode(",", $_REQUEST["fdelete"]);
             for ($i = 0; $i <= count($filesToDelete) - 1; $i++) {
-                if (!\Engine\Uploader::DeleteFile($filesToDelete[$i])){
+                if (!\Engine\FileAgent::DeleteFile($filesToDelete[$i])){
                     header("Location: " . $user->getSession()->getContent()["LASTADDR"] . $symbol . "res=1ndsf&uploaderVisible");
                     $user->getSession()->getContent()["LASTADDR"] = null;
                     exit;

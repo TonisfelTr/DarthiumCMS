@@ -1,0 +1,23 @@
+<div class="profile-panel-bottom-group-btn">
+    <a class="profile-profile-btn" href="{>|logout}"><span class="profile-btn-span"></span> Выйти</a>
+    <a class="profile-profile-btn" href="{>|main-page}"><span class="profile-btn-span"></span> На главную</a>
+    <button class="profile-profile-btn" type="button" id="profile-news-panel-btn" onclick="showPanel('notifications');">
+        <span class="profile-btn-span"></span> <span id="profile-btn-notifications-counter-span"
+                                                     class="{PROFILE_NOTIFICS_SPAN_CLASS}">{PROFILE_NOTIFICS_SPAN_COUNT}</span>
+        Уведомления
+    </button>
+    <button class="profile-profile-btn" type="button" id="profile-pm-panel-btn" onclick="showPanel('pm');"><span
+            class="profile-btn-span"></span> <span class="{PROFILE_PM_SPAN_CLASS}">{PROFILE_PM_SPAN_COUNT}</span> Личные
+        сообщения
+    </button>
+    <button class="profile-profile-btn" type="button" id="profile-edit-panel-btn"
+            onclick="showPanel('edit');"><span
+            class="profile-btn-span"></span> Редактирование
+    </button>
+    <button class="profile-profile-btn" type="button" id="profile-custom-panel-btn" onclick="showPanel('info');"><span
+            class="profile-btn-span"></span> Основная информация
+    </button>
+    <if condition="\Users\UserAgent::getCurrentUser()->getUserGroup()->getPermission('enterpanel')">
+        <a class="profile-profile-btn" href="adminpanel">Админ-панель</a>
+    </if>
+</div>

@@ -7,12 +7,12 @@ body {
 
 @font-face {
     font-family: "My Passion";
-    src: url(../../../../libs/styles/font.otf);
+    src: url(font.otf);
 }
 
 @font-face {
     font-family: "Trebuchet MS";
-    src: url("../../../../libs/styles/site-font.ttf");
+    src: url("site-font.ttf");
 }
 
 body {
@@ -167,6 +167,55 @@ select.profile-input option {
 .profile-btn-group button:last-child {
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
+}
+
+.profile-btn-group.auth-btns button {
+    padding: 8px;
+    color: black;
+    border: none;
+    background: #ddd;
+    min-width: 105px;
+}
+
+.profile-btn-group.auth-btns button:first-child {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.profile-btn-group.auth-btns button:nth-child(2) {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.profile-btn-group.auth-btns button:hover {
+    background: #bbb;
+}
+
+.profile-btn-group.auth-btns button:active {
+    background: #aaa;
+}
+
+.profile-btn-group.auth-btns span {
+    margin: 10px auto;
+    cursor: pointer;
+}
+
+.profile-btn-group.auth-btns a {
+    color: #fff;
+}
+
+.profile-btn-group.auth-btns span:hover,
+.profile-btn-group.auth-btns a:hover {
+    color: #bbb;
+}
+
+.profile-btn-group.auth-btns span:active,
+.profile-btn-group.auth-btns a:active {
+    color: #aaa;
 }
 
 span.helper {
@@ -815,4 +864,8 @@ div.flex-column {
 
 div.align-items-center {
     align-items: center;
+}
+
+.wh-100 {
+    width: 100%;
 }

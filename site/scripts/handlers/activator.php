@@ -1,7 +1,7 @@
 <?php
 
 use Engine\Engine;
-use Engine\LanguageManager;
+use Engine\LanguageAgent;
 use Guards\SocietyGuard;
 use Users\Models\User;
 use Users\UserAgent;
@@ -10,7 +10,7 @@ use Users\Services\FlashSession;
 require_once "../../engine/engine.php";
 Engine::LoadEngine();
 
-if (SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)){
+if (SocietyGuard::IsBanned($_SERVER["REMOTE_ADDR"], true)) {
     header("Location: banned.php");
     exit;
 }
@@ -33,17 +33,17 @@ if (isset($_REQUEST["profile-activation-code-send-btn"])) {
         }
 
         if (empty($activateCode)) {
-            FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.activation_code_does_not_sended"), FlashSession::MA_ERRORS);
+            FlashSession::writeIn(LanguageAgent::getTranslation("errors_panel.activation_code_does_not_sended"), FlashSession::MA_ERRORS);
             header("Location: ../../profile.php?activate");
             exit;
         }
 
         if (UserAgent::ActivateAccount($uid, $activateCode)) {
-            FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.account_has_been_activated_successfully"), FlashSession::MA_INFOS);
+            FlashSession::writeIn(LanguageAgent::getTranslation("errors_panel.account_has_been_activated_successfully"), FlashSession::MA_INFOS);
             header("Location: ../../profile.php?uid=" . $uid);
             exit;
         } else {
-            FlashSession::writeIn(LanguageManager::GetTranslation("errors_panel.invalid_activation_code"), FlashSession::MA_ERRORS);
+            FlashSession::writeIn(LanguageAgent::getTranslation("errors_panel.invalid_activation_code"), FlashSession::MA_ERRORS);
             header("Location: ../../profile.php?activate");
             exit;
         }
@@ -51,7 +51,7 @@ if (isset($_REQUEST["profile-activation-code-send-btn"])) {
 }
 
 
-if (isset($_REQUEST["profile-activation-cancel-btn"])){
+if (isset($_REQUEST["profile-activation-cancel-btn"])) {
     \Users\UserAgent::SessionDestroy();
     header("Location: ../../profile.php");
     exit;

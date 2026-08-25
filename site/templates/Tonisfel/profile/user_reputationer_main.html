@@ -1,0 +1,15 @@
+<div class="reputation-background" id="reputation-frame" {PROFILE_REPUTATIONER:HIDDEN_ATTR}>
+    <div class="reputation-form">
+        <div class="reputation-head">
+            Репутация
+            <button type="button" onclick="hideIt()">X</button>
+        </div>
+        <div class="reputation-body">
+            <div class="reputation-errors" id="reputation-errors" {PROFILE_REPUTATIONER:HIDDEN_ATTR}>
+                {PROFILE_REPUTATIONER:INFO_BLOCK}
+            </div>
+            {PROFILE_REPUTATIONER:REPUTATION_LIST}
+        </div>
+        {PROFILE_REPUTATIONER:REPUTATION_ADD}
+    </div>
+</div>

@@ -117,11 +117,11 @@ if ($nicknameResult.$passwordResult.$emailResult.$refererResult == ("ok,ok,ok;ok
                         exit;
                     } else {
                         echo 2;
-                        \Users\UserAgent::SetAdditionalFieldContent(\Engine\DataKeeper::getMax("tt_users", "id"), $fieldProp["id"], $_POST["profile-adfield-" . $fieldProp["id"]]);
+                        \Users\UserAgent::SetAdditionalFieldContent(\Engine\Database::getMax("tt_users", "id"), $fieldProp["id"], $_POST["profile-adfield-" . $fieldProp["id"]]);
                     }
                 } else {
                     echo 3;
-                    \Users\UserAgent::SetAdditionalFieldContent(\Engine\DataKeeper::getMax("tt_users", "id"), $fieldProp["id"], $_POST["profile-adfield-" . $fieldProp["id"]]);
+                    \Users\UserAgent::SetAdditionalFieldContent(\Engine\Database::getMax("tt_users", "id"), $fieldProp["id"], $_POST["profile-adfield-" . $fieldProp["id"]]);
                 }
             } else
                 continue;

@@ -26,7 +26,7 @@ else $symbol = "&";
 
 if (isset($_POST["uploader-upload-file-btn"])){
     if($user->getUserGroup()->getPermission("upload_add")){
-        $result = \Engine\Uploader::UploadFile($user->getId(),"uploader-file-input");
+        $result = \Engine\FileAgent::UploadFile($user->getId(), "uploader-file-input");
         if ($result === TRUE) {
             header("Location: " . $_SESSION["LASTADDR"] . $symbol . "res=1s&upload");
             $_SESSION["LASTADDR"] = null;
@@ -73,7 +73,7 @@ if (isset($_POST["uploader-file-delete"]) || isset($_POST["uploader-delete-files
             } else {
                 $filesToDelete = explode(",", $_POST["uploader-file-delete-ids"]);
                 for ($i = 0; $i <= count($filesToDelete) - 1; $i++) {
-                    if (!\Engine\Uploader::DeleteFile($filesToDelete[$i])) {
+                    if (!\Engine\FileAgent::DeleteFile($filesToDelete[$i])) {
                         header("Location: " . $_SESSION["LASTADDR"] . $symbol . "res=1ndsf&upload");
                         $_SESSION["LASTADDR"] = null;
                         exit;
@@ -90,7 +90,7 @@ if (isset($_POST["uploader-file-delete"]) || isset($_POST["uploader-delete-files
                 $_SESSION["LASTADDR"] = null;
                 exit;
             } else {
-                if (!\Engine\Uploader::DeleteFile($_POST["fid"])) {
+                if (!\Engine\FileAgent::DeleteFile($_POST["fid"])) {
                     header("Location: " . $_SESSION["LASTADDR"] . $symbol . "res=1ndsf&upload");
                     $_SESSION["LASTADDR"] = null;
                     exit;

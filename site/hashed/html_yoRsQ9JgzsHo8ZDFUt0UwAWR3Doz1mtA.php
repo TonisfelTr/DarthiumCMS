@@ -1,0 +1,4 @@
+<a aria-expanded="false" aria-haspopup="true" role="button" data-toggle="dropdown" class="dropdown-toggle" href="#"><span class="caret"></span> Профиль</a>
+<ul class="dropdown-menu">
+    <li><a id="index-profile" href="<?= \Engine\RouteAgent::buildRoute('profile-page', []) ?>">Авторизация</a></li>
+</ul>

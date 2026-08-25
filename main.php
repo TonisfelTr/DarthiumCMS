@@ -1,6 +1,6 @@
 <?php
 
-use Builder\Controllers\BuildManager;
+use Builder\Controllers\BuildAgent;
 use Builder\Controllers\TagAgent;
 use Builder\Controllers\BannerAgent;
 use Engine\Engine;
@@ -28,9 +28,10 @@ use Users\UserAgent;
 
 define("CURRENT_MODULE", "main");
 
-$main = BuildManager::includeFromTemplateAndCompile("main.html");
+$main = BuildAgent::includeFromTemplateAndCompile("main.html");
 
 echo $main;
+\Users\Services\FlashSession::clearContainers();
 
 exit(1);
 ?>

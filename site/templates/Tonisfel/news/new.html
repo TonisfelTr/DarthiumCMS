@@ -28,7 +28,7 @@
                             <span class="glyphicons glyphicons-gender-male"></span> {%|gender_male}
                         </if>
                         <if condition="$author->getSex() == 1">
-                            <span class="glyphicons glyphicons-gender-intersex"></span> {%|not_setted}
+                            <span class="glyphicons glyphicons-gender-intersex"></span> {%|not_set}
                         </if>
                         <br>
                         {%|last_visit}:
@@ -67,7 +67,7 @@
                 <div>{%|created_date}: {@|\Engine\Engine::DatetimeFormatToRead($topic->getCreateDate())}</div>
                 <div>
                     <if condition="$topic->getLastEditor() != ''">
-                        {@|\Engine\LanguageManager::GetTranslation("newsviewer.last_edited")}
+                        {@|\Engine\LanguageAgent::getTranslation("newsviewer.last_edited")}
                         by <a href="{>|profile-page-defined:$topic->getLastEditor()}">{@|\Users\UserAgent::GetUserNick($topic->getLastEditor())}</a>
                         {%|in} {@|\Engine\Engine::DatetimeFormatToRead($topic->getLastEditDateTime())}
                     </if>
@@ -138,7 +138,7 @@
                                         </div>
                                         <hr>
                                         <if condition="$author->getSignature() == ''">
-                                            {%|not_setted}
+                                            {%|not_set}
                                         </if>
                                         <if condition="$author->getSignature() != ''">
                                             {@|nl2br(html_entity_decode(\Engine\Engine::ChatFilter(\Engine\Engine::CompileBBCode($author->getSignature()))))}

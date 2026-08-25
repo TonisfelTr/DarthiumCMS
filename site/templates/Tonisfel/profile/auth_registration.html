@@ -1,0 +1,88 @@
+<div class="hidden" data-div-title="registration">
+	{AUTH_PAGE:REGISTRATION_ERRORS}
+	<form method="post" id="profile-reg-form-form" action="{>|signup}">
+		<csrf>
+		<p>Все поля помеченные звёздочкой обязательны для заполнения.</p>
+		<div>
+			<input class="profile-input" type="text" id="profile-reg-nickname-input" name="nickname" placeholder="Никнейм*" autocomplete="new-password" maxlength="16">
+			<span class="helper"><span class="glyphicon glyphicon-info-sign"></span> Длина никнейма не может быть меньше 4 и больше 16 символов.</span>
+		</div>
+		<div>
+			<input class="profile-input" type="password" id="profile-reg-password-input" name="password" placeholder="Пароль*" autocomplete="new-password">
+			<span class="helper"><span
+					class="glyphicon glyphicon-info-sign"></span> Подбирайте сложный пароль. Минимальная длина - 7 символов. <strong>Пароли asdf1 и Asdf1 - разные пароли!</strong></span>
+		</div>
+		<div>
+			<input class="profile-input" type="password" id="profile-reg-repassword-input" name="password-confirm" placeholder="Повторите пароль*" autocomplete="new-password">
+		</div>
+		<div>
+			<input class="profile-input" type="email" id="profile-reg-email-input" name="email" placeholder="Email*" autocomplete="new-password">
+			<span class="helper"><span class="glyphicon glyphicon-info-sign"></span>
+				<with var="$needActivate" value="\Engine\Engine::GetEngineInfo('na')">
+					<if condition="$needActivate">
+						{%|activation_notify}
+					</if>
+					<if condition="!$needActivate">
+						{%|email_notify}
+					</if>
+				</with>
+			</span>
+		</div>
+		<hr>
+		<div>
+			<input class="profile-input" type="text" id="profile-reg-referer-input" name="referer" placeholder="Реферер" autocomplete="new-password">
+			<span class="helper"><span class="glyphicon glyphicon-info-sign"></span> Если Вы пришли на сайт по направлению какого-то пользователя, пожалуйста, напишите его никнейм.</span>
+		</div>
+		<foreach array="\Users\UserAgent::GetAdditionalFieldsList(true)" value="$el">
+			<div>
+				<input class="profile-input" type="text" name="additional-field-{@|$el['id']}" placeholder="{@|$el['name']}">
+				<if condition="!empty($el['description'])">
+					<span class="helper"><span class="glyphicon glyphicon-info-sign"></span> {@|$el['description']}</span>
+				</if>
+			</div>
+		</foreach>
+		<hr>
+		<h3>Дополнительная информация</h3>
+		<p>Данные поля не обязательны к заполнению.</p>
+		<div>
+			<input class="profile-input" type="text" name="realname" placeholder="Как Вас зовут?" autocomplete="new-password">
+		</div>
+		<div>
+			<input class="profile-input" type="text" name="city" placeholder="Откуда Вы?" autocomplete="new-password">
+		</div>
+		<div>
+			<select class="profile-input" name="sex">
+				<option value="1">Пол не выбран</option>
+				<option value="2">Мужской</option>
+				<option value="3">Женский</option>
+			</select>
+		</div>
+		<foreach array="\Users\UserAgent::GetAdditionalFieldsList()" value="$el">
+			<div>
+				<input class="profile-input" type="text" name="additional-field-{@|$el['id']}" placeholder="{@|$el['name']}">
+				<if condition="!empty($el['description'])">
+					<span class="helper"><span class="glyphicon glyphicon-info-sign"></span> {@|$el['description']}</span>
+				</if>
+			</div>
+		</foreach>
+		<hr>
+		<div>
+			<p>Введите то, что написано на картинке.</p>
+			<input class="profile-input" type="text" id="profile-reg-captcha-input" name="captcha" placeholder="Капча*" autocomplete="new-password">
+			<with var="$captcha" value="\Guards\CaptchaMen::GenerateCaptcha()">
+				<img src="{@|\Guards\CaptchaMen::GenerateImage(\Guards\CaptchaMen::FetchCaptcha(1))}">
+				<input type="hidden" value="{@|$captcha}" name="captcha-id">
+			</with>
+		</div>
+		<div class="profile-btn-group">
+			<button type="submit" id="profile-reg-reg-btn">Зарегистрироваться</button>
+			<button type="reset">Отчистить форму</button>
+			<button type="button" onclick="showPanel('login', 'Авторизация')">Назад к авторизации</button>
+		</div>
+	</form>
+</div>
+<if condition="\Users\Services\FlashSession::hasErrors() && \Users\Services\FlashSession::hasSystem('registration')">
+	<script>
+		showPanel("registration", "Регистрация");
+	</script>
+</if>

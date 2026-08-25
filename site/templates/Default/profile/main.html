@@ -9,7 +9,7 @@
     <meta name="keywords" content="{ENGINE_META:KEYWORDS}">
     <script src="libs/js/ie-emulator.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="libs/bootstrap/js/bootstrap.min.js"></script>
     <script src="libs/bootstrap/js/jquery-ui.min.js"></script>
     <script src="libs/bootstrap/js/bootstrap.bundle.js"></script>
@@ -26,7 +26,9 @@
     {PROFILE_UPLOADER:STYLESHEET}
     <script src="/site/scripts/UserFinderParser.js"></script>
     <script type="text/javascript">
-        {PROFILE_PAGE_GUI_CUSTOM_SCRIPT}
+        {
+	        PROFILE_PAGE_GUI_CUSTOM_SCRIPT
+        }
     </script>
 </head>
 <body>
@@ -36,14 +38,11 @@
         {PROFILE_MAIN_BODY}
     </div>
     {PROFILE_PAGE_FOOTER}
-<script type="text/javascript">
-    showFirstPanel();
     {PROFILE_JS:SHOW_PANEL}
     {PROFILE_PAGE_GUI_SCRIPT}
     {PROFILE_REPUTATIONER:JS}
     {PROFILE_UPLOADER:JS}
     {SPOILER_CONTROLLER:JS}
-</script>
 <script src="../../../libs/lightbox/js/lightbox.js"></script>
 {PLUGIN_FOOTER_JS}
 {METRIC_JS}

@@ -1,0 +1,4 @@
+
+<?php if(\Engine\RouteAgent::getCurrentRoute()->getName() === 'category-topics') { ?>
+
+      <div class="alert alert-info">          <span class="glyphicons glyphicons-info-sign"></span> <strong>Категория:</strong>          <?= \Forum\ForumAgent::GetCategoryParam(\Engine\RouteAgent::getCurrentRoute()->getValueOfChainLink("category_id"), "name") ?>      </div>  <?php } ?>

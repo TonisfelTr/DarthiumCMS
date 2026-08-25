@@ -1,0 +1,24 @@
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+                <span class="sr-only">Управление навигацией</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="#" class="navbar-brand">Навигация</a>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="nav navbar-nav">
+                {INDEX_NAVBAR_BTNS}
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {END_NAVBAR_BTNS}
+                <li class="dropdown">
+                    {INDEX_PROFILE_MENU}
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

@@ -33,7 +33,7 @@ if (!empty($nickname) && \Users\UserAgent::IsNicknameExists($nickname)) {
     $body = str_replace("{MAIL_BODY_MAIN}", $bodyMain, $body);
     $body = str_replace("{MAIL_FOOTER_INFORMATION}", "С уважением, Администрация \"" . Engine\Engine::GetEngineInfo("sn") . "\"<br>
                                                                          Все права защищены ©", $body);
-    if (!\Engine\Mailer::SendMail($body, $user->getEmail(), "Напоминание пароля - Администрация \"" . Engine\Engine::GetEngineInfo("sn") . "\"")){
+    if (!\Engine\MailAgent::SendMail($body, $user->getEmail(), "Напоминание пароля - Администрация \"" . Engine\Engine::GetEngineInfo("sn") . "\"")){
         echo "not sended";
         exit;
     } else {
@@ -64,7 +64,7 @@ if (!empty($email) && Users\UserAgent::IsEmailExists($email)){
     $body = str_replace("{MAIL_BODY_MAIN}", $bodyMain, $body);
     $body = str_replace("{MAIL_FOOTER_INFORMATION}", "С уважением, Администрация \"" . Engine\Engine::GetEngineInfo("sn") . "\"<br>
                                                                          Все права защищены ©", $body);
-    if (!\Engine\Mailer::SendMail($body, $email, "Напоминание пароля - Администрация \"" . Engine\Engine::GetEngineInfo("sn") . "\"")){
+    if (!\Engine\MailAgent::SendMail($body, $email, "Напоминание пароля - Администрация \"" . Engine\Engine::GetEngineInfo("sn") . "\"")){
         echo "not sended";
         exit;
     } else {

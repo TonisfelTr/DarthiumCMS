@@ -1,0 +1,10 @@
+<if condition="\Users\Services\FlashSession::hasErrors() && \Users\Services\FlashSession::readFromSystemContainer('registration')">
+    <div class="profile-reg-error-div" id="profile-reg-error-div">
+        <p>Во время регистрации произошли следующие ошибки:</p>
+        <ol>
+            <foreach array="\Users\Services\FlashSession::getErrors()" value="$msg">
+                <li>{@|$msg}</li>
+            </foreach>
+        </ol>
+    </div>
+</if>

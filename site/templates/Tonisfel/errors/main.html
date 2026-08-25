@@ -7,13 +7,13 @@
     <meta name="description" content="{ENGINE_META:DESCRIPTION}">
     <meta name="keywords" content="{ENGINE_META:KEYWORDS}">
     <title>{ERROR_PAGE_TITLE} - {SITE_NAME}</title>
-    <link rel="stylesheet" type="text/css" href="{SITE_DOMAIN}/css/main/errors/error-style.css">
-    <link href="{SITE_DOMAIN}/libs/bootstrap/css/bootstrap.css">
-    <link href="{SITE_DOMAIN}/libs/bootstrap/css/bootstrap.min.css">
-    <link href="{SITE_DOMAIN}/images/icon" rel="icon">
-    <script src="{SITE_DOMAIN}/libs/js/jquery-3.1.0.min.js"></script>
-    <script src="{SITE_DOMAIN}/libs/bootstrap/js/bootstrap.js"></script>
-    <script src="{SITE_DOMAIN}/libs/codemirror/v6/codemirror.js" type="module"></script>
+    <link rel="stylesheet" type="text/css" href="{SITE_DOMAIN}/assets/css/error-style.css">
+    <link href="{SITE_DOMAIN}/assets/libs/bootstrap/css/bootstrap.css">
+    <link href="{SITE_DOMAIN}/assets/libs/bootstrap/css/bootstrap.min.css">
+    <link href="{SITE_DOMAIN}/assets/css/icon.ico" rel="icon">
+    <script src="{SITE_DOMAIN}/assets/js/jquery-3.1.0.min.js"></script>
+    <script src="{SITE_DOMAIN}/assets/libs/bootstrap/js/bootstrap.js"></script>
+    <script src="{SITE_DOMAIN}/assets/libs/codemirror/codemirror.js" type="module"></script>
     <script type="text/javascript">
         var exports = [];
     </script>
@@ -72,9 +72,9 @@
             </div>
         </div>
     </div>
-    <script type="module" src="{SITE_DOMAIN}/js/main/errors/codemirror.js" rel="script"></script>
+    <script type="module" src="{SITE_DOMAIN}/assets/libs/codemirror/codemirror.js" rel="script"></script>
     <script type="module">
-        import {changeActiveLineInDOM} from "{SITE_DOMAIN}/js/main/errors/codemirror.js";
+        import {changeActiveLineInDOM} from "{SITE_DOMAIN}/assets/libs/codemirror/codemirror.js";
         changeActiveLineInDOM({ERROR_MANAGER:LINE});
     </script>
     <script type="text/javascript">

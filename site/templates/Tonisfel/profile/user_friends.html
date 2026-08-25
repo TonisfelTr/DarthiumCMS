@@ -1,0 +1,44 @@
+<div class="hidden" data-div-title="friends">
+    <div class="profile-profile-panel-btn-group" data-div-default>
+        <button class="profile-profile-panel-btn" type="button" id="profile-friends-list-btn"
+                onclick="showSubpanel('friends', 'friend-list');"><span class="glyphicons glyphicons-list"></span>
+            Список друзей
+        </button>
+        <button class="profile-profile-panel-btn" type="button" id="profile-friends-add-btn"
+                onclick="showSubpanel('friends', 'friend-add');"><span class="glyphicons glyphicons-user-add"></span>
+            Добавить
+            друга
+        </button>
+    </div>
+    <h3>Друзья</h3>
+    <div data-subdiv-title="friend-list">
+        <p>Здесь Вы можете управлять списком Ваших друзей.</p>
+        <hr>
+        <div class="table-responsive">
+            <table class="profile-friends-table">
+                <thead>
+                <tr>
+                    <td></td>
+                    <td>Никнейм</td>
+                    <td>Когда добавлен</td>
+                    <td></td>
+                </tr>
+                </thead>
+                <tbody>
+                {PROFILE_FRIENDS_TABLE_BODY}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="hidden" data-subdiv-title="friend-add">
+        <p>Здесь Вы можете добавить пользователя в друзья.</p>
+        <div class="profile-profile-edit-group">
+            <input class="profile-input" type="text" maxlength="16" name="profile-friend-nickname-add-input"
+                   id="profile-friend-nickname-add-input" placeholder="Введите никнейм">
+            <button class="profile-input-btn" type="submit" name="profile-friend-add-btn"
+                    formaction="./site/scripts/friender.php"><span class="glyphicons glyphicons-user-add"></span>
+                Добавить в друзья
+            </button>
+        </div>
+    </div>
+</div>

@@ -8,12 +8,12 @@ body{
 
 @font-face {
     font-family: "My Passion";
-    src: url(/libs/styles/font.otf);
+    src: url(font.otf);
 }
 
 @font-face {
     font-family: "Trebuchet MS";
-    src: url(/libs/styles/site-font.ttf);
+    src: url(site-font.ttf);
 }
 
 body{

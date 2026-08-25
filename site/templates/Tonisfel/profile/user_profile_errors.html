@@ -1,0 +1,21 @@
+<if condition="\Users\Services\FlashSession::readFromSystemContainer('profile-edit')">
+    <if condition="\Users\Services\FlashSession::hasErrors()">
+        <div class="profile-reg-error-div" id="profile-reg-error-div">
+            <p>Во время редактирования обнаружены следующие ошибки:</p>
+            <ol>
+                <foreach array="\Users\Services\FlashSession::getErrors()" value="$msg">
+                    <li>{@|$msg}</li>
+                </foreach>
+            </ol>
+        </div>
+    </if>
+    <if condition="\Users\Services\FlashSession::hasInfos()">
+        <div class="profile-reg-success-div" id="profile-reg-success-div">
+            <ol>
+                <foreach array="\Users\Services\FlashSession::getInfos()" value="$msg">
+                    <li>{@|$msg}</li>
+                </foreach>
+            </ol>
+        </div>
+    </if>
+</if>

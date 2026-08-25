@@ -1,10 +1,12 @@
 <?php
 
-use Builder\Controllers\BuildManager;
+use Builder\Controllers\BuildAgent;
 
-$profileMain = BuildManager::includeFromTemplateAndCompile("profile/main.html", true);
+$profileMain = BuildAgent::includeFromTemplateAndCompile("profile/main.html", true);
 
 echo $profileMain;
+
+\Users\Services\FlashSession::clearContainers();
 
 exit(1);
 

@@ -7,7 +7,7 @@
  * находится в /engine/replacer.php.
  ***************************************************************************************/
 
-use Engine\DataKeeper;
+use Engine\Database;
 
 if (!defined("TT_AP")) {
     header("Location: ../adminpanel.php?p=forbidden");
@@ -17,17 +17,19 @@ if (!defined("TT_AP")) {
 if (!$user->getUserGroup()->getPermission("change_engine_settings")) {
     header("Location: ../../adminpanel.php?res=1");
 } else {
-    $langs = \Engine\Engine::GetLanguagePacks();
-    $additionalFields = \Users\UserAgent::GetAdditionalFieldsList();
-    $additionalFieldsOptions = [];
-    $additionalFieldsOptions[] = "<option value=\"0\">" . \Engine\LanguageManager::GetTranslation("settings_panel.not_selected") . "</option>";
+    $langs                     = \Engine\Engine::GetLanguagePacks();
+    $additionalFields          = \Users\UserAgent::GetAdditionalFieldsList();
+    $additionalFieldsOptions   = [];
+    $additionalFieldsOptions[] = "<option value=\"0\">"
+                                 . \Engine\LanguageAgent::getTranslation("settings_panel.not_selected")
+                                 . "</option>";
     foreach ($additionalFields as $field) {
         $additionalFieldsOptions[] = "<option value=\"" . $field["id"] . "\">" . $field["name"] . "</option>";
     }
 
     function array_clear_up() {
-        $pluginsList = \Engine\PluginManager::GetPluginsList();
-        $installedList = \Engine\PluginManager::GetInstalledPlugins();
+        $pluginsList   = \Engine\PluginAgent::GetPluginsList();
+        $installedList = \Engine\PluginAgent::GetInstalledPlugins();
 
         $installedKeys = array_keys($installedList);
         foreach ($installedKeys as $key) {
@@ -36,30 +38,30 @@ if (!$user->getUserGroup()->getPermission("change_engine_settings")) {
         return $pluginsList;
     }
 
-    $pluginList = array_clear_up();
-    $installedPluginList = \Engine\PluginManager::GetInstalledPlugins();
+    $pluginList          = array_clear_up();
+    $installedPluginList = \Engine\PluginAgent::GetInstalledPlugins();
     ?>
     <div class="inner cover">
-        <h1 class="cover-heading"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.page_name"); ?></h1>
-        <p class="lead"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.page_description"); ?></p>
+        <h1 class="cover-heading"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.page_name"); ?></h1>
+        <p class="lead"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.page_description"); ?></p>
         <div id="btn-show-panel" class="btn-group">
             <button type="button" class="btn btn-default active" data-div-number="1"><span
-                        class="glyphicon glyphicon-cog"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.configuration"); ?>
+                        class="glyphicon glyphicon-cog"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.configuration"); ?>
             </button>
             <button type="button" class="btn btn-default" data-div-number="2"><span
-                        class="glyphicon glyphicon-envelope"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman"); ?>
+                        class="glyphicon glyphicon-envelope"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.bot_postman"); ?>
             </button>
             <button type="button" class="btn btn-default" data-div-number="3"><span
-                        class="glyphicon glyphicon-pencil"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration"); ?>
+                        class="glyphicon glyphicon-pencil"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.registration"); ?>
             </button>
             <button type="button" class="btn btn-default" data-div-number="4"><span
-                        class="glyphicon glyphicon-user"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users"); ?>
+                        class="glyphicon glyphicon-user"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users"); ?>
             </button>
             <button type="button" class="btn btn-default" data-div-number="5"><span
-                        class="glyphicons glyphicons-book"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.plugins"); ?>
+                        class="glyphicons glyphicons-book"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.plugins"); ?>
             </button>
             <button type="button" class="btn btn-default" data-div-number="6"><span
-                        class="glyphicons glyphicons-pie-chart"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.statistic"); ?>
+                        class="glyphicons glyphicons-pie-chart"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.statistic"); ?>
             </button>
         </div>
 
@@ -67,66 +69,66 @@ if (!$user->getUserGroup()->getPermission("change_engine_settings")) {
             <div class="custom-group">
                 <div class="div-border" id="custom_sets" data-number="1">
                     <h3>
-                        <span class="glyphicon glyphicon-cog"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.panel_name"); ?>
+                        <span class="glyphicon glyphicon-cog"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.panel_name"); ?>
                     </h3>
-                    <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.panel_description"); ?></p>
+                    <p class="helper"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.panel_description"); ?></p>
                     <hr>
                     <div class="input-group">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_name"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.site_name"); ?></div>
                         <input type="text" class="form-control" name="sitename"
                                value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("sn")); ?>">
                         <div class="form-control info alert-info"><span
-                                    class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_name_tip"); ?>
+                                    class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.site_name_tip"); ?>
                         </div>
                     </div>
                     <div class="input-group">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.tagline"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.tagline"); ?></div>
                         <input type="text" class="form-control" name="sitetagline"
                                value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("stl")); ?>">
                         <div class="form-control info alert-info"><span
-                                    class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.tagline_tip"); ?>
+                                    class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.tagline_tip"); ?>
                         </div>
                     </div>
                     <div class="input-group">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.domain"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.domain"); ?></div>
                         <input type="text" class="form-control" name="domain"
                                value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("dm")); ?>">
                         <div class="form-control info alert-info"><span
-                                    class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.domain_tip"); ?>
+                                    class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.domain_tip"); ?>
                         </div>
                     </div>
                     <div class="input-group">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_description"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.site_description"); ?></div>
                         <input type="text" class="form-control" name="sitesubscribe"
                                value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("ssc")); ?>">
                         <div class="form-control info alert-info"><span
-                                    class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.site_description_tip"); ?>
+                                    class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.site_description_tip"); ?>
                         </div>
                     </div>
                     <div class="input-group">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.hashtags"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.hashtags"); ?></div>
                         <input type="text" class="form-control" name="sitehashtags"
                                value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("sh")); ?>">
                         <div class="form-control info alert-info"><span
-                                    class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.hashtags_tip"); ?>
+                                    class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.hashtags_tip"); ?>
                         </div>
                     </div>
                     <div class="input-group">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.status"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.status"); ?></div>
                         <select class="form-control" name="sitestatus">
                             <option value="1" <?php if (\Engine\Engine::GetEngineInfo("ss") == 1) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("on"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("on"); ?></option>
                             <option value="0" <?php if (\Engine\Engine::GetEngineInfo("ss") == 0) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("off"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("off"); ?></option>
                         </select>
                         <div class="form-control info alert-info"><span
-                                    class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.status_tip"); ?>
+                                    class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.status_tip"); ?>
                         </div>
                     </div>
                     <div class="input-group">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.template"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.template"); ?></div>
                         <select class="form-control" name="sitetemplate">
                             <?php foreach (\Engine\Engine::GetTemplatesPacks() as $f) {
                                 if ($f == \Engine\Engine::GetEngineInfo("stp")) {
@@ -138,173 +140,174 @@ if (!$user->getUserGroup()->getPermission("change_engine_settings")) {
                             ?>
                         </select>
                         <div class="form-control info alert-info"><span
-                                    class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.template_tip"); ?>
+                                    class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.template_tip"); ?>
                         </div>
                     </div>
                     <hr>
-                    <p><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.locale_tip"); ?></p>
+                    <p><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.locale_tip"); ?></p>
                     <div class="input-group">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.lang"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.lang"); ?></div>
                         <select class="form-control" name="sitelang">
                             <?php if (\Engine\Engine::GetEngineInfo("sl") === 0) { ?>
-                                <option value="0" selected>&lt;<?= \Engine\LanguageManager::GetTranslation("empty") ?>
+                                <option value="0" selected>&lt;<?= \Engine\LanguageAgent::getTranslation("empty") ?>
                                 &gt;</option><?php }
                             /*Перебрать названия языков...*/
                             for ($i = 0; $i <= count($langs) - 1; $i++) { ?>
-                                <option value="<?php echo $langs[$i]; ?>" <?php if (\Engine\Engine::GetEngineInfo("sl") == $langs[$i]) {
+                                <option value="<?php echo $langs[$i]; ?>" <?php if (\Engine\Engine::GetEngineInfo("sl")
+                                                                                    == $langs[$i]) {
                                     echo " selected";
                                 } ?>><?php echo $langs[$i]; ?></option>
                             <?php } ?>
                         </select>
                         <div class="form-control info alert-info"><span
-                                    class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.lang_tip"); ?>
+                                    class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.lang_tip"); ?>
                         </div>
                     </div>
                     <div class="input-group">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezone"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezone"); ?></div>
                         <select class="form-control" name="siteregiontime">
                             <option value="-12" <?php if (\Engine\Engine::GetEngineInfo("srt") == -12) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-12"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc-12"); ?></option>
                             <option value="-11" <?php if (\Engine\Engine::GetEngineInfo("srt") == -11) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-11"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc-11"); ?></option>
                             <option value="-10" <?php if (\Engine\Engine::GetEngineInfo("srt") == -10) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-10"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc-10"); ?></option>
                             <option value="-9.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == -9.5) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-9:30"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc-9:30"); ?></option>
                             <option value="-9" <?php if (\Engine\Engine::GetEngineInfo("srt") == -9) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-9"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc-9"); ?></option>
                             <option value="-8" <?php if (\Engine\Engine::GetEngineInfo("srt") == -8) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-8"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc-8"); ?></option>
                             <option value="-7" <?php if (\Engine\Engine::GetEngineInfo("srt") == -7) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-7"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc-7"); ?></option>
                             <option value="-6" <?php if (\Engine\Engine::GetEngineInfo("srt") == -6) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-6"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc-6"); ?></option>
                             <option value="-5" <?php if (\Engine\Engine::GetEngineInfo("srt") == -5) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-5"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc-5"); ?></option>
                             <option value="-4" <?php if (\Engine\Engine::GetEngineInfo("srt") == -4) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-4"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc-4"); ?></option>
                             <option value="-3.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == -3.5) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-3:30"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc-3:30"); ?></option>
                             <option value="-3" <?php if (\Engine\Engine::GetEngineInfo("srt") == -3) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-3"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc-3"); ?></option>
                             <option value="-2" <?php if (\Engine\Engine::GetEngineInfo("srt") == -2) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-2"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc-2"); ?></option>
                             <option value="-1" <?php if (\Engine\Engine::GetEngineInfo("srt") == -1) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc-1"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc-1"); ?></option>
                             <option value="0" <?php if (\Engine\Engine::GetEngineInfo("srt") == 0) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc"); ?></option>
                             <option value="1" <?php if (\Engine\Engine::GetEngineInfo("srt") == 1) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+1"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc+1"); ?></option>
                             <option value="2" <?php if (\Engine\Engine::GetEngineInfo("srt") == 2) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+2"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc+2"); ?></option>
                             <option value="3" <?php if (\Engine\Engine::GetEngineInfo("srt") == 3) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+3"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc+3"); ?></option>
                             <option value="3.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == 3.5) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+3:30"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc+3:30"); ?></option>
                             <option value="4" <?php if (\Engine\Engine::GetEngineInfo("srt") == 4) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+4"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc+4"); ?></option>
                             <option value="4.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == 4.5) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+4:30"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc+4:30"); ?></option>
                             <option value="5" <?php if (\Engine\Engine::GetEngineInfo("srt") == 5) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+5"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc+5"); ?></option>
                             <option value="5.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == 5.5) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+5:30"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc+5:30"); ?></option>
                             <option value="5.75" <?php if (\Engine\Engine::GetEngineInfo("srt") == 5.75) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+5:45"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc+5:45"); ?></option>
                             <option value="6" <?php if (\Engine\Engine::GetEngineInfo("srt") == 6) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+6"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc+6"); ?></option>
                             <option value="6.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == 6.5) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+6:30"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc+6:30"); ?></option>
                             <option value="7" <?php if (\Engine\Engine::GetEngineInfo("srt") == 7) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+7"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc+7"); ?></option>
                             <option value="8" <?php if (\Engine\Engine::GetEngineInfo("srt") == 8) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+8"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc+8"); ?></option>
                             <option value="8.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == 8.5) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+8:30"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc+8:30"); ?></option>
                             <option value="8.75" <?php if (\Engine\Engine::GetEngineInfo("srt") == 8.75) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+8:45"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc+8:45"); ?></option>
                             <option value="9" <?php if (\Engine\Engine::GetEngineInfo("srt") == 9) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+9"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc+9"); ?></option>
                             <option value="9.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == 9.5) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+9:30"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc+9:30"); ?></option>
                             <option value="10" <?php if (\Engine\Engine::GetEngineInfo("srt") == 10) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+10"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc+10"); ?></option>
                             <option value="10.5" <?php if (\Engine\Engine::GetEngineInfo("srt") == 10.5) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+10:30"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc+10:30"); ?></option>
                             <option value="11" <?php if (\Engine\Engine::GetEngineInfo("srt") == 11) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+11"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc+11"); ?></option>
                             <option value="12" <?php if (\Engine\Engine::GetEngineInfo("srt") == 12) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+12"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc+12"); ?></option>
                             <option value="12.75" <?php if (\Engine\Engine::GetEngineInfo("srt") == 12.75) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+12:45"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc+12:45"); ?></option>
                             <option value="13" <?php if (\Engine\Engine::GetEngineInfo("srt") == 13) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+13"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc+13"); ?></option>
                             <option value="14" <?php if (\Engine\Engine::GetEngineInfo("srt") == 14) {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezones.utc+14"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezones.utc+14"); ?></option>
                         </select>
                         <div class="form-control info alert-info"><span
-                                    class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.config_panel.timezone_tip"); ?>
+                                    class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.config_panel.timezone_tip"); ?>
                         </div>
                     </div>
                 </div>
                 <div class="div-border" id="email_sets" data-number="2" hidden>
                     <h3>
-                        <span class="glyphicon glyphicon-envelope"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.panel_name"); ?>
+                        <span class="glyphicon glyphicon-envelope"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.bot_postman_panel.panel_name"); ?>
                     </h3>
-                    <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.panel_description"); ?></p>
+                    <p class="helper"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.bot_postman_panel.panel_description"); ?></p>
                     <hr>
-                    <p><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.hint"); ?></p>
+                    <p><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.bot_postman_panel.hint"); ?></p>
                     <div class="input-group">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.email_login"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.bot_postman_panel.email_login"); ?></div>
                         <input type="text" class="form-control" name="emaillogin"
                                value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("el")); ?>">
                     </div>
                     <div class="input-group">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.email_password"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.bot_postman_panel.email_password"); ?></div>
                         <input type="password" class="form-control" name="emailpassword"
                                value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("ep")); ?>">
                     </div>
                     <div class="input-group">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.email_protocol"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.bot_postman_panel.email_protocol"); ?></div>
                         <select class="form-control" name="emailconnecttype">
                             <option value="tls" <?php if (\Engine\Engine::GetEngineInfo("ecp") == "tls") {
                                 echo "selected";
@@ -317,125 +320,126 @@ if (!$user->getUserGroup()->getPermission("change_engine_settings")) {
                         </select>
                     </div>
                     <div class="input-group">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.email_server"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.bot_postman_panel.email_server"); ?></div>
                         <input type="text" class="form-control" name="emailhost"
                                value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("eh")); ?>">
                     </div>
                     <div class="input-group">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.email_port"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.bot_postman_panel.email_port"); ?></div>
                         <input type="text" class="form-control" name="emailport"
                                value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("ept")); ?>">
                     </div>
                     <br>
-                    <div class="alert alert-warning"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.warning_first"); ?></div>
-                    <div class="alert alert-warning"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.warning_second"); ?></div>
+                    <div class="alert alert-warning"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.bot_postman_panel.warning_first"); ?></div>
+                    <div class="alert alert-warning"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.bot_postman_panel.warning_second"); ?></div>
                     <button class="btn btn-default" id="mail-test-ajax-btn" type="button" style="width: 100%;"><span
-                                class="glyphicons glyphicons-message-out"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.bot_postman_panel.email_check_validity"); ?>
+                                class="glyphicons glyphicons-message-out"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.bot_postman_panel.email_check_validity"); ?>
                     </button>
                 </div>
                 <div class="div-border" id="reg_sets" data-number="3" hidden>
                     <h3>
-                        <span class="glyphicon glyphicon-pencil"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.panel_name"); ?>
+                        <span class="glyphicon glyphicon-pencil"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.registration_panel.panel_name"); ?>
                     </h3>
-                    <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.panel_description"); ?></p>
+                    <p class="helper"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.registration_panel.panel_description"); ?></p>
                     <hr>
-                    <p><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.panel_tip"); ?></p>
+                    <p><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.registration_panel.panel_tip"); ?></p>
                     <div class="input-group">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.activation"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.registration_panel.activation"); ?></div>
                         <select class="form-control" name="needactivate">
                             <option value="1" <?php if (\Engine\Engine::GetEngineInfo("na") == "1") {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.activation_on"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.registration_panel.activation_on"); ?></option>
                             <option value="0" <?php if (\Engine\Engine::GetEngineInfo("na") == "0") {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.activation_off"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.registration_panel.activation_off"); ?></option>
                         </select>
                         <div class="form-control info alert-info"><span
-                                    class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.activation_tip"); ?>
+                                    class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.registration_panel.activation_tip"); ?>
                         </div>
                     </div>
                     <div class="input-group">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.multiacc"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.registration_panel.multiacc"); ?></div>
                         <select class="form-control" name="multiaccount" id="multiaccount">
                             <option value="1" <?php if (\Engine\Engine::GetEngineInfo("map") == "y") {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("on"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("on"); ?></option>
                             <option value="0" <?php if (\Engine\Engine::GetEngineInfo("map") == "n") {
                                 echo "selected";
-                            } ?>><?php echo \Engine\LanguageManager::GetTranslation("off"); ?></option>
+                            } ?>><?php echo \Engine\LanguageAgent::getTranslation("off"); ?></option>
                         </select>
                         <div class="form-control info alert-info"><span
-                                    class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.multiacc_tip"); ?>
+                                    class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.registration_panel.multiacc_tip"); ?>
                         </div>
                     </div>
                     <hr>
                     <div class="input-group">
                         <?php $groupList = \Users\GroupAgent::GetGroupList(); ?>
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.reggroup"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.registration_panel.reggroup"); ?></div>
                         <select class="form-control" name="standartgroup">
                             <?php
                             foreach ($groupList as $group) {
-                                echo "<option value=\"" . $group["id"] . "\"" . ((\Engine\Engine::GetEngineInfo("sg") == $group["id"])
+                                echo "<option value=\"" . $group["id"] . "\"" . ((\Engine\Engine::GetEngineInfo("sg")
+                                                                                  == $group["id"])
                                         ? " selected" : "") . ">" .
-                                    \Users\GroupAgent::GetGroupNameById($group["id"]) .
-                                    "</option>";
+                                     \Users\GroupAgent::GetGroupNameById($group["id"]) .
+                                     "</option>";
 
                             } ?>
                         </select>
                         <div class="form-control info alert-info"><span
-                                    class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.registration_panel.reggroup_tip"); ?>
+                                    class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.registration_panel.reggroup_tip"); ?>
                         </div>
                     </div>
                 </div>
                 <div class="div-border" id="users_sets" data-number="4" hidden>
                     <h3>
-                        <span class="glyphicon glyphicon-user"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.panel_name"); ?>
+                        <span class="glyphicon glyphicon-user"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.panel_name"); ?>
                     </h3>
-                    <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.panel_description"); ?></p>
+                    <p class="helper"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.panel_description"); ?></p>
                     <hr>
                     <div class="alert hidden" id="add-fields-info-div"><span></span></div>
-                    <h4><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.additive_field_header"); ?></h4>
-                    <p><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.additive_field_tip"); ?></p>
+                    <h4><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.additive_field_header"); ?></h4>
+                    <p><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.additive_field_tip"); ?></p>
                     <div class="input-group">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.additive_field_select"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.additive_field_select"); ?></div>
                         <select class="form-control" name="user-additional-fields" id="user-add-fields">
                             <?php foreach ($additionalFieldsOptions as $option) echo $option; ?>
                         </select>
                         <div class="input-group-btn">
                             <button class="btn btn-default" type="button" id="field-add-btn"
-                                    title="<?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.additive_field_plus_btn_title"); ?>">
+                                    title="<?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.additive_field_plus_btn_title"); ?>">
                                 <span class="glyphicons glyphicons-plus"></span></button>
                             <button class="btn btn-default" type="button" id="field-remove-btn"
-                                    title="<?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.additive_field_minus_btn_title"); ?>"
+                                    title="<?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.additive_field_minus_btn_title"); ?>"
                                     disabled><span class="glyphicons glyphicons-minus"></span></button>
                         </div>
                     </div>
                     <div id="field-panel-manage" class="div-border" style="display: none; margin-top: 15px;">
                         <div class="input-group">
-                            <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_name"); ?></div>
+                            <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.af_name"); ?></div>
                             <input class="form-control" name="field-name-input" id="field-name-input" maxlength="16">
                             <div class="form-control info alert-info"><span
-                                        class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_name_tip"); ?>
+                                        class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.af_name_tip"); ?>
                             </div>
                         </div>
                         <br>
                         <div class="input-group">
-                            <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_description"); ?></div>
+                            <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.af_description"); ?></div>
                             <input class="form-control" type="text" name="field-description" id="field-description">
                             <div class="form-control info alert-info"><span
-                                        class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_description_tip"); ?>
+                                        class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.af_description_tip"); ?>
                             </div>
                         </div>
                         <br>
                         <div class="input-group">
-                            <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_type.name"); ?></div>
+                            <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.af_type.name"); ?></div>
                             <select class="form-control" id="field-type-selector">
-                                <option value="1"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_type.mixing"); ?></option>
-                                <option value="2"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_type.contact"); ?></option>
-                                <option value="3"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_type.custom"); ?></option>
+                                <option value="1"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.af_type.mixing"); ?></option>
+                                <option value="2"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.af_type.contact"); ?></option>
+                                <option value="3"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.af_type.custom"); ?></option>
                             </select>
                             <div class="form-control info alert-info"><span
-                                        class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_type.tip"); ?>
+                                        class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.af_type.tip"); ?>
                             </div>
                         </div>
                         <br>
@@ -448,42 +452,42 @@ if (!$user->getUserGroup()->getPermission("change_engine_settings")) {
                         </div>
                         <br>
                         <div class="input-group" id="require-input-div" hidden>
-                            <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_requied"); ?></div>
+                            <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.af_requied"); ?></div>
                             <div class="form-control">
                                 <input type="checkbox" name="field-requied" id="field-requied">
                             </div>
                             <div class="form-control info alert-info"><span
-                                        class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_requied_tip"); ?>
+                                        class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.af_requied_tip"); ?>
                             </div>
                         </div>
                         <br>
                         <div class="input-group" id="see-on-reg-input-div" hidden>
-                            <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_visible_in_registration"); ?></div>
+                            <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.af_visible_in_registration"); ?></div>
                             <div class="form-control">
                                 <input type="checkbox" name="field-reg-show" id="field-reg-show">
                             </div>
                             <div class="form-control info alert-info"><span
-                                        class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_visible_in_registration_tip"); ?>
+                                        class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.af_visible_in_registration_tip"); ?>
                             </div>
                         </div>
                         <br>
                         <div class="input-group" id="private-input-div" hidden>
-                            <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_can_be_private"); ?></div>
+                            <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.af_can_be_private"); ?></div>
                             <div class="form-control">
                                 <input type="checkbox" name="field-private" id="field-private">
                             </div>
                             <div class="form-control info alert-info"><span
-                                        class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_can_be_private_tip"); ?>
+                                        class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.af_can_be_private_tip"); ?>
                             </div>
                         </div>
                         <br>
                         <div class="input-group" id="link-input-div">
-                            <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_link"); ?></div>
+                            <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.af_link"); ?></div>
                             <div class="form-control info alert-info"><span
-                                        class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_link_tip_first"); ?>
+                                        class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.af_link_tip_first"); ?>
                             </div>
                             <div class="form-control info alert-info"><span
-                                        class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.af_link_tip_second"); ?>
+                                        class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.af_link_tip_second"); ?>
                             </div>
                             <textarea class="form-control" name="field-link-textarea"
                                       style="resize: vertical; min-height: 100px;" id="field-link-textarea"></textarea>
@@ -491,80 +495,92 @@ if (!$user->getUserGroup()->getPermission("change_engine_settings")) {
                         <br>
                         <div class="btn-group">
                             <button class="btn btn-default" type="button" id="field-add-ajax-btn"><span
-                                        class="glyphicons glyphicons-ok"></span> <?php echo \Engine\LanguageManager::GetTranslation("apply"); ?>
+                                        class="glyphicons glyphicons-ok"></span> <?php echo \Engine\LanguageAgent::getTranslation("apply"); ?>
                             </button>
                             <button class="btn btn-default" type="button" id="field-cancel-btn"><span
-                                        class="glyphicons glyphicons-erase"></span> <?php echo \Engine\LanguageManager::GetTranslation("cancel"); ?>
+                                        class="glyphicons glyphicons-erase"></span> <?php echo \Engine\LanguageAgent::getTranslation("cancel"); ?>
                             </button>
                         </div>
                     </div>
                     <hr>
-                    <h4><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.censore"); ?></h4>
-                    <p><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.censore_tip"); ?></p>
+                    <h4><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.censore"); ?></h4>
+                    <p><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.censore_tip"); ?></p>
                     <div class="input-group">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.words_for_censore"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.words_for_censore"); ?></div>
                         <input class="form-control" type="text" name="chat-filter-words"
                                value="<?php echo \Engine\Engine::GetCensoredWords(); ?>">
                     </div>
                     <div class="input-group">
-                        <div class="input-group-addon"><?= \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.replace_mechanism") ?></div>
+                        <div class="input-group-addon"><?= \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.replace_mechanism") ?></div>
                         <select class="form-control" name="chat-filter-mechanism" id="chat-filter-mechanism">
-                            <option value="0" <?php if (\Engine\Engine::GetEngineInfo("cfm") == 0) echo "selected"; ?>><?= \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.replace_mechanism_type.standard") ?></option>
-                            <option value="1" <?php if (\Engine\Engine::GetEngineInfo("cfm") == 1) echo "selected"; ?>><?= \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.replace_mechanism_type.symbols") ?></option>
-                            <option value="2" <?php if (\Engine\Engine::GetEngineInfo("cfm") == 2) echo "selected"; ?>><?= \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.replace_mechanism_type.sentence") ?></option>
+                            <option value="0" <?php if (\Engine\Engine::GetEngineInfo("cfm")
+                                                        == 0) echo "selected"; ?>><?= \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.replace_mechanism_type.standard") ?></option>
+                            <option value="1" <?php if (\Engine\Engine::GetEngineInfo("cfm")
+                                                        == 1) echo "selected"; ?>><?= \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.replace_mechanism_type.symbols") ?></option>
+                            <option value="2" <?php if (\Engine\Engine::GetEngineInfo("cfm")
+                                                        == 2) echo "selected"; ?>><?= \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.replace_mechanism_type.sentence") ?></option>
                         </select>
-                        <input type="text" class="form-control" placeholder="<?= \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.replace_expression_placeholder") ?>" name="chat-filter-replace-container" value="<?= trim(\Engine\Engine::GetEngineInfo("cfrf"), "[]") ?>" <?php if (\Engine\Engine::GetEngineInfo("cfm") != 2) { ?>style="display: none;" <?php } ?>>
+                        <input type="text" class="form-control"
+                               placeholder="<?= \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.replace_expression_placeholder") ?>"
+                               name="chat-filter-replace-container"
+                               value="<?= trim(\Engine\Engine::GetEngineInfo("cfrf"), "[]") ?>"
+                               <?php if (\Engine\Engine::GetEngineInfo("cfm")
+                                         != 2) { ?>style="display: none;" <?php } ?>>
                     </div>
-                    <div class="alert alert-info"><span class="glyphicons glyphicons-info-sign"></span> <?= \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.replace_mechanism_tip") ?></div>
                     <div class="alert alert-info"><span
-                                class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.words_for_censore_tip"); ?>
+                                class="glyphicons glyphicons-info-sign"></span> <?= \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.replace_mechanism_tip") ?>
+                    </div>
+                    <div class="alert alert-info"><span
+                                class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.words_for_censore_tip"); ?>
                     </div>
                     <hr>
-                    <h4><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.reports"); ?></h4>
+                    <h4><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.reports"); ?></h4>
                     <div class="input-group">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.reports_reason"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.reports_reason"); ?></div>
                         <textarea class="form-control" style="resize: vertical; min-height: 100px;"
                                   name="reports-reasons"><?php echo \Engine\Engine::GetReportReasons(); ?></textarea>
                     </div>
                     <div class="alert alert-info"><span
-                                class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.reports_tip"); ?>
+                                class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.reports_tip"); ?>
                     </div>
                     <hr>
-                    <h4><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.avatar_settings"); ?></h4>
+                    <h4><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.avatar_settings"); ?></h4>
                     <div class="input-group">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.max_avatar_width"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.max_avatar_width"); ?></div>
                         <input type="number" class="form-control" name="avatarmaxwidth"
                                value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("aw")); ?>">
                     </div>
                     <div class="input-group">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.max_avatar_height"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.max_avatar_height"); ?></div>
                         <input type="number" class="form-control" name="avatarmaxheight"
                                value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("ah")); ?>">
                     </div>
                     <hr>
-                    <h4><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.upload_settings"); ?></h4>
+                    <h4><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.upload_settings"); ?></h4>
                     <div class="input-group">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.valid_formats"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.valid_formats"); ?></div>
                         <input type="text" class="form-control" name="uploadformats"
                                value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("upf")); ?>">
                     </div>
                     <div class="alert alert-info"><span
-                                class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.valid_formats_tip"); ?>
+                                class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.valid_formats_tip"); ?>
                     </div>
                     <div class="input-group">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.max_file_size"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.max_file_size"); ?></div>
                         <input type="number" class="form-control" name="maxfilesize" id="maxfilesize"
                                value="<?php echo htmlentities(\Engine\Engine::GetEngineInfo("ups")); ?>">
                     </div>
                     <div class="alert alert-info"><span
-                                class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.max_file_size_tip.first_part");
+                                class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.max_file_size_tip.first_part");
                         ?> <span
-                                id="file-max-size-inmb"><?php echo \Engine\Engine::GetEngineInfo("ups") / 1024 / 1024; ?></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.max_file_size_tip.second_part"); ?>
+                                id="file-max-size-inmb"><?php echo \Engine\Engine::GetEngineInfo("ups")
+                                                                   / 1024
+                                                                   / 1024; ?></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.max_file_size_tip.second_part"); ?>
                     </div>
                     <hr>
-                    <h4><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.guests"); ?></h4>
+                    <h4><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.guests"); ?></h4>
                     <div class="input-group">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.guest_see_profile"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.guest_see_profile"); ?></div>
                         <div class="form-control">
                             <input type="checkbox"
                                    name="guest_see_profiles" <?php if (\Engine\Engine::GetEngineInfo("gsp")) {
@@ -573,10 +589,10 @@ if (!$user->getUserGroup()->getPermission("change_engine_settings")) {
                         </div>
                     </div>
                     <div class="alert alert-info"><span
-                                class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.guest_see_profile_tip"); ?>
+                                class="glyphicon glyphicon-info-sign"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.guest_see_profile_tip"); ?>
                     </div>
                     <div class="input-group">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.multivote_rep"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.multivote_rep"); ?></div>
                         <div class="form-control">
                             <input type="checkbox"
                                    name="multivote_rep" <?php if (\Engine\Engine::GetEngineInfo("vmr")) {
@@ -584,46 +600,57 @@ if (!$user->getUserGroup()->getPermission("change_engine_settings")) {
                             } ?>>
                         </div>
                         <div class="form-control alert-info"><span
-                                    class="glyphicons glyphicons-info-sign"></span> <?= \Engine\LanguageManager::GetTranslation("settings_panel.users_panel.multivote_rep_tip") ?>
+                                    class="glyphicons glyphicons-info-sign"></span> <?= \Engine\LanguageAgent::getTranslation("settings_panel.users_panel.multivote_rep_tip") ?>
                         </div>
                     </div>
                 </div>
                 <div class="div-border" id="plugin_panel" data-number="5" hidden>
                     <h3>
-                        <span class="glyphicons glyphicons-book"></span> <?= \Engine\LanguageManager::GetTranslation("settings_panel.plugins_panel.panel_name") ?>
+                        <span class="glyphicons glyphicons-book"></span> <?= \Engine\LanguageAgent::getTranslation("settings_panel.plugins_panel.panel_name") ?>
                     </h3>
-                    <p class="helper"><?= \Engine\LanguageManager::GetTranslation("settings_panel.plugins_panel.panel_description")?></p>
+                    <p class="helper"><?= \Engine\LanguageAgent::getTranslation("settings_panel.plugins_panel.panel_description") ?></p>
                     <hr>
-                    <p><?= \Engine\LanguageManager::GetTranslation("settings_panel.plugins_panel.additive_description") ?></p>
+                    <p><?= \Engine\LanguageAgent::getTranslation("settings_panel.plugins_panel.additive_description") ?></p>
                     <div class="plugin-div">
                         <div class="plugins">
-                            <label for="template_ready_to_install"><?= \Engine\LanguageManager::GetTranslation("settings_panel.plugins_panel.available_plugins") ?></label>
+                            <label for="template_ready_to_install"><?= \Engine\LanguageAgent::getTranslation("settings_panel.plugins_panel.available_plugins") ?></label>
                             <select class="form-control template_list" id="template_ready_to_install" size="20">
                                 <?php foreach ($pluginList as $plagName => $plugin) {
-                                    echo "<option value=\"$plagName\" data-codename=\"" . $plugin["config"]["codeName"] . "\">" . $plugin["config"]["name"] . "</option>";
+                                    echo "<option value=\"$plagName\" data-codename=\""
+                                         . $plugin["config"]["codeName"]
+                                         . "\">"
+                                         . $plugin["config"]["name"]
+                                         . "</option>";
                                 } ?>
                             </select>
                         </div>
                         <div class="plugins">
-                            <label for="template_official"><?= \Engine\LanguageManager::GetTranslation("settings_panel.plugins_panel.enabled_plugins") ?></label>
+                            <label for="template_official"><?= \Engine\LanguageAgent::getTranslation("settings_panel.plugins_panel.enabled_plugins") ?></label>
                             <select class="form-control template_list" id="template_official" size="20">
                                 <?php foreach ($installedPluginList as $plagName => $plugin) {
-                                    echo "<option value=\"$plagName\" data-codename=\"" . $plugin["codeName"] . "\">" . $plugin["name"] . "</option>";
+                                    echo "<option value=\"$plagName\" data-codename=\""
+                                         . $plugin["codeName"]
+                                         . "\">"
+                                         . $plugin["name"]
+                                         . "</option>";
                                 } ?>
                             </select>
                         </div>
                         <div class="plugins-info">
-                            <h3 id="plugin-name"><?= \Engine\LanguageManager::GetTranslation("settings_panel.plugins_panel.choose_plugin") ?></h3>
-                            <b><?= \Engine\LanguageManager::GetTranslation("settings_panel.plugins_panel.plugin_description") ?> </b><span id="plugin-description"></span>
-                            <p id="btn-status-block"><b><?= \Engine\LanguageManager::GetTranslation("settings_panel.plugins_panel.status_plugin") ?> </b>
-                                <button id="plugin-status" class="btn" type="button"><?= \Engine\LanguageManager::GetTranslation("off") ?></button>
+                            <h3 id="plugin-name"><?= \Engine\LanguageAgent::getTranslation("settings_panel.plugins_panel.choose_plugin") ?></h3>
+                            <b><?= \Engine\LanguageAgent::getTranslation("settings_panel.plugins_panel.plugin_description") ?> </b><span
+                                    id="plugin-description"></span>
+                            <p id="btn-status-block">
+                                <b><?= \Engine\LanguageAgent::getTranslation("settings_panel.plugins_panel.status_plugin") ?> </b>
+                                <button id="plugin-status" class="btn"
+                                        type="button"><?= \Engine\LanguageAgent::getTranslation("off") ?></button>
                             </p>
                             <div class="btn-group" style="width: 100%; padding-top: 15px;">
                                 <button class="btn btn-default" type="button" id="btn-install" disabled><span
-                                            class="glyphicons glyphicons-settings"></span> <?= \Engine\LanguageManager::GetTranslation("settings_panel.plugins_panel.install_plugin") ?>
+                                            class="glyphicons glyphicons-settings"></span> <?= \Engine\LanguageAgent::getTranslation("settings_panel.plugins_panel.install_plugin") ?>
                                 </button>
                                 <button class="btn btn-default" type="button" id="btn-delete" disabled><span
-                                            class="glyphicons glyphicons-delete"></span> <?= \Engine\LanguageManager::GetTranslation("settings_panel.plugins_panel.uninstall_plugin") ?>
+                                            class="glyphicons glyphicons-delete"></span> <?= \Engine\LanguageAgent::getTranslation("settings_panel.plugins_panel.uninstall_plugin") ?>
                                 </button>
                             </div>
                         </div>
@@ -631,13 +658,13 @@ if (!$user->getUserGroup()->getPermission("change_engine_settings")) {
                 </div>
                 <div class="div-border" id="metric_sets" data-number="6" hidden>
                     <h3>
-                        <span class="glyphicons glyphicons-pie-chart"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.statistic_panel.panel_name"); ?>
+                        <span class="glyphicons glyphicons-pie-chart"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.statistic_panel.panel_name"); ?>
                     </h3>
-                    <p class="helper"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.statistic_panel.panel_description"); ?></p>
+                    <p class="helper"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.statistic_panel.panel_description"); ?></p>
                     <hr>
-                    <p><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.statistic_panel.statistic_tip"); ?></p>
+                    <p><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.statistic_panel.statistic_tip"); ?></p>
                     <div class="input-group">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.statistic_panel.write_statistic"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.statistic_panel.write_statistic"); ?></div>
                         <div class="form-control">
                             <input type="checkbox" name="metric-lever-btn"
                                    id="metric-level-btn" <?php if (\Engine\Engine::GetEngineInfo("sms")) {
@@ -646,11 +673,11 @@ if (!$user->getUserGroup()->getPermission("change_engine_settings")) {
                         </div>
                     </div>
                     <div class="input-group" id="metric-code-div">
-                        <div class="input-group-addon"><?php echo \Engine\LanguageManager::GetTranslation("settings_panel.statistic_panel.text_to_insert"); ?></div>
+                        <div class="input-group-addon"><?php echo \Engine\LanguageAgent::getTranslation("settings_panel.statistic_panel.text_to_insert"); ?></div>
                         <textarea class="form-control" style="height: 300px; resize: none;"
                                   name="metric-script-text"><?php echo \Engine\Engine::GetAnalyticScript(); ?></textarea>
                         <div class="form-control info alert-info"><span
-                                    class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageManager::GetTranslation("settings_panel.statistic_panel.text_to_insert_tip"); ?>
+                                    class="glyphicons glyphicons-info-sign"></span> <?php echo \Engine\LanguageAgent::getTranslation("settings_panel.statistic_panel.text_to_insert_tip"); ?>
                         </div>
                     </div>
                 </div>
@@ -658,9 +685,9 @@ if (!$user->getUserGroup()->getPermission("change_engine_settings")) {
             <hr/>
             <div class="btn-group" role="group">
                 <button type="submit" class="btn btn-default"
-                        name="save_cfg_button"><?php echo \Engine\LanguageManager::GetTranslation("apply"); ?></button>
+                        name="save_cfg_button"><?php echo \Engine\LanguageAgent::getTranslation("apply"); ?></button>
                 <button type="button" class="btn btn-default"
-                        name="restart_cfg_button"><?php echo \Engine\LanguageManager::GetTranslation("cancel"); ?></button>
+                        name="restart_cfg_button"><?php echo \Engine\LanguageAgent::getTranslation("cancel"); ?></button>
             </div>
         </form>
     </div>
@@ -679,11 +706,11 @@ if (!$user->getUserGroup()->getPermission("change_engine_settings")) {
             if (bool === true) {
                 btn.removeClass("btn-danger");
                 btn.addClass("btn-success");
-                $(btn).html("<?= \Engine\LanguageManager::GetTranslation("on") ?>");
+                $(btn).html("<?= \Engine\LanguageAgent::getTranslation("on") ?>");
             } else {
                 btn.removeClass("btn-success");
                 btn.addClass("btn-danger");
-                $(btn).html("<?= \Engine\LanguageManager::GetTranslation("off") ?>");
+                $(btn).html("<?= \Engine\LanguageAgent::getTranslation("off") ?>");
             }
         };
 
@@ -833,11 +860,11 @@ if (!$user->getUserGroup()->getPermission("change_engine_settings")) {
                     if (action === "add") {
                         if ($.isNumeric(data)) {
                             $("#user-add-fields").append("<option value=\"" + data + "\">" + $("#field-name-input").val() + "</option>");
-                            ShowAnswerForm(1, "<?php echo \Engine\LanguageManager::GetTranslation("settings_panel.js.field"); ?> " + $("#field-name-input").val() +
-                                "\" <?php  echo \Engine\LanguageManager::GetTranslation("settings_panel.js.has_been_created_successfuly"); ?>");
+                            ShowAnswerForm(1, "<?php echo \Engine\LanguageAgent::getTranslation("settings_panel.js.field"); ?> " + $("#field-name-input").val() +
+                                "\" <?php  echo \Engine\LanguageAgent::getTranslation("settings_panel.js.has_been_created_successfuly"); ?>");
                             $("#field-cancel-btn").click();
                         } else if (data == "in") {
-                            ShowAnswerForm("error", "<?php  echo \Engine\LanguageManager::GetTranslation("settings_panel.js.invalid_name"); ?>");
+                            ShowAnswerForm("error", "<?php  echo \Engine\LanguageAgent::getTranslation("settings_panel.js.invalid_name"); ?>");
                         }
                     }
                     if (action === "edit") {
@@ -845,13 +872,13 @@ if (!$user->getUserGroup()->getPermission("change_engine_settings")) {
                             $("#field-cancel-btn").click();
                             $("#user-add-fields").val(0);
                             $("#field-panel-manage").hide();
-                            ShowAnswerForm("okey", "<?php  echo \Engine\LanguageManager::GetTranslation("settings_panel.js.field_settings_changed");  ?>");
+                            ShowAnswerForm("okey", "<?php  echo \Engine\LanguageAgent::getTranslation("settings_panel.js.field_settings_changed");  ?>");
                         } else if (data == "fef") {
-                            ShowAnswerForm("error", "<?php  echo \Engine\LanguageManager::GetTranslation("settings_panel.js.failed_edit_field"); ?>");
+                            ShowAnswerForm("error", "<?php  echo \Engine\LanguageAgent::getTranslation("settings_panel.js.failed_edit_field"); ?>");
                         } else if (data == "fne") {
-                            ShowAnswerForm("error", "<?php  echo \Engine\LanguageManager::GetTranslation("settings_panel.js.field_does_not_exist");  ?>");
+                            ShowAnswerForm("error", "<?php  echo \Engine\LanguageAgent::getTranslation("settings_panel.js.field_does_not_exist");  ?>");
                         } else if (data == "in") {
-                            ShowAnswerForm("error", "<?php   echo \Engine\LanguageManager::GetTranslation("settings_panel.js.invalid_name");  ?>");
+                            ShowAnswerForm("error", "<?php   echo \Engine\LanguageAgent::getTranslation("settings_panel.js.invalid_name");  ?>");
                         }
                     }
                 },
@@ -859,7 +886,7 @@ if (!$user->getUserGroup()->getPermission("change_engine_settings")) {
                     $("#add-fields-info-div").removeClass("hidden");
                     $("#add-fields-info-div").addClass("alert-error");
                     $("#add-fields-info-div > span").addClass("glyphicons glyphicons-remove");
-                    $("#add-fields-info-div > span").after(" <?php   echo \Engine\LanguageManager::GetTranslation("settings_panel.js.field_has_not_been_saved");  ?>")
+                    $("#add-fields-info-div > span").after(" <?php   echo \Engine\LanguageAgent::getTranslation("settings_panel.js.field_has_not_been_saved");  ?>")
                 }
             });
         });
@@ -970,15 +997,15 @@ if (!$user->getUserGroup()->getPermission("change_engine_settings")) {
                     data: "action=delete&field-id=" + id,
                     success: function (data) {
                         if (data == "sdf") {
-                            ShowAnswerForm("okey", "<?php   echo \Engine\LanguageManager::GetTranslation("settings_panel.js.field_has_been_removed");  ?>");
+                            ShowAnswerForm("okey", "<?php   echo \Engine\LanguageAgent::getTranslation("settings_panel.js.field_has_been_removed");  ?>");
                             $("#user-add-fields").children("option[value=" + id + "]").remove();
                             $("#user-add-fields").val(0);
                             $("#field-cancel-btn").click();
                         } else if (data == "fdf") {
                             //Failed deleting.
-                            ShowAnswerForm("fail", "<?php    echo \Engine\LanguageManager::GetTranslation("settings_panel.js.failed_to_remove_field");  ?>");
+                            ShowAnswerForm("fail", "<?php    echo \Engine\LanguageAgent::getTranslation("settings_panel.js.failed_to_remove_field");  ?>");
                         } else if (data == "fne") {
-                            ShowAnswerForm("fail", "<?php    echo \Engine\LanguageManager::GetTranslation("settings_panel.js.field_does_not_exist");  ?>");
+                            ShowAnswerForm("fail", "<?php    echo \Engine\LanguageAgent::getTranslation("settings_panel.js.field_does_not_exist");  ?>");
                         }
                     }
                 });
@@ -994,9 +1021,9 @@ if (!$user->getUserGroup()->getPermission("change_engine_settings")) {
                 data: "test=1",
                 success: function (data) {
                     if (data == "okey")
-                        alert("<?php    echo \Engine\LanguageManager::GetTranslation("settings_panel.js.test_mail_has_been_sended_successfuly");  ?>");
+                        alert("<?php    echo \Engine\LanguageAgent::getTranslation("settings_panel.js.test_mail_has_been_sended_successfuly");  ?>");
                     else if (data == "false")
-                        alert("<?php    echo \Engine\LanguageManager::GetTranslation("settings_panel.js.test_mail_has_not_been_sended");  ?>");
+                        alert("<?php    echo \Engine\LanguageAgent::getTranslation("settings_panel.js.test_mail_has_not_been_sended");  ?>");
                 }
             });
         });
